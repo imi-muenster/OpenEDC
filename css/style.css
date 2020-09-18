@@ -1,0 +1,150 @@
+html {
+    overflow-y: auto;
+}
+
+html.no-scroll {
+    overflow-y: hidden;
+}
+
+.section {
+    padding: 30px 20px 0px 20px;
+}
+
+#study-title {
+    font-weight: 500;
+}
+
+hr {
+    margin-top: 0px;
+    margin-bottom: 20px;
+}
+
+.panel-heading {
+    font-weight: bold;
+}
+
+.panel.no-hover a:hover {
+    background-color: transparent;
+}
+
+.panel-block.is-active {
+    background-color: hsl(0, 0%, 96%);
+    border-left: 1px #3273dc solid;
+}
+
+.panel-icon {
+    pointer-events: none;
+}
+
+.modal-content.is-large {
+    max-width: 600px;
+}
+
+.modal-content.is-fullscreen {
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.modal-content.is-fullscreen>.box {
+    border-radius: 0;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.modal-content.is-medium {
+    max-width: 400px;
+}
+
+.modal-content.is-more-modal {
+    min-width: 700px;
+    max-width: 700px;
+}
+
+.modal-background {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.input {
+    min-width: 50px;
+}
+
+.tree-panel-blocks {
+    overflow-y: auto;
+}
+
+.tree-panel-blocks .panel-block {
+    border-radius: 0px;
+}
+
+.panel-block-add {
+    border-top: 1px solid #ededed;
+}
+
+#top-level {
+    margin-bottom: 15px;
+}
+
+.input-has-addons {
+    width: 100vw;
+}
+
+.preview-field {
+    margin-bottom: 12px;
+}
+
+.preview-field label {
+    white-space: pre-line;
+}
+
+#preview-content .subtitle {
+    white-space: pre-line;
+}
+
+.checkbox-button {
+    margin-bottom: 12px;
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: 4px !important;
+}
+
+.is-clickable {
+    cursor: pointer; 
+}
+
+.message {
+    margin-bottom: 20px;
+}
+
+.button.is-static.is-white {
+    background-color: white;
+    border-color: white;
+    color: hsl(0, 0%, 21%);
+}
+
+.has-no-margin-bottom {
+    margin-bottom: 0px !important;
+}
+
+.has-small-margin-bottom {
+    margin-bottom: 5px !important;
+}
+
+.has-small-margin-top {
+    margin-top: 5px !important;
+}
+
+.file {
+    margin-bottom: 0.5rem;
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+}
+
+.file-cta {
+    background-color: #fff;
+    color: #363636;
+}
+
+.file-cta:hover {
+    background-color: #fff !important;
+    border-color: #b5b5b5;
+}

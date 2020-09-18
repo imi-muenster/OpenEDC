@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" FileType="Snapshot" FileOID="ExemplaryProject" CreationDateTime="2020-02-17T11:33:18+01:00" ODMVersion="1.3.2">
+    <Study OID="S.1">
+        <GlobalVariables>
+            <StudyName>Exemplary Project</StudyName>
+            <StudyDescription>This example study aims at providing an overview of the capabilities of OpenEDC.</StudyDescription>
+            <ProtocolName>Exemplary Project</ProtocolName>
+        </GlobalVariables>
+        <BasicDefinitions>
+            <MeasurementUnit OID="MM.1" Name="kg">
+                <Symbol>
+                    <TranslatedText xml:lang="en">kg</TranslatedText>
+                    <TranslatedText xml:lang="de">kg</TranslatedText>
+                </Symbol>
+            </MeasurementUnit>
+            <MeasurementUnit OID="MM.2" Name="m">
+                <Symbol>
+                    <TranslatedText xml:lang="en">m</TranslatedText>
+                    <TranslatedText xml:lang="de">m</TranslatedText>
+                </Symbol>
+            </MeasurementUnit>
+            <MeasurementUnit OID="MM.3" Name="weeks">
+                <Symbol>
+                    <TranslatedText xml:lang="en">weeks</TranslatedText>
+                    <TranslatedText xml:lang="de">Wochen</TranslatedText>
+                </Symbol>
+            </MeasurementUnit>
+        </BasicDefinitions>
+        <MetaDataVersion OID="MDV.1" Name="MetaDataVersion">
+            <Protocol>
+                <StudyEventRef StudyEventOID="SE.1" Mandatory="No"/>
+                <StudyEventRef StudyEventOID="SE.2" Mandatory="No"/>
+                <StudyEventRef StudyEventOID="SE.3" Mandatory="No"/>
+            </Protocol>
+            <StudyEventDef OID="SE.1" Name="Baseline (T0)" Repeating="No" Type="Common">
+                <Description>
+                    <TranslatedText xml:lang="en">Baseline (T0)</TranslatedText>
+                    <TranslatedText xml:lang="de">Vorbefragung (T0)</TranslatedText>
+                </Description>
+                <FormRef FormOID="F.1" Mandatory="No"/>
+                <FormRef FormOID="F.2" Mandatory="No"/>
+            </StudyEventDef>
+            <StudyEventDef OID="SE.2" Name="Follow-up (T1)" Repeating="No" Type="Common">
+                <Description>
+                    <TranslatedText xml:lang="en">Follow-up (T1)</TranslatedText>
+                    <TranslatedText xml:lang="de">Folgebefragung (T1)</TranslatedText>
+                </Description>
+                <FormRef FormOID="F.3" Mandatory="No"/>
+                <FormRef FormOID="F.4" Mandatory="No"/>
+            </StudyEventDef>
+            <StudyEventDef OID="SE.3" Name="Follow-up (T2)" Repeating="No" Type="Common">
+                <Description>
+                    <TranslatedText xml:lang="en">Follow-up (T2)</TranslatedText>
+                    <TranslatedText xml:lang="de">Folgebefragung (T2)</TranslatedText>
+                </Description>
+                <FormRef FormOID="F.5" Mandatory="No"/>
+            </StudyEventDef>
+            <FormDef OID="F.1" Name="Basis data" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="en">Basis data</TranslatedText>
+                    <TranslatedText xml:lang="de">Basisdaten</TranslatedText>
+                </Description>
+                <ItemGroupRef ItemGroupOID="IG.1" Mandatory="No"/>
+                <ItemGroupRef ItemGroupOID="IG.2" Mandatory="No"/>
+            </FormDef>
+            <FormDef OID="F.2" Name="Medical history" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="en">Medical history</TranslatedText>
+                    <TranslatedText xml:lang="de">Vorerkrankungen</TranslatedText>
+                </Description>
+                <ItemGroupRef ItemGroupOID="IG.3" Mandatory="No"/>
+                <ItemGroupRef ItemGroupOID="IG.4" Mandatory="No"/>
+            </FormDef>
+            <FormDef OID="F.3" Name="Subsequent data" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="en">Subsequent data</TranslatedText>
+                    <TranslatedText xml:lang="de">Folgedaten</TranslatedText>
+                </Description>
+                <ItemGroupRef xmlns="http://www.cdisc.org/ns/odm/v1.3" ItemGroupOID="IG.1" Mandatory="No"/>
+                <ItemGroupRef ItemGroupOID="IG.5" Mandatory="No"/>
+            </FormDef>
+            <FormDef OID="F.4" Name="Quality of life" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="en">Quality of life</TranslatedText>
+                    <TranslatedText xml:lang="de">Lebensqualität</TranslatedText>
+                </Description>
+                <ItemGroupRef ItemGroupOID="IG.7" Mandatory="No"/>
+                <ItemGroupRef ItemGroupOID="IG.6" Mandatory="No"/>
+            </FormDef>
+            <FormDef OID="F.5" Name="Placeholder" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="de">Formular noch zu benennen ...</TranslatedText>
+                    <TranslatedText xml:lang="en">Form to be named ...</TranslatedText>
+                </Description>
+                <ItemGroupRef ItemGroupOID="IG.8" Mandatory="No"/>
+            </FormDef>
+            <ItemGroupDef OID="IG.1" Name="PersonalItems" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="en">Personal questions</TranslatedText>
+                    <TranslatedText xml:lang="de">Persönliche Fragen</TranslatedText>
+                </Description>
+                <ItemRef ItemOID="I.2" Mandatory="Yes"/>
+                <ItemRef ItemOID="Gender" Mandatory="No"/>
+                <ItemRef ItemOID="I.3" Mandatory="No"/>
+                <ItemRef ItemOID="I.4" Mandatory="No"/>
+                <ItemRef ItemOID="Pregnant" Mandatory="No" CollectionExceptionConditionOID="C.2"/>
+                <ItemRef ItemOID="I.7" Mandatory="No" CollectionExceptionConditionOID="C.5"/>
+            </ItemGroupDef>
+            <ItemGroupDef OID="IG.2" Name="DemographicItems" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="en">Demographic questions</TranslatedText>
+                    <TranslatedText xml:lang="de">Demographische Fragen</TranslatedText>
+                </Description>
+                <ItemRef ItemOID="CountryOfBirth" Mandatory="No"/>
+                <ItemRef ItemOID="I.6" Mandatory="No" CollectionExceptionConditionOID="C.1"/>
+                <ItemRef ItemOID="I.1" Mandatory="No"/>
+                <ItemRef ItemOID="I.16" Mandatory="No"/>
+            </ItemGroupDef>
+            <ItemGroupDef OID="IG.3" Name="CardiovascularItems" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="en">Cardiovascular</TranslatedText>
+                    <TranslatedText xml:lang="de">Kardiovaskulär</TranslatedText>
+                </Description>
+                <ItemRef ItemOID="CardiovascularDiseases" Mandatory="No"/>
+                <ItemRef ItemOID="I.8" Mandatory="No" CollectionExceptionConditionOID="C.3"/>
+                <ItemRef ItemOID="I.9" Mandatory="No" CollectionExceptionConditionOID="C.3"/>
+            </ItemGroupDef>
+            <ItemGroupDef OID="IG.4" Name="TumorItems" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="en">Malignant neoplasms</TranslatedText>
+                    <TranslatedText xml:lang="de">Bösartiger Tumor</TranslatedText>
+                </Description>
+                <ItemRef ItemOID="TumorDiseases" Mandatory="No"/>
+                <ItemRef ItemOID="I.10" Mandatory="No" CollectionExceptionConditionOID="C.4"/>
+                <ItemRef ItemOID="I.11" Mandatory="No" CollectionExceptionConditionOID="C.4"/>
+            </ItemGroupDef>
+            <ItemGroupDef OID="IG.5" Name="ReaonsOfVisitItems" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="en">Reason of visit</TranslatedText>
+                    <TranslatedText xml:lang="de">Grund des Besuchs</TranslatedText>
+                </Description>
+                <ItemRef ItemOID="SideEffect" Mandatory="No"/>
+                <ItemRef ItemOID="I.12" Mandatory="No" CollectionExceptionConditionOID="C.6"/>
+                <ItemRef ItemOID="SymptomsChanged" Mandatory="No"/>
+                <ItemRef ItemOID="I.5" Mandatory="No" CollectionExceptionConditionOID="C.7"/>
+            </ItemGroupDef>
+            <ItemGroupDef OID="IG.6" Name="QOLPastYearItems" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="en">During the course of the past year</TranslatedText>
+                    <TranslatedText xml:lang="de">Im Verlauf des letzten Jahres</TranslatedText>
+                </Description>
+                <ItemRef ItemOID="I.13" Mandatory="No"/>
+                <ItemRef ItemOID="I.14" Mandatory="No"/>
+                <ItemRef ItemOID="I.15" Mandatory="No"/>
+            </ItemGroupDef>
+            <ItemGroupDef OID="IG.7" Name="QOLPastWeekItems" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="en">In the past week</TranslatedText>
+                    <TranslatedText xml:lang="de">In der letzten Woche</TranslatedText>
+                </Description>
+                <ItemRef ItemOID="I.13" Mandatory="No"/>
+                <ItemRef ItemOID="I.14" Mandatory="No"/>
+                <ItemRef ItemOID="I.15" Mandatory="No"/>
+            </ItemGroupDef>
+            <ItemGroupDef OID="IG.8" Name="PlaceholderIG" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="de">Gruppe noch zu benennen ...</TranslatedText>
+                    <TranslatedText xml:lang="en">Item group to be named ...</TranslatedText>
+                </Description>
+                <ItemRef ItemOID="I.17" Mandatory="No"/>
+            </ItemGroupDef>
+            <ItemDef OID="Gender" Name="Gender" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">What is your gender?</TranslatedText>
+                    <TranslatedText xml:lang="de">Welches Geschlecht haben Sie?</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.1"/>
+            </ItemDef>
+            <ItemDef OID="I.2" Name="Age" DataType="integer">
+                <Question>
+                    <TranslatedText xml:lang="en">What is your age?</TranslatedText>
+                    <TranslatedText xml:lang="de">Wie alt sind Sie?</TranslatedText>
+                </Question>
+            </ItemDef>
+            <ItemDef OID="I.3" Name="Weight" DataType="float">
+                <Question>
+                    <TranslatedText xml:lang="en">What is your weight?</TranslatedText>
+                    <TranslatedText xml:lang="de">Wie viel wiegen Sie?</TranslatedText>
+                </Question>
+                <MeasurementUnitRef MeasurementUnitOID="MM.1"/>
+            </ItemDef>
+            <ItemDef OID="I.4" Name="Height" DataType="float">
+                <Question>
+                    <TranslatedText xml:lang="en">What is your height?</TranslatedText>
+                    <TranslatedText xml:lang="de">Wie groß sind Sie?</TranslatedText>
+                </Question>
+                <MeasurementUnitRef MeasurementUnitOID="MM.2"/>
+            </ItemDef>
+            <ItemDef OID="CountryOfBirth" Name="CountryOfBirth" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">What is country of birth?</TranslatedText>
+                    <TranslatedText xml:lang="de">Wo sind Sie geboren?</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.2"/>
+            </ItemDef>
+            <ItemDef OID="I.6" Name="CountryOfBirthOther" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">Please enter your country of birth</TranslatedText>
+                    <TranslatedText xml:lang="de">Bitte geben Sie ihr Geburtsland ein</TranslatedText>
+                </Question>
+            </ItemDef>
+            <ItemDef OID="Pregnant" Name="Pregnant" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">Are you currently pregnant?</TranslatedText>
+                    <TranslatedText xml:lang="de">Sind Sie zur Zeit schwanger?</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.3"/>
+            </ItemDef>
+            <ItemDef OID="I.1" Name="SchoolQualification" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">What is your highest school or university education?</TranslatedText>
+                    <TranslatedText xml:lang="de">Was ist ihre höchste Schul- oder Universitätsausbildung?</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.4"/>
+            </ItemDef>
+            <ItemDef OID="CardiovascularDiseases" Name="CardiovascularDiseases" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">Have you had cardiovascular diseases?</TranslatedText>
+                    <TranslatedText xml:lang="de">Hatten Sie in der Vergangenheit Erkrankungen des Herzkreislaufsystems?</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.5"/>
+            </ItemDef>
+            <ItemDef OID="I.8" Name="HeartAttackStents" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">... yes, I had a heart attack or I am having stents.</TranslatedText>
+                    <TranslatedText xml:lang="de">... ja, ich hatte einen Herzinfarkt oder habe Stents am Herzen.</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.5"/>
+            </ItemDef>
+            <ItemDef OID="I.9" Name="Stroke" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">... yes, I had a stroke.</TranslatedText>
+                    <TranslatedText xml:lang="de">... ja, ich hatte einen Schlaganfall.</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.5"/>
+            </ItemDef>
+            <ItemDef OID="TumorDiseases" Name="TumorDiseases" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">Have you had a tumor?</TranslatedText>
+                    <TranslatedText xml:lang="de">Wurde in der Vergangenheit ein bösartiger Tumor oder Krebs bei Ihnen diagnostiziert?</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.6"/>
+            </ItemDef>
+            <ItemDef OID="I.10" Name="BreastCancer" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">... yes, I had breast cancer.</TranslatedText>
+                    <TranslatedText xml:lang="de">... ja, ich hatte Brustkrebs.</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.6"/>
+            </ItemDef>
+            <ItemDef OID="I.11" Name="SkinCancer" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">... yes, I had skin cancer.</TranslatedText>
+                    <TranslatedText xml:lang="de">... ja, ich hatte Hautkrebs.</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.6"/>
+            </ItemDef>
+            <ItemDef OID="I.7" Name="PregnancyDuration" DataType="integer">
+                <Question>
+                    <TranslatedText xml:lang="en">For how long are you pregnant now?</TranslatedText>
+                    <TranslatedText xml:lang="de">Wie lange sind Sie nun schon schwanger?</TranslatedText>
+                </Question>
+                <MeasurementUnitRef MeasurementUnitOID="MM.3"/>
+            </ItemDef>
+            <ItemDef OID="SideEffect" Name="SideEffect" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">A side effect occured</TranslatedText>
+                    <TranslatedText xml:lang="de">Eine Nebenwirkung ist aufgetreten</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.7"/>
+            </ItemDef>
+            <ItemDef OID="I.12" Name="WhichSideEffect" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">Which side effect occured?</TranslatedText>
+                    <TranslatedText xml:lang="de">Welche Nebenwirkung ist aufgetreten?</TranslatedText>
+                </Question>
+            </ItemDef>
+            <ItemDef OID="SymptomsChanged" Name="SymptomsChanged" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">The symptom changed</TranslatedText>
+                    <TranslatedText xml:lang="de">Das Symptom hat sich verändert</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.7"/>
+            </ItemDef>
+            <ItemDef OID="I.5" Name="WhichSymptomChanges" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">How did the symptoms change?</TranslatedText>
+                    <TranslatedText xml:lang="de">Wie hat sich das Symptom verändert?</TranslatedText>
+                </Question>
+            </ItemDef>
+            <ItemDef OID="I.13" Name="Happy" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">... I was happy</TranslatedText>
+                    <TranslatedText xml:lang="de">... war ich glücklich</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.8"/>
+            </ItemDef>
+            <ItemDef OID="I.14" Name="Productive" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">... I was productive</TranslatedText>
+                    <TranslatedText xml:lang="de">... war ich produktiv</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.8"/>
+            </ItemDef>
+            <ItemDef OID="I.15" Name="Energy" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">... I had enough energy to do whatever I wanted to do</TranslatedText>
+                    <TranslatedText xml:lang="de">... hatte ich genügend Energie um alles zu tun, was ich tun wollte</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.8"/>
+            </ItemDef>
+            <ItemDef OID="I.16" Name="Graduation" DataType="date">
+                <Question>
+                    <TranslatedText xml:lang="en">When did you graduate from school?</TranslatedText>
+                    <TranslatedText xml:lang="de">Wann haben Sie die Schule absolviert?</TranslatedText>
+                </Question>
+            </ItemDef>
+            <ItemDef OID="I.17" Name="Example" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="de">Dies ist ein Beispielelement</TranslatedText>
+                    <TranslatedText xml:lang="en">This is an examplary item</TranslatedText>
+                </Question>
+            </ItemDef>
+            <CodeList OID="CL.1" Name="CL.1" DataType="text">
+                <CodeListItem CodedValue="Female">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Female</TranslatedText>
+                        <TranslatedText xml:lang="de">Weiblich</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="Male">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Male</TranslatedText>
+                        <TranslatedText xml:lang="de">Männlich</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="Other">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Other</TranslatedText>
+                        <TranslatedText xml:lang="de">Andere</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+            </CodeList>
+            <CodeList OID="CL.2" Name="CL.2" DataType="text">
+                <CodeListItem CodedValue="Spain">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Spain</TranslatedText>
+                        <TranslatedText xml:lang="de">Spanien</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="Italy">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Italy</TranslatedText>
+                        <TranslatedText xml:lang="de">Italien</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="France">
+                    <Decode>
+                        <TranslatedText xml:lang="en">France</TranslatedText>
+                        <TranslatedText xml:lang="de">Frankreich</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="Greece">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Greece</TranslatedText>
+                        <TranslatedText xml:lang="de">Griechenland</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="Other">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Other</TranslatedText>
+                        <TranslatedText xml:lang="de">Anderes</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+            </CodeList>
+            <CodeList OID="CL.3" Name="CL.3" DataType="text">
+                <CodeListItem CodedValue="Yes">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Yes</TranslatedText>
+                        <TranslatedText xml:lang="de">Ja</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="No">
+                    <Decode>
+                        <TranslatedText xml:lang="en">No</TranslatedText>
+                        <TranslatedText xml:lang="de">Nein</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+            </CodeList>
+            <CodeList OID="CL.4" Name="CL.4" DataType="text">
+                <CodeListItem CodedValue="1">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Middle school</TranslatedText>
+                        <TranslatedText xml:lang="de">Haupt- oder Realschulabschluss</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="2">
+                    <Decode>
+                        <TranslatedText xml:lang="en">High school</TranslatedText>
+                        <TranslatedText xml:lang="de">Gymnasium</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="3">
+                    <Decode>
+                        <TranslatedText xml:lang="en">University (Bachelor)</TranslatedText>
+                        <TranslatedText xml:lang="de">Universität (Bachelor)</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="4">
+                    <Decode>
+                        <TranslatedText xml:lang="en">University (Master)</TranslatedText>
+                        <TranslatedText xml:lang="de">Universität (Master)</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="5">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Ph.D.</TranslatedText>
+                        <TranslatedText xml:lang="de">Doktor</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+            </CodeList>
+            <CodeList OID="CL.5" Name="CL.5" DataType="text">
+                <CodeListItem CodedValue="Yes">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Yes</TranslatedText>
+                        <TranslatedText xml:lang="de">Ja</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="No">
+                    <Decode>
+                        <TranslatedText xml:lang="en">No</TranslatedText>
+                        <TranslatedText xml:lang="de">Nein</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+            </CodeList>
+            <CodeList OID="CL.6" Name="CL.6" DataType="text">
+                <CodeListItem CodedValue="Yes">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Yes</TranslatedText>
+                        <TranslatedText xml:lang="de">Ja</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="No">
+                    <Decode>
+                        <TranslatedText xml:lang="en">No</TranslatedText>
+                        <TranslatedText xml:lang="de">Nein</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+            </CodeList>
+            <CodeList OID="CL.7" Name="CL.7" DataType="text">
+                <CodeListItem CodedValue="Yes">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Yes</TranslatedText>
+                        <TranslatedText xml:lang="de">Ja</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="No">
+                    <Decode>
+                        <TranslatedText xml:lang="en">No</TranslatedText>
+                        <TranslatedText xml:lang="de">Nein</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+            </CodeList>
+            <CodeList OID="CL.8" Name="CL.8" DataType="text">
+                <CodeListItem CodedValue="1">
+                    <Decode>
+                        <TranslatedText xml:lang="en">All the time</TranslatedText>
+                        <TranslatedText xml:lang="de">Immer</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="2">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Most of the time</TranslatedText>
+                        <TranslatedText xml:lang="de">Meistens</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="3">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Sometimes</TranslatedText>
+                        <TranslatedText xml:lang="de">Manchmal</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="4">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Rarely</TranslatedText>
+                        <TranslatedText xml:lang="de">Selten</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+            </CodeList>
+            <ConditionDef OID="C.1" Name="CountryOfBirthNotOther">
+                <Description>
+                    <TranslatedText xml:lang="en">CountryOfBirthNotOther</TranslatedText>
+                </Description>
+                <FormalExpression>CountryOfBirth != "Other"</FormalExpression>
+            </ConditionDef>
+            <ConditionDef OID="C.2" Name="GenderNotFemale">
+                <Description>
+                    <TranslatedText xml:lang="en">GenderNotFemale</TranslatedText>
+                </Description>
+                <FormalExpression>Gender != "Female"</FormalExpression>
+            </ConditionDef>
+            <ConditionDef OID="C.3" Name="CardiovascularDiseasesNotYes">
+                <Description>
+                    <TranslatedText xml:lang="en">CardiovascularDiseasesNotYes</TranslatedText>
+                </Description>
+                <FormalExpression>CardiovascularDiseases != "Yes"</FormalExpression>
+            </ConditionDef>
+            <ConditionDef OID="C.4" Name="TumorDiseasesNotYes">
+                <Description>
+                    <TranslatedText xml:lang="en">TumorDiseasesNotYes</TranslatedText>
+                </Description>
+                <FormalExpression>TumorDiseases != "Yes"</FormalExpression>
+            </ConditionDef>
+            <ConditionDef OID="C.5" Name="PregnantNotYes">
+                <Description>
+                    <TranslatedText xml:lang="en">PregnantNotYes</TranslatedText>
+                </Description>
+                <FormalExpression>Pregnant != "Yes"</FormalExpression>
+            </ConditionDef>
+            <ConditionDef OID="C.6" Name="SideEffectNotYes">
+                <Description>
+                    <TranslatedText xml:lang="en">SideEffectNotYes</TranslatedText>
+                </Description>
+                <FormalExpression>SideEffect != "Yes"</FormalExpression>
+            </ConditionDef>
+            <ConditionDef OID="C.7" Name="SymptomsChangedNotYes">
+                <Description>
+                    <TranslatedText xml:lang="en">SymptomsChangedNotYes</TranslatedText>
+                </Description>
+                <FormalExpression>SymptomsChanged != "Yes"</FormalExpression>
+            </ConditionDef>
+        </MetaDataVersion>
+    </Study>
+</ODM>
