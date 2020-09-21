@@ -1,5 +1,8 @@
 import * as ioHelper from "./iohelper.js";
 
+const $ = query => document.querySelector(query);
+const $$ = query => document.querySelectorAll(query);
+
 export const locales = {
     "ENGLISH": "en",
     "DUTCH": "nl",
@@ -68,7 +71,7 @@ function populateNonPresentLanguages() {
     }
 }
 
-export function getLanguageNameByLocale(locale) {
+function getLanguageNameByLocale(locale) {
     for (let [key, value] of Object.entries(locales)) {
         if (locale == value) {
             return key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
@@ -80,17 +83,46 @@ export function getPresentLanguages() {
     return localesInODM;
 }
 
-export function getNonPresentLanguages() {
-    return localesNotInODM;
-}
-
 export function getCurrentLocale() {
     return currentLocale;
 }
 
-export function setCurrentLanguage(locale) {
-    if (Object.values(locales).indexOf(locale) != -1) {
-        currentLocale = locale;
-        currentLocaleSet = true;
+export function createLanguageSelect() {
+    ioHelper.removeElements($$("#language-dropdown a"));
+    ioHelper.removeElements($$("#language-dropdown hr"));
+
+    if (localesInODM.length > 0) {
+        for (let locale of localesInODM) {
+            let option = document.createElement("a");
+            option.className = "navbar-item";
+            option.textContent = getLanguageNameByLocale(locale);
+            option.setAttribute("locale", locale);
+            option.onclick = clickEvent => changeLanguage(clickEvent.target.getAttribute("locale"));
+            if (locale == currentLocale) $("#current-language").textContent = getLanguageNameByLocale(locale);
+            $("#language-dropdown").appendChild(option);
+        }
+    
+        let divider = document.createElement("hr");
+        divider.className = "navbar-divider";
+        $("#language-dropdown").appendChild(divider);
     }
+
+    for (let locale of localesNotInODM) {
+        let option = document.createElement("a");
+        option.className = "navbar-item";
+        option.textContent = getLanguageNameByLocale(locale);
+        option.setAttribute("locale", locale);
+        option.onclick = clickEvent => changeLanguage(clickEvent.target.getAttribute("locale"));
+        $("#language-dropdown").appendChild(option);
+    }
+}
+
+function changeLanguage(locale) {
+    if (!Object.values(locales).includes(locale)) return;
+
+    currentLocale = locale;
+    currentLocaleSet = true;
+    internationalize();
+    $("#current-language").textContent = getLanguageNameByLocale(currentLocale);
+    document.dispatchEvent(new CustomEvent("LanguageChanged", { detail: currentLocale }));
 }

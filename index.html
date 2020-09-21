@@ -39,13 +39,13 @@
                         <div class="buttons">
                             <button class="button" id="preview-button" onclick="showPreviewModal()" disabled>Preview Form</button>
                             <button class="button" onclick="showProjectModal()">Project Options</button>
-                            <button class="button is-link is-light" id="capture-toggle-button" onclick="toggleMode()">
+                            <button class="button is-link is-light" id="clinicaldata-toggle-button" onclick="showClinicaldata()">
                                 <span class="icon">
                                     <i class="fas fa-play"></i>
                                 </span>
                                 <span>Capture Data</span>
                             </button>
-                            <button class="button is-link is-light is-hidden" id="model-toggle-button" onclick="toggleMode()">
+                            <button class="button is-link is-light is-hidden" id="metadata-toggle-button" onclick="showMetadata()">
                                 <span class="icon">
                                     <i class="fas fa-stop"></i>
                                 </span>
@@ -57,7 +57,7 @@
             </div>
         </nav>
 
-        <section class="section" id="model-section">
+        <section class="section" id="metadata-section">
             <div class="columns is-centered" id="details-panel">
                 <div class="column is-one-fifth">
                     <div class="field">
@@ -159,7 +159,7 @@
             </div>
         </section>
 
-        <section class="section is-hidden" id="capture-section">
+        <section class="section is-hidden" id="clinicaldata-section">
             Test
         </section>
 

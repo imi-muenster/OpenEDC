@@ -1,3 +1,12 @@
+const $ = query => document.querySelector(query);
+const $$ = query => document.querySelectorAll(query);
+
+export function removeElements(elements) {
+    for (let element of elements) {
+        element.remove();
+    }
+}
+
 export function download(filename, content) {
     let prettifiedContent = prettifyContent(content);
 
@@ -63,4 +72,17 @@ export function setTreeMaxHeight(stopRepeat) {
     for (let treePanelBlock of treePanelBlocks) {
         treePanelBlock.style.maxHeight = `${remainingSpace}px`;
     }
+}
+
+export function setIOListeners() {
+    // TODO: This style everywhere or onclick here
+    $(".navbar-burger").addEventListener("click", () => {
+        $(".navbar-menu").classList.toggle("is-active");
+        $(".navbar-burger").classList.toggle("is-active");
+        $("#language-dropdown").classList.add("is-hidden-mobile");
+    });
+
+    $("#current-language").addEventListener("click", () => $("#language-dropdown").classList.toggle("is-hidden-mobile"));
+
+    $("body").onresize = setTreeMaxHeight;
 }
