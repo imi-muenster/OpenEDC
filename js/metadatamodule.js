@@ -59,7 +59,7 @@ function safeRemoveElement(element) {
 }
 
 function createPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue) {
-    let panelBlock = htmlElements.getPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue);
+    let panelBlock = htmlElements.getPanelBlock(true, elementOID, elementType, displayText, fallbackText, codedValue);
 
     panelBlock.ondragstart = dragStart;
     panelBlock.ondragend = dragEnd;

@@ -4,9 +4,6 @@ import * as ioHelper from "./iohelper.js";
 const $ = query => odm.querySelector(query);
 const $$ = query => odm.querySelectorAll(query);
 
-// TODO: Rename to metadata. And I probably need an odmhelper again, that takes an entire odm and gives the parts to the metadata- and clinicaldatahelper. And also merges then during the download.
-let odm = null;
-
 export const elementTypes = {
     STUDYEVENT: "studyevent",
     FORM: "form",
@@ -14,6 +11,9 @@ export const elementTypes = {
     ITEM: "item",
     CODELISTITEM: "codelistitem"
 }
+
+// TODO: Rename to metadata. And I probably need an odmhelper again, that takes an entire odm and gives the parts to the metadata- and clinicaldatahelper. And also merges then during the download.
+let odm = null;
 
 export function loadEmptyProject() {
     odm = metadataTemplates.getODMTemplate();
@@ -463,7 +463,6 @@ export function setItemMeasurementUnit(itemOID, measurementUnitName) {
             if (insertPosition != null) {
                 insertPosition.insertAdjacentElement("afterend", metadataTemplates.getMeasurementUnitRef(measurementUnitOID));
             } else {
-                console.log(`[OID="${itemOID}"]`);
                 $(`[OID="${itemOID}"]`).appendChild(metadataTemplates.getMeasurementUnitRef(measurementUnitOID));
             }
         }

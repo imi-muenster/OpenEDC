@@ -2,10 +2,10 @@ let rangeCheckComparators = ["--", "LT", "LE", "GT", "GE", "EQ", "NE"];
 let dataTypes = ["text", "date", "boolean", "integer", "float", "codelist (text)", "codelist (integer)", "codelist (float)"];
 let mandatory = ["No", "Yes"];
 
-export function getPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue) {
+export function getPanelBlock(draggable, elementOID, elementType, displayText, fallbackText, codedValue) {
     let panelBlock = document.createElement("a");
     panelBlock.className = "panel-block";
-    panelBlock.setAttribute("draggable", true);
+    panelBlock.setAttribute("draggable", draggable);
     panelBlock.setAttribute("oid", elementOID);
     panelBlock.setAttribute("element-type", elementType);
 

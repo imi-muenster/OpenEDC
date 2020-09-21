@@ -18,6 +18,14 @@ html.no-scroll {
     padding: 40px;
 }
 
+.has-no-padding-bottom {
+    padding-bottom: 0px;
+}
+
+.has-no-border-bottom {
+    border-bottom: none !important;
+}
+
 hr {
     margin-top: 0px;
     margin-bottom: 20px;
@@ -100,7 +108,7 @@ hr {
     white-space: pre-line;
 }
 
-.field.is-fullwidth {
+.field.is-fullwidth, .control.is-fullwidth {
     display: flex;
     width: 100%;
 }
