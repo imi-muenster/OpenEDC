@@ -1,4 +1,4 @@
-import * as odmHelper from "./helper/odmhelper.js";
+import * as metadataHelper from "./helper/metadatahelper.js";
 import * as metadataModule from "./metadatamodule.js";
 import * as clinicaldataModule from "./clinicaldatamodule.js";
 import * as ioHelper from "./helper/iohelper.js";
@@ -23,7 +23,7 @@ document.addEventListener("LanguageChanged", languageEvent => {
 
 const startApp = () => {
     languageHelper.init();
-    languageHelper.populatePresentLanguages(odmHelper.getODM());
+    languageHelper.populatePresentLanguages(metadataHelper.getODM());
     languageHelper.createLanguageSelect();
     languageHelper.internationalize();
     
@@ -39,8 +39,8 @@ const startApp = () => {
 }
 
 const setTitles = () => {
-    $("#study-title").textContent = odmHelper.getStudyName();
-    $("head title").textContent = "OpenEDC – " + odmHelper.getStudyName();
+    $("#study-title").textContent = metadataHelper.getStudyName();
+    $("head title").textContent = "OpenEDC – " + metadataHelper.getStudyName();
 }
 
 window.showMetadata = function() {
@@ -58,7 +58,7 @@ window.showClinicaldata = function() {
 }
 
 window.newProject = function() {
-    odmHelper.loadEmptyProject();
+    metadataHelper.loadEmptyProject();
     startApp();
 }
 
@@ -67,20 +67,20 @@ window.uploadODM = async function() {
     let content = await ioHelper.getFileContent(file.files[0]);
 
     if (content) {
-        odmHelper.parseODM(content);
+        metadataHelper.parseODM(content);
         startApp();
     }
 }
 
 window.loadExample = async function() {
-    await odmHelper.loadExample();
+    await metadataHelper.loadExample();
     startApp();
 }
 
 window.saveProjectModal = function() {
-    odmHelper.setStudyName($("#study-name-input").value);
-    odmHelper.setStudyDescription($("#study-description-textarea").value);
-    odmHelper.setProtocolName($("#protocol-name-input").value);
+    metadataHelper.setStudyName($("#study-name-input").value);
+    metadataHelper.setStudyDescription($("#study-description-textarea").value);
+    metadataHelper.setProtocolName($("#protocol-name-input").value);
     hideProjectModal();
     setTitles();
     metadataModule.setArrowKeyListener();
@@ -99,9 +99,9 @@ window.hideStartModal = function() {
 window.showProjectModal = function() {
     metadataModule.removeArrowKeyListener();
     $("#project-modal").classList.add("is-active");
-    $("#study-name-input").value = odmHelper.getStudyName();
-    $("#study-description-textarea").value = odmHelper.getStudyDescription();
-    $("#protocol-name-input").value = odmHelper.getStudyName();
+    $("#study-name-input").value = metadataHelper.getStudyName();
+    $("#study-description-textarea").value = metadataHelper.getStudyDescription();
+    $("#protocol-name-input").value = metadataHelper.getStudyName();
 
     hideMenu();
 }
@@ -124,9 +124,9 @@ window.hideAboutModal = function() {
 }
 
 window.downloadODM = function() {
-    odmHelper.setCreationDateTimeNow();
-    odmHelper.setFileOID(odmHelper.getStudyName());
-    ioHelper.download(odmHelper.getStudyName()+".xml", odmHelper.getSerializedODM());
+    metadataHelper.setCreationDateTimeNow();
+    metadataHelper.setFileOID(metadataHelper.getStudyName());
+    ioHelper.download(metadataHelper.getStudyName()+".xml", metadataHelper.getSerializedODM());
 }
 
 const hideMenu = () => {

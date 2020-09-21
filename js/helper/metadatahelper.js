@@ -1,4 +1,4 @@
-import * as odmTemplates from "./odmtemplates.js";
+import * as metadataTemplates from "./metadatatemplates.js";
 import * as ioHelper from "./iohelper.js";
 
 const $ = query => odm.querySelector(query);
@@ -15,7 +15,7 @@ export const elementTypes = {
 }
 
 export function loadEmptyProject() {
-    odm = odmTemplates.getODMTemplate();
+    odm = metadataTemplates.getODMTemplate();
 }
 
 export function parseODM(odmXMLString) {
@@ -334,9 +334,9 @@ export function setElementDescription(elementOID, description, locale) {
     } else if (translatedText == null && description) {
         let elementDescription = $(`[OID="${elementOID}"] Description`);
         if (elementDescription == null) {
-            $(`[OID="${elementOID}"]`).insertAdjacentElement("afterbegin", odmTemplates.getDescription());
+            $(`[OID="${elementOID}"]`).insertAdjacentElement("afterbegin", metadataTemplates.getDescription());
         }
-        $(`[OID="${elementOID}"] Description`).appendChild(odmTemplates.getTranslatedText(description, locale));
+        $(`[OID="${elementOID}"] Description`).appendChild(metadataTemplates.getTranslatedText(description, locale));
     }
 }
 
@@ -352,9 +352,9 @@ export function setItemQuestion(itemOID, question, locale) {
     } else if (translatedText == null && question) {
         let itemQuestion = $(`ItemDef[OID="${itemOID}"] Question`);
         if (itemQuestion == null) {
-            $(`[OID="${itemOID}"]`).insertAdjacentElement("afterbegin", odmTemplates.getQuestion());
+            $(`[OID="${itemOID}"]`).insertAdjacentElement("afterbegin", metadataTemplates.getQuestion());
         }
-        $(`ItemDef[OID="${itemOID}"] Question`).appendChild(odmTemplates.getTranslatedText(question, locale));
+        $(`ItemDef[OID="${itemOID}"] Question`).appendChild(metadataTemplates.getTranslatedText(question, locale));
     }
 }
 
@@ -367,7 +367,7 @@ export function setMeasurementUnitSymbol(measurementUnitOID, symbol, locale) {
     if (translatedText != null) {
         translatedText.textContent = symbol;
     } else {
-        $(`MeasurementUnit[OID="${measurementUnitOID}"] Symbol`).appendChild(odmTemplates.getTranslatedText(symbol, locale));
+        $(`MeasurementUnit[OID="${measurementUnitOID}"] Symbol`).appendChild(metadataTemplates.getTranslatedText(symbol, locale));
     }
 }
 
@@ -411,17 +411,17 @@ export function setCodeListItemDecodedText(codeListOID, codedValue, decodedText,
     } else if (translatedText == null && decodedText) {
         let codeListItemDecode = $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"] Decode`);
         if (codeListItemDecode == null) {
-            $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"]`).insertAdjacentElement("afterbegin", odmTemplates.getDecode());
+            $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"]`).insertAdjacentElement("afterbegin", metadataTemplates.getDecode());
         }
-        $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"] Decode`).appendChild(odmTemplates.getTranslatedText(decodedText, locale));
+        $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"] Decode`).appendChild(metadataTemplates.getTranslatedText(decodedText, locale));
     }
 }
 
 export function setElementAlias(elementOID, codeListItemCodedValue, context, name) {
     if (codeListItemCodedValue == null) {
-        $(`[OID="${elementOID}"]`).appendChild(odmTemplates.getAlias(context, name));
+        $(`[OID="${elementOID}"]`).appendChild(metadataTemplates.getAlias(context, name));
     } else {
-        $(`[OID="${elementOID}"] CodeListItem[CodedValue="${codeListItemCodedValue}"]`).appendChild(odmTemplates.getAlias(context, name));
+        $(`[OID="${elementOID}"] CodeListItem[CodedValue="${codeListItemCodedValue}"]`).appendChild(metadataTemplates.getAlias(context, name));
     } 
 }
 
@@ -434,7 +434,7 @@ export function setItemRangeCheck(itemOID, comparator, checkValue) {
         insertPosition = $(`[OID="${itemOID}"] Question`);
     }
 
-    insertPosition.insertAdjacentElement("afterend", odmTemplates.getRangeCheck(comparator, checkValue));
+    insertPosition.insertAdjacentElement("afterend", metadataTemplates.getRangeCheck(comparator, checkValue));
 }
 
 export function setItemCondition(itemOID, itemGroupOID, conditionName) {
@@ -460,10 +460,10 @@ export function setItemMeasurementUnit(itemOID, measurementUnitName) {
         } else {
             let insertPosition = $(`[OID="${itemOID}"] Question`);
             if (insertPosition != null) {
-                insertPosition.insertAdjacentElement("afterend", odmTemplates.getMeasurementUnitRef(measurementUnitOID));
+                insertPosition.insertAdjacentElement("afterend", metadataTemplates.getMeasurementUnitRef(measurementUnitOID));
             } else {
                 console.log(`[OID="${itemOID}"]`);
-                $(`[OID="${itemOID}"]`).appendChild(odmTemplates.getMeasurementUnitRef(measurementUnitOID));
+                $(`[OID="${itemOID}"]`).appendChild(metadataTemplates.getMeasurementUnitRef(measurementUnitOID));
             }
         }
     } else {
@@ -494,13 +494,13 @@ function generateUniqueCodedValue(codeListOID) {
 export function createStudyEvent() {
     let newStudyEventOID = generateUniqueOID("SE.");
 
-    insertStudyEventRef(odmTemplates.getStudyEventRef(newStudyEventOID));
+    insertStudyEventRef(metadataTemplates.getStudyEventRef(newStudyEventOID));
 
     let insertPositionDef = getLastElement($$("StudyEventDef"));
     if (insertPositionDef != null) {
-        insertPositionDef.insertAdjacentElement("afterend", odmTemplates.getStudyEventDef(newStudyEventOID));
+        insertPositionDef.insertAdjacentElement("afterend", metadataTemplates.getStudyEventDef(newStudyEventOID));
     } else {
-        $("MetaDataVersion").appendChild(odmTemplates.getStudyEventDef(newStudyEventOID));
+        $("MetaDataVersion").appendChild(metadataTemplates.getStudyEventDef(newStudyEventOID));
     }
 
     return newStudyEventOID;
@@ -513,13 +513,13 @@ export function insertStudyEventRef(studyEventRef) {
 export function createForm(studyEventOID) {
     let newFormOID = generateUniqueOID("F.");
 
-    insertFormRef(odmTemplates.getFormRef(newFormOID), studyEventOID);
+    insertFormRef(metadataTemplates.getFormRef(newFormOID), studyEventOID);
 
     let insertPositionDef = getLastElement($$(`FormDef`));
     if (insertPositionDef != null) {
-        insertPositionDef.insertAdjacentElement("afterend", odmTemplates.getFormDef(newFormOID));
+        insertPositionDef.insertAdjacentElement("afterend", metadataTemplates.getFormDef(newFormOID));
     } else {
-        $("MetaDataVersion").appendChild(odmTemplates.getFormDef(newFormOID));
+        $("MetaDataVersion").appendChild(metadataTemplates.getFormDef(newFormOID));
     }
 
     return newFormOID;
@@ -542,13 +542,13 @@ export function insertFormRef(formRef, studyEventOID) {
 export function createItemGroup(formOID) {
     let newItemGroupOID = generateUniqueOID("IG.");
 
-    insertItemGroupRef(odmTemplates.getItemGroupRef(newItemGroupOID), formOID);
+    insertItemGroupRef(metadataTemplates.getItemGroupRef(newItemGroupOID), formOID);
 
     let insertPositionDef = getLastElement($$(`ItemGroupDef`));
     if (insertPositionDef != null) {
-        insertPositionDef.insertAdjacentElement("afterend", odmTemplates.getItemGroupDef(newItemGroupOID));
+        insertPositionDef.insertAdjacentElement("afterend", metadataTemplates.getItemGroupDef(newItemGroupOID));
     } else {
-        $("MetaDataVersion").appendChild(odmTemplates.getItemGroupDef(newItemGroupOID));
+        $("MetaDataVersion").appendChild(metadataTemplates.getItemGroupDef(newItemGroupOID));
     }
 
     return newItemGroupOID;
@@ -571,13 +571,13 @@ export function insertItemGroupRef(itemGroupRef, formOID) {
 export function createItem(itemGroupOID) {
     let newItemOID = generateUniqueOID("I.");
 
-    insertItemRef(odmTemplates.getItemRef(newItemOID), itemGroupOID);
+    insertItemRef(metadataTemplates.getItemRef(newItemOID), itemGroupOID);
 
     let insertPositionDef = getLastElement($$(`ItemDef`));
     if (insertPositionDef != null) {
-        insertPositionDef.insertAdjacentElement("afterend", odmTemplates.getItemDef(newItemOID));
+        insertPositionDef.insertAdjacentElement("afterend", metadataTemplates.getItemDef(newItemOID));
     } else {
-        $("MetaDataVersion").appendChild(odmTemplates.getItemDef(newItemOID));
+        $("MetaDataVersion").appendChild(metadataTemplates.getItemDef(newItemOID));
     }
 
     return newItemOID;
@@ -600,13 +600,13 @@ export function insertItemRef(itemRef, itemGroupOID) {
 export function createCodeList(itemOID) {
     let newCodeListOID = generateUniqueOID("CL.");
 
-    insertCodeListRef(odmTemplates.getCodeListRef(newCodeListOID), itemOID);
+    insertCodeListRef(metadataTemplates.getCodeListRef(newCodeListOID), itemOID);
 
     let insertPositionDef = getLastElement($$(`CodeList`));
     if (insertPositionDef != null) {
-        insertPositionDef.insertAdjacentElement("afterend", odmTemplates.getCodeListDef(newCodeListOID));
+        insertPositionDef.insertAdjacentElement("afterend", metadataTemplates.getCodeListDef(newCodeListOID));
     } else {
-        $("MetaDataVersion").appendChild(odmTemplates.getCodeListDef(newCodeListOID));
+        $("MetaDataVersion").appendChild(metadataTemplates.getCodeListDef(newCodeListOID));
     }
 }
 
@@ -622,24 +622,24 @@ export function insertCodeListRef(codeListRef, itemOID) {
 export function createCondition(name, formalExpression, locale) {
     let newConditionOID = generateUniqueOID("C.");
 
-    $("MetaDataVersion").appendChild(odmTemplates.getConditionDef(newConditionOID, name, formalExpression, locale));
+    $("MetaDataVersion").appendChild(metadataTemplates.getConditionDef(newConditionOID, name, formalExpression, locale));
 }
 
 export function createMeasurementUnit(name, symbol, locale) {
     let newMeasurementUnitOID = generateUniqueOID("MM.");
 
     if (!$("BasicDefinitions")) {
-        $("GlobalVariables").insertAdjacentElement("afterend", odmTemplates.getBasicDefintions());
+        $("GlobalVariables").insertAdjacentElement("afterend", metadataTemplates.getBasicDefintions());
     }
 
-    $("BasicDefinitions").appendChild(odmTemplates.getMeasurementUnitDef(newMeasurementUnitOID, name, symbol, locale));
+    $("BasicDefinitions").appendChild(metadataTemplates.getMeasurementUnitDef(newMeasurementUnitOID, name, symbol, locale));
 }
 
 export function addCodeListItem(codeListOID) {
     let codedValue = generateUniqueCodedValue(codeListOID);
     let codeList = getElementDefByOID(codeListOID);
     
-    codeList.appendChild(odmTemplates.getCodeListItem(codedValue));
+    codeList.appendChild(metadataTemplates.getCodeListItem(codedValue));
 
     return codedValue;
 }
@@ -649,7 +649,7 @@ export function insertCodeListItem(codeListItem, codeListOID) {
 }
 
 export function addCodeListRef(itemOID, codeListOID) {
-    getElementDefByOID(itemOID).appendChild(odmTemplates.getCodeListRef(codeListOID));    
+    getElementDefByOID(itemOID).appendChild(metadataTemplates.getCodeListRef(codeListOID));    
 }
 
 export function removeStudyEventRef(studyEventOID) {
@@ -775,7 +775,7 @@ export function copyStudyEvent(studyEventOID, deepCopy) {
     let newStudyEventOID = generateUniqueOID("SE.");
 
     let studyEventRef = $(`StudyEventRef[StudyEventOID="${studyEventOID}"]`);
-    studyEventRef.insertAdjacentElement("afterend", odmTemplates.getStudyEventRef(newStudyEventOID));
+    studyEventRef.insertAdjacentElement("afterend", metadataTemplates.getStudyEventRef(newStudyEventOID));
 
     let studyEventDef = $(`StudyEventDef[OID="${studyEventOID}"]`);
     let studyEventDefClone = studyEventDef.cloneNode(true);
@@ -796,7 +796,7 @@ export function copyForm(formOID, deepCopy, studyEventOID) {
 
     if (studyEventOID != null) {
         let formRef = $(`StudyEventDef[OID="${studyEventOID}"] FormRef[FormOID="${formOID}"]`);
-        formRef.insertAdjacentElement("afterend", odmTemplates.getFormRef(newFormOID));
+        formRef.insertAdjacentElement("afterend", metadataTemplates.getFormRef(newFormOID));
     }
 
     let formDef = $(`FormDef[OID="${formOID}"]`);
@@ -820,7 +820,7 @@ export function copyItemGroup(itemGroupOID, deepCopy, formOID) {
 
     if (formOID != null) {
         let itemGroupRef = $(`FormDef[OID="${formOID}"] ItemGroupRef[ItemGroupOID="${itemGroupOID}"]`);
-        itemGroupRef.insertAdjacentElement("afterend", odmTemplates.getItemGroupRef(newItemGroupOID));
+        itemGroupRef.insertAdjacentElement("afterend", metadataTemplates.getItemGroupRef(newItemGroupOID));
     }
 
     let itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`);
@@ -845,7 +845,7 @@ export function copyItem(itemOID, deepCopy, itemGroupOID) {
 
     if (itemGroupOID != null) {
         let itemRef = $(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[ItemOID="${itemOID}"]`);
-        itemRef.insertAdjacentElement("afterend", odmTemplates.getItemRef(newItemOID));
+        itemRef.insertAdjacentElement("afterend", metadataTemplates.getItemRef(newItemOID));
     }
 
     let itemDef = $(`ItemDef[OID="${itemOID}"]`);
