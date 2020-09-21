@@ -8,18 +8,28 @@ class Subject {
     }
 }
 
-const $ = query => odm.querySelector(query);
-const $$ = query => odm.querySelectorAll(query);
+const $ = query => subjectData.querySelector(query);
+const $$ = query => subjectData.querySelectorAll(query);
 
 export const sortTypes = {
     ALPHANUMERICALLY: "Alphanumerical",
-    CREATEDDATE: "Created"
+    CREATEDDATE: "Creation date"
 }
 
 let subjects = [];
 let subjectData = null;
 
 export function addSubject(subjectKey) {
+    if (subjectKey.length == 0) {
+        ioHelper.showWarning("Enter Subject Key", "Please enter a key for the subject first.");
+        return;
+    }
+
+    if (subjects.map(subject => subject.key).includes(subjectKey)) {
+        ioHelper.showWarning("Subject Key Existent", "The entered subject key already exists. Please enter another one.");
+        return;
+    }
+
     subjectData = clinicaldataTemplates.getSubjectData(subjectKey);
     subjects.push(new Subject(subjectKey, new Date()));
 }

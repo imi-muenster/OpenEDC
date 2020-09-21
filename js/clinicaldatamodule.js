@@ -46,7 +46,6 @@ export function setLanguage(newLocale) {
 
 function createSortTypeSelect() {
     $("#sort-subject-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("sort-subject-select", true, true, Object.values(clinicaldataHelper.sortTypes), clinicaldataHelper.sortTypes.ALPHABETICALLY));
-    $("#sort-subject-select-inner").classList.add("has-text-grey-light");
 }
 
 function setIOListeners() {
@@ -54,11 +53,6 @@ function setIOListeners() {
 }
 
 window.addSubject = function() {
-    if ($("#add-subject-input").value.length == 0) {
-        ioHelper.showWarning("Enter Subject Key", "Please enter a key for the subject first.");
-        return;
-    }
-
     clinicaldataHelper.addSubject($("#add-subject-input").value);
     $("#add-subject-input").value = "";
     loadSubjectKeys();

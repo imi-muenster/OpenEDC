@@ -174,7 +174,20 @@
                 <div class="column is-one-fifth">
                     <nav class="panel">
                         <p class="panel-heading has-text-centered">Subjects</p>
-                        <div class="panel-block has-no-padding-bottom has-no-border-bottom"">
+                        <div class="panel-block has-no-padding-bottom has-no-border-bottom">
+                            <div class="field is-grouped is-fullwidth">
+                                <div class="control is-expanded has-icons-left">
+                                    <input class="input" id="add-subject-input" type="text" placeholder="New subject">
+                                    <span class="icon is-left">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                </div>
+                                <div class="control">
+                                    <button class="button is-link" onclick="addSubject()">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-block has-no-padding-bottom has-no-border-bottom">
                             <div class="field is-fullwidth">
                                 <div class="control has-icons-left is-fullwidth" id="sort-subject-control">
                                     <div class="icon is-small is-left">
@@ -193,20 +206,7 @@
                         </div>
                         <div class="tree-panel-blocks" id="subject-panel-blocks">
                             <div class="panel-block has-text-centered has-text-grey-light" id="no-subjects-hint">
-                                <p>No subjects available. Please add a new subject with the button below.</p>
-                            </div>
-                        </div>
-                        <div class="panel-block panel-block-add">
-                            <div class="field is-grouped is-fullwidth">
-                                <div class="control is-expanded has-icons-left">
-                                    <span class="icon is-left">
-                                        <i class="fas fa-plus"></i>
-                                    </span>
-                                    <input class="input" id="add-subject-input" type="text" placeholder="New subject">
-                                </div>
-                                <div class="control">
-                                    <button class="button is-link" onclick="addSubject()">Add</button>
-                                </div>
+                                <p>No subjects available. Please add a new subject with the button above.</p>
                             </div>
                         </div>
                     </nav>

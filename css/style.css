@@ -31,6 +31,10 @@ html.no-scroll {
     border-bottom: none !important;
 }
 
+#sort-subject-select-inner:not(:focus) {
+    color: rgba(54,54,54,.3);
+}
+
 hr {
     margin-top: 0px;
     margin-bottom: 20px;
