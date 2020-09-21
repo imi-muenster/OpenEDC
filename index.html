@@ -174,9 +174,9 @@
                 <div class="column is-one-fifth">
                     <nav class="panel">
                         <p class="panel-heading has-text-centered">Subjects</p>
-                        <div class="panel-block" id="search-subject-input">
+                        <div class="panel-block">
                             <div class="control has-icons-left">
-                                <input class="input" type="text" placeholder="Search">
+                                <input class="input" id="search-subject-input" type="text" placeholder="Search">
                                 <span class="icon is-left">
                                     <i class="fas fa-search"></i>
                                 </span>
@@ -187,16 +187,16 @@
                                 <p>No subjects available. Please add a new subject with the button below.</p>
                             </div>
                         </div>
-                        <div class="panel-block panel-block-add" id="subject-add-button">
+                        <div class="panel-block panel-block-add">
                             <div class="field is-grouped is-fullwidth">
                                 <div class="control is-expanded has-icons-left">
                                     <span class="icon is-left">
                                         <i class="fas fa-plus"></i>
                                     </span>
-                                    <input class="input" type="text" placeholder="New subject">
+                                    <input class="input" id="add-subject-input" type="text" placeholder="New subject">
                                 </div>
                                 <div class="control">
-                                    <button class="button is-link">Add</button>
+                                    <button class="button is-link" onclick="addSubject()">Add</button>
                                 </div>
                             </div>
                         </div>

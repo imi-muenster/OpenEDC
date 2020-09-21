@@ -702,7 +702,6 @@ function setIOListeners() {
     }
     $("#save-button").tabIndex = 6;
     $("#delete-button").tabIndex = 7;
-    $("body").onresize = ioHelper.setTreeMaxHeight;
 }
 
 export function removeArrowKeyListener() {

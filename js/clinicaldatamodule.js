@@ -21,6 +21,8 @@ let locale = null;
 export function init() {
     currentElementID.subject = null;
     currentElementType = null;
+
+    setIOListeners();
 }
 
 export function show() {
@@ -35,4 +37,8 @@ export function hide() {
 
 export function setLanguage(newLocale) {
     locale = newLocale;
+}
+
+function setIOListeners() {
+    
 }

@@ -73,6 +73,7 @@ export function setTreeMaxHeight(stopRepeat) {
     }
 }
 
+// IO listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
 export function setIOListeners() {
     // TODO: This style everywhere or onclick here
     $(".navbar-burger").addEventListener("click", () => {
