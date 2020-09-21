@@ -1,4 +1,5 @@
 import * as metadataHelper from "./helper/metadatahelper.js";
+import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 import * as conditionHelper from "./helper/conditionhelper.js";
@@ -45,7 +46,21 @@ function setIOListeners() {
 
 window.addSubject = function() {
     if ($("#add-subject-input").value.length == 0) {
-        ioHelper.showWarning("Enter Subject ID", "Please enter an identifier for the subject first.");
+        ioHelper.showWarning("Enter Subject Key", "Please enter a key for the subject first.");
         return;
+    }
+
+    clinicaldataHelper.addSubject($("#add-subject-input").value);
+    $("#add-subject-input").value = "";
+    loadSubjectKeys();
+}
+
+export function loadSubjectKeys() {
+    ioHelper.removeElements($$("#subject-panel-blocks a"));
+    if (clinicaldataHelper.getSubjectKeys().length > 0) $("#no-subjects-hint").classList.add("is-hidden");
+    for (let subjectKey of clinicaldataHelper.getSubjectKeys()) {
+        let panelBlock = htmlElements.getPanelBlock(subjectKey, "", subjectKey);
+        // panelBlock.onclick = subjectClicked;
+        $("#subject-panel-blocks").appendChild(panelBlock);
     }
 }

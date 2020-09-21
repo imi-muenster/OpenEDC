@@ -4,6 +4,7 @@ import * as ioHelper from "./iohelper.js";
 const $ = query => odm.querySelector(query);
 const $$ = query => odm.querySelectorAll(query);
 
+// TODO: Rename to metadata. And I probably need an odmhelper again, that takes an entire odm and gives the parts to the metadata- and clinicaldatahelper. And also merges then during the download.
 let odm = null;
 
 export const elementTypes = {
