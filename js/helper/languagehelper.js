@@ -47,9 +47,7 @@ export function populatePresentLanguages(odm) {
     localesInODM = [];
     localesNotInODM = [];
 
-    let translatedTexts = odm.querySelectorAll("TranslatedText");
-
-    for (let translatedText of translatedTexts) {
+    for (let translatedText of odm.querySelectorAll("TranslatedText")) {
         let locale = translatedText.getAttribute("xml:lang");
         if (!localesInODM.includes(locale)) {
             localesInODM.push(locale);

@@ -5,9 +5,6 @@ import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 
 const $ = query => document.querySelector(query);
-const $$ = query => document.querySelectorAll(query);
-
-let locale = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
     ioHelper.setTreeMaxHeight();
@@ -15,13 +12,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 document.addEventListener("LanguageChanged", languageEvent => {
-    locale = languageEvent.detail;
-
-    metadataModule.setLanguage(locale);
+    metadataModule.setLanguage(languageEvent.detail);
     metadataModule.reloadTree();
     metadataModule.reloadDetailsPanel();
 
-    clinicaldataModule.setLanguage(locale);
+    clinicaldataModule.setLanguage(languageEvent.detail);
 
     hideMenu();
 });
@@ -31,14 +26,13 @@ const startApp = () => {
     languageHelper.populatePresentLanguages(odmHelper.getODM());
     languageHelper.createLanguageSelect();
     languageHelper.internationalize();
-    locale = languageHelper.getCurrentLocale();
     
     metadataModule.init();
-    metadataModule.setLanguage(locale);
+    metadataModule.setLanguage(languageHelper.getCurrentLocale());
     metadataModule.loadStudyEvents();
 
     clinicaldataModule.init();
-    clinicaldataModule.setLanguage(locale);
+    clinicaldataModule.setLanguage(languageHelper.getCurrentLocale());
 
     setTitles();
     hideStartModal();

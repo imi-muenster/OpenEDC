@@ -1,5 +1,4 @@
 const $ = query => document.querySelector(query);
-const $$ = query => document.querySelectorAll(query);
 
 export function removeElements(elements) {
     for (let element of elements) {
