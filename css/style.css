@@ -10,6 +10,11 @@ html.no-scroll {
     padding: 30px 20px 0px 20px;
 }
 
+#clinicaldata-section .panel-block[oid] {
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
 #study-title {
     font-weight: 500;
 }

@@ -28,6 +28,9 @@ export function init() {
 }
 
 export function show() {
+    loadSubjectKeys();
+    loadStudyEvents();
+
     $("#clinicaldata-section").classList.remove("is-hidden");
     $("#clinicaldata-toggle-button").classList.add("is-hidden");
 }
@@ -68,5 +71,15 @@ export function loadSubjectKeys() {
         let panelBlock = htmlElements.getPanelBlock(false, subjectKey, "", subjectKey);
         // panelBlock.onclick = subjectClicked;
         $("#subject-panel-blocks").appendChild(panelBlock);
+    }
+}
+
+export function loadStudyEvents() {
+    ioHelper.removeElements($$("#clinicaldata-study-event-panel-blocks a"));
+    for (let studyEventDef of metadataHelper.getStudyEvents()) {
+        let translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
+        let panelBlock = htmlElements.getPanelBlock(false, studyEventDef.getAttribute("OID"), metadataHelper.elementTypes.STUDYEVENT, translatedText, studyEventDef.getAttribute("Name"));
+        // panelBlock.onclick = studyEventClicked;
+        $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
     }
 }
