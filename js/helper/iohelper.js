@@ -73,7 +73,14 @@ export function setTreeMaxHeight(stopRepeat) {
     }
 }
 
+export function showWarning(title, message) {
+    $("#warning-modal h2").textContent = title;
+    $("#warning-modal p").textContent = message;
+    $("#warning-modal").classList.add("is-active");
+}
+
 // IO listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
+// TODO: In the entire project, align onclick vs. addEventListener("click"), arrowfunctions, etc.
 export function setIOListeners() {
     // TODO: This style everywhere or onclick here
     $(".navbar-burger").addEventListener("click", () => {
@@ -85,4 +92,6 @@ export function setIOListeners() {
     $("#current-language").addEventListener("click", () => $("#language-dropdown").classList.toggle("is-hidden-mobile"));
 
     $("body").onresize = setTreeMaxHeight;
+
+    $("#warning-modal button").addEventListener("click", () => $("#warning-modal").classList.remove("is-active"));
 }

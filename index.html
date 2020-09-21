@@ -226,6 +226,18 @@
             </div>
         </section>
 
+        <div class="modal" id="warning-modal">
+            <div class="modal-background"></div>
+            <div class="modal-content is-medium">
+                <div class="box has-text-centered">
+                    <h2 class="subtitle"></h2>
+                    <p></p>
+                    <br>
+                    <button class="button is-small is-link">Okay</button>
+                </div>
+            </div>
+        </div>
+
         <div class="modal" id="delete-modal">
             <div class="modal-background" onclick="hideDeleteModal()"></div>
             <div class="modal-content is-medium">
@@ -235,18 +247,6 @@
                     <br>
                     <button class="button is-danger is-small" onclick="deleteElement()">Remove</button>
                     <button class="button is-small" onclick="hideDeleteModal()">Cancel</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal" id="oid-used-modal">
-            <div class="modal-background" onclick="hideOIDUsedModal()"></div>
-            <div class="modal-content is-medium">
-                <div class="box has-text-centered">
-                    <h2 class="subtitle">OID not changed</h2>
-                    <p>The entered OID is already in use.</p>
-                    <br>
-                    <button class="button is-small is-link" onclick="hideOIDUsedModal()">Okay</button>
                 </div>
             </div>
         </div>

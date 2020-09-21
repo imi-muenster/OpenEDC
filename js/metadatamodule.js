@@ -504,7 +504,7 @@ window.saveElement = function() {
             if (metadataHelper.setElementOID(currentElementID.studyEvent, $("#oid-input").value, currentElementType)) {
                 currentElementID.studyEvent = $("#oid-input").value;
             } else {
-                showOIDUsedModal();
+                ioHelper.showWarning("OID not changed", "The entered OID is already in use.");
             }
             metadataHelper.setElementName(currentElementID.studyEvent, $("#name-input").value);
             metadataHelper.setElementDescription(currentElementID.studyEvent, $("#question-textarea").value, locale);
@@ -515,7 +515,7 @@ window.saveElement = function() {
             if (metadataHelper.setElementOID(currentElementID.form, $("#oid-input").value, currentElementType)) {
                 currentElementID.form = $("#oid-input").value;
             } else {
-                showOIDUsedModal();
+                ioHelper.showWarning("OID not changed", "The entered OID is already in use.");
             }
             metadataHelper.setElementName(currentElementID.form, $("#name-input").value);
             metadataHelper.setElementDescription(currentElementID.form, $("#question-textarea").value, locale);
@@ -526,7 +526,7 @@ window.saveElement = function() {
             if (metadataHelper.setElementOID(currentElementID.itemGroup, $("#oid-input").value, currentElementType)) {
                 currentElementID.itemGroup = $("#oid-input").value;
             } else {
-                showOIDUsedModal();
+                ioHelper.showWarning("OID not changed", "The entered OID is already in use.");
             }
             metadataHelper.setElementName(currentElementID.itemGroup, $("#name-input").value);
             metadataHelper.setElementDescription(currentElementID.itemGroup, $("#question-textarea").value, locale);
@@ -537,7 +537,7 @@ window.saveElement = function() {
             if (metadataHelper.setElementOID(currentElementID.item, $("#oid-input").value, currentElementType)) {
                 currentElementID.item = $("#oid-input").value;
             } else {
-                showOIDUsedModal();
+                ioHelper.showWarning("OID not changed", "The entered OID is already in use.");
             }
             metadataHelper.setElementName(currentElementID.item, $("#name-input").value);
             metadataHelper.setItemQuestion(currentElementID.item, $("#question-textarea").value, locale);
@@ -549,7 +549,7 @@ window.saveElement = function() {
             if (metadataHelper.setElementOID(currentElementID.codeList, $("#oid-input").value, currentElementType)) {
                 currentElementID.codeList = $("#oid-input").value;
             } else {
-                showOIDUsedModal();
+                ioHelper.showWarning("OID not changed", "The entered OID is already in use.");
             }
             metadataHelper.setCodeListItemDecodedText(currentElementID.codeList, currentElementID.codeListItem, $("#question-textarea").value, locale);
             metadataHelper.setCodeListItemCodedValue(currentElementID.codeList, currentElementID.codeListItem, $("#name-input").value);
@@ -1124,16 +1124,6 @@ window.showDeleteModal = function() {
 
 window.hideDeleteModal = function() {
     $("#delete-modal").classList.remove("is-active");
-    setArrowKeyListener();
-}
-
-window.showOIDUsedModal = function() {
-    removeArrowKeyListener();
-    $("#oid-used-modal").classList.add("is-active");
-}
-
-window.hideOIDUsedModal = function() {
-    $("#oid-used-modal").classList.remove("is-active");
     setArrowKeyListener();
 }
 

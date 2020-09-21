@@ -42,3 +42,10 @@ export function setLanguage(newLocale) {
 function setIOListeners() {
     
 }
+
+window.addSubject = function() {
+    if ($("#add-subject-input").value.length == 0) {
+        ioHelper.showWarning("Enter Subject ID", "Please enter an identifier for the subject first.");
+        return;
+    }
+}
