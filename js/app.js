@@ -46,11 +46,15 @@ const setTitles = () => {
 window.showMetadata = function() {
     metadataModule.show();
     clinicaldataModule.hide();
+
+    hideMenu();
 }
 
 window.showClinicaldata = function() {
     metadataModule.hide();
     clinicaldataModule.show();
+
+    hideMenu();
 }
 
 window.newProject = function() {
@@ -98,6 +102,8 @@ window.showProjectModal = function() {
     $("#study-name-input").value = odmHelper.getStudyName();
     $("#study-description-textarea").value = odmHelper.getStudyDescription();
     $("#protocol-name-input").value = odmHelper.getStudyName();
+
+    hideMenu();
 }
 
 window.hideProjectModal = function() {
@@ -108,6 +114,8 @@ window.hideProjectModal = function() {
 window.showAboutModal = function() {
     metadataModule.removeArrowKeyListener();
     $("#about-modal").classList.add("is-active");
+
+    hideMenu();
 }
 
 window.hideAboutModal = function() {
