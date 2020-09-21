@@ -92,7 +92,12 @@
                     </div>
                     <div class="buttons is-pulled-right is-hidden-mobile">
                         <button class="button" id="duplicate-button" onclick="showDuplicateModal()" disabled>Duplicate</button>
-                        <button class="button" id="more-button" onclick="showMoreModal()" disabled>More</button>
+                        <button class="button" id="more-button" onclick="showMoreModal()" disabled>
+                            <span class="icon is-small">
+                                <i class="fas fa-wrench"></i>
+                            </span>
+                            <span>More</span>
+                        </button>
                     </div>
                 </div>
                 <div class="column is-one-fifth is-hidden-tablet">
@@ -100,14 +105,19 @@
                         <button class="button is-link" id="save-button-mobile" onclick="saveElement()" disabled>Save Changes</button>
                         <button class="button is-danger" id="delete-button-mobile" onclick="showDeleteModal()" disabled>Remove</button>
                         <button class="button" id="duplicate-button-mobile" onclick="showDuplicateModal()" disabled>Duplicate</button>
-                        <button class="button" id="more-button-mobile" onclick="showMoreModal()" disabled>More</button>
+                        <button class="button" id="more-button-mobile" onclick="showMoreModal()" disabled>
+                            <span class="icon is-small">
+                                <i class="fas fa-wrench"></i>
+                            </span>
+                            <span>More</span>
+                        </button>
                     </div>
                 </div>
             </div>
             <hr>
-            <div class="columns" id="tree-columns">
-                <div class="column is-one-fifth tree-column">
-                    <nav class="panel" id="study-events-panel">
+            <div class="columns">
+                <div class="column is-one-fifth">
+                    <nav class="panel">
                         <p class="panel-heading has-text-centered" element-type="studyevent" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Events</p>
                         <div class="tree-panel-blocks" id="study-event-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                         </div>
@@ -116,8 +126,8 @@
                         </div>
                     </nav>
                 </div>
-                <div class="column is-one-fifth tree-column">
-                    <nav class="panel" id="forms-panel">
+                <div class="column is-one-fifth">
+                    <nav class="panel">
                             <p class="panel-heading has-text-centered" element-type="form" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Forms</p>
                             <div class="tree-panel-blocks" id="form-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                             </div>
@@ -126,8 +136,8 @@
                             </div>
                         </nav>
                 </div>
-                <div class="column is-one-fifth tree-column">
-                    <nav class="panel" id="item-groups-panel">
+                <div class="column is-one-fifth">
+                    <nav class="panel">
                             <p class="panel-heading has-text-centered" element-type="itemgroup" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Groups</p>
                             <div class="tree-panel-blocks" id="item-group-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                             </div>
@@ -136,8 +146,8 @@
                             </div>
                         </nav>
                 </div>
-                <div class="column is-one-fifth tree-column">
-                    <nav class="panel" id="items-panel">
+                <div class="column is-one-fifth">
+                    <nav class="panel">
                             <p class="panel-heading has-text-centered" element-type="item" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Items</p>
                             <div class="tree-panel-blocks" id="item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                             </div>
@@ -146,8 +156,8 @@
                             </div>
                         </nav>
                 </div>
-                <div class="column is-one-fifth tree-column">
-                    <nav class="panel" id="code-list-items-panel">
+                <div class="column is-one-fifth">
+                    <nav class="panel">
                             <p class="panel-heading has-text-centered" element-type="codelistitem" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Choices</p>
                             <div class="tree-panel-blocks" id="code-list-item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                             </div>
@@ -160,7 +170,60 @@
         </section>
 
         <section class="section is-hidden" id="clinicaldata-section">
-            Test
+            <div class="columns">
+                <div class="column is-one-fifth">
+                    <nav class="panel">
+                        <p class="panel-heading has-text-centered">Subjects</p>
+                        <div class="panel-block" id="search-subject-input">
+                            <div class="control has-icons-left">
+                                <input class="input" type="text" placeholder="Search">
+                                <span class="icon is-left">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="tree-panel-blocks" id="subject-panel-blocks">
+                            <div class="panel-block has-text-centered has-text-grey-light" id="no-subjects-warning">
+                                <p>No subjects available. Please add a new subject with the button below.</p>
+                            </div>
+                        </div>
+                        <div class="panel-block panel-block-add" id="subject-add-button">
+                            <div class="field is-grouped is-fullwidth">
+                                <div class="control is-expanded has-icons-left">
+                                    <span class="icon is-left">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                    <input class="input" type="text" placeholder="New subject">
+                                </div>
+                                <div class="control">
+                                    <button class="button is-link">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+                <div class="column is-one-fifth">
+                    <nav class="panel">
+                        <p class="panel-heading has-text-centered">Events</p>
+                        <div class="tree-panel-blocks" id="clinical-data-study-event-panel-blocks">
+                        </div>
+                    </nav>
+                </div>
+                <div class="column is-one-fifth">
+                    <nav class="panel">
+                        <p class="panel-heading has-text-centered">Forms</p>
+                        <div class="tree-panel-blocks" id="clinical-data-forms-panel-blocks">
+                        </div>
+                    </nav>
+                </div>
+                <div class="column is-two-fifths">
+                    <nav class="panel">
+                        <p class="panel-heading has-text-centered">Data</p>
+                        <div class="tree-panel-blocks" id="clinical-data-study-event-panel-blocks">
+                        </div>
+                    </nav>
+                </div>
+            </div>
         </section>
 
         <div class="modal" id="delete-modal">
