@@ -14,12 +14,19 @@ export const elementTypes = {
     CODELISTITEM: "codelistitem"
 }
 
-export function init() {
+export function loadEmptyProject() {
     odm = odmTemplates.getODMTemplate();
 }
 
 export function parseODM(odmXMLString) {
     odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
+}
+
+export async function loadExample() {
+    let exampleResponse = await fetch(ioHelper.getBaseURL() + "/odm/example.xml");
+    let exampleODM = await exampleResponse.text();
+
+    odm = new DOMParser().parseFromString(exampleODM, "text/xml");
 }
 
 export function getSerializedODM() {
@@ -42,13 +49,6 @@ export async function getFormAsHTML(formOID, locale) {
     xsltProcessor.setParameter(null, "formOID", formOID);
     xsltProcessor.setParameter(null, "locale", locale);
     return xsltProcessor.transformToFragment(domParser.parseFromString(prettifiedODM, "text/xml"), document);
-}
-
-export async function loadExample() {
-    let exampleResponse = await fetch(ioHelper.getBaseURL() + "/odm/example.xml");
-    let exampleODM = await exampleResponse.text();
-
-    odm = new DOMParser().parseFromString(exampleODM, "text/xml");
 }
 
 export function getStudyName() {

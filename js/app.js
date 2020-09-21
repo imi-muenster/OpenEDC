@@ -10,7 +10,6 @@ const $$ = query => document.querySelectorAll(query);
 let locale = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    init();
     ioHelper.setTreeMaxHeight();
     ioHelper.setIOListeners();
 });
@@ -22,17 +21,27 @@ document.addEventListener("LanguageChanged", languageEvent => {
     metadataModule.reloadTree();
     metadataModule.reloadDetailsPanel();
 
+    clinicaldataModule.setLanguage(locale);
+
     hideMenu();
 });
 
-const init = () => {
+const startApp = () => {
     languageHelper.init();
+    languageHelper.populatePresentLanguages(odmHelper.getODM());
     languageHelper.createLanguageSelect();
+    languageHelper.internationalize();
     locale = languageHelper.getCurrentLocale();
-
-    odmHelper.init();
+    
     metadataModule.init();
+    metadataModule.setLanguage(locale);
+    metadataModule.loadStudyEvents();
+
     clinicaldataModule.init();
+    clinicaldataModule.setLanguage(locale);
+
+    setTitles();
+    hideStartModal();
 }
 
 const setTitles = () => {
@@ -51,10 +60,8 @@ window.showClinicaldata = function() {
 }
 
 window.newProject = function() {
-    init();
-    setTitles();
-    metadataModule.loadStudyEvents();
-    hideStartModal();
+    odmHelper.loadEmptyProject();
+    startApp();
 }
 
 window.uploadODM = async function() {
@@ -62,34 +69,14 @@ window.uploadODM = async function() {
     let content = await ioHelper.getFileContent(file.files[0]);
 
     if (content) {
-        init();
         odmHelper.parseODM(content);
-        setTitles();
-    
-        languageHelper.populatePresentLanguages(odmHelper.getODM());
-        languageHelper.createLanguageSelect();
-        languageHelper.internationalize();
-        locale = languageHelper.getCurrentLocale();
-
-        metadataModule.loadStudyEvents();
-
-        hideStartModal();
+        startApp();
     }
 }
 
 window.loadExample = async function() {
-    init();
     await odmHelper.loadExample();
-    setTitles();
-
-    languageHelper.populatePresentLanguages(odmHelper.getODM());
-    languageHelper.createLanguageSelect();
-    languageHelper.internationalize();
-    locale = languageHelper.getCurrentLocale();
-
-    metadataModule.loadStudyEvents();
-
-    hideStartModal();
+    startApp();
 }
 
 window.saveProjectModal = function() {
