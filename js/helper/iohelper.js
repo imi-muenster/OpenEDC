@@ -81,6 +81,7 @@ export function showWarning(title, message) {
 
 // IO listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
 // TODO: In the entire project, align onclick vs. addEventListener("click"), arrowfunctions, etc.
+// TODO: Also: oninput/onclick in html file vs. in js file
 export function setIOListeners() {
     // TODO: This style everywhere or onclick here
     $(".navbar-burger").addEventListener("click", () => {

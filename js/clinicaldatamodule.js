@@ -50,6 +50,24 @@ function createSortTypeSelect() {
 
 function setIOListeners() {
     $("#sort-subject-select-inner").oninput = loadSubjectKeys;
+    $("#add-subject-input").onkeydown = keyEvent => {
+        if (keyEvent.code == "Enter" && !keyEvent.shiftKey) {
+            keyEvent.preventDefault();
+            addSubject();
+        }
+    };
+    $("#search-subject-input").oninput = inputEvent => filterSubjects(inputEvent.target.value);
+}
+
+function filterSubjects(searchString) {
+    searchString = searchString.toUpperCase();
+    for (let subject of document.querySelectorAll("#subject-panel-blocks a")) {
+        if (subject.textContent.toUpperCase().includes(searchString)) {
+            subject.classList.remove("is-hidden");
+        } else {
+            subject.classList.add("is-hidden");
+        }
+    }
 }
 
 window.addSubject = function() {

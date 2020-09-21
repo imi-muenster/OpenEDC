@@ -45,6 +45,7 @@ const setTitles = () => {
 
 window.showMetadata = function() {
     metadataModule.show();
+    metadataModule.setArrowKeyListener();
     clinicaldataModule.hide();
 
     hideMenu();
@@ -52,6 +53,7 @@ window.showMetadata = function() {
 
 window.showClinicaldata = function() {
     metadataModule.hide();
+    metadataModule.removeArrowKeyListener();
     clinicaldataModule.show();
 
     hideMenu();
