@@ -6,6 +6,10 @@ export function removeElements(elements) {
     }
 }
 
+export function safeRemoveElement(element) {
+    if (element != null) element.remove();
+}
+
 export function removeIsActiveFromElements(elements) {
     for (let element of elements) {
         element.classList.remove("is-active");
@@ -89,6 +93,7 @@ export function showWarning(title, message) {
 // TODO: In the entire project, align onclick vs. addEventListener("click"), arrowfunctions, etc.
 // TODO: Also: oninput/onclick in html file vs. in js file
 // TODO: In a loop, there is no need to create a variable with the array first
+// TODO: Sort the .css file
 export function setIOListeners() {
     // TODO: This style everywhere or onclick here
     $(".navbar-burger").addEventListener("click", () => {

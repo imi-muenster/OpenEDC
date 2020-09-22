@@ -37,7 +37,6 @@
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="buttons">
-                            <button class="button" id="preview-button" onclick="showPreviewModal()" disabled>Preview Form</button>
                             <button class="button" onclick="showProjectModal()">Project Options</button>
                             <button class="button is-link is-light" id="clinicaldata-toggle-button" onclick="showClinicaldata()">
                                 <span class="icon">
@@ -228,7 +227,19 @@
                 <div class="column is-two-fifths">
                     <nav class="panel">
                         <p class="panel-heading has-text-centered">Data</p>
-                        <div class="tree-panel-blocks" id="clinicaldata-form-data">
+                        <div class="is-hidden" id="clinicaldata-form-data">
+                            <h1 class="title" id="clinicaldata-form-title"></h1>
+                            <hr>
+                            <div id="clinicaldata-content"></div>
+                            <button class="button" id="clinicaldata-close-button" onclick="" internationalization="Close">Close</button>
+                            <div class="field has-addons is-pulled-right">
+                                <div class="control">
+                                    <button class="button" id="clinicaldata-previous-button" onclick="" internationalization="Back">Back</button>
+                                </div>
+                                <div class="control">
+                                    <button class="button is-link" id="clinicaldata-next-button" onclick="" internationalization="Continue">Continue</button>
+                                </div>
+                            </div>
                         </div>
                     </nav>
                 </div>
@@ -460,35 +471,6 @@
                             <br><br>
                             <div class="buttons">
                                 <button class="button" onclick="hideAboutModal()">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal" id="preview-modal">
-            <div class="modal-background" onclick="hidePreviewModal()"></div>
-            <div class="modal-content is-large">
-                <div class="box">
-                    <div class="columns is-centered">
-                        <div class="column is-two-thirds" id="preview-column">
-                            <button id="preview-fs-button" class="button is-rounded is-small is-white has-text-grey-light is-pulled-right" onclick="togglePreviewFS()">
-                                <span class="icon">
-                                    <i class="fas fa-expand"></i>
-                                </span>
-                            </button>
-                            <h1 class="title" id="preview-form-title"></h1>
-                            <hr>
-                            <div id="preview-content"></div>
-                            <button class="button" id="preview-close-button" onclick="hidePreviewModal()" internationalization="Close">Close</button>
-                            <div class="field has-addons is-pulled-right">
-                                <div class="control">
-                                    <button class="button" id="preview-previous-button" onclick="loadPreviousFormPreview()" internationalization="Back">Back</button>
-                                </div>
-                                <div class="control">
-                                    <button class="button is-link" id="preview-next-button" onclick="loadNextFormPreview()" internationalization="Continue">Continue</button>
-                                </div>
                             </div>
                         </div>
                     </div>

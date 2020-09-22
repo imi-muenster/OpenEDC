@@ -31,6 +31,9 @@ export function show() {
 
     $("#clinicaldata-section").classList.remove("is-hidden");
     $("#clinicaldata-toggle-button").classList.add("is-hidden");
+
+    ioHelper.safeRemoveElement($("#odm-html-content"));
+    $("#clinicaldata-form-data").classList.add("is-hidden");
 }
 
 export function hide() {
@@ -90,7 +93,7 @@ export function loadSubjectKeys() {
 export function loadStudyEvents() {
     ioHelper.removeElements($$("#clinicaldata-study-event-panel-blocks a"));
     ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
-    
+
     for (let studyEventDef of metadataHelper.getStudyEvents()) {
         let translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         let panelBlock = htmlElements.getPanelBlock(false, studyEventDef.getAttribute("OID"), metadataHelper.elementTypes.STUDYEVENT, translatedText, studyEventDef.getAttribute("Name"));
@@ -105,6 +108,9 @@ function studyEventClicked(event) {
 
     currentElementID.studyEvent = event.target.getAttribute("oid");
     loadFormsByStudyEvent(currentElementID.studyEvent);
+
+    ioHelper.safeRemoveElement($("#odm-html-content"));
+    $("#clinicaldata-form-data").classList.add("is-hidden");
 }
 
 function loadFormsByStudyEvent(studyEventOID) {
@@ -118,9 +124,73 @@ function loadFormsByStudyEvent(studyEventOID) {
     }
 }
 
-function formClicked(event) {
+async function formClicked(event) {
     ioHelper.removeIsActiveFromElements($$("#clinicaldata-form-panel-blocks a"));
     event.target.classList.add("is-active");
 
     currentElementID.form = event.target.getAttribute("oid");
+    await loadClinicaldataMetadata(currentElementID.form);
+    $("#clinicaldata-form-data").classList.remove("is-hidden");
+}
+
+async function loadClinicaldataMetadata(formOID) {
+    let translatedText = metadataHelper.getElementDefByOID(formOID).querySelector(`Description TranslatedText[*|lang="${locale}"]`);
+    if (translatedText) {
+        $("#clinicaldata-form-title").textContent = translatedText.textContent;
+    } else {
+        $("#clinicaldata-form-title").textContent = metadataHelper.getStudyName();
+    }
+
+    let form = await metadataHelper.getFormAsHTML(formOID, locale);
+    ioHelper.safeRemoveElement($("#odm-html-content"));
+    $("#clinicaldata-content").appendChild(form);
+
+    conditionHelper.process(metadataHelper.getItemOIDSWithConditionByForm(formOID));
+
+    getNextFormOID(formOID) == null ? $("#clinicaldata-next-button").disabled = true : $("#clinicaldata-next-button").disabled = false;
+    getPreviousFormOID(formOID) == null ? $("#clinicaldata-previous-button").disabled = true : $("#clinicaldata-previous-button").disabled = false;
+
+    $("#clinicaldata-form-title").scrollIntoView({block: "end", behavior: "smooth"});
+}
+
+window.loadNextClinicaldataMetadata = async function() {
+    let nextFormOID = getNextFormOID($("#preview-modal").getAttribute("preview-form-oid"));
+
+    if (nextFormOID != null) {
+        $("#preview-next-button").classList.add("is-loading");
+        await loadFormPreview(nextFormOID);
+        $("#preview-next-button").classList.remove("is-loading");
+    }
+}
+
+window.loadPreviousClinicaldataMetadata = async function() {
+    let previousFormOID = getPreviousFormOID($("#preview-modal").getAttribute("preview-form-oid"));
+
+    if (previousFormOID != null) {
+        $("#preview-previous-button").classList.add("is-loading");
+        await loadFormPreview(previousFormOID);
+        $("#preview-previous-button").classList.remove("is-loading");
+    }
+}
+
+function getNextFormOID(previousFormOID) {
+    let formDefs = metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent);
+
+    let nextFormOID = null;
+    for (let i = 0; i < formDefs.length-1; i++) {
+        if (formDefs[i].getAttribute("OID") == previousFormOID) nextFormOID = formDefs[i+1].getAttribute("OID");
+    }
+
+    return nextFormOID;
+}
+
+function getPreviousFormOID(nextFormOID) {
+    let formDefs = metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent);
+
+    let previousFormOID = null;
+    for (let i = 1; i < formDefs.length; i++) {
+        if (formDefs[i].getAttribute("OID") == nextFormOID) previousFormOID = formDefs[i-1].getAttribute("OID");
+    }
+
+    return previousFormOID;
 }

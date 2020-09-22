@@ -46,12 +46,6 @@ export function setLanguage(newLocale) {
     locale = newLocale;
 }
 
-function safeRemoveElement(element) {
-    if (element != null) {
-        element.remove();
-    }
-}
-
 function createPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue) {
     let panelBlock = htmlElements.getPanelBlock(true, elementOID, elementType, displayText, fallbackText, codedValue);
 
@@ -332,7 +326,6 @@ function fillDetailsPanel(elementOID, elementType) {
     $("#mandatory-select-inner").disabled = false;
     $("#delete-button").disabled = false;
     $("#delete-button-mobile").disabled = false;
-    $("#preview-button").disabled = false;
     $("#duplicate-button").disabled = false;
     $("#duplicate-button-mobile").disabled = false;
     $("#more-button").disabled = false;
@@ -354,7 +347,6 @@ function fillDetailsPanel(elementOID, elementType) {
     let translatedText = null;
     switch(elementType) {
         case metadataHelper.elementTypes.STUDYEVENT:
-            $("#preview-button").disabled = true;
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             translatedText = element.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
             break;
@@ -471,7 +463,6 @@ function resetDetailsPanel() {
     $("#save-button-mobile").disabled = true;
     $("#delete-button").disabled = true;
     $("#delete-button-mobile").disabled = true;
-    $("#preview-button").disabled = true;
     $("#duplicate-button").disabled = true;
     $("#duplicate-button-mobile").disabled = true;
     $("#more-button").disabled = true;
@@ -1152,93 +1143,7 @@ window.hideMoreModal = function() {
     setArrowKeyListener();
 }
 
-window.showPreviewModal = async function() {
-    removeArrowKeyListener();
-    $("#preview-modal").classList.add("is-active");
-
-    $("#preview-next-button").classList.add("is-loading");
-    await loadFormPreview(currentElementID.form);
-    $("#preview-next-button").classList.remove("is-loading");
-}
-
-async function loadFormPreview(formOID) {
-    $("#preview-modal").setAttribute("preview-form-oid", formOID);
-
-    let translatedText = metadataHelper.getElementDefByOID(formOID).querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-    if (translatedText) {
-        $("#preview-form-title").textContent = translatedText.textContent;
-    } else {
-        $("#preview-form-title").textContent = metadataHelper.getStudyName();
-    }
-
-    let form = await metadataHelper.getFormAsHTML(formOID, locale);
-    safeRemoveElement($("#odm-html-content"));
-    $("#preview-content").appendChild(form);
-
-    conditionHelper.process(metadataHelper.getItemOIDSWithConditionByForm(formOID));
-
-    getNextFormOID(formOID) == null ? $("#preview-next-button").disabled = true : $("#preview-next-button").disabled = false;
-    getPreviousFormOID(formOID) == null ? $("#preview-previous-button").disabled = true : $("#preview-previous-button").disabled = false;
-
-    $("#preview-form-title").scrollIntoView({block: "end", behavior: "smooth"});
-}
-
-window.loadNextFormPreview = async function() {
-    let nextFormOID = getNextFormOID($("#preview-modal").getAttribute("preview-form-oid"));
-
-    if (nextFormOID != null) {
-        $("#preview-next-button").classList.add("is-loading");
-        await loadFormPreview(nextFormOID);
-        $("#preview-next-button").classList.remove("is-loading");
-    }
-}
-
-window.loadPreviousFormPreview = async function() {
-    let previousFormOID = getPreviousFormOID($("#preview-modal").getAttribute("preview-form-oid"));
-
-    if (previousFormOID != null) {
-        $("#preview-previous-button").classList.add("is-loading");
-        await loadFormPreview(previousFormOID);
-        $("#preview-previous-button").classList.remove("is-loading");
-    }
-}
-
-function getNextFormOID(previousFormOID) {
-    let formDefs = metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent);
-
-    let nextFormOID = null;
-    for (let i = 0; i < formDefs.length-1; i++) {
-        if (formDefs[i].getAttribute("OID") == previousFormOID) {
-            nextFormOID = formDefs[i+1].getAttribute("OID");
-        }
-    }
-
-    return nextFormOID;
-}
-
-function getPreviousFormOID(nextFormOID) {
-    let formDefs = metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent);
-
-    let previousFormOID = null;
-    for (let i = 1; i < formDefs.length; i++) {
-        if (formDefs[i].getAttribute("OID") == nextFormOID) {
-            previousFormOID = formDefs[i-1].getAttribute("OID");
-        }
-    }
-
-    return previousFormOID;
-}
-
-window.hidePreviewModal = function() {
-    $("#preview-modal").classList.remove("is-active");
-    $("html").classList.remove("no-scroll");
-    $("#preview-modal .modal-content").classList.remove("is-fullscreen");
-    $("#preview-modal .modal-content").classList.add("is-large");
-    $("#preview-fs-button").classList.remove("is-hidden");
-    safeRemoveElement($("#odm-html-content"));
-    setArrowKeyListener();
-}
-
+// TODO: Remove but add similar logic to modals on mobile
 window.togglePreviewFS = function() {
     $("html").classList.toggle("no-scroll");
     $("#preview-modal .modal-content").classList.toggle("is-large");

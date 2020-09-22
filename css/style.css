@@ -15,6 +15,10 @@ html.no-scroll {
     padding-bottom: 14px;
 }
 
+#clinicaldata-form-data {
+    padding: 20px;
+}
+
 #study-title {
     font-weight: 500;
 }

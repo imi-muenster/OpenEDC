@@ -1,6 +1,7 @@
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
+// TODO: Rename preview ... to metadata
 export function process(itemsWithCondition) {
     for (let itemWithCondition of itemsWithCondition) {
         let conditionalItem = itemWithCondition.itemOID;
