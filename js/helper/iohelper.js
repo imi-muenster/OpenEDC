@@ -56,15 +56,20 @@ export function prettifyContent(content) {
     return formatted.substring(1, formatted.length-3);
 }
 
-// StopRepeat used to overcome Firefox caveat
 export function setTreeMaxHeight() {
     const offset = 30;
     const minHeight = 350;
     const windowHeight = window.innerHeight;
+    const windowWidth = window.innerWidth;
 
     for (let treePanelBlock of document.querySelectorAll(".tree-panel-blocks")) {
+        if (windowWidth < 1024) {
+            treePanelBlock.style.maxHeight = null;
+            continue;
+        };
+
         let panelTop = treePanelBlock.getBoundingClientRect().top;
-        
+
         let addButtonHeight = 0;
         if (treePanelBlock.nextElementSibling) addButtonHeight = treePanelBlock.nextElementSibling.getBoundingClientRect().height;
 
