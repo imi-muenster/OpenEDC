@@ -8,7 +8,7 @@ const $ = query => document.querySelector(query);
 
 document.addEventListener("DOMContentLoaded", async () => {
     ioHelper.setTreeMaxHeight();
-    ioHelper.setIOListeners();
+    setIOListeners();
 });
 
 document.addEventListener("LanguageChanged", languageEvent => {
@@ -136,5 +136,23 @@ window.downloadODM = function() {
 const hideMenu = () => {
     $(".navbar-menu").classList.remove("is-active");
     $(".navbar-burger").classList.remove("is-active");
-    $("#language-dropdown").classList.add("is-hidden-mobile");
+    $("#language-dropdown").classList.add("is-hidden-touch");
+}
+
+// IO/Event listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
+// TODO: In the entire project, align onclick vs. addEventListener("click"), arrowfunctions, etc.
+// TODO: Also: oninput/onclick in html file vs. in js file
+// TODO: In a loop, there is no need to create a variable with the array first
+// TODO: Sort the .css file
+// TODO: Refactor metadatamodule to remove "[studyEvent]clicked" functions. Set currentElementOID and is-active in the, e.g., loadFormsByStudyEvent as well and also refactor arrowKeyListener etc.
+export function setIOListeners() {
+    $("body").onresize = ioHelper.setTreeMaxHeight;
+    // TODO: This style everywhere or onclick here
+    $(".navbar-burger").addEventListener("click", () => {
+        $(".navbar-menu").classList.toggle("is-active");
+        $(".navbar-burger").classList.toggle("is-active");
+        $("#language-dropdown").classList.add("is-hidden-touch");
+    });
+    $("#current-language").addEventListener("click", () => $("#language-dropdown").classList.toggle("is-hidden-touch"));
+    $("#warning-modal button").addEventListener("click", () => $("#warning-modal").classList.remove("is-active"));
 }

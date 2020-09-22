@@ -6,6 +6,10 @@ html.no-scroll {
     overflow-y: hidden;
 }
 
+.navbar-burger:hover {
+    background-color: transparent;
+}
+
 .section {
     padding: 30px 20px 0px 20px;
 }
