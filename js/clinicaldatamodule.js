@@ -49,7 +49,10 @@ function createSortTypeSelect() {
 }
 
 function setIOListeners() {
-    $("#sort-subject-select-inner").oninput = loadSubjectKeys;
+    $("#sort-subject-select-inner").oninput = inputEvent => {
+        inputEvent.target.blur();
+        loadSubjectKeys;
+    };
     $("#add-subject-input").onkeydown = keyEvent => {
         if (keyEvent.code == "Enter" && !keyEvent.shiftKey) {
             keyEvent.preventDefault();
