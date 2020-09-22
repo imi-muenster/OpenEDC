@@ -73,7 +73,7 @@ export function loadSubject(subjectKey) {
     console.log(subjectData);
 }
 
-function storeSubject() {
+export function storeSubject() {
     if (!subject) return;
     const fileName = subjectToFilename(subject);
     localStorage.setItem(fileName, getSerializedSubjectData());
