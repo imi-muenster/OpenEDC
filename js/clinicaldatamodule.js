@@ -50,8 +50,8 @@ function createSortTypeSelect() {
 
 function setIOListeners() {
     $("#sort-subject-select-inner").oninput = inputEvent => {
+        loadSubjectKeys();
         inputEvent.target.blur();
-        loadSubjectKeys;
     };
     $("#add-subject-input").onkeydown = keyEvent => {
         if (keyEvent.code == "Enter" && !keyEvent.shiftKey) {
