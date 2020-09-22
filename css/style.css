@@ -10,7 +10,7 @@ html.no-scroll {
     padding: 30px 20px 0px 20px;
 }
 
-#clinicaldata-section .panel-block[oid] {
+#clinicaldata-section a.panel-block {
     padding-top: 14px;
     padding-bottom: 14px;
 }
@@ -66,7 +66,7 @@ hr {
     min-height: 100%;
 }
 
-.modal-content.is-fullscreen>.box {
+.modal-content.is-fullscreen .box {
     border-radius: 0;
     min-width: 100%;
     min-height: 100%;
