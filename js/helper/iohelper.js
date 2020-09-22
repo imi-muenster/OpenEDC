@@ -57,28 +57,20 @@ export function prettifyContent(content) {
 }
 
 // StopRepeat used to overcome Firefox caveat
-export function setTreeMaxHeight(stopRepeat) {
+export function setTreeMaxHeight() {
     const offset = 30;
-    const minHeight = 250;
+    const minHeight = 350;
+    const windowHeight = window.innerHeight;
 
-    let windowHeight = window.innerHeight;
-    let panelHeadingBottom = document.querySelector(".panel-heading").getBoundingClientRect().bottom;
-    let addButtonHeight = document.querySelector("#study-events-add-button").getBoundingClientRect().height;
-    let remainingSpace = windowHeight - panelHeadingBottom - addButtonHeight - offset;
+    for (let treePanelBlock of document.querySelectorAll(".tree-panel-blocks")) {
+        let panelTop = treePanelBlock.getBoundingClientRect().top;
+        
+        let addButtonHeight = 0;
+        if (treePanelBlock.nextElementSibling) addButtonHeight = treePanelBlock.nextElementSibling.getBoundingClientRect().height;
 
-    if (remainingSpace < 0 && !stopRepeat) {
-        setTimeout(
-            function() {
-              setTreeMaxHeight(true);
-        }, 1000);
-    }
+        let remainingSpace = windowHeight - panelTop - addButtonHeight - offset;
+        if (remainingSpace < minHeight) remainingSpace = minHeight;
 
-    if (remainingSpace < minHeight) {
-        remainingSpace = minHeight;
-    }
-
-    let treePanelBlocks = document.querySelectorAll(".tree-panel-blocks");
-    for (let treePanelBlock of treePanelBlocks) {
         treePanelBlock.style.maxHeight = `${remainingSpace}px`;
     }
 }

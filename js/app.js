@@ -47,6 +47,7 @@ window.showMetadata = function() {
     metadataModule.show();
     metadataModule.setArrowKeyListener();
     clinicaldataModule.hide();
+    ioHelper.setTreeMaxHeight();
 
     hideMenu();
 }
@@ -55,6 +56,7 @@ window.showClinicaldata = function() {
     metadataModule.hide();
     metadataModule.removeArrowKeyListener();
     clinicaldataModule.show();
+    ioHelper.setTreeMaxHeight();
 
     hideMenu();
 }
