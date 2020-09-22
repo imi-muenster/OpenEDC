@@ -133,6 +133,11 @@ window.downloadODM = function() {
     ioHelper.download(metadataHelper.getStudyName()+".xml", metadataHelper.getSerializedODM());
 }
 
+window.removeData = function() {
+    localStorage.clear();
+    location.reload();
+}
+
 const hideMenu = () => {
     $(".navbar-menu").classList.remove("is-active");
     $(".navbar-burger").classList.remove("is-active");

@@ -23,6 +23,8 @@ export function init() {
 
     createSortTypeSelect();
     setIOListeners();
+
+    clinicaldataHelper.loadSubjects();
 }
 
 export function show() {
@@ -84,12 +86,16 @@ export function loadSubjectKeys() {
     if (clinicaldataHelper.getSubjectKeys().length > 0) $("#no-subjects-hint").classList.add("is-hidden");
     for (let subjectKey of clinicaldataHelper.getSubjectKeys($("#sort-subject-select-inner").value)) {
         let panelBlock = htmlElements.getPanelBlock(false, subjectKey, "", subjectKey);
-        // panelBlock.onclick = subjectClicked;
+        panelBlock.onclick = () => loadSubjectData(subjectKey);
         $("#subject-panel-blocks").appendChild(panelBlock);
     }
 }
 
-export function loadStudyEvents() {
+function loadSubjectData(subjectKey) {
+    clinicaldataHelper.loadSubject(subjectKey);
+}
+
+function loadStudyEvents() {
     ioHelper.removeElements($$("#clinicaldata-study-event-panel-blocks a"));
     ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
 

@@ -17,7 +17,22 @@ export const sortTypes = {
 }
 
 let subjects = [];
+let subject = null;
 let subjectData = null;
+
+function parseSubjectData(xmlString) {
+    return new DOMParser().parseFromString(xmlString, "text/xml");
+}
+
+function getSerializedSubjectData() {
+    return new XMLSerializer().serializeToString(subjectData);
+}
+
+export function loadSubjects() {
+    for (let fileName of Object.keys(localStorage)) {
+        if (fileName.split("_").length > 1) subjects.push(fileNameToSubject(fileName));
+    }
+}
 
 export function addSubject(subjectKey) {
     if (subjectKey.length == 0) {
@@ -30,8 +45,10 @@ export function addSubject(subjectKey) {
         return;
     }
 
+    storeSubject();
     subjectData = clinicaldataTemplates.getSubjectData(subjectKey);
-    subjects.push(new Subject(subjectKey, new Date()));
+    subject = new Subject(subjectKey, new Date());
+    subjects.push(subject);
 }
 
 export function getSubjectKeys(sortOrder) {
@@ -47,4 +64,25 @@ function sortSubjects(sortType) {
         case sortTypes.CREATEDDATE:
             subjects.sort((a, b) => a.createdDate > b.createdDate ? 1 : (a.createdDate < b.createdDate ? -1 : 0));
     }
+}
+
+export function loadSubject(subjectKey) {
+    storeSubject();
+    subject = subjects.find(subject => subject.key == subjectKey);
+    subjectData = parseSubjectData(localStorage.getItem(subjectToFilename(subject)));
+    console.log(subjectData);
+}
+
+function storeSubject() {
+    if (!subject) return;
+    const fileName = subjectToFilename(subject);
+    localStorage.setItem(fileName, getSerializedSubjectData());
+}
+
+function fileNameToSubject(fileName) {
+    return new Subject(fileName.split("_")[0], new Date(parseInt(fileName.split("_")[1])));
+}
+
+function subjectToFilename(subject) {
+    return `${subject.key}_${subject.createdDate.getTime()}`;
 }
