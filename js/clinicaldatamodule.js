@@ -16,12 +16,10 @@ let currentElementID = {
 }
 
 // Further auxiliary variables
-let currentElementType = null;
 let locale = null;
 
 export function init() {
     currentElementID.subject = null;
-    currentElementType = null;
 
     createSortTypeSelect();
     setIOListeners();
@@ -91,10 +89,38 @@ export function loadSubjectKeys() {
 
 export function loadStudyEvents() {
     ioHelper.removeElements($$("#clinicaldata-study-event-panel-blocks a"));
+    ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
+    
     for (let studyEventDef of metadataHelper.getStudyEvents()) {
         let translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         let panelBlock = htmlElements.getPanelBlock(false, studyEventDef.getAttribute("OID"), metadataHelper.elementTypes.STUDYEVENT, translatedText, studyEventDef.getAttribute("Name"));
-        // panelBlock.onclick = studyEventClicked;
+        panelBlock.onclick = studyEventClicked;
         $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
     }
+}
+
+function studyEventClicked(event) {
+    ioHelper.removeIsActiveFromElements($$("#clinicaldata-study-event-panel-blocks a"));
+    event.target.classList.add("is-active");
+
+    currentElementID.studyEvent = event.target.getAttribute("oid");
+    loadFormsByStudyEvent(currentElementID.studyEvent);
+}
+
+function loadFormsByStudyEvent(studyEventOID) {
+    ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
+
+    for (let formDef of metadataHelper.getFormsByStudyEvent(studyEventOID)) {
+        let translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
+        let panelBlock = htmlElements.getPanelBlock(false, formDef.getAttribute("OID"), metadataHelper.elementTypes.FORM, translatedText, formDef.getAttribute("Name"));
+        panelBlock.onclick = formClicked;
+        $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
+    }
+}
+
+function formClicked(event) {
+    ioHelper.removeIsActiveFromElements($$("#clinicaldata-form-panel-blocks a"));
+    event.target.classList.add("is-active");
+
+    currentElementID.form = event.target.getAttribute("oid");
 }

@@ -46,12 +46,6 @@ export function setLanguage(newLocale) {
     locale = newLocale;
 }
 
-function removeIsActiveFromElements(elements) {
-    for (let element of elements) {
-        element.classList.remove("is-active");
-    }
-}
-
 function safeRemoveElement(element) {
     if (element != null) {
         element.remove();
@@ -171,7 +165,7 @@ export function loadStudyEvents() {
 }
 
 function studyEventClicked(event) {
-    removeIsActiveFromElements($$("#study-event-panel-blocks a"));
+    ioHelper.removeIsActiveFromElements($$("#study-event-panel-blocks a"));
     event.target.classList.add("is-active");
     
     currentElementID.studyEvent = event.target.getAttribute("oid");
@@ -195,7 +189,7 @@ function loadFormsByStudyEvent(studyEventOID, hideTree) {
 }
 
 function formClicked(event) {
-    removeIsActiveFromElements($$("#form-panel-blocks a"));
+    ioHelper.removeIsActiveFromElements($$("#form-panel-blocks a"));
     event.target.classList.add("is-active");
 
     currentElementID.form = event.target.getAttribute("oid");
@@ -219,7 +213,7 @@ function loadItemGroupsByForm(formOID, hideTree) {
 }
 
 function itemGroupClicked(event) {
-    removeIsActiveFromElements($$("#item-group-panel-blocks a"));
+    ioHelper.removeIsActiveFromElements($$("#item-group-panel-blocks a"));
     event.target.classList.add("is-active");
 
     currentElementID.itemGroup = event.target.getAttribute("oid");
@@ -243,7 +237,7 @@ function loadItemsByItemGroup(itemGroupOID, hideTree) {
 }
 
 function itemClicked(event) {
-    removeIsActiveFromElements($$("#item-panel-blocks a"));
+    ioHelper.removeIsActiveFromElements($$("#item-panel-blocks a"));
     event.target.classList.add("is-active");
 
     currentElementID.item = event.target.getAttribute("oid");
@@ -270,7 +264,7 @@ function loadCodeListItemsByItem(itemOID, hideTree) {
 }
 
 function codeListItemClicked(event) {
-    removeIsActiveFromElements($$("#code-list-item-panel-blocks a"));
+    ioHelper.removeIsActiveFromElements($$("#code-list-item-panel-blocks a"));
     event.target.classList.add("is-active");
 
     currentElementID.codeList = event.target.getAttribute("oid");
@@ -1148,7 +1142,7 @@ window.showMoreModal = function() {
 }
 
 window.hideMoreModal = function() {
-    removeIsActiveFromElements($$("#more-tabs ul li"));
+    ioHelper.removeIsActiveFromElements($$("#more-tabs ul li"));
     $("#element-options-tab").classList.add("is-active");
     $("#element-options").classList.remove("is-hidden");
     $("#element-description").classList.add("is-hidden");
@@ -1272,7 +1266,7 @@ window.addConditionInput = function() {
 }
 
 window.projectTabClicked = function(event) {
-    removeIsActiveFromElements($$("#project-tabs ul li"));
+    ioHelper.removeIsActiveFromElements($$("#project-tabs ul li"));
     event.target.parentNode.classList.add("is-active");
 
     switch(event.target.parentNode.id) {
@@ -1294,7 +1288,7 @@ window.projectTabClicked = function(event) {
 }
 
 window.moreTabClicked = function(event) {
-    removeIsActiveFromElements($$("#more-tabs ul li"));
+    ioHelper.removeIsActiveFromElements($$("#more-tabs ul li"));
     event.target.parentNode.classList.add("is-active");
 
     switch(event.target.parentNode.id) {

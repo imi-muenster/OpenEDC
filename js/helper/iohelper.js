@@ -6,6 +6,12 @@ export function removeElements(elements) {
     }
 }
 
+export function removeIsActiveFromElements(elements) {
+    for (let element of elements) {
+        element.classList.remove("is-active");
+    }
+}
+
 export function download(filename, content) {
     let prettifiedContent = prettifyContent(content);
 
@@ -82,6 +88,7 @@ export function showWarning(title, message) {
 // IO listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
 // TODO: In the entire project, align onclick vs. addEventListener("click"), arrowfunctions, etc.
 // TODO: Also: oninput/onclick in html file vs. in js file
+// TODO: In a loop, there is no need to create a variable with the array first
 export function setIOListeners() {
     // TODO: This style everywhere or onclick here
     $(".navbar-burger").addEventListener("click", () => {
