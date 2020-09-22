@@ -94,6 +94,7 @@ export function showWarning(title, message) {
 // TODO: Also: oninput/onclick in html file vs. in js file
 // TODO: In a loop, there is no need to create a variable with the array first
 // TODO: Sort the .css file
+// TODO: Refactor metadatamodule to remove "[studyEvent]clicked" functions. Set currentElementOID and is-active in the, e.g., loadFormsByStudyEvent as well and also refactor arrowKeyListener etc.
 export function setIOListeners() {
     // TODO: This style everywhere or onclick here
     $(".navbar-burger").addEventListener("click", () => {

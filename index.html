@@ -228,16 +228,16 @@
                     <nav class="panel">
                         <p class="panel-heading has-text-centered">Data</p>
                         <div class="is-hidden" id="clinicaldata-form-data">
-                            <h1 class="title" id="clinicaldata-form-title"></h1>
+                            <h1 class="subtitle is-3" id="clinicaldata-form-title"></h1>
                             <hr>
                             <div id="clinicaldata-content"></div>
-                            <button class="button" id="clinicaldata-close-button" onclick="" internationalization="Close">Close</button>
+                            <button class="button" id="clinicaldata-close-button" onclick="closeClinicalData()" internationalization="Close">Close</button>
                             <div class="field has-addons is-pulled-right">
                                 <div class="control">
-                                    <button class="button" id="clinicaldata-previous-button" onclick="" internationalization="Back">Back</button>
+                                    <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" internationalization="Back">Back</button>
                                 </div>
                                 <div class="control">
-                                    <button class="button is-link" id="clinicaldata-next-button" onclick="" internationalization="Continue">Continue</button>
+                                    <button class="button is-link" id="clinicaldata-next-button" onclick="loadNextFormData()" internationalization="Continue">Continue</button>
                                 </div>
                             </div>
                         </div>
