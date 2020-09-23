@@ -31,7 +31,7 @@ let subject = null;
 let subjectData = null;
 
 function parseSubjectData(xmlString) {
-    return new DOMParser().parseFromString(xmlString, "text/xml");
+    return new DOMParser().parseFromString(xmlString, "text/xml").documentElement;
 }
 
 function getSerializedSubjectData() {
@@ -55,10 +55,14 @@ export function addSubject(subjectKey) {
         return;
     }
 
+    // Store the current subject
     storeSubject();
+
     subjectData = clinicaldataTemplates.getSubjectData(subjectKey);
     subject = new Subject(subjectKey, new Date());
     subjects.push(subject);
+
+    // Store the newly created subject
     storeSubject();
 }
 
@@ -78,7 +82,9 @@ function sortSubjects(sortType) {
 }
 
 export function loadSubject(subjectKey) {
+    // Store the current subject
     storeSubject();
+
     subject = subjects.find(subject => subject.key == subjectKey);
     subjectData = parseSubjectData(localStorage.getItem(subjectToFilename(subject)));
     console.log(subjectData);
@@ -102,6 +108,38 @@ function subjectToFilename(subject) {
     return subject.key + fileNameSeparator + subject.createdDate.getTime();
 }
 
-export function saveSubjectFormData(studyEventOID, formOID, formData) {
-    console.log(formData);
+export function storeSubjectFormData(studyEventOID, formOID, formItemData) {
+    if (!subject) return;
+    let studyEventData = clinicaldataTemplates.getStudyEventData(studyEventOID);
+    let formData = clinicaldataTemplates.getFormData(formOID);
+
+    let itemGroupData = null;
+    for (let itemData of formItemData) {
+        if (itemGroupData == null || itemGroupData.getAttribute("ItemGroupOID") != itemData.itemGroupOID) {
+            if (itemGroupData != null) formData.appendChild(itemGroupData);
+            itemGroupData = clinicaldataTemplates.getItemGroupData(itemData.itemGroupOID);
+        };
+        itemGroupData.appendChild(clinicaldataTemplates.getItemData(itemData.itemOID, itemData.value));
+    }
+
+    formData.appendChild(itemGroupData);
+    studyEventData.appendChild(formData);
+    subjectData.appendChild(studyEventData);
+
+    // TODO: Really neccessary?
+    storeSubject();
+}
+
+export function loadSubjectFormData(studyEventOID, formOID) {
+    let formItemData = $(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`);
+    console.log(formItemData);
+}
+
+// TODO: Move to ioHelper? Also present in metadatahelper
+function getLastElement(elements) {
+    if (elements.length >= 1) {
+        return elements[elements.length - 1];
+    } else {
+        return null;
+    }
 }

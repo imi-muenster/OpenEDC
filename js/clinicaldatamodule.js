@@ -209,25 +209,21 @@ window.closeClinicalData = function() {
 
 function saveFormData() {
     // TODO: Rename preview to metadata or something and also preview-group-id to something else
-    let formData = [];
+    let formItemData = [];
     for (let inputElement of $$("#clinicaldata-content [preview-oid]")) {
         let value = inputElement.value;
         let itemOID = inputElement.getAttribute("preview-oid");
         let itemGroupOID = inputElement.getAttribute("preview-group-oid");
         switch (inputElement.getAttribute("type")) {
             case "text":
-                if (value) formData.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
-                break;
-            case "radio":
-                if (inputElement.checked) formData.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
-                break;
             case "date":
-                if (value) formData.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
-                break;
             case "select":
-                if (value) formData.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
+                if (value) formItemData.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
+            case "radio":
+                if (inputElement.checked) formItemData.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
+                break;
         }
     }
 
-    clinicaldataHelper.saveSubjectFormData(currentElementID.studyEvent, currentElementID.form, formData);
+    clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemData);
 }
