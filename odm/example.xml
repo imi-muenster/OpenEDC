@@ -198,7 +198,7 @@
             </ItemDef>
             <ItemDef OID="CountryOfBirth" Name="CountryOfBirth" DataType="text">
                 <Question>
-                    <TranslatedText xml:lang="en">What is country of birth?</TranslatedText>
+                    <TranslatedText xml:lang="en">What is your country of birth?</TranslatedText>
                     <TranslatedText xml:lang="de">Wo sind Sie geboren?</TranslatedText>
                 </Question>
                 <CodeListRef CodeListOID="CL.2"/>

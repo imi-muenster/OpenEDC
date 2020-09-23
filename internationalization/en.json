@@ -1,4 +1,5 @@
 {
+    "no-subject-selected-hint": "No subject selected. You can still view and test the form but entered data will not be stored.",
     "Back": "Back",
     "Continue": "Continue",
     "Close": "Close"

@@ -39,7 +39,7 @@ export async function internationalize() {
     let translatableElements = document.querySelectorAll("[internationalization]");
     for (let translatableElement of translatableElements) {
         let key = translatableElement.getAttribute("internationalization");
-        translatableElement.textContent = translations[key] || translatableElement.textContent;
+        if (translations[key]) translatableElement.textContent = translations[key];
     }
 }
 

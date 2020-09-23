@@ -1,7 +1,6 @@
 import * as metadataHelper from "./helper/metadatahelper.js";
 import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
-import * as languageHelper from "./helper/languagehelper.js";
 import * as conditionHelper from "./helper/conditionhelper.js";
 import * as htmlElements from "./helper/htmlelements.js";
 
@@ -30,8 +29,7 @@ export function init() {
 export function show() {
     loadSubjectKeys();
     loadStudyEvents();
-    if (currentElementID.studyEvent) loadFormsByStudyEvent(currentElementID.studyEvent);
-    if (currentElementID.form) loadFormData(currentElementID.form);
+    reload();
 
     $("#clinicaldata-section").classList.remove("is-hidden");
     $("#clinicaldata-toggle-button").classList.add("is-hidden");
@@ -40,6 +38,11 @@ export function show() {
 export function hide() {
     $("#clinicaldata-section").classList.add("is-hidden");
     $("#clinicaldata-toggle-button").classList.remove("is-hidden");
+}
+
+export function reload() {
+    if (currentElementID.studyEvent) loadFormsByStudyEvent(currentElementID.studyEvent);
+    if (currentElementID.form) loadFormData(currentElementID.form);
 }
 
 export function setLanguage(newLocale) {

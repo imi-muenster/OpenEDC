@@ -24,6 +24,7 @@ document.addEventListener("LanguageChanged", languageEvent => {
     metadataModule.reloadDetailsPanel();
 
     clinicaldataModule.setLanguage(languageEvent.detail);
+    clinicaldataModule.reload();
 
     hideMenu();
 });
