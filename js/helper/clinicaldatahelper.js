@@ -122,6 +122,7 @@ export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
         itemGroupData.appendChild(clinicaldataTemplates.getItemData(formItemData.itemOID, formItemData.value));
     }
 
+    if (!itemGroupData) return;
     formData.appendChild(itemGroupData);
     studyEventData.appendChild(formData);
     subjectData.appendChild(studyEventData);

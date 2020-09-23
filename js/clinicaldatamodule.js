@@ -166,8 +166,14 @@ async function loadFormMetadata() {
 
     conditionHelper.process(metadataHelper.getItemOIDSWithConditionByForm(currentElementID.form));
 
-    getNextFormOID(currentElementID.form) == null ? $("#clinicaldata-next-button").disabled = true : $("#clinicaldata-next-button").disabled = false;
-    getPreviousFormOID(currentElementID.form) == null ? $("#clinicaldata-previous-button").disabled = true : $("#clinicaldata-previous-button").disabled = false;
+    !getPreviousFormOID(currentElementID.form) ? $("#clinicaldata-previous-button").disabled = true : $("#clinicaldata-previous-button").disabled = false;
+    if (!getNextFormOID(currentElementID.form)) {
+        // TODO: i18n
+        $("#clinicaldata-next-button").textContent = "Finish";
+    } else {
+        // TODO: i18n
+        $("#clinicaldata-next-button").textContent = "Continue";
+    }
 
     $("#clinicaldata-form-title").scrollIntoView({block: "end", behavior: "smooth"});
 }
@@ -198,9 +204,12 @@ window.loadNextFormData = async function() {
     saveFormData();
 
     let nextFormOID = getNextFormOID(currentElementID.form);
+    //TODO: Everywhere !nextFormOID
     if (nextFormOID != null) {
         currentElementID.form = nextFormOID
         await loadFormData(currentElementID.form);
+    } else {
+        closeFormData();
     }
 }
 
@@ -228,7 +237,7 @@ function getPreviousFormOID(nextFormOID) {
     }
 }
 
-window.closeClinicalData = function() {
+window.closeFormData = function() {
     loadFormsByStudyEvent(currentElementID.studyEvent, true);
 }
 
