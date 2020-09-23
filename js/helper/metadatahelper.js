@@ -47,6 +47,12 @@ export function storeMetadata() {
 export function loadStoredMetadata() {
     let metadataXMLString = localStorage.getItem(metadataFileName);
     if (metadataXMLString) parseODM(metadataXMLString);
+
+    if (getODM()) return true;
+}
+
+export function clearMetadata() {
+    odm = null;
 }
 
 export async function getFormAsHTML(formOID, locale) {

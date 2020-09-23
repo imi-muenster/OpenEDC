@@ -1,6 +1,7 @@
-import * as metadataHelper from "./helper/metadatahelper.js";
 import * as metadataModule from "./metadatamodule.js";
+import * as metadataHelper from "./helper/metadatahelper.js";
 import * as clinicaldataModule from "./clinicaldatamodule.js";
+import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 
@@ -10,7 +11,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     ioHelper.setTreeMaxHeight();
     setIOListeners();
 
-    if (metadataModule.loadStoredMetadata()) startApp();
+    if (metadataHelper.loadStoredMetadata()) {
+        startApp();
+    } else {
+        showStartModal();
+    }
 });
 
 document.addEventListener("LanguageChanged", languageEvent => {
@@ -136,6 +141,8 @@ window.downloadODM = function() {
 }
 
 window.removeData = function() {
+    metadataHelper.clearMetadata();
+    clinicaldataHelper.clearSubject();
     localStorage.clear();
     location.reload();
 }

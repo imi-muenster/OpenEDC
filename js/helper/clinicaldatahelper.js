@@ -82,6 +82,10 @@ export function storeSubject() {
     localStorage.setItem(fileName, getSerializedSubjectData());
 }
 
+export function clearSubject() {
+    subject = null;
+}
+
 function fileNameToSubject(fileName) {
     return new Subject(fileName.split(fileNameSeparator)[0], new Date(parseInt(fileName.split(fileNameSeparator)[1])));
 }

@@ -45,11 +45,6 @@ export function setLanguage(newLocale) {
     locale = newLocale;
 }
 
-export function loadStoredMetadata() {
-    metadataHelper.loadStoredMetadata();
-    if (metadataHelper.getODM()) return true;
-}
-
 function createPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue) {
     let panelBlock = htmlElements.getPanelBlock(true, elementOID, elementType, displayText, fallbackText, codedValue);
 
