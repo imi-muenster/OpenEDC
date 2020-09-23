@@ -15,6 +15,7 @@ export function process(itemsWithCondition) {
             $(`[preview-field-oid="${conditionalItem}"]`).classList.add("is-hidden");
         }
 
+        // TODO: select-one? Still needed?
         let previewFieldInput = $(`[preview-oid="${determinant}"]`);
         if (previewFieldInput.type == "text" || previewFieldInput.type == "select-one") {
             previewFieldInput.addEventListener("input", function(event) {
@@ -52,6 +53,7 @@ function respondToInputChange(event, conditionalItem, operator, target) {
 }
 
 function emptyConditionalItem(previewOID) {
+    // TODO: Replace with switch statement. What about select? Select-one?
     let previewFieldInput = $(`[preview-oid="${previewOID}"]`);
     if (previewFieldInput.type == "text" || previewFieldInput.type == "date") {
         previewFieldInput.value = "";

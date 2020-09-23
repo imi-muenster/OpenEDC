@@ -57,7 +57,7 @@
             <xsl:when test="$item/odm:MeasurementUnitRef">
                 <div class="field has-addons">
                     <div class="control input-has-addons">
-                        <input class="input" type="text" preview-oid="{$item/@OID}"/>
+                        <input class="input" type="text" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
                     </div>
                     <xsl:variable name="measurementUnitOID" select="$item/odm:MeasurementUnitRef/@MeasurementUnitOID"/>
                     <xsl:call-template name="measurementUnit">
@@ -69,17 +69,18 @@
                 <div class="field">
                     <xsl:call-template name="booleanField">
                         <xsl:with-param name="item" select="$item"/>
+                        <xsl:with-param name="itemGroupOID" select="$itemGroupOID"/>
                     </xsl:call-template>
                 </div>
             </xsl:when>
             <xsl:when test="$item/@DataType = 'date'">
                 <div class="field">
-                    <input class="input" type="date" preview-oid="{$item/@OID}"/>
+                    <input class="input" type="date" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
                 </div>
             </xsl:when>
             <xsl:otherwise>
                 <div class="field">
-                    <input class="input" type="text" preview-oid="{$item/@OID}"/>
+                    <input class="input" type="text" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
                 </div>
             </xsl:otherwise>
         </xsl:choose>
@@ -91,7 +92,8 @@
         <xsl:choose>
             <xsl:when test="count($codeList/odm:CodeListItem) &gt; 10">
                 <div class="select is-fullwidth">
-                    <select preview-oid="{$item/@OID}">
+                    <select type="select" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}">
+                        <option value=""></option>
                         <xsl:for-each select="$codeList/odm:CodeListItem">
                             <xsl:variable name="value" select="./odm:Decode/odm:TranslatedText[@xml:lang=$locale]"/>
                             <option value="{@CodedValue}"><xsl:value-of select="$value"/></option>
@@ -102,7 +104,7 @@
             <xsl:otherwise>
                 <xsl:for-each select="$codeList/odm:CodeListItem">
                     <xsl:variable name="value" select="./odm:Decode/odm:TranslatedText[@xml:lang=$locale]"/>
-                    <label class="radio"><input type="radio" name="{$itemGroupOID}-{$item/@OID}" preview-oid="{$item/@OID}" value="{@CodedValue}"/>&#160;<xsl:value-of select="$value"/></label>
+                    <label class="radio"><input type="radio" name="{$itemGroupOID}-{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="{@CodedValue}"/>&#160;<xsl:value-of select="$value"/></label>
                     <br/>
                 </xsl:for-each>
             </xsl:otherwise>
@@ -116,14 +118,15 @@
     </xsl:template>
     <xsl:template name="booleanField">
         <xsl:param name="item"/>
+        <xsl:param name="itemGroupOID"/>
         <xsl:choose>
             <xsl:when test="$locale = 'de'">
-                <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" value="1"/>&#160;Ja</label><br/>
-                <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" value="0"/>&#160;Nein</label>
+                <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="1"/>&#160;Ja</label><br/>
+                <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="0"/>&#160;Nein</label>
             </xsl:when>
             <xsl:otherwise>
-                <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" value="1"/>&#160;Yes</label><br/>
-                <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" value="0"/>&#160;No</label>            
+                <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="1"/>&#160;Yes</label><br/>
+                <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="0"/>&#160;No</label>            
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>

@@ -8,6 +8,14 @@ class Subject {
     }
 }
 
+export class FormItemData {
+    constructor(itemGroupOID, itemOID, value) {
+        this.itemGroupOID = itemGroupOID;
+        this.itemOID = itemOID;
+        this.value = value;
+    }
+}
+
 const $ = query => subjectData.querySelector(query);
 const $$ = query => subjectData.querySelectorAll(query);
 
@@ -92,4 +100,8 @@ function fileNameToSubject(fileName) {
 
 function subjectToFilename(subject) {
     return subject.key + fileNameSeparator + subject.createdDate.getTime();
+}
+
+export function saveSubjectFormData(studyEventOID, formOID, formData) {
+    console.log(formData);
 }

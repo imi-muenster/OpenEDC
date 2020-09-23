@@ -170,6 +170,8 @@ async function loadFormClinicaldata(subject, studyEvent, form) {
 }
 
 window.loadNextFormData = async function() {
+    saveFormData();
+
     let nextFormOID = getNextFormOID(currentElementID.form);
     if (nextFormOID != null) {
         currentElementID.form = nextFormOID
@@ -178,15 +180,13 @@ window.loadNextFormData = async function() {
 }
 
 window.loadPreviousFormData = async function() {
+    saveFormData();
+
     let previousFormOID = getPreviousFormOID(currentElementID.form);
     if (previousFormOID != null) {
         currentElementID.form = previousFormOID
         await loadFormData(currentElementID.form);
     }
-}
-
-window.closeClinicalData = function() {
-    loadFormsByStudyEvent(currentElementID.studyEvent, true);
 }
 
 function getNextFormOID(previousFormOID) {
@@ -201,4 +201,33 @@ function getPreviousFormOID(nextFormOID) {
     for (let i = 1; i < formDefs.length; i++) {
         if (formDefs[i].getAttribute("OID") == nextFormOID) return formDefs[i-1].getAttribute("OID");
     }
+}
+
+window.closeClinicalData = function() {
+    loadFormsByStudyEvent(currentElementID.studyEvent, true);
+}
+
+function saveFormData() {
+    // TODO: Rename preview to metadata or something and also preview-group-id to something else
+    let formData = [];
+    for (let inputElement of $$("#clinicaldata-content [preview-oid]")) {
+        let value = inputElement.value;
+        let itemOID = inputElement.getAttribute("preview-oid");
+        let itemGroupOID = inputElement.getAttribute("preview-group-oid");
+        switch (inputElement.getAttribute("type")) {
+            case "text":
+                if (value) formData.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
+                break;
+            case "radio":
+                if (inputElement.checked) formData.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
+                break;
+            case "date":
+                if (value) formData.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
+                break;
+            case "select":
+                if (value) formData.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
+        }
+    }
+
+    clinicaldataHelper.saveSubjectFormData(currentElementID.studyEvent, currentElementID.form, formData);
 }
