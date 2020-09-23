@@ -67,6 +67,7 @@ function emptyConditionalItem(previewOID) {
         for (radioItem of radioItems) {
             radioItem.checked = false;
         }
+        // TODO: Do these three lines are really necessary? It seems that a simple event like above is sufficient
         let event = new Event("input");
         Object.defineProperty(event, "target", {value: "", enumerable: true});
         radioItem.dispatchEvent(event);

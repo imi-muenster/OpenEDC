@@ -108,18 +108,18 @@ function subjectToFilename(subject) {
     return subject.key + fileNameSeparator + subject.createdDate.getTime();
 }
 
-export function storeSubjectFormData(studyEventOID, formOID, formItemData) {
+export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
     if (!subject) return;
     let studyEventData = clinicaldataTemplates.getStudyEventData(studyEventOID);
     let formData = clinicaldataTemplates.getFormData(formOID);
 
     let itemGroupData = null;
-    for (let itemData of formItemData) {
-        if (itemGroupData == null || itemGroupData.getAttribute("ItemGroupOID") != itemData.itemGroupOID) {
+    for (let formItemData of formItemDataList) {
+        if (itemGroupData == null || itemGroupData.getAttribute("ItemGroupOID") != formItemData.itemGroupOID) {
             if (itemGroupData != null) formData.appendChild(itemGroupData);
-            itemGroupData = clinicaldataTemplates.getItemGroupData(itemData.itemGroupOID);
+            itemGroupData = clinicaldataTemplates.getItemGroupData(formItemData.itemGroupOID);
         };
-        itemGroupData.appendChild(clinicaldataTemplates.getItemData(itemData.itemOID, itemData.value));
+        itemGroupData.appendChild(clinicaldataTemplates.getItemData(formItemData.itemOID, formItemData.value));
     }
 
     formData.appendChild(itemGroupData);
@@ -130,9 +130,21 @@ export function storeSubjectFormData(studyEventOID, formOID, formItemData) {
     storeSubject();
 }
 
-export function loadSubjectFormData(studyEventOID, formOID) {
-    let formItemData = $(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`);
-    console.log(formItemData);
+export function getSubjectFormData(studyEventOID, formOID) {
+    let formData = getLastElement($$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`));
+    if (!formData) return [];
+
+    let formItemDataList = [];
+    for (let itemGroupData of formData.querySelectorAll("ItemGroupData")) {
+        let itemGroupOID = itemGroupData.getAttribute("ItemGroupOID");
+        for (let itemData of itemGroupData.querySelectorAll("ItemData")) {
+            let itemOID = itemData.getAttribute("ItemOID");
+            let value = itemData.getAttribute("Value");
+            formItemDataList.push(new FormItemData(itemGroupOID, itemOID, value));
+        }
+    }
+
+    return formItemDataList;
 }
 
 // TODO: Move to ioHelper? Also present in metadatahelper

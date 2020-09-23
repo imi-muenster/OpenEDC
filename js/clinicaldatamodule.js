@@ -99,14 +99,14 @@ export function loadSubjectKeys() {
     }
 }
 
-function loadSubjectData(subjectKey) {
+async function loadSubjectData(subjectKey) {
     currentElementID.subject = subjectKey;
 
     ioHelper.removeIsActiveFromElements($$("#subject-panel-blocks a"));
     $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
 
     clinicaldataHelper.loadSubject(currentElementID.subject);
-    loadFormMetadata();
+    await loadFormMetadata();
     loadFormClinicaldata();
 }
 
@@ -145,13 +145,13 @@ async function loadFormData(formOID) {
     ioHelper.removeIsActiveFromElements($$("#clinicaldata-form-panel-blocks a"));
     $(`#clinicaldata-form-panel-blocks [oid="${currentElementID.form}"]`).classList.add("is-active");
 
-    loadFormMetadata();
+    await loadFormMetadata();
     loadFormClinicaldata();
     $("#clinicaldata-form-data").classList.remove("is-hidden");
 }
 
 async function loadFormMetadata() {
-    if (!currentElementID.form || !currentElementID.subject) return;
+    if (!currentElementID.studyEvent || !currentElementID.form) return;
 
     let translatedText = metadataHelper.getElementDefByOID(currentElementID.form).querySelector(`Description TranslatedText[*|lang="${locale}"]`);
     if (translatedText) {
@@ -172,12 +172,26 @@ async function loadFormMetadata() {
     $("#clinicaldata-form-title").scrollIntoView({block: "end", behavior: "smooth"});
 }
 
-async function loadFormClinicaldata() {
+function loadFormClinicaldata() {
     if (!currentElementID.subject) $("#no-subject-selected-hint").classList.remove("is-hidden");
     if (!currentElementID.studyEvent || !currentElementID.form || !currentElementID.subject) return;
 
     $("#no-subject-selected-hint").classList.add("is-hidden");
-    clinicaldataHelper.loadSubjectFormData(currentElementID.studyEvent, currentElementID.form);
+    for (let formItemData of clinicaldataHelper.getSubjectFormData(currentElementID.studyEvent, currentElementID.form)) {
+        let inputElement = $(`#clinicaldata-content [preview-oid="${formItemData.itemOID}"][preview-group-oid="${formItemData.itemGroupOID}"]`);
+        switch (inputElement.getAttribute("type")) {
+            case "text":
+            case "date":
+            case "select":
+                inputElement.value = formItemData.value;
+                inputElement.dispatchEvent(new Event("input"));
+                break;
+            case "radio":
+                inputElement = $(`#clinicaldata-content [preview-oid="${formItemData.itemOID}"][preview-group-oid="${formItemData.itemGroupOID}"][value="${formItemData.value}"]`);
+                inputElement.checked = true;
+                inputElement.dispatchEvent(new Event("input"));
+        }
+    }
 }
 
 window.loadNextFormData = async function() {
@@ -220,7 +234,7 @@ window.closeClinicalData = function() {
 
 function saveFormData() {
     // TODO: Rename preview to metadata or something and also preview-group-id to something else
-    let formItemData = [];
+    let formItemDataList = [];
     for (let inputElement of $$("#clinicaldata-content [preview-oid]")) {
         let value = inputElement.value;
         let itemOID = inputElement.getAttribute("preview-oid");
@@ -229,12 +243,12 @@ function saveFormData() {
             case "text":
             case "date":
             case "select":
-                if (value) formItemData.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
-            case "radio":
-                if (inputElement.checked) formItemData.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
+                if (value) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
                 break;
+            case "radio":
+                if (inputElement.checked) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
         }
     }
 
-    clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemData);
+    clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList);
 }
