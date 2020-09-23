@@ -28,8 +28,7 @@ export function init() {
 
 export function show() {
     loadSubjectKeys();
-    loadStudyEvents();
-    reload();
+    loadMetaAndClinicalData();
 
     $("#clinicaldata-section").classList.remove("is-hidden");
     $("#clinicaldata-toggle-button").classList.add("is-hidden");
@@ -40,7 +39,8 @@ export function hide() {
     $("#clinicaldata-toggle-button").classList.remove("is-hidden");
 }
 
-export function reload() {
+export function loadMetaAndClinicalData() {
+    loadStudyEvents();
     if (currentElementID.studyEvent) loadFormsByStudyEvent(currentElementID.studyEvent);
     if (currentElementID.form) loadFormData(currentElementID.form);
 }
@@ -107,13 +107,14 @@ function loadStudyEvents() {
     for (let studyEventDef of metadataHelper.getStudyEvents()) {
         let translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         let panelBlock = htmlElements.getPanelBlock(false, studyEventDef.getAttribute("OID"), metadataHelper.elementTypes.STUDYEVENT, translatedText, studyEventDef.getAttribute("Name"));
-        panelBlock.onclick = () => loadFormsByStudyEvent(studyEventDef.getAttribute("OID"));
+        panelBlock.onclick = () => loadFormsByStudyEvent(studyEventDef.getAttribute("OID"), true);
         $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
     }
 }
 
-function loadFormsByStudyEvent(studyEventOID) {
+function loadFormsByStudyEvent(studyEventOID, deselectForm) {
     currentElementID.studyEvent = studyEventOID;
+    if (deselectForm) currentElementID.form = null;
     ioHelper.removeIsActiveFromElements($$("#clinicaldata-study-event-panel-blocks a"));
     $(`#clinicaldata-section [oid="${currentElementID.studyEvent}"]`).classList.add("is-active");
 
@@ -185,7 +186,7 @@ window.loadPreviousFormData = async function() {
 }
 
 window.closeClinicalData = function() {
-    loadFormsByStudyEvent(currentElementID.studyEvent);
+    loadFormsByStudyEvent(currentElementID.studyEvent, true);
 }
 
 function getNextFormOID(previousFormOID) {

@@ -20,12 +20,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 document.addEventListener("LanguageChanged", languageEvent => {
     metadataModule.setLanguage(languageEvent.detail);
-    metadataModule.reloadTree();
-    metadataModule.reloadDetailsPanel();
+    if (!$("#metadata-section").classList.contains("is-hidden")) {
+        metadataModule.reloadTree();
+        metadataModule.reloadDetailsPanel();
+    }
 
     clinicaldataModule.setLanguage(languageEvent.detail);
-    clinicaldataModule.reload();
-
+    if (!$("#clinicaldata-section").classList.contains("is-hidden")) {
+        clinicaldataModule.loadMetaAndClinicalData();
+    }
+    
     hideMenu();
 });
 

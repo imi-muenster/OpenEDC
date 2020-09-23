@@ -32,6 +32,9 @@ export function init() {
 }
 
 export function show() {
+    reloadTree();
+    reloadDetailsPanel();
+
     $("#metadata-section").classList.remove("is-hidden");
     $("#metadata-toggle-button").classList.add("is-hidden");
 }
