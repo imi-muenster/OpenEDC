@@ -157,7 +157,12 @@ async function loadFormMetadata(formOID) {
 }
 
 async function loadFormClinicaldata(subject, studyEvent, form) {
-    
+    if (!subject) {
+        $("#no-subject-selected-hint").classList.remove("is-hidden");
+        return;
+    }
+
+    $("#no-subject-selected-hint").classList.add("is-hidden");
 }
 
 window.loadNextFormData = async function() {

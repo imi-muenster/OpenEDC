@@ -11,6 +11,8 @@ class Subject {
 const $ = query => subjectData.querySelector(query);
 const $$ = query => subjectData.querySelectorAll(query);
 
+const fileNameSeparator = "__";
+
 export const sortTypes = {
     ALPHANUMERICALLY: "Alphanumerical",
     CREATEDDATE: "Creation date"
@@ -30,7 +32,7 @@ function getSerializedSubjectData() {
 
 export function loadSubjects() {
     for (let fileName of Object.keys(localStorage)) {
-        if (fileName.split("_").length > 1) subjects.push(fileNameToSubject(fileName));
+        if (fileName.split(fileNameSeparator).length > 1) subjects.push(fileNameToSubject(fileName));
     }
 }
 
@@ -49,6 +51,7 @@ export function addSubject(subjectKey) {
     subjectData = clinicaldataTemplates.getSubjectData(subjectKey);
     subject = new Subject(subjectKey, new Date());
     subjects.push(subject);
+    storeSubject();
 }
 
 export function getSubjectKeys(sortOrder) {
@@ -80,9 +83,9 @@ export function storeSubject() {
 }
 
 function fileNameToSubject(fileName) {
-    return new Subject(fileName.split("_")[0], new Date(parseInt(fileName.split("_")[1])));
+    return new Subject(fileName.split(fileNameSeparator)[0], new Date(parseInt(fileName.split(fileNameSeparator)[1])));
 }
 
 function subjectToFilename(subject) {
-    return `${subject.key}_${subject.createdDate.getTime()}`;
+    return subject.key + fileNameSeparator + subject.createdDate.getTime();
 }
