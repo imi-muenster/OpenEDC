@@ -63,7 +63,7 @@ function setIOListeners() {
     };
     $("#search-subject-input").oninput = inputEvent => filterSubjects(inputEvent.target.value);
     // TODO: Maybe improve or do it analogously in the metadatamodule. Maybe a "wrapper" function in app.js to do it more coordinated
-    window.onunload = clinicaldataHelper.storeSubject;
+    window.addEventListener("unload", () => clinicaldataHelper.storeSubject());
 }
 
 function filterSubjects(searchString) {

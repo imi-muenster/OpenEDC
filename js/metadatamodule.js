@@ -1,7 +1,6 @@
 import * as metadataHelper from "./helper/metadatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
-import * as conditionHelper from "./helper/conditionhelper.js";
 import * as htmlElements from "./helper/htmlelements.js";
 
 const $ = query => document.querySelector(query);
@@ -44,6 +43,11 @@ export function hide() {
 
 export function setLanguage(newLocale) {
     locale = newLocale;
+}
+
+export function loadStoredMetadata() {
+    metadataHelper.loadStoredMetadata();
+    if (metadataHelper.getODM()) return true;
 }
 
 function createPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue) {
@@ -551,6 +555,8 @@ window.saveElement = function() {
     document.activeElement.blur();
     $("#save-button").disabled = true;
     $("#save-button-mobile").disabled = true;
+
+    metadataHelper.storeMetadata();
 }
 
 window.saveMoreModal = function() {
@@ -687,6 +693,7 @@ function setIOListeners() {
     }
     $("#save-button").tabIndex = 6;
     $("#delete-button").tabIndex = 7;
+    window.addEventListener("unload", () => metadataHelper.storeMetadata());
 }
 
 export function removeArrowKeyListener() {

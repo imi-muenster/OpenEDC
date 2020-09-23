@@ -4,6 +4,8 @@ import * as ioHelper from "./iohelper.js";
 const $ = query => odm.querySelector(query);
 const $$ = query => odm.querySelectorAll(query);
 
+const metadataFileName = "metadata";
+
 export const elementTypes = {
     STUDYEVENT: "studyevent",
     FORM: "form",
@@ -36,6 +38,15 @@ export function getSerializedODM() {
 
 export function getODM() {
     return odm;
+}
+
+export function storeMetadata() {
+    localStorage.setItem(metadataFileName, getSerializedODM());
+}
+
+export function loadStoredMetadata() {
+    let metadataXMLString = localStorage.getItem(metadataFileName);
+    if (metadataXMLString) parseODM(metadataXMLString);
 }
 
 export async function getFormAsHTML(formOID, locale) {
