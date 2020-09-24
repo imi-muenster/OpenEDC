@@ -32,11 +32,15 @@ export function show() {
 
     $("#clinicaldata-section").classList.remove("is-hidden");
     $("#clinicaldata-toggle-button").classList.add("is-hidden");
+    $("#survey-view-button").classList.remove("is-hidden");
+    $("#audit-trail-button").classList.remove("is-hidden");
 }
 
 export function hide() {
     $("#clinicaldata-section").classList.add("is-hidden");
     $("#clinicaldata-toggle-button").classList.remove("is-hidden");
+    $("#survey-view-button").classList.add("is-hidden");
+    $("#audit-trail-button").classList.add("is-hidden");
 }
 
 export function setLanguage(newLocale) {
@@ -132,6 +136,7 @@ function loadFormsByStudyEvent(studyEventOID) {
     ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
     ioHelper.safeRemoveElement($("#odm-html-content"));
     $("#clinicaldata-form-data").classList.add("is-hidden");
+    $("#survey-view-button").disabled = true;
 
     for (let formDef of metadataHelper.getFormsByStudyEvent(studyEventOID)) {
         let translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
@@ -151,6 +156,7 @@ async function loadFormData(formOID) {
     await loadFormMetadata();
     loadFormClinicaldata();
     $("#clinicaldata-form-data").classList.remove("is-hidden");
+    $("#survey-view-button").disabled = false;
 }
 
 async function loadFormMetadata() {
@@ -178,7 +184,7 @@ async function loadFormMetadata() {
         $("#clinicaldata-next-button").textContent = "Continue";
     }
 
-    $("#clinicaldata-form-title").scrollIntoView({block: "end", behavior: "smooth"});
+    $("#clinicaldata-form-title").scrollIntoView({block: "end"});
 }
 
 function loadFormClinicaldata() {
@@ -243,6 +249,10 @@ function getPreviousFormOID(nextFormOID) {
 window.closeFormData = function() {
     currentElementID.form = null;
     loadFormsByStudyEvent(currentElementID.studyEvent);
+    if ($(".navbar").classList.contains("is-hidden")) {
+        hideSurveyView();
+        ioHelper.showWarning("Survey Finished", "Thank you for taking the survey. Please return the device now.");
+    }
 }
 
 function saveFormData() {
@@ -264,4 +274,35 @@ function saveFormData() {
     }
 
     clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList);
+}
+
+window.showSurveyView = function() {
+    $(".navbar").classList.add("is-hidden");
+    $("html").classList.remove("has-navbar-fixed-top");
+    $("#subjects-column").classList.add("is-hidden");
+    $("#clinicaldata-study-events-column").classList.add("is-hidden");
+    $("#clinicaldata-forms-column").classList.add("is-hidden");
+    $("#clinicaldata-column .panel").classList.add("is-shadowless");
+    $("#clinicaldata-column .panel-heading").classList.add("is-hidden");
+    $("#clinicaldata-column .panel").classList.add("is-shadowless");
+    $("#clinicaldata-column").classList.remove("is-two-fifths");
+    $("#clinicaldata-column").classList.add("is-full");
+    $("#clinicaldata-column .tree-panel-blocks").classList.add("is-survey-view");
+    $("#clinicaldata-section").classList.add("is-paddingless");
+    $("#clinicaldata-form-title").scrollIntoView({block: "end"});
+}
+
+function hideSurveyView() {
+    $(".navbar").classList.remove("is-hidden");
+    $("html").classList.add("has-navbar-fixed-top");
+    $("#subjects-column").classList.remove("is-hidden");
+    $("#clinicaldata-study-events-column").classList.remove("is-hidden");
+    $("#clinicaldata-forms-column").classList.remove("is-hidden");
+    $("#clinicaldata-column .panel").classList.remove("is-shadowless");
+    $("#clinicaldata-column .panel-heading").classList.remove("is-hidden");
+    $("#clinicaldata-column .panel").classList.remove("is-shadowless");
+    $("#clinicaldata-column").classList.add("is-two-fifths");
+    $("#clinicaldata-column").classList.remove("is-full");
+    $("#clinicaldata-column .tree-panel-blocks").classList.remove("is-survey-view");
+    $("#clinicaldata-section").classList.remove("is-paddingless");
 }
