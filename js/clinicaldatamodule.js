@@ -110,7 +110,8 @@ async function loadSubjectData(subjectKey) {
     loadFormClinicaldata();
 }
 
-function loadStudyEvents() {
+// TODO: loadStudyEvents loads entire tree if according elements are selected, implement this analogously for metadatamodule
+export function loadStudyEvents() {
     ioHelper.removeElements($$("#clinicaldata-study-event-panel-blocks a"));
     ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
 

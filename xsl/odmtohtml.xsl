@@ -90,7 +90,7 @@
         <xsl:param name="item"/>
         <xsl:param name="itemGroupOID"/>
         <xsl:choose>
-            <xsl:when test="count($codeList/odm:CodeListItem) &gt; 10">
+            <xsl:when test="count($codeList/odm:CodeListItem) >= 10">
                 <div class="select is-fullwidth">
                     <select type="select" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}">
                         <option value=""></option>

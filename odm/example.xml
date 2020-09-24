@@ -352,10 +352,22 @@
                 </CodeListItem>
             </CodeList>
             <CodeList OID="CL.2" Name="CL.2" DataType="text">
-                <CodeListItem CodedValue="Spain">
+                <CodeListItem CodedValue="France">
                     <Decode>
-                        <TranslatedText xml:lang="en">Spain</TranslatedText>
-                        <TranslatedText xml:lang="de">Spanien</TranslatedText>
+                        <TranslatedText xml:lang="en">France</TranslatedText>
+                        <TranslatedText xml:lang="de">Frankreich</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="Germany">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Germany</TranslatedText>
+                        <TranslatedText xml:lang="de">Deutschland</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="Greece">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Greece</TranslatedText>
+                        <TranslatedText xml:lang="de">Griechenland</TranslatedText>
                     </Decode>
                 </CodeListItem>
                 <CodeListItem CodedValue="Italy">
@@ -364,16 +376,34 @@
                         <TranslatedText xml:lang="de">Italien</TranslatedText>
                     </Decode>
                 </CodeListItem>
-                <CodeListItem CodedValue="France">
+                <CodeListItem CodedValue="Portugal">
                     <Decode>
-                        <TranslatedText xml:lang="en">France</TranslatedText>
-                        <TranslatedText xml:lang="de">Frankreich</TranslatedText>
+                        <TranslatedText xml:lang="en">Portugal</TranslatedText>
+                        <TranslatedText xml:lang="de">Portugal</TranslatedText>
                     </Decode>
                 </CodeListItem>
-                <CodeListItem CodedValue="Greece">
+                <CodeListItem CodedValue="Russia">
                     <Decode>
-                        <TranslatedText xml:lang="en">Greece</TranslatedText>
-                        <TranslatedText xml:lang="de">Griechenland</TranslatedText>
+                        <TranslatedText xml:lang="en">Russia</TranslatedText>
+                        <TranslatedText xml:lang="de">Russland</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="Sweden">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Sweden</TranslatedText>
+                        <TranslatedText xml:lang="de">Schweden</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="Spain">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Spain</TranslatedText>
+                        <TranslatedText xml:lang="de">Spanien</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="Turkey">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Turkey</TranslatedText>
+                        <TranslatedText xml:lang="de">Türkei</TranslatedText>
                     </Decode>
                 </CodeListItem>
                 <CodeListItem CodedValue="Other">
