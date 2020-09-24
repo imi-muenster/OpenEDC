@@ -288,7 +288,7 @@ window.showSurveyView = function() {
     $("#clinicaldata-column").classList.remove("is-two-fifths");
     $("#clinicaldata-column").classList.add("is-full");
     $("#clinicaldata-column .tree-panel-blocks").classList.add("is-survey-view");
-    $("#clinicaldata-section").classList.add("is-paddingless");
+    $("#clinicaldata-section").classList.add("p-3");
     $("#clinicaldata-form-title").scrollIntoView({block: "end"});
 }
 
@@ -304,5 +304,5 @@ function hideSurveyView() {
     $("#clinicaldata-column").classList.add("is-two-fifths");
     $("#clinicaldata-column").classList.remove("is-full");
     $("#clinicaldata-column .tree-panel-blocks").classList.remove("is-survey-view");
-    $("#clinicaldata-section").classList.remove("is-paddingless");
+    $("#clinicaldata-section").classList.remove("p-3");
 }
