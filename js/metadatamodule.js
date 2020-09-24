@@ -1148,13 +1148,6 @@ window.hideMoreModal = function() {
     setArrowKeyListener();
 }
 
-// TODO: Remove but add similar logic to modals on mobile
-window.togglePreviewFS = function() {
-    $("html").classList.toggle("no-scroll");
-    $("#preview-modal .modal-content").classList.toggle("is-large");
-    $("#preview-modal .modal-content").classList.toggle("is-fullscreen");
-}
-
 window.addAliasInput = function() {
     let emptyAliasFields = $$(".empty-alias-field");
     emptyAliasFields[emptyAliasFields.length-1].insertAdjacentElement("afterend", htmlElements.getEmptyAliasInputElement());

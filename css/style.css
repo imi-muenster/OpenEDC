@@ -69,17 +69,6 @@ hr {
     max-width: 600px;
 }
 
-.modal-content.is-fullscreen {
-    min-width: 100%;
-    min-height: 100%;
-}
-
-.modal-content.is-fullscreen .box {
-    border-radius: 0;
-    min-width: 100%;
-    min-height: 100%;
-}
-
 .modal-content.is-medium {
     max-width: 400px;
 }
@@ -187,4 +176,10 @@ hr {
     max-width: 500px;
     margin: 0 auto;
     overflow-y: visible;
+}
+
+@media only screen and (max-width: 768px)  {
+    #start-modal .modal-content {
+        max-height: none;
+    }
 }
