@@ -86,7 +86,7 @@ window.addSubject = function() {
     
     clinicaldataHelper.addSubject(subjectKey);
     loadSubjectKeys();
-    loadSubjectData(subjectKey);
+    if (subjectKey) loadSubjectData(subjectKey);
 }
 
 export function loadSubjectKeys() {
@@ -97,6 +97,7 @@ export function loadSubjectKeys() {
         panelBlock.onclick = () => loadSubjectData(subjectKey);
         $("#subject-panel-blocks").appendChild(panelBlock);
     }
+    if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
 }
 
 async function loadSubjectData(subjectKey) {
