@@ -109,7 +109,9 @@ function subjectToFilename(subject) {
 }
 
 export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
-    if (!subject) return;
+    // Do not store any data if no subject has been loaded or the formdata to be stored did not change compared to the previous one
+    if (!subject || isFormDataEquivalent(formItemDataList, getSubjectFormData(studyEventOID, formOID))) return;
+
     let studyEventData = clinicaldataTemplates.getStudyEventData(studyEventOID);
     let formData = clinicaldataTemplates.getFormData(formOID);
 
@@ -145,6 +147,10 @@ export function getSubjectFormData(studyEventOID, formOID) {
     }
 
     return formItemDataList;
+}
+
+function isFormDataEquivalent(formItemDataList1, formItemDataList2) {
+    return JSON.stringify(formItemDataList1) == JSON.stringify(formItemDataList2);
 }
 
 // TODO: Move to ioHelper? Also present in metadatahelper
