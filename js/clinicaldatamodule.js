@@ -28,7 +28,7 @@ export function init() {
 
 export function show() {
     loadSubjectKeys();
-    loadMetaAndClinicalData();
+    loadStudyEvents();
 
     $("#clinicaldata-section").classList.remove("is-hidden");
     $("#clinicaldata-toggle-button").classList.add("is-hidden");
@@ -37,12 +37,6 @@ export function show() {
 export function hide() {
     $("#clinicaldata-section").classList.add("is-hidden");
     $("#clinicaldata-toggle-button").classList.remove("is-hidden");
-}
-
-export function loadMetaAndClinicalData() {
-    loadStudyEvents();
-    if (currentElementID.studyEvent) loadFormsByStudyEvent(currentElementID.studyEvent);
-    if (currentElementID.form) loadFormData(currentElementID.form);
 }
 
 export function setLanguage(newLocale) {
@@ -91,12 +85,14 @@ window.addSubject = function() {
 
 export function loadSubjectKeys() {
     ioHelper.removeElements($$("#subject-panel-blocks a"));
+
     if (clinicaldataHelper.getSubjectKeys().length > 0) $("#no-subjects-hint").classList.add("is-hidden");
     for (let subjectKey of clinicaldataHelper.getSubjectKeys($("#sort-subject-select-inner").value)) {
         let panelBlock = htmlElements.getPanelBlock(false, subjectKey, "", subjectKey);
         panelBlock.onclick = () => loadSubjectData(subjectKey);
         $("#subject-panel-blocks").appendChild(panelBlock);
     }
+
     if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
 }
 
@@ -118,14 +114,18 @@ function loadStudyEvents() {
     for (let studyEventDef of metadataHelper.getStudyEvents()) {
         let translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         let panelBlock = htmlElements.getPanelBlock(false, studyEventDef.getAttribute("OID"), metadataHelper.elementTypes.STUDYEVENT, translatedText, studyEventDef.getAttribute("Name"));
-        panelBlock.onclick = () => loadFormsByStudyEvent(studyEventDef.getAttribute("OID"), true);
+        panelBlock.onclick = () => {
+            currentElementID.form = null;
+            loadFormsByStudyEvent(studyEventDef.getAttribute("OID"));
+        }
         $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
     }
+
+    if (currentElementID.studyEvent) loadFormsByStudyEvent(currentElementID.studyEvent);
 }
 
-function loadFormsByStudyEvent(studyEventOID, deselectForm) {
+function loadFormsByStudyEvent(studyEventOID) {
     currentElementID.studyEvent = studyEventOID;
-    if (deselectForm) currentElementID.form = null;
     ioHelper.removeIsActiveFromElements($$("#clinicaldata-study-event-panel-blocks a"));
     $(`#clinicaldata-study-event-panel-blocks [oid="${currentElementID.studyEvent}"]`).classList.add("is-active");
 
@@ -139,6 +139,8 @@ function loadFormsByStudyEvent(studyEventOID, deselectForm) {
         panelBlock.onclick = () => loadFormData(formDef.getAttribute("OID"));
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
     }
+
+    if (currentElementID.form) loadFormData(currentElementID.form);
 }
 
 async function loadFormData(formOID) {
@@ -239,7 +241,8 @@ function getPreviousFormOID(nextFormOID) {
 }
 
 window.closeFormData = function() {
-    loadFormsByStudyEvent(currentElementID.studyEvent, true);
+    currentElementID.form = null;
+    loadFormsByStudyEvent(currentElementID.studyEvent);
 }
 
 function saveFormData() {
