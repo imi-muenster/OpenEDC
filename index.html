@@ -38,7 +38,6 @@
                     <div class="navbar-item">
                         <div class="buttons">
                             <button class="button is-hidden" id="survey-view-button" onclick="showSurveyView()" disabled>Survey View</button>
-                            <button class="button is-hidden" id="audit-trail-button" onclick="showAuditTrail()" disabled>Audit Trail</button>
                             <button class="button" onclick="showProjectModal()">Project Options</button>
                             <button class="button is-link is-light" id="clinicaldata-toggle-button" onclick="showClinicaldata()">
                                 <span class="icon">
@@ -178,7 +177,7 @@
                         <div class="panel-block has-no-padding-bottom has-no-border-bottom">
                             <div class="field is-grouped is-fullwidth">
                                 <div class="control is-expanded has-icons-left">
-                                    <input class="input" id="add-subject-input" type="text" placeholder="New subject">
+                                    <input class="input" id="add-subject-input" type="text" placeholder="New Subject">
                                     <span class="icon is-left">
                                         <i class="fas fa-plus"></i>
                                     </span>
@@ -197,13 +196,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-block">
+                        <div class="panel-block has-no-padding-bottom has-no-border-bottom">
                             <div class="control has-icons-left">
                                 <input class="input" id="search-subject-input" type="text" placeholder="Search">
                                 <span class="icon is-left">
                                     <i class="fas fa-search"></i>
                                 </span>
                             </div>
+                        </div>
+                        <div class="panel-block">
+                            <button class="button is-small is-fullwidth" id="subject-info-button" disabled>Options and Audit Trail</button>
                         </div>
                         <div class="tree-panel-blocks" id="subject-panel-blocks">
                             <div class="panel-block has-text-centered has-text-grey-light" id="no-subjects-hint">

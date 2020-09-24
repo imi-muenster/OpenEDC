@@ -33,14 +33,12 @@ export function show() {
     $("#clinicaldata-section").classList.remove("is-hidden");
     $("#clinicaldata-toggle-button").classList.add("is-hidden");
     $("#survey-view-button").classList.remove("is-hidden");
-    $("#audit-trail-button").classList.remove("is-hidden");
 }
 
 export function hide() {
     $("#clinicaldata-section").classList.add("is-hidden");
     $("#clinicaldata-toggle-button").classList.remove("is-hidden");
     $("#survey-view-button").classList.add("is-hidden");
-    $("#audit-trail-button").classList.add("is-hidden");
 }
 
 export function setLanguage(newLocale) {
@@ -105,6 +103,7 @@ async function loadSubjectData(subjectKey) {
 
     ioHelper.removeIsActiveFromElements($$("#subject-panel-blocks a"));
     $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
+    $("#subject-info-button").disabled = false;
 
     clinicaldataHelper.loadSubject(currentElementID.subject);
     await loadFormMetadata();
