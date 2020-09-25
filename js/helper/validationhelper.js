@@ -4,11 +4,13 @@ import * as languageHelper from "./languagehelper.js";
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-// TODO: i18n
 export function process(itemsWithRangeChecks) {
     // First, handle data types (e.g., integer and float)
     for (let input of $$("#clinicaldata-content [inputmode='numeric'], #clinicaldata-content [inputmode='decimal'], #clinicaldata-content [type='date']")) {
         input.addEventListener("focusout", event => {
+            // Allow the close and metadata-toggle buttons to be clicked at any time
+            if (event.relatedTarget && ["clinicaldata-close-button", "metadata-toggle-button"].includes(event.relatedTarget.id)) return;
+
             let type = input.getAttribute("inputmode") ? input.getAttribute("inputmode") : input.getAttribute("type");
             switch (type) {
                 case "numeric":
@@ -38,6 +40,9 @@ export function process(itemsWithRangeChecks) {
     for (let item of itemsWithRangeChecks) {
         let input = $(`#clinicaldata-content [preview-oid='${item.itemOID}']`);
         input.addEventListener("focusout", event => {
+            // Allow the close and metadata-toggle buttons to be clicked at any time
+            if (event.relatedTarget && ["clinicaldata-close-button", "metadata-toggle-button"].includes(event.relatedTarget.id)) return;
+
             for (let rangeCheck of item.rangeChecks) {
                 switch (rangeCheck.comparator) {
                     case "LT":

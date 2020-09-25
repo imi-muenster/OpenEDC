@@ -589,8 +589,8 @@ function saveRangeChecks() {
     let rangeCheckInputs = $$(".range-check-input");
     for (let rangeCheckInput of rangeCheckInputs) {
         let comparator = rangeCheckInput.querySelector(".range-check-comparator-inner").value;
-        let checkValue = rangeCheckInput.querySelector(".range-check-value").value;
-        if (comparator && checkValue) {
+        let checkValue = rangeCheckInput.querySelector(".range-check-value").value.replace(",", ".");
+        if (comparator != "--" && checkValue == parseFloat(checkValue)) {
             metadataHelper.setItemRangeCheck(currentElementID.item, comparator, checkValue);
         }
     }
