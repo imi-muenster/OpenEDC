@@ -223,13 +223,10 @@ export function getConditions() {
 }
 
 export function getItemOIDSWithConditionByForm(formOID) {
-    let itemGroupRefs = $$(`FormDef[OID="${formOID}"] ItemGroupRef`);
-
     let itemOIDSWithCondition = [];
-    for (let itemGroupRef of itemGroupRefs) {
+    for (let itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
         let itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
-        let itemRefs = $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[CollectionExceptionConditionOID]`);
-        for (let itemRef of itemRefs) {
+        for (let itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[CollectionExceptionConditionOID]`)) {
             let itemOID = itemRef.getAttribute("ItemOID");
             let conditionOID = itemRef.getAttribute("CollectionExceptionConditionOID");
             let formalExpression = $(`ConditionDef[OID="${conditionOID}"] FormalExpression`);
@@ -243,6 +240,33 @@ export function getItemOIDSWithConditionByForm(formOID) {
     }
 
     return itemOIDSWithCondition;
+}
+
+// TODO: Introduce own class for the two arrays? If yes, implement it for getItemOIDSWithConditionByForm as well
+// TODO: Could also handle soft and hard RangeChecks
+export function getItemOIDSWithRangeChecksByForm(formOID) {
+    let itemOIDSWithRangeCheck = [];
+    for (let itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
+        let itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
+        for (let itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
+            let itemOID = itemRef.getAttribute("ItemOID");
+            let rangeChecks = [];
+            for (let rangeCheck of getRangeChecksByItem(itemOID)) {
+                rangeChecks.push({
+                    comparator: rangeCheck.getAttribute("Comparator"),
+                    checkValue: rangeCheck.querySelector("CheckValue").textContent
+                });
+            }
+            if (rangeChecks.length > 0) {
+                itemOIDSWithRangeCheck.push({
+                    itemOID: itemOID,
+                    rangeChecks: rangeChecks
+                });
+            }
+        }
+    }
+
+    return itemOIDSWithRangeCheck;
 }
 
 export function getMeasurementUnits() {

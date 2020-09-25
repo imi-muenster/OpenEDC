@@ -175,7 +175,7 @@ async function loadFormMetadata() {
     $("#clinicaldata-content").appendChild(form);
 
     conditionHelper.process(metadataHelper.getItemOIDSWithConditionByForm(currentElementID.form));
-    validationHelper.process();
+    validationHelper.process(metadataHelper.getItemOIDSWithRangeChecksByForm(currentElementID.form));
 
     !getPreviousFormOID(currentElementID.form) ? $("#clinicaldata-previous-button").disabled = true : $("#clinicaldata-previous-button").disabled = false;
     if (!getNextFormOID(currentElementID.form)) {

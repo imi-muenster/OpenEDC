@@ -4,7 +4,7 @@ const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
 // TODO: i18n
-export function process() {
+export function process(itemsWithRangeChecks) {
     // First, handle data types (e.g., integer and float)
     for (let input of $$("#clinicaldata-content [inputmode='numeric'], #clinicaldata-content [inputmode='decimal'], #clinicaldata-content [type='date']")) {
         input.addEventListener("focusout", event => {
@@ -34,6 +34,7 @@ export function process() {
     }
 
     // Second, handle range checks
+    console.log(itemsWithRangeChecks);
 }
 
 function isInt(value) {
