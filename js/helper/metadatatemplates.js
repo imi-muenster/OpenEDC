@@ -115,7 +115,7 @@ export let getMeasurementUnitDef = (oid, name, symbol, locale) => template(`
 `);
 
 export let getRangeCheck = (comparator, checkValue) => template(`
-    <RangeCheck SoftHard="Soft" Comparator="${comparator}">
+    <RangeCheck Comparator="${comparator}" SoftHard="Hard">
         <CheckValue>${checkValue}</CheckValue>
     </RangeCheck>
 `);

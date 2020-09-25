@@ -10,7 +10,7 @@
                     <xsl:with-param name="itemGroup" select="//odm:ItemGroupDef[@OID=$itemGroupOID]"/>
                 </xsl:call-template>
                 <xsl:for-each select="//odm:ItemGroupDef[@OID=$itemGroupOID]/odm:ItemRef">
-                    <div class="preview-field" preview-field-oid="{@ItemOID}">
+                    <div class="preview-field" preview-field-oid="{@ItemOID}" preview-field-group-oid="{$itemGroupOID}" mandatory="{@Mandatory}">
                         <xsl:variable name="itemOID" select="@ItemOID"/>
                         <xsl:call-template name="itemQuestion">
                             <xsl:with-param name="item" select="//odm:ItemDef[@OID=$itemOID]"/>

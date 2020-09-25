@@ -15,7 +15,7 @@ export function process(itemsWithRangeChecks) {
             switch (type) {
                 case "numeric":
                     if (input.value && !isInt(input.value)) {
-                        ioHelper.showWarning(languageHelper.getTranslation(languageHelper.getTranslation("Problem")), languageHelper.getTranslation("whole-number-warning"));
+                        ioHelper.showWarning(languageHelper.getTranslation("Problem"), languageHelper.getTranslation("whole-number-warning"));
                         event.target.focus();
                     }
                     break;

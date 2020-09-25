@@ -4,6 +4,7 @@ import * as ioHelper from "./helper/iohelper.js";
 import * as conditionHelper from "./helper/conditionhelper.js";
 import * as validationHelper from "./helper/validationhelper.js";
 import * as htmlElements from "./helper/htmlelements.js";
+import * as languageHelper from "./helper/languagehelper.js";
 
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
@@ -17,6 +18,7 @@ let currentElementID = {
 
 // Further auxiliary variables
 let locale = null;
+let skipMandatory = false;
 
 export function init() {
     currentElementID.subject = null;
@@ -158,6 +160,7 @@ async function loadFormData(formOID) {
     loadFormClinicaldata();
     $("#clinicaldata-form-data").classList.remove("is-hidden");
     $("#survey-view-button").disabled = false;
+    skipMandatory = false;
 }
 
 async function loadFormMetadata() {
@@ -212,7 +215,8 @@ function loadFormClinicaldata() {
 }
 
 window.loadNextFormData = async function() {
-    saveFormData();
+    // This checks whether the saving process could found unanswered mandatory fields. The form data is stored either way
+    if (!saveFormData()) return;
 
     let nextFormOID = getNextFormOID(currentElementID.form);
     //TODO: Everywhere !nextFormOID
@@ -276,6 +280,27 @@ function saveFormData() {
     }
 
     clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList);
+
+    // When mandatory fields were not answered show a warning only once
+    if (!skipMandatory && !checkMandatoryFields(formItemDataList)) {
+        skipMandatory = true;
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function checkMandatoryFields(formItemDataList) {
+    let mandatoryFieldsAnswered = true;
+    for (let mandatoryField of $$(".preview-field[mandatory='Yes']")) {
+        if (!formItemDataList.find(formItemData => formItemData.itemGroupOID == mandatoryField.getAttribute("preview-field-group-oid") && formItemData.itemOID == mandatoryField.getAttribute("preview-field-oid"))) {
+            if (mandatoryFieldsAnswered) ioHelper.showWarning(languageHelper.getTranslation("Problem"), languageHelper.getTranslation("unanswered-mandatory-questions-warning"));
+            mandatoryField.querySelector("label").style.color = "#f14668";
+            mandatoryFieldsAnswered = false;
+        }
+    }
+
+    return mandatoryFieldsAnswered;
 }
 
 window.showSurveyView = function() {

@@ -14,5 +14,6 @@
     "GE": "greater than or equal to",
     "EQ": "equal to",
     "NE": "not equal to",
-    "value-must-be-closing": "."
+    "value-must-be-closing": ".",
+    "unanswered-mandatory-questions-warning": "Please try to answer all highlighted mandatory questions. If you cannot answer one of these questions, you can let it empty."
 }
