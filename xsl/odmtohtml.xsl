@@ -54,17 +54,6 @@
                     </xsl:call-template>
                 </div>
             </xsl:when>
-            <xsl:when test="$item/odm:MeasurementUnitRef">
-                <div class="field has-addons">
-                    <div class="control input-has-addons">
-                        <input class="input" type="text" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
-                    </div>
-                    <xsl:variable name="measurementUnitOID" select="$item/odm:MeasurementUnitRef/@MeasurementUnitOID"/>
-                    <xsl:call-template name="measurementUnit">
-                        <xsl:with-param name="measurementUnit" select="//odm:MeasurementUnit[@OID=$measurementUnitOID]"/>
-                    </xsl:call-template>
-                </div>
-            </xsl:when>
             <xsl:when test="$item/@DataType = 'boolean'">
                 <div class="field">
                     <xsl:call-template name="booleanField">
@@ -73,14 +62,26 @@
                     </xsl:call-template>
                 </div>
             </xsl:when>
-            <xsl:when test="$item/@DataType = 'date'">
-                <div class="field">
-                    <input class="input" type="date" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
+            <xsl:when test="$item/odm:MeasurementUnitRef">
+                <div class="field has-addons">
+                    <div class="control input-has-addons">
+                        <xsl:call-template name="input">
+                            <xsl:with-param name="item" select="$item"/>
+                            <xsl:with-param name="itemGroupOID" select="$itemGroupOID"/>
+                        </xsl:call-template>
+                    </div>
+                    <xsl:variable name="measurementUnitOID" select="$item/odm:MeasurementUnitRef/@MeasurementUnitOID"/>
+                    <xsl:call-template name="measurementUnit">
+                        <xsl:with-param name="measurementUnit" select="//odm:MeasurementUnit[@OID=$measurementUnitOID]"/>
+                    </xsl:call-template>
                 </div>
             </xsl:when>
             <xsl:otherwise>
                 <div class="field">
-                    <input class="input" type="text" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
+                    <xsl:call-template name="input">
+                        <xsl:with-param name="item" select="$item"/>
+                        <xsl:with-param name="itemGroupOID" select="$itemGroupOID"/>
+                    </xsl:call-template>
                 </div>
             </xsl:otherwise>
         </xsl:choose>
@@ -110,12 +111,6 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    <xsl:template name="measurementUnit">
-        <xsl:param name="measurementUnit"/>
-        <div class="control">
-            <a class="button is-static"><xsl:value-of select="$measurementUnit/odm:Symbol/odm:TranslatedText[@xml:lang=$locale]"/></a>
-        </div>
-    </xsl:template>
     <xsl:template name="booleanField">
         <xsl:param name="item"/>
         <xsl:param name="itemGroupOID"/>
@@ -127,6 +122,30 @@
             <xsl:otherwise>
                 <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="1"/>&#160;Yes</label><br/>
                 <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="0"/>&#160;No</label>            
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    <xsl:template name="measurementUnit">
+        <xsl:param name="measurementUnit"/>
+        <div class="control">
+            <a class="button is-static"><xsl:value-of select="$measurementUnit/odm:Symbol/odm:TranslatedText[@xml:lang=$locale]"/></a>
+        </div>
+    </xsl:template>
+    <xsl:template name="input">
+        <xsl:param name="item"/>
+        <xsl:param name="itemGroupOID"/>
+        <xsl:choose>
+            <xsl:when test="$item/@DataType = 'date'">
+                <input class="input" type="date" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
+            </xsl:when>
+            <xsl:when test="$item/@DataType = 'integer'">
+                <input class="input" type="text" inputmode="numeric" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
+            </xsl:when>
+            <xsl:when test="$item/@DataType = 'float'">
+                <input class="input" type="text" inputmode="decimal" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <input class="input" type="text" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
