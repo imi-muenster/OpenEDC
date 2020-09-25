@@ -2,6 +2,7 @@ import * as metadataHelper from "./helper/metadatahelper.js";
 import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as conditionHelper from "./helper/conditionhelper.js";
+import * as validationHelper from "./helper/validationhelper.js";
 import * as htmlElements from "./helper/htmlelements.js";
 
 const $ = query => document.querySelector(query);
@@ -174,6 +175,7 @@ async function loadFormMetadata() {
     $("#clinicaldata-content").appendChild(form);
 
     conditionHelper.process(metadataHelper.getItemOIDSWithConditionByForm(currentElementID.form));
+    validationHelper.process();
 
     !getPreviousFormOID(currentElementID.form) ? $("#clinicaldata-previous-button").disabled = true : $("#clinicaldata-previous-button").disabled = false;
     if (!getNextFormOID(currentElementID.form)) {

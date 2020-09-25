@@ -165,6 +165,7 @@ const hideMenu = () => {
 // TODO: Sort the .css file
 // TODO: Refactor metadatamodule to remove "[studyEvent]clicked" functions. Set currentElementOID and is-active in the, e.g., loadFormsByStudyEvent as well and also refactor arrowKeyListener etc.
 // TODO: In metadatamodule, rename odm to metadata everywhere
+// TODO: In XSLT processing, remove the de/en differenatiation and translate boolean questions with the languageHelper, also remove xsl-templates when possible
 export function setIOListeners() {
     $("body").onresize = ioHelper.setTreeMaxHeight;
     // TODO: This style everywhere or onclick here
