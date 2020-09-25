@@ -24,23 +24,30 @@ let currentLocaleSet = false;
 let localesInODM = [];
 let localesNotInODM = [];
 
+let translations = null;
+
 export function init() {
     currentLocale = defaultLocale;
     currentLocaleSet = false;
     localesInODM = [];
     localesNotInODM = [];
+    translations = null;
     populateNonPresentLanguages();
 }
 
 export async function internationalize() {
     let translationResponse = await fetch(ioHelper.getBaseURL() + "/internationalization/" + currentLocale + ".json");
-    let translations = await translationResponse.json();
+    translations = await translationResponse.json();
 
     let translatableElements = document.querySelectorAll("[internationalization]");
     for (let translatableElement of translatableElements) {
         let key = translatableElement.getAttribute("internationalization");
         if (translations[key]) translatableElement.textContent = translations[key];
     }
+}
+
+export function getTranslation(key) {
+    return translations[key];
 }
 
 export function populatePresentLanguages(odm) {

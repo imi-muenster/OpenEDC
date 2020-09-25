@@ -2,5 +2,17 @@
     "no-subject-selected-hint": "Kein Subject ausgewählt. Sie können das Formular trotzdem ansehen und testen. Eingegebene Daten werden jedoch nicht gespeichert.",
     "Back": "Zurück",
     "Continue": "Weiter",
-    "Close": "Schließen"
+    "Close": "Schließen",
+    "Problem": "Problem",
+    "whole-number-warning": "Bitte geben Sie eine ganze Zahl ein.",
+    "number-warning": "Bitte geben Sie eine Zahl ein.",
+    "date-warning": "Bitte geben Sie ein Datum ein (Format: jjjj-mm-tt) oder nutzen Sie Datumsauswahl. Hinweis: Aktuell kommt Safari auf macOS leider ohne Datumsauswahl.",
+    "value-must-be": "Der Wert muss",
+    "LT": "kleiner als",
+    "LE": "kleiner oder gleich",
+    "GT": "größer als",
+    "GE": "größer oder gleich",
+    "EQ": "gleich",
+    "NE": "nicht gleich",
+    "value-must-be-closing": " sein."
 }

@@ -1,4 +1,5 @@
 import * as ioHelper from "./iohelper.js";
+import * as languageHelper from "./languagehelper.js";
 
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
@@ -12,20 +13,20 @@ export function process(itemsWithRangeChecks) {
             switch (type) {
                 case "numeric":
                     if (input.value && !isInt(input.value)) {
-                        ioHelper.showWarning("Problem", "Please enter a whole number.");
+                        ioHelper.showWarning(languageHelper.getTranslation(languageHelper.getTranslation("Problem")), languageHelper.getTranslation("whole-number-warning"));
                         event.target.focus();
                     }
                     break;
                 case "decimal":
                     input.value = input.value.replace(",", ".");
                     if (input.value && !isDecimal(input.value)) {
-                        ioHelper.showWarning("Problem", "Please enter a number.");
+                        ioHelper.showWarning(languageHelper.getTranslation("Problem"), languageHelper.getTranslation("number-warning"));
                         event.target.focus();
                     }
                     break;
                 case "date":
                     if (input.value && !isDate(input.value)) {
-                        ioHelper.showWarning("Problem", "Please enter a date (format: yyyy-mm-dd) or use the provided date picker. Note: Currently, Safari on macOS does not come with a date picker.");
+                        ioHelper.showWarning(languageHelper.getTranslation("Problem"), languageHelper.getTranslation("date-warning"));
                         event.target.focus();
                     }
                     break;
@@ -40,22 +41,22 @@ export function process(itemsWithRangeChecks) {
             for (let rangeCheck of item.rangeChecks) {
                 switch (rangeCheck.comparator) {
                     case "LT":
-                        if (rangeCheckValue(input.value) >= rangeCheck.checkValue) showRangeCheckWarning(event.target);
+                        if (rangeCheckValue(input.value) >= rangeCheck.checkValue) showRangeCheckWarning(event.target, rangeCheck);
                         break;
                     case "LE":
-                        if (rangeCheckValue(input.value) > rangeCheck.checkValue) showRangeCheckWarning(event.target);
+                        if (rangeCheckValue(input.value) > rangeCheck.checkValue) showRangeCheckWarning(event.target, rangeCheck);
                         break;
                     case "GT":
-                        if (rangeCheckValue(input.value) <= rangeCheck.checkValue) showRangeCheckWarning(event.target);
+                        if (rangeCheckValue(input.value) <= rangeCheck.checkValue) showRangeCheckWarning(event.target, rangeCheck);
                         break;
                     case "GE":
-                        if (rangeCheckValue(input.value) < rangeCheck.checkValue) showRangeCheckWarning(event.target);
+                        if (rangeCheckValue(input.value) < rangeCheck.checkValue) showRangeCheckWarning(event.target, rangeCheck);
                         break;
                     case "EQ":
-                        if (input.value && isDecimal(input.value) && rangeCheckValue(input.value) != rangeCheck.checkValue) showRangeCheckWarning(event.target);
+                        if (input.value && isDecimal(input.value) && rangeCheckValue(input.value) != rangeCheck.checkValue) showRangeCheckWarning(event.target, rangeCheck);
                         break;
                     case "NE":
-                        if (rangeCheckValue(input.value) == rangeCheck.checkValue) showRangeCheckWarning(event.target);
+                        if (rangeCheckValue(input.value) == rangeCheck.checkValue) showRangeCheckWarning(event.target, rangeCheck);
                 }
             }
         });
@@ -79,7 +80,7 @@ function rangeCheckValue(value) {
     return value == float ? float : undefined;
 }
 
-function showRangeCheckWarning(input) {
-    ioHelper.showWarning("Problem", "RangeCheck problem.");
+function showRangeCheckWarning(input, rangeCheck) {
+    ioHelper.showWarning(languageHelper.getTranslation("Problem"), languageHelper.getTranslation("value-must-be") + " " + languageHelper.getTranslation(rangeCheck.comparator) + " " + rangeCheck.checkValue + languageHelper.getTranslation("value-must-be-closing"));
     input.focus();
 }
