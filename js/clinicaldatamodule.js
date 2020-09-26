@@ -188,8 +188,6 @@ async function loadFormMetadata() {
     } else {
         $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("Continue");
     }
-
-    $("#clinicaldata-form-title").scrollIntoView({block: "end"});
 }
 
 function loadFormClinicaldata() {
@@ -225,6 +223,7 @@ window.loadNextFormData = async function() {
     if (nextFormOID != null) {
         currentElementID.form = nextFormOID
         await loadFormData(currentElementID.form);
+        scrollToFormStart();
     } else {
         closeFormData();
     }
@@ -238,6 +237,7 @@ window.loadPreviousFormData = async function() {
     if (previousFormOID != null) {
         currentElementID.form = previousFormOID
         await loadFormData(currentElementID.form);
+        scrollToFormStart();
     }
 }
 
@@ -262,6 +262,12 @@ window.closeFormData = function() {
         hideSurveyView();
         ioHelper.showWarning("Survey Finished", "Thank you for taking the survey. Please return the device now.");
     }
+}
+
+function scrollToFormStart() {
+    // Scroll to the beginning of the form on desktop and mobile
+    document.querySelector("#clinicaldata-form-data").scrollIntoView();
+    document.querySelector("#clinicaldata-column").scrollIntoView();
 }
 
 function saveFormData() {
@@ -328,7 +334,7 @@ window.showSurveyView = function() {
     $("#clinicaldata-column").classList.add("is-full");
     $("#clinicaldata-column .tree-panel-blocks").classList.add("is-survey-view");
     $("#clinicaldata-section").classList.add("p-3");
-    $("#clinicaldata-form-title").scrollIntoView({block: "end"});
+    scrollToFormStart();
 }
 
 function hideSurveyView() {
