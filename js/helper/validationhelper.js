@@ -15,20 +15,20 @@ export function process(itemsWithRangeChecks) {
             switch (type) {
                 case "numeric":
                     if (input.value && !isInt(input.value)) {
-                        ioHelper.showWarning(languageHelper.getTranslation("Problem"), languageHelper.getTranslation("whole-number-warning"));
+                        ioHelper.showWarning(languageHelper.getTranslation("note"), languageHelper.getTranslation("whole-number-warning"));
                         event.target.focus();
                     }
                     break;
                 case "decimal":
                     input.value = input.value.replace(",", ".");
                     if (input.value && !isDecimal(input.value)) {
-                        ioHelper.showWarning(languageHelper.getTranslation("Problem"), languageHelper.getTranslation("number-warning"));
+                        ioHelper.showWarning(languageHelper.getTranslation("note"), languageHelper.getTranslation("number-warning"));
                         event.target.focus();
                     }
                     break;
                 case "date":
                     if (input.value && !isDate(input.value)) {
-                        ioHelper.showWarning(languageHelper.getTranslation("Problem"), languageHelper.getTranslation("date-warning"));
+                        ioHelper.showWarning(languageHelper.getTranslation("note"), languageHelper.getTranslation("date-warning"));
                         event.target.focus();
                     }
                     break;
@@ -86,6 +86,6 @@ function rangeCheckValue(value) {
 }
 
 function showRangeCheckWarning(input, rangeCheck) {
-    ioHelper.showWarning(languageHelper.getTranslation("Problem"), languageHelper.getTranslation("value-must-be") + " " + languageHelper.getTranslation(rangeCheck.comparator) + " " + rangeCheck.checkValue + languageHelper.getTranslation("value-must-be-closing"));
+    ioHelper.showWarning(languageHelper.getTranslation("note"), languageHelper.getTranslation("value-must-be") + " " + languageHelper.getTranslation(rangeCheck.comparator) + " " + rangeCheck.checkValue + languageHelper.getTranslation("value-must-be-closing"));
     input.focus();
 }

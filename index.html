@@ -37,7 +37,6 @@
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="buttons">
-                            <button class="button is-hidden" id="survey-view-button" onclick="showSurveyView()" disabled>Survey View</button>
                             <button class="button" onclick="showProjectModal()">Project Options</button>
                             <button class="button is-link is-light" id="clinicaldata-toggle-button" onclick="showClinicaldata()">
                                 <span class="icon">
@@ -236,16 +235,32 @@
                                 <div class="notification is-link has-text-centered is-hidden" id="no-subject-selected-hint" internationalization="no-subject-selected-hint">
                                     No subject selected. You can still view and test the form but entered data will not be stored.
                                 </div>
-                                <h1 class="subtitle is-3" id="clinicaldata-form-title"></h1>
+                                <nav class="level">
+                                    <div class="level-left">
+                                        <div class="level-item">
+                                            <h1 class="subtitle is-3" id="clinicaldata-form-title"></h1>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <div class="level-item">
+                                            <button class="button is-small is-link is-light" id="survey-view-button" onclick="showSurveyView()">
+                                                <span class="icon">
+                                                    <i class="fas fa-expand"></i>
+                                                </span>
+                                                <span internationalization="survey-view">Survey View</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </nav>
                                 <hr>
                                 <div id="clinicaldata-content"></div>
-                                <button class="button" id="clinicaldata-close-button" onclick="closeFormData()" internationalization="Close">Close</button>
+                                <button class="button" id="clinicaldata-close-button" onclick="closeFormData()" internationalization="close">Close</button>
                                 <div class="field has-addons is-pulled-right">
                                     <div class="control">
-                                        <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" internationalization="Back">Back</button>
+                                        <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" internationalization="back">Back</button>
                                     </div>
                                     <div class="control">
-                                        <button class="button is-link" id="clinicaldata-next-button" onclick="loadNextFormData()" internationalization="Continue">Continue</button>
+                                        <button class="button is-link" id="clinicaldata-next-button" onclick="loadNextFormData()" internationalization="continue">Continue</button>
                                     </div>
                                 </div>
                             </div>
