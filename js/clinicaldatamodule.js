@@ -194,7 +194,7 @@ async function loadFormMetadata() {
 
 function loadFormClinicaldata() {
     if (!currentElementID.subject) $("#no-subject-selected-hint").classList.remove("is-hidden");
-    if (!currentElementID.studyEvent || !currentElementID.form || !currentElementID.subject) return;
+    if (!currentElementID.studyEvent || !currentElementID.form) return;
 
     $("#no-subject-selected-hint").classList.add("is-hidden");
 

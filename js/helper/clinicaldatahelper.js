@@ -92,6 +92,7 @@ export function loadSubject(subjectKey) {
 
 export function storeSubject() {
     if (!subject) return;
+    
     const fileName = subjectToFilename(subject);
     localStorage.setItem(fileName, getSerializedSubjectData());
 }
@@ -133,6 +134,8 @@ export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
 }
 
 export function getSubjectFormData(studyEventOID, formOID) {
+    if (!subject) return [];
+
     let formData = getLastElement($$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`));
     if (!formData) return [];
 
