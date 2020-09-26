@@ -27,6 +27,7 @@ document.addEventListener("LanguageChanged", languageEvent => {
 
     clinicaldataModule.setLanguage(languageEvent.detail);
     if (!$("#clinicaldata-section").classList.contains("is-hidden")) {
+        clinicaldataModule.cacheFormData();
         clinicaldataModule.loadStudyEvents();
     }
     

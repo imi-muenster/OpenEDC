@@ -19,6 +19,7 @@ let currentElementID = {
 // Further auxiliary variables
 let locale = null;
 let skipMandatory = false;
+let cachedFormData = null;
 
 export function init() {
     currentElementID.subject = null;
@@ -103,6 +104,7 @@ export function loadSubjectKeys() {
 
 async function loadSubjectData(subjectKey) {
     currentElementID.subject = subjectKey;
+    cachedFormData = null;
 
     ioHelper.removeIsActiveFromElements($$("#subject-panel-blocks a"));
     $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
@@ -195,7 +197,9 @@ function loadFormClinicaldata() {
     if (!currentElementID.studyEvent || !currentElementID.form || !currentElementID.subject) return;
 
     $("#no-subject-selected-hint").classList.add("is-hidden");
-    for (let formItemData of clinicaldataHelper.getSubjectFormData(currentElementID.studyEvent, currentElementID.form)) {
+
+    let formItemDataList = cachedFormData ? cachedFormData : clinicaldataHelper.getSubjectFormData(currentElementID.studyEvent, currentElementID.form);
+    for (let formItemData of formItemDataList) {
         let inputElement = $(`#clinicaldata-content [preview-oid="${formItemData.itemOID}"][preview-group-oid="${formItemData.itemGroupOID}"]`);
         switch (inputElement.getAttribute("type")) {
             case "text":
@@ -210,6 +214,8 @@ function loadFormClinicaldata() {
                 inputElement.dispatchEvent(new Event("input"));
         }
     }
+
+    cachedFormData = null;
 }
 
 window.loadNextFormData = async function() {
@@ -260,6 +266,19 @@ window.closeFormData = function() {
 }
 
 function saveFormData() {
+    let formItemDataList = getFormData();
+    clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList);
+
+    // When mandatory fields were not answered show a warning only once
+    if (!skipMandatory && !checkMandatoryFields(formItemDataList)) {
+        skipMandatory = true;
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function getFormData() {
     // TODO: Rename preview to metadata or something and also preview-group-id to something else
     let formItemDataList = [];
     for (let inputElement of $$("#clinicaldata-content [preview-oid]")) {
@@ -277,15 +296,7 @@ function saveFormData() {
         }
     }
 
-    clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList);
-
-    // When mandatory fields were not answered show a warning only once
-    if (!skipMandatory && !checkMandatoryFields(formItemDataList)) {
-        skipMandatory = true;
-        return false;
-    } else {
-        return true;
-    }
+    return formItemDataList;
 }
 
 function checkMandatoryFields(formItemDataList) {
@@ -293,12 +304,16 @@ function checkMandatoryFields(formItemDataList) {
     for (let mandatoryField of $$(".preview-field[mandatory='Yes']:not(.is-hidden)")) {
         if (!formItemDataList.find(formItemData => formItemData.itemGroupOID == mandatoryField.getAttribute("preview-field-group-oid") && formItemData.itemOID == mandatoryField.getAttribute("preview-field-oid"))) {
             if (mandatoryFieldsAnswered) ioHelper.showWarning(languageHelper.getTranslation("Problem"), languageHelper.getTranslation("unanswered-mandatory-questions-warning"));
-            mandatoryField.querySelector("label").style.color = "#f14668";
+            mandatoryField.classList.add("is-unanswered");
             mandatoryFieldsAnswered = false;
         }
     }
 
     return mandatoryFieldsAnswered;
+}
+
+export function cacheFormData() {
+    cachedFormData = getFormData();
 }
 
 window.showSurveyView = function() {
