@@ -251,15 +251,6 @@ function getPreviousFormOID(nextFormOID) {
     }
 }
 
-window.closeFormData = function() {
-    currentElementID.form = null;
-    loadFormsByStudyEvent(currentElementID.studyEvent);
-    if ($(".navbar").classList.contains("is-hidden")) {
-        hideSurveyView();
-        ioHelper.showWarning(languageHelper.getTranslation("survey-finished"), languageHelper.getTranslation("survey-finished-text"));
-    }
-}
-
 function scrollToFormStart() {
     // Scroll to the beginning of the form on desktop and mobile
     document.querySelector("#clinicaldata-form-data").scrollIntoView();
@@ -315,6 +306,25 @@ function checkMandatoryFields(formItemDataList) {
 
 export function cacheFormData() {
     cachedFormData = getFormData();
+}
+
+window.closeFormData = function(saveData) {
+    if (saveData) {
+        skipMandatory = true;
+        saveFormData();
+    }
+
+    currentElementID.form = null;
+    loadFormsByStudyEvent(currentElementID.studyEvent);
+    $("#close-clinicaldata-modal").classList.remove("is-active");
+    if ($(".navbar").classList.contains("is-hidden")) {
+        hideSurveyView();
+        ioHelper.showWarning(languageHelper.getTranslation("survey-finished"), languageHelper.getTranslation("survey-finished-text"));
+    }
+}
+
+window.toggleCloseClinicaldataModal = function() {
+    $("#close-clinicaldata-modal").classList.toggle("is-active");
 }
 
 window.showSurveyView = function() {

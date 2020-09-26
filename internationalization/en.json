@@ -2,7 +2,7 @@
     "no-subject-selected-hint": "No subject selected. You can still view and test the form but entered data will not be stored.",
     "survey-view": "Survey View",
     "survey-finished": "Survey finished",
-    "survey-finished-text": "Thank you for taking the survey. You successfully answered all forms.",
+    "survey-finished-text": "Thank you for taking the survey.",
     "back": "Back",
     "continue": "Continue",
     "finish": "Finish",
@@ -19,5 +19,9 @@
     "EQ": "equal to",
     "NE": "not equal to",
     "value-must-be-closing": ".",
-    "unanswered-mandatory-questions-warning": "Please try to answer all highlighted mandatory questions. If you cannot answer one of these questions, you can let it empty."
+    "unanswered-mandatory-questions-warning": "Please try to answer all highlighted mandatory questions. If you cannot answer one of these questions, you can let it empty.",
+    "close-form": "Close form",
+    "close-form-text": "Do you really want to close the current form?",
+    "close-without-saving": "Close without saving",
+    "close-with-saving": "Close with saving"
 }

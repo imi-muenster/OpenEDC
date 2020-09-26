@@ -254,7 +254,7 @@
                                 </nav>
                                 <hr>
                                 <div id="clinicaldata-content"></div>
-                                <button class="button" id="clinicaldata-close-button" onclick="closeFormData()" internationalization="close">Close</button>
+                                <button class="button" id="clinicaldata-close-button" onclick="toggleCloseClinicaldataModal()" internationalization="close">Close</button>
                                 <div class="field has-addons is-pulled-right">
                                     <div class="control">
                                         <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" internationalization="back">Back</button>
@@ -289,8 +289,26 @@
                     <h2 class="subtitle">Please confirm</h2>
                     <p>The reference to the element will be removed. The element definition will be removed as well if there was no other reference to it.</p>
                     <br>
-                    <button class="button is-danger is-small" onclick="deleteElement()">Remove</button>
-                    <button class="button is-small" onclick="hideDeleteModal()">Cancel</button>
+                    <div class="buttons is-centered">
+                        <button class="button is-danger is-small" onclick="deleteElement()">Remove</button>
+                        <button class="button is-small" onclick="hideDeleteModal()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="close-clinicaldata-modal">
+            <div class="modal-background" onclick="toggleCloseClinicaldataModal()"></div>
+            <div class="modal-content is-medium">
+                <div class="box has-text-centered">
+                    <h2 class="subtitle" internationalization="close-form">Close form</h2>
+                    <p internationalization="close-form-text">Do you really want to close the current form?</p>
+                    <br>
+                    <div class="buttons is-centered">
+                        <button class="button is-small" onclick="closeFormData(false)" internationalization="close-without-saving">Close without saving</button>
+                        <button class="button is-small" onclick="closeFormData(true)" internationalization="close-with-saving">Close with saving</button>
+                        <button class="button is-link is-small" onclick="toggleCloseClinicaldataModal()" internationalization="continue">Continue</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -495,9 +513,7 @@
                                 <span>Data Protection Policy</span>
                             </a>
                             <br><br>
-                            <div class="buttons">
-                                <button class="button" onclick="hideAboutModal()">Close</button>
-                            </div>
+                            <button class="button" onclick="hideAboutModal()">Close</button>
                         </div>
                     </div>
                 </div>

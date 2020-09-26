@@ -1,8 +1,8 @@
 {
     "no-subject-selected-hint": "Kein Subject ausgewählt. Sie können das Formular trotzdem ansehen und testen. Eingegebene Daten werden jedoch nicht gespeichert.",
     "survey-view": "Umfrageansicht",
-    "survey-finished": "Survey beendet",
-    "survey-finished-text": "Danke, dass Sie an der Umfrage teilgenommen haben. Sie haben alle Fragebögen erfolgreich beantwortet.",
+    "survey-finished": "Umfrage beendet",
+    "survey-finished-text": "Danke, dass Sie an der Umfrage teilgenommen haben.",
     "back": "Zurück",
     "continue": "Weiter",
     "finish": "Beenden",
@@ -19,5 +19,9 @@
     "EQ": "gleich",
     "NE": "nicht gleich",
     "value-must-be-closing": " sein.",
-    "unanswered-mandatory-questions-warning": "Bitte versuchen Sie, alle hervorgehobenen Pflichtfragen zu beantworten. Falls Sie eine Frage nicht beantworten können, können Sie sie leer lassen."
+    "unanswered-mandatory-questions-warning": "Bitte versuchen Sie, alle hervorgehobenen Pflichtfragen zu beantworten. Falls Sie eine Frage nicht beantworten können, können Sie sie leer lassen.",
+    "close-form": "Formular schließen",
+    "close-form-text": "Möchten Sie das aktuelle Formular wirklich schließen?",
+    "close-without-saving": "Schließen ohne Speichern",
+    "close-with-saving": "Schließen mit Speichern"
 }
