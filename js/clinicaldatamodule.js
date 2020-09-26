@@ -182,11 +182,9 @@ async function loadFormMetadata() {
 
     !getPreviousFormOID(currentElementID.form) ? $("#clinicaldata-previous-button").disabled = true : $("#clinicaldata-previous-button").disabled = false;
     if (!getNextFormOID(currentElementID.form)) {
-        // TODO: i18n
-        $("#clinicaldata-next-button").textContent = "Finish";
+        $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("Finish");
     } else {
-        // TODO: i18n
-        $("#clinicaldata-next-button").textContent = "Continue";
+        $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("Continue");
     }
 
     $("#clinicaldata-form-title").scrollIntoView({block: "end"});
@@ -292,7 +290,7 @@ function saveFormData() {
 
 function checkMandatoryFields(formItemDataList) {
     let mandatoryFieldsAnswered = true;
-    for (let mandatoryField of $$(".preview-field[mandatory='Yes']")) {
+    for (let mandatoryField of $$(".preview-field[mandatory='Yes']:not(.is-hidden)")) {
         if (!formItemDataList.find(formItemData => formItemData.itemGroupOID == mandatoryField.getAttribute("preview-field-group-oid") && formItemData.itemOID == mandatoryField.getAttribute("preview-field-oid"))) {
             if (mandatoryFieldsAnswered) ioHelper.showWarning(languageHelper.getTranslation("Problem"), languageHelper.getTranslation("unanswered-mandatory-questions-warning"));
             mandatoryField.querySelector("label").style.color = "#f14668";
