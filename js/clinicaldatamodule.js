@@ -193,10 +193,8 @@ async function loadFormMetadata() {
 }
 
 function loadFormClinicaldata() {
-    if (!currentElementID.subject) $("#no-subject-selected-hint").classList.remove("is-hidden");
     if (!currentElementID.studyEvent || !currentElementID.form) return;
-
-    $("#no-subject-selected-hint").classList.add("is-hidden");
+    currentElementID.subject ? $("#no-subject-selected-hint").classList.add("is-hidden") : $("#no-subject-selected-hint").classList.remove("is-hidden");
 
     let formItemDataList = cachedFormData ? cachedFormData : clinicaldataHelper.getSubjectFormData(currentElementID.studyEvent, currentElementID.form);
     for (let formItemData of formItemDataList) {
@@ -233,6 +231,7 @@ window.loadNextFormData = async function() {
 }
 
 window.loadPreviousFormData = async function() {
+    skipMandatory = true;
     saveFormData();
 
     let previousFormOID = getPreviousFormOID(currentElementID.form);

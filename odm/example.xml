@@ -99,7 +99,7 @@
                     <TranslatedText xml:lang="en">Personal questions</TranslatedText>
                     <TranslatedText xml:lang="de">Persönliche Fragen</TranslatedText>
                 </Description>
-                <ItemRef ItemOID="I.2" Mandatory="Yes"/>
+                <ItemRef ItemOID="I.2" Mandatory="No"/>
                 <ItemRef ItemOID="Gender" Mandatory="No"/>
                 <ItemRef ItemOID="I.3" Mandatory="No"/>
                 <ItemRef ItemOID="I.4" Mandatory="No"/>
@@ -121,7 +121,7 @@
                     <TranslatedText xml:lang="en">Cardiovascular</TranslatedText>
                     <TranslatedText xml:lang="de">Kardiovaskulär</TranslatedText>
                 </Description>
-                <ItemRef ItemOID="CardiovascularDiseases" Mandatory="No"/>
+                <ItemRef ItemOID="CardiovascularDiseases" Mandatory="Yes"/>
                 <ItemRef ItemOID="I.8" Mandatory="No" CollectionExceptionConditionOID="C.3"/>
                 <ItemRef ItemOID="I.9" Mandatory="No" CollectionExceptionConditionOID="C.3"/>
             </ItemGroupDef>
