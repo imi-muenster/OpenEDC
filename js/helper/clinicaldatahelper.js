@@ -107,7 +107,7 @@ export function loadSubject(subjectKey) {
     storeSubject();
 
     subject = subjects.find(subject => subject.key == subjectKey);
-    subjectData = parseSubjectData(localStorage.getItem(subjectToFilename(subject)));
+    subjectData = subjectKey ? parseSubjectData(localStorage.getItem(subjectToFilename(subject))) : null;
     console.log(subjectData);
 }
 

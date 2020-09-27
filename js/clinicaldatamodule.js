@@ -101,12 +101,15 @@ export function loadSubjectKeys() {
 }
 
 async function loadSubjectData(subjectKey) {
+    // Option to deselect a subject by clicking on the same subject again
+    if (subjectKey == currentElementID.subject) subjectKey = null;
+
     currentElementID.subject = subjectKey;
     cachedFormData = null;
 
     ioHelper.removeIsActiveFromElements($$("#subject-panel-blocks a"));
-    $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
-    $("#subject-info-button").disabled = false;
+    if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
+    $("#subject-info-button").disabled = currentElementID.subject ? false : true;
 
     clinicaldataHelper.loadSubject(currentElementID.subject);
     await loadFormMetadata();
@@ -166,9 +169,9 @@ async function loadFormMetadata() {
 
     let translatedText = metadataHelper.getElementDefByOID(currentElementID.form).querySelector(`Description TranslatedText[*|lang="${locale}"]`);
     if (translatedText) {
-        $("#clinicaldata-form-title .subtitle").textContent = ioHelper.shortenText(translatedText.textContent, 12);
+        $("#clinicaldata-form-title .subtitle").textContent = ioHelper.shortenText(translatedText.textContent, 15);
     } else {
-        $("#clinicaldata-form-title .subtitle").textContent = ioHelper.shortenText(metadataHelper.getStudyName(), 12);
+        $("#clinicaldata-form-title .subtitle").textContent = ioHelper.shortenText(metadataHelper.getStudyName(), 15);
     }
 
     let form = await metadataHelper.getFormAsHTML(currentElementID.form, locale);
