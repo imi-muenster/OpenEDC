@@ -36,7 +36,7 @@ document.addEventListener("LanguageChanged", languageEvent => {
 
 const startApp = () => {
     languageHelper.init();
-    languageHelper.populatePresentLanguages(metadataHelper.getODM());
+    languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
     languageHelper.createLanguageSelect();
     languageHelper.internationalize();
     
@@ -84,7 +84,8 @@ window.uploadODM = async function() {
     let content = await ioHelper.getFileContent(file.files[0]);
 
     if (content) {
-        metadataHelper.parseODM(content);
+        metadataHelper.parseMetadata(content);
+        clinicaldataHelper.importClinicalData(content);
         startApp();
     }
 }
@@ -143,7 +144,19 @@ window.hideAboutModal = function() {
 window.downloadODM = function() {
     metadataHelper.setCreationDateTimeNow();
     metadataHelper.setFileOID(metadataHelper.getStudyName());
-    ioHelper.download(metadataHelper.getStudyName()+".xml", metadataHelper.getSerializedODM());
+
+    let odm = metadataHelper.getMetadata();
+    let clinicaldata = clinicaldataHelper.getClinicalData(odm.querySelector("Study").getAttribute("OID"), odm.querySelector("MetaDataVersion").getAttribute("OID"));
+    odm.querySelector("ODM").appendChild(clinicaldata);
+
+    ioHelper.download(metadataHelper.getStudyName()+".xml", new XMLSerializer().serializeToString(odm));
+}
+
+window.downloadMetadata = function() {
+    metadataHelper.setCreationDateTimeNow();
+    metadataHelper.setFileOID(metadataHelper.getStudyName());
+
+    ioHelper.download(metadataHelper.getStudyName()+".xml", metadataHelper.getSerializedMetadata());
 }
 
 window.removeData = function() {
@@ -167,6 +180,8 @@ const hideMenu = () => {
 // TODO: Refactor metadatamodule to remove "[studyEvent]clicked" functions. Set currentElementOID and is-active in the, e.g., loadFormsByStudyEvent as well and also refactor arrowKeyListener etc.
 // TODO: In metadatamodule, rename odm to metadata everywhere
 // TODO: In XSLT processing, remove the de/en differenatiation and translate boolean questions with the languageHelper, also remove xsl-templates when possible
+// TODO: Use let very frequently even it it could be declared as const
+// TODO: Metadata -> MetaData, Clinicaldata -> ClinicalData
 export function setIOListeners() {
     $("body").onresize = ioHelper.setTreeMaxHeight;
     // TODO: This style everywhere or onclick here

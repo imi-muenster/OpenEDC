@@ -30,12 +30,33 @@ let subjects = [];
 let subject = null;
 let subjectData = null;
 
-function parseSubjectData(xmlString) {
-    return new DOMParser().parseFromString(xmlString, "text/xml").documentElement;
+function parseSubjectData(subjectXMLString) {
+    return new DOMParser().parseFromString(subjectXMLString, "text/xml").documentElement;
 }
 
 function getSerializedSubjectData() {
     return new XMLSerializer().serializeToString(subjectData);
+}
+
+export function importClinicalData(odmXMLString) {
+    const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
+    for (let subjectData of odm.querySelectorAll("ClinicalData SubjectData")) {
+        // TODO: Take the created date from the audit trail
+        const subject = new Subject(subjectData.getAttribute("SubjectKey"), new Date());
+        const fileName = subjectToFilename(subject);
+        localStorage.setItem(fileName, new XMLSerializer().serializeToString(subjectData));
+    }
+}
+
+export function getClinicalData(studyOID, metadataVersionOID) {
+    let clinicalData = clinicaldataTemplates.getClinicalData(studyOID, metadataVersionOID);
+    for (let fileName of Object.keys(localStorage)) {
+        if (fileName.split(fileNameSeparator).length > 1) {
+            clinicalData.appendChild(parseSubjectData(localStorage.getItem(fileName)));
+        }
+    }
+
+    return clinicalData;
 }
 
 export function loadSubjects() {

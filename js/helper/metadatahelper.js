@@ -1,8 +1,8 @@
 import * as metadataTemplates from "./metadatatemplates.js";
 import * as ioHelper from "./iohelper.js";
 
-const $ = query => odm.querySelector(query);
-const $$ = query => odm.querySelectorAll(query);
+const $ = query => metadata.querySelector(query);
+const $$ = query => metadata.querySelectorAll(query);
 
 const metadataFileName = "metadata";
 
@@ -14,49 +14,51 @@ export const elementTypes = {
     CODELISTITEM: "codelistitem"
 }
 
-// TODO: Rename to metadata. And I probably need an odmhelper again, that takes an entire odm and gives the parts to the metadata- and clinicaldatahelper. And also merges then during the download.
-let odm = null;
+let metadata = null;
 
 export function loadEmptyProject() {
-    odm = metadataTemplates.getODMTemplate();
+    metadata = metadataTemplates.getODMTemplate();
 }
 
-export function parseODM(odmXMLString) {
-    odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
+export function parseMetadata(odmXMLString) {
+    metadata = new DOMParser().parseFromString(odmXMLString, "text/xml");
+    for (let clinicalData of metadata.querySelectorAll("ClinicalData")) {
+        clinicalData.remove();
+    }
 }
 
 export async function loadExample() {
     let exampleResponse = await fetch(ioHelper.getBaseURL() + "/odm/example.xml");
     let exampleODM = await exampleResponse.text();
 
-    odm = new DOMParser().parseFromString(exampleODM, "text/xml");
+    metadata = new DOMParser().parseFromString(exampleODM, "text/xml");
 }
 
-export function getSerializedODM() {
-    return new XMLSerializer().serializeToString(odm);
+export function getSerializedMetadata() {
+    return new XMLSerializer().serializeToString(metadata);
 }
 
-export function getODM() {
-    return odm;
+export function getMetadata() {
+    return metadata;
 }
 
 export function storeMetadata() {
-    localStorage.setItem(metadataFileName, getSerializedODM());
+    localStorage.setItem(metadataFileName, getSerializedMetadata());
 }
 
 export function loadStoredMetadata() {
     let metadataXMLString = localStorage.getItem(metadataFileName);
-    if (metadataXMLString) parseODM(metadataXMLString);
+    if (metadataXMLString) parseMetadata(metadataXMLString);
 
-    if (getODM()) return true;
+    if (getMetadata()) return true;
 }
 
 export function clearMetadata() {
-    odm = null;
+    metadata = null;
 }
 
 export async function getFormAsHTML(formOID, locale) {
-    let prettifiedODM = ioHelper.prettifyContent(getSerializedODM());
+    let prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
 
     let xsltResponse = await fetch(ioHelper.getBaseURL() + "/xsl/odmtohtml.xsl");
     let xsltStylesheet = await xsltResponse.text();
