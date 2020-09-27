@@ -349,7 +349,11 @@ window.closeFormData = function(saveData) {
 }
 
 window.toggleCloseClinicaldataModal = function() {
-    $("#close-clinicaldata-modal").classList.toggle("is-active");
+    if (currentElementID.subject) {
+        $("#close-clinicaldata-modal").classList.toggle("is-active");
+    } else {
+        closeFormData();
+    }
 }
 
 window.showSurveyView = function() {

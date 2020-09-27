@@ -190,7 +190,7 @@ hr {
 }
 
 @media only screen and (max-width: 768px)  {
-    #start-modal .modal-content {
+    #start-modal .modal-content, #about-modal .modal-content {
         max-height: none;
     }
 }

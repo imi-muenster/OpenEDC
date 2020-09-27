@@ -305,7 +305,7 @@
                     <p internationalization="close-form-text">Do you really want to close the current form?</p>
                     <br>
                     <div class="buttons is-centered">
-                        <button class="button is-small" onclick="closeFormData(false)" internationalization="close-without-saving">Close without saving</button>
+                        <button class="button is-small" onclick="closeFormData()" internationalization="close-without-saving">Close without saving</button>
                         <button class="button is-small" onclick="closeFormData(true)" internationalization="close-with-saving">Close with saving</button>
                         <button class="button is-link is-small" onclick="toggleCloseClinicaldataModal()" internationalization="continue">Continue</button>
                     </div>
@@ -495,9 +495,11 @@
                             <h1 class="title">About OpenEDC</h1>
                             <h2 class="subtitle">Part of the <a target="_blank" rel="noopener noreferrer" href="https://medical-data-models.org/?lang=en">MDM Portal</a></h2>
                             <hr>
-                            <p>This free and open-source electronic data capture (EDC) system lets you create and conduct simple medical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format. This EDC system can be used to design electronic case report forms as well as to collect and archive clinical research data.</p>
+                            <p>This free and open-source electronic data capture (EDC) system lets you create and conduct secure clinical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format.</p>
                             <br>
-                            <p>The EDC system is currently in a beta, but yet stable state. For any questions, bug reports, or feature requests, please contact:</p>
+                            <p>All data is entirely processed on your local device. No data is ever send to our server. You can optionally connect to your own OpenEDC server to simply create multi-centric research studies with multiple users.</p>
+                            <br>
+                            <p>This EDC system is currently in a beta, but yet stable state. For any questions, bug reports, or feature requests, please contact:</p>
                             <br>
                             <div class="notification">
                                 <p>Leonard Greulich</p>
