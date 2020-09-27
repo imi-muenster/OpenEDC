@@ -156,7 +156,7 @@ window.downloadMetadata = function() {
     metadataHelper.setCreationDateTimeNow();
     metadataHelper.setFileOID(metadataHelper.getStudyName());
 
-    ioHelper.download(metadataHelper.getStudyName()+".xml", metadataHelper.getSerializedMetadata());
+    ioHelper.download(metadataHelper.getStudyName()+"_metadata.xml", metadataHelper.getSerializedMetadata());
 }
 
 window.removeData = function() {

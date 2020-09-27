@@ -18,7 +18,7 @@ export function removeIsActiveFromElements(elements) {
 
 export function showWarning(title, message) {
     $("#warning-modal h2").textContent = title;
-    $("#warning-modal p").textContent = message;
+    $("#warning-modal p").innerHTML = message;
     $("#warning-modal").classList.add("is-active");
 }
 

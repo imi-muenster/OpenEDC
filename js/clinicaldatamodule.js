@@ -190,9 +190,14 @@ function loadFormClinicaldata() {
     if (!currentElementID.studyEvent || !currentElementID.form) return;
     currentElementID.subject ? $("#no-subject-selected-hint").classList.add("is-hidden") : $("#no-subject-selected-hint").classList.remove("is-hidden");
 
+    let errors = [];
     let formItemDataList = cachedFormData ? cachedFormData : clinicaldataHelper.getSubjectFormData(currentElementID.studyEvent, currentElementID.form);
     for (let formItemData of formItemDataList) {
         let inputElement = $(`#clinicaldata-content [preview-oid="${formItemData.itemOID}"][preview-group-oid="${formItemData.itemGroupOID}"]`);
+        if (!inputElement) {
+            errors.push({type: metadataHelper.elementTypes.ITEM, oid: formItemData.itemOID});
+            continue;
+        }
         switch (inputElement.getAttribute("type")) {
             case "text":
             case "date":
@@ -202,12 +207,29 @@ function loadFormClinicaldata() {
                 break;
             case "radio":
                 inputElement = $(`#clinicaldata-content [preview-oid="${formItemData.itemOID}"][preview-group-oid="${formItemData.itemGroupOID}"][value="${formItemData.value}"]`);
+                if (!inputElement) {
+                    errors.push({type: metadataHelper.elementTypes.CODELISTITEM, oid: formItemData.itemOID, value: formItemData.value});
+                    continue;
+                }
                 inputElement.checked = true;
                 inputElement.dispatchEvent(new Event("input"));
         }
     }
 
+    showNotFoundClinicdataError(errors);
     cachedFormData = null;
+}
+
+// TODO: Improve and i18n
+function showNotFoundClinicdataError(errors) {
+    let errorMessages = [];
+    for (let error of errors) {
+        let errorMessage = "<p class='is-size-7'>";
+        errorMessage += error.type == metadataHelper.elementTypes.ITEM ? "ItemOID <strong>" + error.oid + "</strong></p>" : "CodeListItemOID <strong>" + error.oid + "</strong>, CodedValue<strong>" + error.value + "</strong></p>";
+        errorMessages.push(errorMessage);
+    }
+
+    if (errors.length > 0) ioHelper.showWarning("Error(s)", "One or multiple fields in the ClinicalData could not be found in the MetaData. This means that your ClinicalData and MetaData might be out of sync or an imported ODM file is (partially) broken.<br>You find a list of all ClinicalData fields that could not be found in the MetaData below.<br><br><hr>" + errorMessages.join("<br>"));
 }
 
 window.loadNextFormData = async function() {
