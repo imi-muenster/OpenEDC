@@ -166,9 +166,9 @@ async function loadFormMetadata() {
 
     let translatedText = metadataHelper.getElementDefByOID(currentElementID.form).querySelector(`Description TranslatedText[*|lang="${locale}"]`);
     if (translatedText) {
-        $("#clinicaldata-form-title").textContent = ioHelper.shortenText(translatedText.textContent, 12);
+        $("#clinicaldata-form-title .subtitle").textContent = ioHelper.shortenText(translatedText.textContent, 12);
     } else {
-        $("#clinicaldata-form-title").textContent = ioHelper.shortenText(metadataHelper.getStudyName(), 12);
+        $("#clinicaldata-form-title .subtitle").textContent = ioHelper.shortenText(metadataHelper.getStudyName(), 12);
     }
 
     let form = await metadataHelper.getFormAsHTML(currentElementID.form, locale);
@@ -229,7 +229,7 @@ function showNotFoundClinicdataError(errors) {
         errorMessages.push(errorMessage);
     }
 
-    if (errors.length > 0) ioHelper.showWarning("Error(s)", "One or multiple fields in the ClinicalData could not be found in the MetaData. This means that your ClinicalData and MetaData might be out of sync or an imported ODM file is (partially) broken.<br>You find a list of all ClinicalData fields that could not be found in the MetaData below.<br><br><hr>" + errorMessages.join("<br>"));
+    if (errors.length > 0) ioHelper.showWarning("Error(s)", "One or multiple items in the ClinicalData could not be found in the MetaData. This means that your ClinicalData and MetaData might be out of sync or an imported ODM file is (partially) broken.<br>You find a list of all ClinicalData items that could not be found in the MetaData below.<br><br><hr>" + errorMessages.join("<br>"));
 }
 
 window.loadNextFormData = async function() {
@@ -362,6 +362,7 @@ window.showSurveyView = function() {
     $("#clinicaldata-column").classList.add("is-full");
     $("#clinicaldata-column .tree-panel-blocks").classList.add("is-survey-view");
     $("#clinicaldata-section").classList.add("p-3");
+    $("#clinicaldata-form-title").classList.add("is-centered");
     $("#survey-view-button").classList.add("is-hidden");
     scrollToFormStart();
 }
@@ -379,5 +380,6 @@ function hideSurveyView() {
     $("#clinicaldata-column").classList.remove("is-full");
     $("#clinicaldata-column .tree-panel-blocks").classList.remove("is-survey-view");
     $("#clinicaldata-section").classList.remove("p-3");
+    $("#clinicaldata-form-title").classList.remove("is-centered");
     $("#survey-view-button").classList.remove("is-hidden");
 }

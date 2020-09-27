@@ -176,12 +176,17 @@ hr {
     max-width: 500px;
     margin: 0 auto;
     overflow-y: visible;
+    max-height: none !important;
 }
 
 .is-unanswered {
     padding: 6px;
     border-radius: 6px;
     background-color: lightsalmon;
+}
+
+.level-left.is-centered {
+    margin: 0 auto;
 }
 
 @media only screen and (max-width: 768px)  {
