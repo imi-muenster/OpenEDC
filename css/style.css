@@ -107,20 +107,20 @@ hr {
 }
 
 .preview-field {
-    margin-bottom: 12px;
+    margin-bottom: 1rem;
 }
 
 .preview-field label {
     white-space: pre-line;
 }
 
+#clinicaldata-content .subtitle {
+    white-space: pre-line;
+}
+
 .field.is-fullwidth, .control.is-fullwidth {
     display: flex;
     width: 100%;
-}
-
-#preview-content .subtitle {
-    white-space: pre-line;
 }
 
 .checkbox-button {
