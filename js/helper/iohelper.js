@@ -37,6 +37,10 @@ export function download(filename, content) {
     document.body.removeChild(element);
 }
 
+export function shortenText(text, places) {
+    return text.length > places ? text.substr(0, places) + " ..." :  text;
+}
+
 export async function getFileContent(file) {
     let data = await new Response(file).text();
     return data;

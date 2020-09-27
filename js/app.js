@@ -52,8 +52,9 @@ const startApp = () => {
 }
 
 const setTitles = () => {
-    $("#study-title").textContent = metadataHelper.getStudyName();
-    $("head title").textContent = "OpenEDC – " + metadataHelper.getStudyName();
+    const studyName =  ioHelper.shortenText(metadataHelper.getStudyName(), 20);
+    $("#study-title").textContent = studyName;
+    $("head title").textContent = "OpenEDC – " + studyName;
 }
 
 window.showMetadata = function() {

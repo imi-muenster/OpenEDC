@@ -254,6 +254,7 @@ export function getItemOIDSWithRangeChecksByForm(formOID) {
             let itemOID = itemRef.getAttribute("ItemOID");
             let rangeChecks = [];
             for (let rangeCheck of getRangeChecksByItem(itemOID)) {
+                if (!rangeCheck.querySelector("CheckValue")) continue;
                 rangeChecks.push({
                     comparator: rangeCheck.getAttribute("Comparator"),
                     checkValue: rangeCheck.querySelector("CheckValue").textContent
