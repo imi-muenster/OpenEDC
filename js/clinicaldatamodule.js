@@ -114,6 +114,9 @@ async function loadSubjectData(subjectKey) {
     clinicaldataHelper.loadSubject(currentElementID.subject);
     await loadFormMetadata();
     loadFormClinicaldata();
+
+    // If the subject was deselected, scroll to the form start to show the no-subject-selected-hint
+    if (!subjectKey && currentElementID.studyEvent && currentElementID.form) scrollToFormStart();
 }
 
 // TODO: loadStudyEvents loads entire tree if according elements are selected, implement this analogously for metadatamodule
@@ -342,7 +345,7 @@ window.closeFormData = function(saveData) {
     currentElementID.form = null;
     loadFormsByStudyEvent(currentElementID.studyEvent);
     $("#close-clinicaldata-modal").classList.remove("is-active");
-    if ($(".navbar").classList.contains("is-hidden")) {
+    if (surveyViewIsActive()) {
         hideSurveyView();
         ioHelper.showWarning(languageHelper.getTranslation("survey-finished"), languageHelper.getTranslation("survey-finished-text"));
     }
@@ -389,4 +392,8 @@ function hideSurveyView() {
     $("#clinicaldata-section").classList.remove("p-3");
     $("#clinicaldata-form-title").classList.remove("is-centered");
     $("#survey-view-button").classList.remove("is-hidden");
+}
+
+function surveyViewIsActive() {
+    return $(".navbar").classList.contains("is-hidden");
 }
