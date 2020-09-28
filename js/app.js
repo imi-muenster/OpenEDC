@@ -183,6 +183,8 @@ const hideMenu = () => {
 // TODO: In XSLT processing, remove the de/en differenatiation and translate boolean questions with the languageHelper, also remove xsl-templates when possible
 // TODO: Use let very frequently even it it could be declared as const
 // TODO: Metadata -> MetaData, Clinicaldata -> ClinicalData
+// TODO: In some secure cases the || operator may be used to set default values to reduce code compared to the ternary operator
+// TODO: In templates.js files use only const instead of let
 export function setIOListeners() {
     $("body").onresize = ioHelper.setTreeMaxHeight;
     // TODO: This style everywhere or onclick here

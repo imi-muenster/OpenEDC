@@ -134,7 +134,7 @@ export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
     // Do not store any data if no subject has been loaded or the formdata to be stored did not change compared to the previous one
     if (!subject || !dataHasChanged(formItemDataList, studyEventOID, formOID)) return;
 
-    let studyEventData = clinicaldataTemplates.getStudyEventData(studyEventOID);
+    let studyEventData = $(`StudyEventData[StudyEventOID="${studyEventOID}"]`) || clinicaldataTemplates.getStudyEventData(studyEventOID);
     let formData = clinicaldataTemplates.getFormData(formOID);
 
     let itemGroupData = null;
@@ -147,6 +147,7 @@ export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
     }
 
     if (itemGroupData) formData.appendChild(itemGroupData);
+    formData.appendChild(clinicaldataTemplates.getAuditRecord("LocalUser", "LocalSite", new Date().toISOString()));
     studyEventData.appendChild(formData);
     subjectData.appendChild(studyEventData);
 

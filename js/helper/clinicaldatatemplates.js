@@ -1,30 +1,38 @@
-let template = string => new DOMParser().parseFromString(string, "text/xml").documentElement;
+const template = string => new DOMParser().parseFromString(string, "text/xml").documentElement;
 
-export let getClinicalData = (studyOID, metadataVersionOID) => template(`
+export const getClinicalData = (studyOID, metadataVersionOID) => template(`
     <ClinicalData StudyOID="${studyOID}" MetadataVersionOID="${metadataVersionOID}">
     </ClinicalData>
 `);
 
-export let getSubjectData = subjectKey => template(`
+export const getSubjectData = subjectKey => template(`
     <SubjectData SubjectKey="${subjectKey}">
     </SubjectData>
 `);
 
-export let getStudyEventData = studyEventOID => template(`
+export const getStudyEventData = studyEventOID => template(`
     <StudyEventData StudyEventOID="${studyEventOID}">
     </StudyEventData>
 `);
 
-export let getFormData = formOID => template(`
+export const getFormData = formOID => template(`
     <FormData FormOID="${formOID}">
     </FormData>
 `);
 
-export let getItemGroupData = itemGroupOID => template(`
+export const getItemGroupData = itemGroupOID => template(`
     <ItemGroupData ItemGroupOID="${itemGroupOID}">
     </ItemGroupData>
 `);
 
-export let getItemData = (itemOID, value) => template(`
+export const getItemData = (itemOID, value) => template(`
     <ItemData ItemOID="${itemOID}" Value="${value}"/>
+`);
+
+export const getAuditRecord = (userRef, locationRef, dateTimeStamp) => template(`
+    <AuditRecord>
+        <UserRef UserOID="${userRef}"/>
+        <LocationRef LocationOID="${locationRef}"/>
+        <DateTimeStamp>${dateTimeStamp}</DateTimeStamp>
+    </AuditRecord>
 `);
