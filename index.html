@@ -254,7 +254,7 @@
                                 </nav>
                                 <hr>
                                 <div id="clinicaldata-content"></div>
-                                <button class="button" id="clinicaldata-close-button" onclick="cancelFormEntry()" internationalization="close">Close</button>
+                                <button class="button" id="clinicaldata-close-button" onclick="cancelFormOrSurveyEntry()" internationalization="close">Close</button>
                                 <div class="field has-addons is-pulled-right">
                                     <div class="control">
                                         <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" internationalization="back">Back</button>
@@ -301,8 +301,10 @@
             <div class="modal-background" onclick="hideCloseClinicalDataModal()"></div>
             <div class="modal-content is-medium">
                 <div class="box has-text-centered">
-                    <h2 class="subtitle" internationalization="close-form">Close form</h2>
-                    <p internationalization="close-form-text">It seems that you just edited or entered new data. Do you really want to close the current form?</p>
+                    <h2 class="subtitle" id="close-form-title" internationalization="close-form">Close form</h2>
+                    <h2 class="subtitle is-hidden" id="close-survey-title" internationalization="close-survey">Close survey</h2>
+                    <p id="close-form-text"internationalization="close-form-text">It seems that you just edited or entered new data. Do you really want to close the current form?</p>
+                    <p class="is-hidden" id="close-survey-text" internationalization="close-survey-text">It seems that you just edited or entered new data. Do you really want to close the current form?</p>
                     <br>
                     <div class="buttons is-centered">
                         <button class="button is-small" onclick="closeFormData()" internationalization="close-without-saving">Close without saving</button>

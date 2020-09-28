@@ -22,6 +22,8 @@
     "unanswered-mandatory-questions-warning": "Please try to answer all highlighted mandatory questions. If you cannot answer one of these questions, you can let it empty.",
     "close-form": "Close form",
     "close-form-text": "It seems that you just edited or entered new data. Do you really want to close the current form?",
+    "close-survey": "Close survey",
+    "close-survey-text": "Do you really want to end the survey?",
     "close-without-saving": "Close without saving",
     "close-with-saving": "Close with saving"
 }

@@ -373,16 +373,20 @@ window.closeFormData = async function(saveData, skipDataHasChangedCheck) {
         await deferredFunction();
         hideCloseClinicalDataModal();
     } else {
-        cancelFormEntry(skipDataHasChangedCheck);
+        cancelFormOrSurveyEntry(skipDataHasChangedCheck, true);
     }
 }
 
-window.cancelFormEntry = function(skipDataHasChangedCheck) {
-    loadFormsByStudyEvent(currentElementID.studyEvent, true, skipDataHasChangedCheck);
-
-    if (surveyViewIsActive()) {
+window.cancelFormOrSurveyEntry = function(skipDataHasChangedCheck, closeSurvey) {
+    if (surveyViewIsActive() && !closeSurvey) {
+        $("#close-clinicaldata-modal").classList.add("is-active");
+    } else if (surveyViewIsActive()) {
+        $("#close-clinicaldata-modal").classList.remove("is-active");
         hideSurveyView();
         ioHelper.showWarning(languageHelper.getTranslation("survey-finished"), languageHelper.getTranslation("survey-finished-text"));
+        loadFormsByStudyEvent(currentElementID.studyEvent, true, true);
+    } else {
+        loadFormsByStudyEvent(currentElementID.studyEvent, true, skipDataHasChangedCheck);
     }
 }
 
@@ -405,6 +409,10 @@ window.showSurveyView = function() {
     $("#clinicaldata-column .tree-panel-blocks").classList.add("is-survey-view");
     $("#clinicaldata-section").classList.add("p-3");
     $("#clinicaldata-form-title").classList.add("is-centered");
+    $("#close-form-title").classList.add("is-hidden");
+    $("#close-form-text").classList.add("is-hidden");
+    $("#close-survey-title").classList.remove("is-hidden");
+    $("#close-survey-text").classList.remove("is-hidden");
     $("#survey-view-button").classList.add("is-hidden");
     scrollToFormStart();
 }
@@ -423,6 +431,10 @@ function hideSurveyView() {
     $("#clinicaldata-column .tree-panel-blocks").classList.remove("is-survey-view");
     $("#clinicaldata-section").classList.remove("p-3");
     $("#clinicaldata-form-title").classList.remove("is-centered");
+    $("#close-form-title").classList.remove("is-hidden");
+    $("#close-form-text").classList.remove("is-hidden");
+    $("#close-survey-title").classList.add("is-hidden");
+    $("#close-survey-text").classList.add("is-hidden");
     $("#survey-view-button").classList.remove("is-hidden");
 }
 
