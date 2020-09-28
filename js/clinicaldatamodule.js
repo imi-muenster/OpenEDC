@@ -33,6 +33,7 @@ export function init() {
 
 export function show() {
     loadSubjectKeys();
+    // TODO: Improve the show and hide logic. Should be handled by the clinicaldatamodule instead of app.js to stop the mode-toggling if new data has just been entered.
     loadStudyEvents(true);
 
     $("#clinicaldata-section").classList.remove("is-hidden");
