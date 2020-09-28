@@ -174,6 +174,7 @@ export function getSubjectFormData(studyEventOID, formOID) {
 }
 
 export function dataHasChanged(formItemDataList, studyEventOID, formOID) {
+    console.log("Check if data has changed ...");
     return JSON.stringify(formItemDataList) != JSON.stringify(getSubjectFormData(studyEventOID, formOID));
 }
 

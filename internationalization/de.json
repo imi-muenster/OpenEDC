@@ -21,7 +21,7 @@
     "value-must-be-closing": " sein.",
     "unanswered-mandatory-questions-warning": "Bitte versuchen Sie, alle hervorgehobenen Pflichtfragen zu beantworten. Falls Sie eine Frage nicht beantworten können, können Sie sie leer lassen.",
     "close-form": "Formular schließen",
-    "close-form-text": "Möchten Sie das aktuelle Formular wirklich schließen?",
+    "close-form-text": "Es scheint, als hätten Sie gerade Daten bearbeitet oder neue Daten eingegeben. Möchten Sie das aktuelle Formular wirklich schließen?",
     "close-without-saving": "Schließen ohne Speichern",
     "close-with-saving": "Schließen mit Speichern"
 }

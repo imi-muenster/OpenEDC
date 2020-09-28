@@ -20,6 +20,7 @@ let currentElementID = {
 let locale = null;
 let skipMandatory = false;
 let cachedFormData = null;
+let deferredFunction = null;
 
 export function init() {
     currentElementID.subject = null;
@@ -32,7 +33,7 @@ export function init() {
 
 export function show() {
     loadSubjectKeys();
-    loadStudyEvents();
+    loadStudyEvents(true);
 
     $("#clinicaldata-section").classList.remove("is-hidden");
     $("#clinicaldata-toggle-button").classList.add("is-hidden");
@@ -79,12 +80,19 @@ function filterSubjects(searchString) {
 }
 
 window.addSubject = function() {
+    // Check if the data has changed / new data has been entered and show a prompt first
+    if (dataHasChanged()) {
+        deferredFunction = () => addSubject();
+        $("#close-clinicaldata-modal").classList.add("is-active");
+        return;
+    }
+
     let subjectKey = $("#add-subject-input").value;
     $("#add-subject-input").value = "";
     
     clinicaldataHelper.addSubject(subjectKey);
     loadSubjectKeys();
-    if (subjectKey) loadSubjectData(subjectKey);
+    if (subjectKey) loadSubjectData(subjectKey, true);
 }
 
 export function loadSubjectKeys() {
@@ -100,7 +108,14 @@ export function loadSubjectKeys() {
     if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
 }
 
-async function loadSubjectData(subjectKey) {
+async function loadSubjectData(subjectKey, skipDataHasChangedCheck) {
+    // Check if the data has changed / new data has been entered and show a prompt first
+    if (!skipDataHasChangedCheck && dataHasChanged()) {
+        deferredFunction = async () => await loadSubjectData(subjectKey, skipDataHasChangedCheck);
+        $("#close-clinicaldata-modal").classList.add("is-active");
+        return;
+    }
+
     // Option to deselect a subject by clicking on the same subject again
     if (subjectKey == currentElementID.subject) subjectKey = null;
 
@@ -120,24 +135,28 @@ async function loadSubjectData(subjectKey) {
 }
 
 // TODO: loadStudyEvents loads entire tree if according elements are selected, implement this analogously for metadatamodule
-export function loadStudyEvents() {
+export function loadStudyEvents(skipDataHasChangedCheck) {
     ioHelper.removeElements($$("#clinicaldata-study-event-panel-blocks a"));
     ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
 
     for (let studyEventDef of metadataHelper.getStudyEvents()) {
         let translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         let panelBlock = htmlElements.getPanelBlock(false, studyEventDef.getAttribute("OID"), metadataHelper.elementTypes.STUDYEVENT, translatedText, studyEventDef.getAttribute("Name"));
-        panelBlock.onclick = () => {
-            currentElementID.form = null;
-            loadFormsByStudyEvent(studyEventDef.getAttribute("OID"));
-        }
+        panelBlock.onclick = () => loadFormsByStudyEvent(studyEventDef.getAttribute("OID"), true);
         $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
     }
 
-    if (currentElementID.studyEvent) loadFormsByStudyEvent(currentElementID.studyEvent);
+    if (currentElementID.studyEvent) loadFormsByStudyEvent(currentElementID.studyEvent, false, skipDataHasChangedCheck);
 }
 
-function loadFormsByStudyEvent(studyEventOID) {
+function loadFormsByStudyEvent(studyEventOID, closeForm, skipDataHasChangedCheck) {
+    // Check if the data has changed / new data has been entered and show a prompt first
+    if (!skipDataHasChangedCheck && dataHasChanged()) {
+        deferredFunction = () => loadFormsByStudyEvent(studyEventOID, closeForm, skipDataHasChangedCheck);
+        $("#close-clinicaldata-modal").classList.add("is-active");
+        return;
+    }
+
     currentElementID.studyEvent = studyEventOID;
     ioHelper.removeIsActiveFromElements($$("#clinicaldata-study-event-panel-blocks a"));
     $(`#clinicaldata-study-event-panel-blocks [oid="${currentElementID.studyEvent}"]`).classList.add("is-active");
@@ -145,6 +164,7 @@ function loadFormsByStudyEvent(studyEventOID) {
     ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
     ioHelper.safeRemoveElement($("#odm-html-content"));
     $("#clinicaldata-form-data").classList.add("is-hidden");
+    if (closeForm) currentElementID.form = null;
 
     for (let formDef of metadataHelper.getFormsByStudyEvent(studyEventOID)) {
         let translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
@@ -153,10 +173,17 @@ function loadFormsByStudyEvent(studyEventOID) {
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
     }
 
-    if (currentElementID.form) loadFormData(currentElementID.form);
+    if (currentElementID.form) loadFormData(currentElementID.form, skipDataHasChangedCheck);
 }
 
-async function loadFormData(formOID) {
+async function loadFormData(formOID, skipDataHasChangedCheck) {
+    // Check if the data has changed / new data has been entered and show a prompt first
+    if (!skipDataHasChangedCheck && dataHasChanged()) {
+        deferredFunction = async () => await loadFormData(formOID, skipDataHasChangedCheck);
+        $("#close-clinicaldata-modal").classList.add("is-active");
+        return;
+    }
+
     currentElementID.form = formOID;
     ioHelper.removeIsActiveFromElements($$("#clinicaldata-form-panel-blocks a"));
     $(`#clinicaldata-form-panel-blocks [oid="${currentElementID.form}"]`).classList.add("is-active");
@@ -243,13 +270,12 @@ window.loadNextFormData = async function() {
     if (!saveFormData()) return;
 
     let nextFormOID = getNextFormOID(currentElementID.form);
-    //TODO: Everywhere !nextFormOID
-    if (nextFormOID != null) {
+    if (nextFormOID) {
         currentElementID.form = nextFormOID
-        await loadFormData(currentElementID.form);
+        await loadFormData(currentElementID.form, true);
         scrollToFormStart();
     } else {
-        closeFormData();
+        closeFormData(false, true);
     }
 }
 
@@ -258,9 +284,9 @@ window.loadPreviousFormData = async function() {
     saveFormData();
 
     let previousFormOID = getPreviousFormOID(currentElementID.form);
-    if (previousFormOID != null) {
+    if (previousFormOID) {
         currentElementID.form = previousFormOID
-        await loadFormData(currentElementID.form);
+        await loadFormData(currentElementID.form, true);
         scrollToFormStart();
     }
 }
@@ -336,27 +362,32 @@ export function cacheFormData() {
     cachedFormData = getFormData();
 }
 
-window.closeFormData = function(saveData) {
+window.closeFormData = async function(saveData, skipDataHasChangedCheck) {
     if (saveData) {
         skipMandatory = true;
         saveFormData();
     }
 
-    currentElementID.form = null;
-    loadFormsByStudyEvent(currentElementID.studyEvent);
-    $("#close-clinicaldata-modal").classList.remove("is-active");
+    if (deferredFunction) {
+        await deferredFunction();
+        hideCloseClinicalDataModal();
+    } else {
+        cancelFormEntry(skipDataHasChangedCheck);
+    }
+}
+
+window.cancelFormEntry = function(skipDataHasChangedCheck) {
+    loadFormsByStudyEvent(currentElementID.studyEvent, true, skipDataHasChangedCheck);
+
     if (surveyViewIsActive()) {
         hideSurveyView();
         ioHelper.showWarning(languageHelper.getTranslation("survey-finished"), languageHelper.getTranslation("survey-finished-text"));
     }
 }
 
-window.toggleCloseClinicaldataModal = function() {
-    if (currentElementID.subject) {
-        $("#close-clinicaldata-modal").classList.toggle("is-active");
-    } else {
-        closeFormData();
-    }
+window.hideCloseClinicalDataModal = function() {
+    deferredFunction = null;
+    $("#close-clinicaldata-modal").classList.remove("is-active");
 }
 
 window.showSurveyView = function() {
@@ -396,4 +427,8 @@ function hideSurveyView() {
 
 function surveyViewIsActive() {
     return $(".navbar").classList.contains("is-hidden");
+}
+
+function dataHasChanged() {
+    return !deferredFunction && currentElementID.subject && currentElementID.studyEvent && currentElementID.form && clinicaldataHelper.dataHasChanged(getFormData(), currentElementID.studyEvent, currentElementID.form)
 }
