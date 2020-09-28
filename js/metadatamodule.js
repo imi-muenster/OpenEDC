@@ -912,16 +912,10 @@ function dragStart(event) {
     if (elementTypeOnDrag === metadataHelper.elementTypes.CODELISTITEM) {
         event.dataTransfer.setData("sourceCodedValue", event.target.getAttribute("coded-value"));
     }
-    for (let panel of $$(".panel")) {
-        panel.classList.add("no-hover");
-    }
 }
 
 function dragEnd() {
     elementTypeOnDrag = null;
-    for (let panel of $$(".panel")) {
-        panel.classList.remove("no-hover");
-    }
 }
 
 window.allowDrop = function(event) {

@@ -17,6 +17,7 @@ let currentElementID = {
 }
 
 // Further auxiliary variables
+// TODO: skipDataHasChangedCheck could be added globally to reduce function parameters
 let locale = null;
 let skipMandatory = false;
 let cachedFormData = null;
