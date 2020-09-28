@@ -225,12 +225,16 @@ function loadFormClinicaldata() {
     if (!currentElementID.studyEvent || !currentElementID.form) return;
     currentElementID.subject ? $("#no-subject-selected-hint").classList.add("is-hidden") : $("#no-subject-selected-hint").classList.remove("is-hidden");
 
-    let errors = [];
+    // Two types of errors than can occur during the data loading process
+    let metadataNotFoundErrors = [];
+    let hiddenFieldWithValueError = false;
+
     let formItemDataList = cachedFormData ? cachedFormData : clinicaldataHelper.getSubjectFormData(currentElementID.studyEvent, currentElementID.form);
     for (let formItemData of formItemDataList) {
+        let fieldElement = $(`#clinicaldata-content [preview-field-oid="${formItemData.itemOID}"][preview-field-group-oid="${formItemData.itemGroupOID}"]`);
         let inputElement = $(`#clinicaldata-content [preview-oid="${formItemData.itemOID}"][preview-group-oid="${formItemData.itemGroupOID}"]`);
         if (!inputElement) {
-            errors.push({type: metadataHelper.elementTypes.ITEM, oid: formItemData.itemOID});
+            metadataNotFoundErrors.push({type: metadataHelper.elementTypes.ITEM, oid: formItemData.itemOID});
             continue;
         }
         switch (inputElement.getAttribute("type")) {
@@ -238,33 +242,44 @@ function loadFormClinicaldata() {
             case "date":
             case "select":
                 inputElement.value = formItemData.value;
-                inputElement.dispatchEvent(new Event("input"));
+                if (!fieldElement.classList.contains("is-hidden")) inputElement.dispatchEvent(new Event("input"));
                 break;
             case "radio":
                 inputElement = $(`#clinicaldata-content [preview-oid="${formItemData.itemOID}"][preview-group-oid="${formItemData.itemGroupOID}"][value="${formItemData.value}"]`);
                 if (!inputElement) {
-                    errors.push({type: metadataHelper.elementTypes.CODELISTITEM, oid: formItemData.itemOID, value: formItemData.value});
+                    metadataNotFoundErrors.push({type: metadataHelper.elementTypes.CODELISTITEM, oid: formItemData.itemOID, value: formItemData.value});
                     continue;
                 }
                 inputElement.checked = true;
-                inputElement.dispatchEvent(new Event("input"));
+                if (!fieldElement.classList.contains("is-hidden")) inputElement.dispatchEvent(new Event("input"));
+        }
+        if (fieldElement.classList.contains("is-hidden") && formItemData.value) {
+            fieldElement.classList.remove("is-hidden");
+            fieldElement.classList.add("is-highlighted");
+            hiddenFieldWithValueError = true;
         }
     }
 
-    showNotFoundClinicdataError(errors);
+    showErrors(metadataNotFoundErrors, hiddenFieldWithValueError);
     cachedFormData = null;
 }
 
-// TODO: Improve and i18n
-function showNotFoundClinicdataError(errors) {
-    let errorMessages = [];
-    for (let error of errors) {
-        let errorMessage = "<p class='is-size-7'>";
-        errorMessage += error.type == metadataHelper.elementTypes.ITEM ? "ItemOID <strong>" + error.oid + "</strong></p>" : "CodeListItemOID <strong>" + error.oid + "</strong>, CodedValue<strong>" + error.value + "</strong></p>";
-        errorMessages.push(errorMessage);
+function showErrors(metadataNotFoundErrors, hiddenFieldWithValueError) {
+    let errorMessage = "";
+
+    if (metadataNotFoundErrors.length > 0) {
+        errorMessage += "One or multiple items in the clinical data could not be found in the meta data. This means that your clinical data and meta data might be out of sync or an imported ODM file is (partially) broken.<br>You find a list of all clinical cata items that could not be found in the meta data below.<br><br>";
+        for (let error of metadataNotFoundErrors) {
+            errorMessage += error.type == metadataHelper.elementTypes.ITEM ? "<p class='is-size-7'>ItemOID <strong>" + error.oid + "</strong></p><br>" : "<p class='is-size-7'>CodeListItemOID <strong>" + error.oid + "</strong>, CodedValue<strong>" + error.value + "</strong></p><br>";
+        }
+        if (hiddenFieldWithValueError) errorMessage += "<hr>";
     }
 
-    if (errors.length > 0) ioHelper.showWarning("Error(s)", "One or multiple items in the ClinicalData could not be found in the MetaData. This means that your ClinicalData and MetaData might be out of sync or an imported ODM file is (partially) broken.<br>You find a list of all ClinicalData items that could not be found in the MetaData below.<br><br><hr>" + errorMessages.join("<br>"));
+    if (hiddenFieldWithValueError) {
+        errorMessage += "Based on the conditions, one or multiple items in the clinical data should be hidden but have values assigned to them. These fields were highlighted and can be reviewed and removed by you.";
+    }
+
+    if (errorMessage.length > 0) ioHelper.showWarning("Error", errorMessage);
 }
 
 window.loadNextFormData = async function() {
@@ -352,7 +367,7 @@ function checkMandatoryFields(formItemDataList) {
     for (let mandatoryField of $$(".preview-field[mandatory='Yes']:not(.is-hidden)")) {
         if (!formItemDataList.find(formItemData => formItemData.itemGroupOID == mandatoryField.getAttribute("preview-field-group-oid") && formItemData.itemOID == mandatoryField.getAttribute("preview-field-oid"))) {
             if (mandatoryFieldsAnswered) ioHelper.showWarning(languageHelper.getTranslation("note"), languageHelper.getTranslation("unanswered-mandatory-questions-warning"));
-            mandatoryField.classList.add("is-unanswered");
+            mandatoryField.classList.add("is-highlighted");
             mandatoryFieldsAnswered = false;
         }
     }

@@ -179,7 +179,7 @@ a.panel-block:hover {
     max-height: none !important;
 }
 
-.is-unanswered {
+.is-highlighted {
     padding: 6px;
     border-radius: 6px;
     background-color: lightsalmon;
