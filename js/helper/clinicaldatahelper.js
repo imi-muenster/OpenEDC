@@ -16,6 +16,16 @@ export class FormItemData {
     }
 }
 
+export class AuditRecord {
+    constructor(studyEvent, form, user, location, dateTime) {
+        this.studyEvent = studyEvent;
+        this.form = form;
+        this.user = user;
+        this.location = location;
+        this.dateTime = dateTime;
+    }
+}
+
 const $ = query => subjectData.querySelector(query);
 const $$ = query => subjectData.querySelectorAll(query);
 
@@ -177,6 +187,27 @@ export function getSubjectFormData(studyEventOID, formOID) {
 export function dataHasChanged(formItemDataList, studyEventOID, formOID) {
     console.log("Check if data has changed ...");
     return JSON.stringify(formItemDataList) != JSON.stringify(getSubjectFormData(studyEventOID, formOID));
+}
+
+export function getAuditRecords() {
+    let auditRecords = [];
+    for (let studyEvent of $$("StudyEventData")) {
+        let studyEventOID = studyEvent.getAttribute("StudyEventOID");
+        for (let form of studyEvent.querySelectorAll("FormData")) {
+            let formOID = form.getAttribute("FormOID");
+            let auditRecord = form.querySelector("AuditRecord")
+            auditRecords.push(new AuditRecord(
+                studyEventOID,
+                formOID,
+                auditRecord.querySelector("UserRef").getAttribute("UserOID"),
+                auditRecord.querySelector("LocationRef").getAttribute("LocationOID"),
+                new Date(auditRecord.querySelector("DateTimeStamp").textContent)
+            ));
+        }
+    }
+    auditRecords.sort((a, b) => a.dateTime < b.dateTime ? 1 : (a.dateTime > b.dateTime ? -1 : 0));
+
+    return auditRecords;
 }
 
 // TODO: Move to ioHelper? Also present in metadatahelper

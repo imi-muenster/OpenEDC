@@ -461,3 +461,18 @@ function surveyViewIsActive() {
 function dataHasChanged() {
     return !deferredFunction && currentElementID.subject && currentElementID.studyEvent && currentElementID.form && clinicaldataHelper.dataHasChanged(getFormData(), currentElementID.studyEvent, currentElementID.form)
 }
+
+window.openSubjectInfo = function() {
+    ioHelper.removeElements($$("#audit-records .notification"));
+
+    for (let auditRecord of clinicaldataHelper.getAuditRecords()) {
+        $("#audit-records").appendChild(htmlElements.getAuditRecord(auditRecord.studyEvent, auditRecord.form, auditRecord.user, auditRecord.location, auditRecord.dateTime));
+    }
+
+    $("#subject-modal strong").textContent = currentElementID.subject;
+    $("#subject-modal").classList.add("is-active");
+}
+
+window.hideSubjectInfo = function() {
+    $("#subject-modal").classList.remove("is-active");
+}

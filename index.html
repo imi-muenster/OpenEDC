@@ -204,7 +204,7 @@
                             </div>
                         </div>
                         <div class="panel-block">
-                            <button class="button is-small is-fullwidth" id="subject-info-button" disabled>Options and Audit Trail</button>
+                            <button class="button is-small is-fullwidth" id="subject-info-button" onclick="openSubjectInfo()" disabled>Options and Audit Trail</button>
                         </div>
                         <div class="tree-panel-blocks" id="subject-panel-blocks">
                             <div class="panel-block has-text-centered has-text-grey-light" id="no-subjects-hint">
@@ -482,6 +482,26 @@
                                 <button class="button is-link" id="save-global-variables-button" onclick="saveProjectModal()">Save Changes</button>
                                 <button class="button" id="cancel-global-variables-button" onclick="hideProjectModal()">Cancel</button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="subject-modal">
+            <div class="modal-background" onclick="hideSubjectInfo()"></div>
+            <div class="modal-content is-large">
+                <div class="box">
+                    <div class="columns is-centered">
+                        <div class="column is-two-thirds">
+                            <h1 class="title">Options and Audit Trail</h1>
+                            <h2 class="subtitle">of Subject: <strong></strong></h2>
+                            <hr>
+                            <h2 class="subtitle">Options</h2>
+                            <p>In development ...</p><br>
+                            <hr>
+                            <h2 class="subtitle">Audit Trail</h2>
+                            <div id="audit-records"></div>
                         </div>
                     </div>
                 </div>
