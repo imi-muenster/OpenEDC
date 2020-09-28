@@ -107,7 +107,7 @@ a.panel-block:hover {
 }
 
 .preview-field {
-    margin-bottom: 1rem;
+    margin-bottom: 20px;
 }
 
 .preview-field label {
@@ -187,6 +187,10 @@ a.panel-block:hover {
 
 .level-left.is-centered {
     margin: 0 auto;
+}
+
+#audit-records {
+    margin-bottom: 1rem;
 }
 
 @media only screen and (max-width: 768px)  {
