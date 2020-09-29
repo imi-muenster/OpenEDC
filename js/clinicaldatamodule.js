@@ -543,3 +543,21 @@ async function showAuditRecordFormData(studyEventOID, formOID, date) {
     showAuditRecordDataView();
     hideSubjectInfo();
 }
+
+window.saveSubjectInfo = function() {
+    if (!clinicaldataHelper.renameSubject($("#subject-modal input").value)) return;
+    currentElementID.subject = clinicaldataHelper.getSubject().key;
+
+    $("#subject-modal strong").textContent = currentElementID.subject;
+    $("#subject-modal button").disabled = true;
+
+    loadSubjectKeys();
+}
+
+window.removeSubject = function() {
+    clinicaldataHelper.removeSubject();
+    currentElementID.subject = null;
+    
+    loadSubjectKeys();
+    hideSubjectInfo();
+}

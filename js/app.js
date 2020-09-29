@@ -146,7 +146,7 @@ window.downloadODM = function() {
     metadataHelper.setCreationDateTimeNow();
     metadataHelper.setFileOID(metadataHelper.getStudyName());
 
-    let odm = metadataHelper.getMetadata();
+    let odm = new DOMParser().parseFromString(metadataHelper.getSerializedMetadata(), "text/xml");
     let clinicaldata = clinicaldataHelper.getClinicalData(odm.querySelector("Study").getAttribute("OID"), odm.querySelector("MetaDataVersion").getAttribute("OID"));
     odm.querySelector("ODM").appendChild(clinicaldata);
 

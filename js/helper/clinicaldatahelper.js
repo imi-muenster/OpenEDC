@@ -79,6 +79,8 @@ export function getClinicalData(studyOID, metadataVersionOID) {
 }
 
 export function loadSubjects() {
+    subjects = [];
+
     for (let fileName of Object.keys(localStorage)) {
         if (fileName.split(fileNameSeparator).length > 1) subjects.push(fileNameToSubject(fileName));
     }
@@ -133,12 +135,19 @@ export function loadSubject(subjectKey) {
 export function storeSubject() {
     if (!subject) return;
     
-    const fileName = subjectToFilename(subject);
-    localStorage.setItem(fileName, getSerializedSubjectData());
+    localStorage.setItem(subjectToFilename(subject), getSerializedSubjectData());
 }
 
 export function clearSubject() {
     subject = null;
+    subjectData = null;
+}
+
+export function removeSubject() {
+    localStorage.removeItem(subjectToFilename(subject));
+    clearSubject();
+    
+    loadSubjects();
 }
 
 function fileNameToSubject(fileName) {
@@ -229,6 +238,22 @@ export function getAuditRecordFormData(studyEventOID, formOID, date) {
     let formData = dateTimeStamp ? dateTimeStamp.parentNode.parentNode : null;
 
     return formData ? getFormItemDataList(formData) : [];
+}
+
+// TODO: Improve error handling
+export function renameSubject(subjectKey) {
+    // Check if there is another subject with the same key
+    const subjectWithKey = subjects.find(subject => subject.key == subjectKey);
+    if (subjectWithKey != null && subjectWithKey.key != subject.key) return false;
+
+    localStorage.removeItem(subjectToFilename(subject));
+
+    subject.key = subjectKey;
+    subjectData.setAttribute("SubjectKey", subject.key);
+    storeSubject();
+    loadSubjects();
+
+    return true;
 }
 
 // TODO: Move to ioHelper? Also present in metadatahelper
