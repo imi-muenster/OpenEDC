@@ -1,5 +1,7 @@
 {
     "no-subject-selected-hint": "Kein Subject ausgewählt. Sie können das Formular trotzdem ansehen und testen. Eingegebene Daten werden jedoch nicht gespeichert.",
+    "audit-record-data-hint": "Sie sehen aktuell den Audit Trail.",
+    "audit-record-most-current-hint": "Dies sind die aktuellen Daten oder Daten die äquivalent zu den aktuellen Daten sind.",
     "survey-view": "Umfrageansicht",
     "survey-finished": "Umfrage beendet",
     "survey-finished-text": "Danke, dass Sie an der Umfrage teilgenommen haben.",

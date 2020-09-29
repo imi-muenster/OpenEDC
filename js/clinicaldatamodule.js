@@ -21,6 +21,7 @@ let locale = null;
 let skipMandatoryCheck = false;
 let skipDataHasChangedCheck = false;
 let cachedFormData = null;
+let cachedFormDataIsAuditRecord = false;
 let deferredFunction = null;
 
 export function init() {
@@ -67,6 +68,7 @@ function setIOListeners() {
         }
     };
     $("#search-subject-input").oninput = inputEvent => filterSubjects(inputEvent.target.value);
+    $("#subject-modal input").oninput = inputEvent => $("#subject-modal button").disabled = inputEvent.target.value.length > 0 ? false : true;
     // TODO: Maybe improve or do it analogously in the metadatamodule. Maybe a "wrapper" function in app.js to do it more coordinated
     window.addEventListener("unload", () => clinicaldataHelper.storeSubject());
 }
@@ -205,6 +207,11 @@ async function loadFormData(formOID) {
 
     skipMandatoryCheck = false;
     skipDataHasChangedCheck = false;
+
+    // Handle cachedData, that is usually cached when the language is changed
+    cachedFormDataIsAuditRecord ? showAuditRecordDataView() : hideAuditRecordDataView();
+    cachedFormDataIsAuditRecord = false;
+    cachedFormData = null;
 }
 
 async function loadFormMetadata() {
@@ -272,8 +279,6 @@ function loadFormClinicaldata() {
     }
 
     showErrors(metadataNotFoundErrors, hiddenFieldWithValueError);
-    hideAuditRecordDataView();
-    cachedFormData = null;
 }
 
 function showErrors(metadataNotFoundErrors, hiddenFieldWithValueError) {
@@ -392,6 +397,7 @@ function checkMandatoryFields(formItemDataList) {
 
 export function cacheFormData() {
     cachedFormData = getFormData();
+    cachedFormDataIsAuditRecord = $("#audit-record-data-hint").classList.contains("is-hidden") ? false : true;
     skipDataHasChangedCheck = true;
 }
 
@@ -476,6 +482,7 @@ function showAuditRecordDataView() {
     $("#audit-record-data-hint").classList.remove("is-hidden");
     $("#survey-view-button").classList.add("is-hidden");
     $("#clinicaldata-navigate-buttons").classList.add("is-hidden");
+    skipDataHasChangedCheck = true;
 }
 
 function hideAuditRecordDataView() {
@@ -507,7 +514,7 @@ window.openSubjectInfo = function() {
 
     // Disable change functionality when there are unsaved changes in the form
     $("#subject-modal input").disabled = false;
-    $("#subject-modal button").disabled = false;
+    $("#subject-modal button").disabled = true;
     if (dataHasChanged()) {
         $("#subject-modal input").disabled = true;
         $$("#subject-modal button:not([onclick])").forEach(button => button.disabled = true);
@@ -529,11 +536,10 @@ async function showAuditRecordFormData(studyEventOID, formOID, date) {
 
     skipDataHasChangedCheck = true;
     await loadStudyEvents();
-    showAuditRecordDataView();
 
     // Show a hint if the current data or data that is equivalent to the current data is shown
     dataHasChanged() ? $("#audit-record-most-current-hint").classList.add("is-hidden") : $("#audit-record-most-current-hint").classList.remove("is-hidden");
 
-    skipDataHasChangedCheck = true;
+    showAuditRecordDataView();
     hideSubjectInfo();
 }

@@ -232,12 +232,12 @@
                         <p class="panel-heading has-text-centered">Data</p>
                         <div class="tree-panel-blocks">
                             <div class="is-hidden" id="clinicaldata-form-data">
-                                <div class="notification is-link has-text-centered is-hidden" id="no-subject-selected-hint" internationalization="no-subject-selected-hint">
-                                    <p>No subject selected. You can still view and test the form but entered data will not be stored.</p>
+                                <div class="notification is-link has-text-centered is-hidden" id="no-subject-selected-hint">
+                                    <p internationalization="no-subject-selected-hint">No subject selected. You can still view and test the form but entered data will not be stored.</p>
                                 </div>
                                 <div class="notification is-link has-text-centered is-hidden" id="audit-record-data-hint">
-                                    <p>You are currently viewing data from the audit trail.</p>
-                                    <p id="audit-record-most-current-hint">This is the most current data or equivalent to the most current data.</p>
+                                    <p internationalization="audit-record-data-hint">You are currently viewing data from the audit trail.</p>
+                                    <p id="audit-record-most-current-hint" internationalization="audit-record-most-current-hint">This is the most current data or equivalent to the most current data.</p>
                                 </div>
                                 <nav class="level">
                                     <div class="level-left" id="clinicaldata-form-title">
@@ -509,12 +509,13 @@
                                 </div>
                             </div>
                             <div class="buttons">
-                                <button class="button is-danger is-small">Save Changes (not yet implemented)</button>
+                                <button class="button is-danger is-small">Save Changes</button>
                                 <button class="button is-small" onclick="hideSubjectInfo()">Cancel</button>
                             </div>
                             <hr>
                             <h2 class="subtitle">Audit Trail</h2>
                             <div id="audit-records"></div>
+                            <button class="button is-danger is-small">Remove Subject</button>
                         </div>
                     </div>
                 </div>
