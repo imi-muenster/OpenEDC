@@ -17,9 +17,9 @@ let currentElementID = {
 }
 
 // Further auxiliary variables
-// TODO: skipDataHasChangedCheck could be added globally to reduce function parameters
 let locale = null;
-let skipMandatory = false;
+let skipMandatoryCheck = false;
+let skipDataHasChangedCheck = false;
 let cachedFormData = null;
 let deferredFunction = null;
 
@@ -35,7 +35,8 @@ export function init() {
 export function show() {
     loadSubjectKeys();
     // TODO: Improve the show and hide logic. Should be handled by the clinicaldatamodule instead of app.js to stop the mode-toggling if new data has just been entered.
-    loadStudyEvents(true);
+    skipDataHasChangedCheck = true;
+    loadStudyEvents();
 
     $("#clinicaldata-section").classList.remove("is-hidden");
     $("#clinicaldata-toggle-button").classList.add("is-hidden");
@@ -83,7 +84,8 @@ function filterSubjects(searchString) {
 
 window.addSubject = function() {
     // Check if the data has changed / new data has been entered and show a prompt first
-    if (dataHasChanged()) {
+    if (!skipDataHasChangedCheck && dataHasChanged()) {
+        skipDataHasChangedCheck = true;
         deferredFunction = () => addSubject();
         $("#close-clinicaldata-modal").classList.add("is-active");
         return;
@@ -94,7 +96,8 @@ window.addSubject = function() {
     
     clinicaldataHelper.addSubject(subjectKey);
     loadSubjectKeys();
-    if (subjectKey) loadSubjectData(subjectKey, true);
+    skipDataHasChangedCheck = true;
+    if (subjectKey) loadSubjectData(subjectKey);
 }
 
 export function loadSubjectKeys() {
@@ -110,10 +113,11 @@ export function loadSubjectKeys() {
     if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
 }
 
-async function loadSubjectData(subjectKey, skipDataHasChangedCheck) {
+async function loadSubjectData(subjectKey) {
     // Check if the data has changed / new data has been entered and show a prompt first
     if (!skipDataHasChangedCheck && dataHasChanged()) {
-        deferredFunction = async () => await loadSubjectData(subjectKey, skipDataHasChangedCheck);
+        skipDataHasChangedCheck = true;
+        deferredFunction = async () => await loadSubjectData(subjectKey);
         $("#close-clinicaldata-modal").classList.add("is-active");
         return;
     }
@@ -132,12 +136,15 @@ async function loadSubjectData(subjectKey, skipDataHasChangedCheck) {
     await loadFormMetadata();
     loadFormClinicaldata();
 
+    skipMandatoryCheck = false;
+    skipDataHasChangedCheck = false;
+
     // If the subject was deselected, scroll to the form start to show the no-subject-selected-hint
     if (!currentElementID.subject && currentElementID.studyEvent && currentElementID.form) scrollToFormStart();
 }
 
 // TODO: loadStudyEvents loads entire tree if according elements are selected, implement this analogously for metadatamodule
-export function loadStudyEvents(skipDataHasChangedCheck) {
+export function loadStudyEvents() {
     ioHelper.removeElements($$("#clinicaldata-study-event-panel-blocks a"));
     ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
 
@@ -148,13 +155,14 @@ export function loadStudyEvents(skipDataHasChangedCheck) {
         $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
     }
 
-    if (currentElementID.studyEvent) loadFormsByStudyEvent(currentElementID.studyEvent, false, skipDataHasChangedCheck);
+    if (currentElementID.studyEvent) loadFormsByStudyEvent(currentElementID.studyEvent, false);
 }
 
-function loadFormsByStudyEvent(studyEventOID, closeForm, skipDataHasChangedCheck) {
+function loadFormsByStudyEvent(studyEventOID, closeForm) {
     // Check if the data has changed / new data has been entered and show a prompt first
     if (!skipDataHasChangedCheck && dataHasChanged()) {
-        deferredFunction = () => loadFormsByStudyEvent(studyEventOID, closeForm, skipDataHasChangedCheck);
+        skipDataHasChangedCheck = true;
+        deferredFunction = () => loadFormsByStudyEvent(studyEventOID, closeForm);
         $("#close-clinicaldata-modal").classList.add("is-active");
         return;
     }
@@ -175,13 +183,14 @@ function loadFormsByStudyEvent(studyEventOID, closeForm, skipDataHasChangedCheck
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
     }
 
-    if (currentElementID.form) loadFormData(currentElementID.form, skipDataHasChangedCheck);
+    if (currentElementID.form) loadFormData(currentElementID.form);
 }
 
-async function loadFormData(formOID, skipDataHasChangedCheck) {
+async function loadFormData(formOID) {
     // Check if the data has changed / new data has been entered and show a prompt first
     if (!skipDataHasChangedCheck && dataHasChanged()) {
-        deferredFunction = async () => await loadFormData(formOID, skipDataHasChangedCheck);
+        skipDataHasChangedCheck = true;
+        deferredFunction = async () => await loadFormData(formOID);
         $("#close-clinicaldata-modal").classList.add("is-active");
         return;
     }
@@ -193,7 +202,9 @@ async function loadFormData(formOID, skipDataHasChangedCheck) {
     await loadFormMetadata();
     loadFormClinicaldata();
     $("#clinicaldata-form-data").classList.remove("is-hidden");
-    skipMandatory = false;
+
+    skipMandatoryCheck = false;
+    skipDataHasChangedCheck = false;
 }
 
 async function loadFormMetadata() {
@@ -288,22 +299,25 @@ window.loadNextFormData = async function() {
 
     let nextFormOID = getNextFormOID(currentElementID.form);
     if (nextFormOID) {
+        skipDataHasChangedCheck = true;
         currentElementID.form = nextFormOID
-        await loadFormData(currentElementID.form, true);
+        await loadFormData(currentElementID.form);
         scrollToFormStart();
     } else {
-        closeFormData(false, true);
+        skipDataHasChangedCheck = true;
+        closeFormData(false);
     }
 }
 
 window.loadPreviousFormData = async function() {
-    skipMandatory = true;
+    skipMandatoryCheck = true;
     saveFormData();
 
     let previousFormOID = getPreviousFormOID(currentElementID.form);
     if (previousFormOID) {
+        skipDataHasChangedCheck = true;
         currentElementID.form = previousFormOID
-        await loadFormData(currentElementID.form, true);
+        await loadFormData(currentElementID.form);
         scrollToFormStart();
     }
 }
@@ -333,8 +347,8 @@ function saveFormData() {
     clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList);
 
     // When mandatory fields were not answered show a warning only once
-    if (!skipMandatory && !checkMandatoryFields(formItemDataList)) {
-        skipMandatory = true;
+    if (!skipMandatoryCheck && !checkMandatoryFields(formItemDataList)) {
+        skipMandatoryCheck = true;
         return false;
     } else {
         return true;
@@ -377,11 +391,12 @@ function checkMandatoryFields(formItemDataList) {
 
 export function cacheFormData() {
     cachedFormData = getFormData();
+    skipDataHasChangedCheck = true;
 }
 
-window.closeFormData = async function(saveData, skipDataHasChangedCheck) {
+window.closeFormData = async function(saveData) {
     if (saveData) {
-        skipMandatory = true;
+        skipMandatoryCheck = true;
         saveFormData();
     }
 
@@ -389,24 +404,26 @@ window.closeFormData = async function(saveData, skipDataHasChangedCheck) {
         await deferredFunction();
         hideCloseClinicalDataModal();
     } else {
-        cancelFormOrSurveyEntry(skipDataHasChangedCheck, true);
+        cancelFormOrSurveyEntry(true);
     }
 }
 
-window.cancelFormOrSurveyEntry = function(skipDataHasChangedCheck, closeSurvey) {
+window.cancelFormOrSurveyEntry = function(closeSurvey) {
     if (surveyViewIsActive() && !closeSurvey) {
         $("#close-clinicaldata-modal").classList.add("is-active");
     } else if (surveyViewIsActive()) {
         $("#close-clinicaldata-modal").classList.remove("is-active");
         hideSurveyView();
         ioHelper.showWarning(languageHelper.getTranslation("survey-finished"), languageHelper.getTranslation("survey-finished-text"));
-        loadFormsByStudyEvent(currentElementID.studyEvent, true, true);
+        skipDataHasChangedCheck = true;
+        loadFormsByStudyEvent(currentElementID.studyEvent, true);
     } else {
-        loadFormsByStudyEvent(currentElementID.studyEvent, true, skipDataHasChangedCheck);
+        loadFormsByStudyEvent(currentElementID.studyEvent, true);
     }
 }
 
 window.hideCloseClinicalDataModal = function() {
+    skipDataHasChangedCheck = false;
     deferredFunction = null;
     $("#close-clinicaldata-modal").classList.remove("is-active");
 }
@@ -459,7 +476,7 @@ function surveyViewIsActive() {
 }
 
 function dataHasChanged() {
-    return !deferredFunction && currentElementID.subject && currentElementID.studyEvent && currentElementID.form && clinicaldataHelper.dataHasChanged(getFormData(), currentElementID.studyEvent, currentElementID.form)
+    return currentElementID.subject && currentElementID.studyEvent && currentElementID.form && clinicaldataHelper.dataHasChanged(getFormData(), currentElementID.studyEvent, currentElementID.form)
 }
 
 window.openSubjectInfo = function() {
