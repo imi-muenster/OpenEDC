@@ -233,7 +233,11 @@
                         <div class="tree-panel-blocks">
                             <div class="is-hidden" id="clinicaldata-form-data">
                                 <div class="notification is-link has-text-centered is-hidden" id="no-subject-selected-hint" internationalization="no-subject-selected-hint">
-                                    No subject selected. You can still view and test the form but entered data will not be stored.
+                                    <p>No subject selected. You can still view and test the form but entered data will not be stored.</p>
+                                </div>
+                                <div class="notification is-link has-text-centered is-hidden" id="audit-record-data-hint">
+                                    <p>You are currently viewing data from the audit trail.</p>
+                                    <button class="button is-danger is-small mt-3">Restore Data</button>
                                 </div>
                                 <nav class="level">
                                     <div class="level-left" id="clinicaldata-form-title">
@@ -255,7 +259,7 @@
                                 <hr>
                                 <div id="clinicaldata-content"></div>
                                 <button class="button" id="clinicaldata-close-button" onclick="cancelFormOrSurveyEntry()" internationalization="close">Close</button>
-                                <div class="field has-addons is-pulled-right">
+                                <div class="field has-addons is-pulled-right" id="clinicaldata-navigate-buttons">
                                     <div class="control">
                                         <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" internationalization="back">Back</button>
                                     </div>

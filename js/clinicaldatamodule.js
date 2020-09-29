@@ -471,10 +471,23 @@ function hideSurveyView() {
     $("#survey-view-button").classList.remove("is-hidden");
 }
 
+function showAuditRecordDataView() {
+    $("#audit-record-data-hint").classList.remove("is-hidden");
+    $("#survey-view-button").classList.add("is-hidden");
+    $("#clinicaldata-navigate-buttons").classList.add("is-hidden");
+}
+
+function hideAuditRecordDataView() {
+    $("#audit-record-data-hint").classList.add("is-hidden");
+    $("#survey-view-button").classList.remove("is-hidden");
+    $("#clinicaldata-navigate-buttons").classList.remove("is-hidden");
+}
+
 function surveyViewIsActive() {
     return $(".navbar").classList.contains("is-hidden");
 }
 
+// TODO: Add to this check skipDataHasChangedCheck and remove it from all the other ifs, then I could use this approach to show the AuditRecordFormData
 function dataHasChanged() {
     return currentElementID.subject && currentElementID.studyEvent && currentElementID.form && clinicaldataHelper.dataHasChanged(getFormData(), currentElementID.studyEvent, currentElementID.form)
 }
@@ -483,7 +496,9 @@ window.openSubjectInfo = function() {
     ioHelper.removeElements($$("#audit-records .notification"));
 
     for (let auditRecord of clinicaldataHelper.getAuditRecords()) {
-        $("#audit-records").appendChild(htmlElements.getAuditRecord(clinicaldataHelper.auditRecordTypes.FORMEDITED, auditRecord.studyEvent, auditRecord.form, auditRecord.user, auditRecord.location, auditRecord.dateTime));
+        let auditRecordElement = htmlElements.getAuditRecord(clinicaldataHelper.auditRecordTypes.FORMEDITED, auditRecord.studyEventOID, auditRecord.formOID, auditRecord.user, auditRecord.location, auditRecord.date);
+        auditRecordElement.querySelector("button").onclick = () => showAuditRecordFormData(auditRecord.studyEventOID, auditRecord.formOID, auditRecord.date);
+        $("#audit-records").appendChild(auditRecordElement);
     }
     $("#audit-records").appendChild(htmlElements.getAuditRecord(clinicaldataHelper.auditRecordTypes.CREATED, null, null, null, null, clinicaldataHelper.getSubject().createdDate));
 
@@ -503,4 +518,25 @@ window.openSubjectInfo = function() {
 
 window.hideSubjectInfo = function() {
     $("#subject-modal").classList.remove("is-active");
+}
+
+async function showAuditRecordFormData(studyEventOID, formOID, date) {
+    cachedFormData = clinicaldataHelper.getAuditRecordFormData(studyEventOID, formOID, date);
+    if (cachedFormData.length == 0) return;
+
+    currentElementID.studyEvent = studyEventOID;
+    currentElementID.form = formOID;
+
+    await loadFormMetadata();
+    loadFormClinicaldata();
+    showAuditRecordDataView();
+    $("#clinicaldata-form-data").classList.remove("is-hidden");
+
+    skipMandatoryCheck = false;
+    skipDataHasChangedCheck = false;
+
+    // If the current data or data that is equivalent to the current data is shown, disable the restore data button
+    $("#audit-record-data-hint button").disabled = dataHasChanged() ? false : true;
+
+    hideSubjectInfo();
 }

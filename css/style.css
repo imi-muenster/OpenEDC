@@ -144,10 +144,6 @@ a.panel-block:hover {
     color: hsl(0, 0%, 21%);
 }
 
-.has-small-margin-top {
-    margin-top: 10px;
-}
-
 .file {
     margin-bottom: 0.5rem;
     margin-left: 0.25rem;

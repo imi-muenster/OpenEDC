@@ -17,12 +17,12 @@ export class FormItemData {
 }
 
 export class AuditRecord {
-    constructor(studyEvent, form, user, location, dateTime) {
-        this.studyEvent = studyEvent;
-        this.form = form;
+    constructor(studyEventOID, formOID, user, location, date) {
+        this.studyEventOID = studyEventOID;
+        this.formOID = formOID;
         this.user = user;
         this.location = location;
-        this.dateTime = dateTime;
+        this.date = date;
     }
 }
 
@@ -37,7 +37,7 @@ export const sortTypes = {
 }
 
 export const auditRecordTypes = {
-    CREATED: "Created",
+    CREATED: "Subject Created",
     FORMEDITED: "Form Edited"
 };
 
@@ -180,6 +180,10 @@ export function getSubjectFormData(studyEventOID, formOID) {
     let formData = getLastElement($$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`));
     if (!formData) return [];
 
+    return getFormItemDataList(formData);
+}
+
+function getFormItemDataList(formData) {
     let formItemDataList = [];
     for (let itemGroupData of formData.querySelectorAll("ItemGroupData")) {
         let itemGroupOID = itemGroupData.getAttribute("ItemGroupOID");
@@ -215,9 +219,16 @@ export function getAuditRecords() {
             ));
         }
     }
-    auditRecords.sort((a, b) => a.dateTime < b.dateTime ? 1 : (a.dateTime > b.dateTime ? -1 : 0));
+    auditRecords.sort((a, b) => a.date < b.date ? 1 : (a.date > b.date ? -1 : 0));
 
     return auditRecords;
+}
+
+export function getAuditRecordFormData(studyEventOID, formOID, date) {
+    let dateTimeStamp = Array.from($$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"] AuditRecord DateTimeStamp`)).find(dateTimeStamp => dateTimeStamp.textContent == date.toISOString());
+    let formData = dateTimeStamp ? dateTimeStamp.parentNode.parentNode : null;
+
+    return formData ? getFormItemDataList(formData) : [];
 }
 
 // TODO: Move to ioHelper? Also present in metadatahelper
