@@ -19,7 +19,3 @@ Feel free to submit reasonable changes like bugfixes or functional additions. We
 ## License
 
 This project is licensed under the MIT License — see the [LICENSE.md](LICENSE.md) file for details.
-
-## Acknowledgments
-
-* **[MDM Portal](https://medical-data-models.org/?lang=en):** A meta-data registry for sharing, analyzing, and reusing medical forms in CDISC ODM-XML format. Constitutes the inspiration for this project.

@@ -69,10 +69,10 @@ export function importClinicalData(odmXMLString) {
 
 export function getClinicalData(studyOID, metadataVersionOID) {
     let clinicalData = clinicaldataTemplates.getClinicalData(studyOID, metadataVersionOID);
-    for (let fileName of Object.keys(localStorage)) {
-        if (fileName.split(fileNameSeparator).length > 1) {
-            clinicalData.appendChild(parseSubjectData(localStorage.getItem(fileName)));
-        }
+
+    sortSubjects(sortTypes.CREATEDDATE);
+    for (let subject of subjects) {
+        clinicalData.appendChild(parseSubjectData(localStorage.getItem(subjectToFilename(subject))));
     }
 
     return clinicalData;
@@ -146,7 +146,7 @@ export function clearSubject() {
 export function removeSubject() {
     localStorage.removeItem(subjectToFilename(subject));
     clearSubject();
-    
+
     loadSubjects();
 }
 
