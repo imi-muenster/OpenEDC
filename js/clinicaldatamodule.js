@@ -84,7 +84,7 @@ function filterSubjects(searchString) {
 
 window.addSubject = function() {
     // Check if the data has changed / new data has been entered and show a prompt first
-    if (!skipDataHasChangedCheck && dataHasChanged()) {
+    if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => addSubject();
         $("#close-clinicaldata-modal").classList.add("is-active");
@@ -115,7 +115,7 @@ export function loadSubjectKeys() {
 
 async function loadSubjectData(subjectKey) {
     // Check if the data has changed / new data has been entered and show a prompt first
-    if (!skipDataHasChangedCheck && dataHasChanged()) {
+    if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = async () => await loadSubjectData(subjectKey);
         $("#close-clinicaldata-modal").classList.add("is-active");
@@ -160,7 +160,7 @@ export function loadStudyEvents() {
 
 function loadFormsByStudyEvent(studyEventOID, closeForm) {
     // Check if the data has changed / new data has been entered and show a prompt first
-    if (!skipDataHasChangedCheck && dataHasChanged()) {
+    if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => loadFormsByStudyEvent(studyEventOID, closeForm);
         $("#close-clinicaldata-modal").classList.add("is-active");
@@ -188,7 +188,7 @@ function loadFormsByStudyEvent(studyEventOID, closeForm) {
 
 async function loadFormData(formOID) {
     // Check if the data has changed / new data has been entered and show a prompt first
-    if (!skipDataHasChangedCheck && dataHasChanged()) {
+    if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = async () => await loadFormData(formOID);
         $("#close-clinicaldata-modal").classList.add("is-active");
@@ -272,6 +272,7 @@ function loadFormClinicaldata() {
     }
 
     showErrors(metadataNotFoundErrors, hiddenFieldWithValueError);
+    hideAuditRecordDataView();
     cachedFormData = null;
 }
 
@@ -487,9 +488,8 @@ function surveyViewIsActive() {
     return $(".navbar").classList.contains("is-hidden");
 }
 
-// TODO: Add to this check skipDataHasChangedCheck and remove it from all the other ifs, then I could use this approach to show the AuditRecordFormData
 function dataHasChanged() {
-    return currentElementID.subject && currentElementID.studyEvent && currentElementID.form && clinicaldataHelper.dataHasChanged(getFormData(), currentElementID.studyEvent, currentElementID.form)
+    return !skipDataHasChangedCheck && currentElementID.subject && currentElementID.studyEvent && currentElementID.form && clinicaldataHelper.dataHasChanged(getFormData(), currentElementID.studyEvent, currentElementID.form)
 }
 
 window.openSubjectInfo = function() {
@@ -532,11 +532,12 @@ async function showAuditRecordFormData(studyEventOID, formOID, date) {
     showAuditRecordDataView();
     $("#clinicaldata-form-data").classList.remove("is-hidden");
 
-    skipMandatoryCheck = false;
+    // Show a hint if the current data or data that is equivalent to the current data is shown
     skipDataHasChangedCheck = false;
+    dataHasChanged() ? $("#audit-record-most-current-hint").classList.add("is-hidden") : $("#audit-record-most-current-hint").classList.remove("is-hidden");
 
-    // If the current data or data that is equivalent to the current data is shown, disable the restore data button
-    $("#audit-record-data-hint button").disabled = dataHasChanged() ? false : true;
+    skipMandatoryCheck = true;
+    skipDataHasChangedCheck = true;
 
     hideSubjectInfo();
 }
