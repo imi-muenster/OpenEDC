@@ -161,7 +161,7 @@ export function loadStudyEvents() {
 }
 
 function studyEventClicked(event) {
-    ioHelper.removeIsActiveFromElements($$("#study-event-panel-blocks a"));
+    ioHelper.removeIsActiveFromElement($("#study-event-panel-blocks a.is-active"));
     event.target.classList.add("is-active");
     
     currentElementID.studyEvent = event.target.getAttribute("oid");
@@ -185,7 +185,7 @@ function loadFormsByStudyEvent(studyEventOID, hideTree) {
 }
 
 function formClicked(event) {
-    ioHelper.removeIsActiveFromElements($$("#form-panel-blocks a"));
+    ioHelper.removeIsActiveFromElement($("#form-panel-blocks a.is-active"));
     event.target.classList.add("is-active");
 
     currentElementID.form = event.target.getAttribute("oid");
@@ -209,7 +209,7 @@ function loadItemGroupsByForm(formOID, hideTree) {
 }
 
 function itemGroupClicked(event) {
-    ioHelper.removeIsActiveFromElements($$("#item-group-panel-blocks a"));
+    ioHelper.removeIsActiveFromElement($("#item-group-panel-blocks a.is-active"));
     event.target.classList.add("is-active");
 
     currentElementID.itemGroup = event.target.getAttribute("oid");
@@ -233,7 +233,7 @@ function loadItemsByItemGroup(itemGroupOID, hideTree) {
 }
 
 function itemClicked(event) {
-    ioHelper.removeIsActiveFromElements($$("#item-panel-blocks a"));
+    ioHelper.removeIsActiveFromElement($("#item-panel-blocks a.is-active"));
     event.target.classList.add("is-active");
 
     currentElementID.item = event.target.getAttribute("oid");
@@ -260,7 +260,7 @@ function loadCodeListItemsByItem(itemOID, hideTree) {
 }
 
 function codeListItemClicked(event) {
-    ioHelper.removeIsActiveFromElements($$("#code-list-item-panel-blocks a"));
+    ioHelper.removeIsActiveFromElement($("#code-list-item-panel-blocks a.is-active"));
     event.target.classList.add("is-active");
 
     currentElementID.codeList = event.target.getAttribute("oid");
@@ -1132,7 +1132,7 @@ window.showMoreModal = function() {
 }
 
 window.hideMoreModal = function() {
-    ioHelper.removeIsActiveFromElements($$("#more-tabs ul li"));
+    ioHelper.removeIsActiveFromElement($("#more-tabs ul li.is-active"));
     $("#element-options-tab").classList.add("is-active");
     $("#element-options").classList.remove("is-hidden");
     $("#element-description").classList.add("is-hidden");
@@ -1163,7 +1163,7 @@ window.addConditionInput = function() {
 }
 
 window.projectTabClicked = function(event) {
-    ioHelper.removeIsActiveFromElements($$("#project-tabs ul li"));
+    ioHelper.removeIsActiveFromElement($("#project-tabs ul li.is-active"));
     event.target.parentNode.classList.add("is-active");
 
     switch(event.target.parentNode.id) {
@@ -1185,7 +1185,7 @@ window.projectTabClicked = function(event) {
 }
 
 window.moreTabClicked = function(event) {
-    ioHelper.removeIsActiveFromElements($$("#more-tabs ul li"));
+    ioHelper.removeIsActiveFromElement($("#more-tabs ul li.is-active"));
     event.target.parentNode.classList.add("is-active");
 
     switch(event.target.parentNode.id) {

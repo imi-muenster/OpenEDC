@@ -124,7 +124,7 @@ async function loadSubjectData(subjectKey, skipDataHasChangedCheck) {
     currentElementID.subject = subjectKey;
     cachedFormData = null;
 
-    ioHelper.removeIsActiveFromElements($$("#subject-panel-blocks a"));
+    ioHelper.removeIsActiveFromElement($("#subject-panel-blocks a.is-active"));
     if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
     $("#subject-info-button").disabled = currentElementID.subject ? false : true;
 
@@ -133,7 +133,7 @@ async function loadSubjectData(subjectKey, skipDataHasChangedCheck) {
     loadFormClinicaldata();
 
     // If the subject was deselected, scroll to the form start to show the no-subject-selected-hint
-    if (!subjectKey && currentElementID.studyEvent && currentElementID.form) scrollToFormStart();
+    if (!currentElementID.subject && currentElementID.studyEvent && currentElementID.form) scrollToFormStart();
 }
 
 // TODO: loadStudyEvents loads entire tree if according elements are selected, implement this analogously for metadatamodule
@@ -160,7 +160,7 @@ function loadFormsByStudyEvent(studyEventOID, closeForm, skipDataHasChangedCheck
     }
 
     currentElementID.studyEvent = studyEventOID;
-    ioHelper.removeIsActiveFromElements($$("#clinicaldata-study-event-panel-blocks a"));
+    ioHelper.removeIsActiveFromElement($("#clinicaldata-study-event-panel-blocks a.is-active"));
     $(`#clinicaldata-study-event-panel-blocks [oid="${currentElementID.studyEvent}"]`).classList.add("is-active");
 
     ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
@@ -187,7 +187,7 @@ async function loadFormData(formOID, skipDataHasChangedCheck) {
     }
 
     currentElementID.form = formOID;
-    ioHelper.removeIsActiveFromElements($$("#clinicaldata-form-panel-blocks a"));
+    ioHelper.removeIsActiveFromElement($("#clinicaldata-form-panel-blocks a.is-active"));
     $(`#clinicaldata-form-panel-blocks [oid="${currentElementID.form}"]`).classList.add("is-active");
 
     await loadFormMetadata();

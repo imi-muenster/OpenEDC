@@ -10,10 +10,8 @@ export function safeRemoveElement(element) {
     if (element != null) element.remove();
 }
 
-export function removeIsActiveFromElements(elements) {
-    for (let element of elements) {
-        element.classList.remove("is-active");
-    }
+export function removeIsActiveFromElement(element) {
+    if (element) element.classList.remove("is-active");
 }
 
 export function showWarning(title, message) {
