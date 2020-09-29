@@ -10,10 +10,6 @@ html.no-scroll {
     background-color: transparent;
 }
 
-.navbar-brand {
-    padding-bottom: 1px;
-}
-
 .section {
     padding: 30px 20px 0px 20px;
 }
@@ -183,6 +179,14 @@ a.panel-block:hover {
 
 #audit-records {
     margin-bottom: 1rem;
+}
+
+.navbar-brand {
+    padding-bottom: 1px;
+}
+
+.navbar-start {
+    padding-top: 1px;
 }
 
 @media only screen and (max-width: 768px)  {
