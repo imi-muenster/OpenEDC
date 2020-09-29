@@ -41,6 +41,12 @@ export const auditRecordTypes = {
     FORMEDITED: "Form Edited"
 };
 
+export const dataStatusTypes = {
+    EMPTY: "Empty",
+    EXISTING: "Existing",
+    VERIFIED: "Verified"
+}
+
 let subjects = [];
 let subject = null;
 let subjectData = null;
@@ -254,6 +260,14 @@ export function renameSubject(subjectKey) {
     loadSubjects();
 
     return true;
+}
+
+export function getDataStatusForStudyEvent(studyEventOID) {
+    return $(`StudyEventData[StudyEventOID="${studyEventOID}"]`) ? dataStatusTypes.EXISTING : dataStatusTypes.EMPTY;
+}
+
+export function getDataStatusForForm(studyEventOID, formOID) {
+    return $(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`) ? dataStatusTypes.EXISTING : dataStatusTypes.EMPTY;
 }
 
 // TODO: Move to ioHelper? Also present in metadatahelper

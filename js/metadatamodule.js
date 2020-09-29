@@ -49,7 +49,7 @@ export function setLanguage(newLocale) {
 }
 
 function createPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue) {
-    let panelBlock = htmlElements.getPanelBlock(true, elementOID, elementType, displayText, fallbackText, codedValue);
+    let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue);
 
     panelBlock.ondragstart = dragStart;
     panelBlock.ondragend = dragEnd;

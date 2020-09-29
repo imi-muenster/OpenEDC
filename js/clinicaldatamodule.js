@@ -107,7 +107,7 @@ export function loadSubjectKeys() {
 
     if (clinicaldataHelper.getSubjectKeys().length > 0) $("#no-subjects-hint").classList.add("is-hidden");
     for (let subjectKey of clinicaldataHelper.getSubjectKeys($("#sort-subject-select-inner").value)) {
-        let panelBlock = htmlElements.getPanelBlock(false, subjectKey, "", subjectKey);
+        let panelBlock = htmlElements.getClinicaldataPanelBlock(subjectKey, subjectKey, null, null);
         panelBlock.onclick = () => loadSubjectData(subjectKey);
         $("#subject-panel-blocks").appendChild(panelBlock);
     }
@@ -151,9 +151,11 @@ export async function loadStudyEvents() {
     ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
 
     for (let studyEventDef of metadataHelper.getStudyEvents()) {
-        let translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = htmlElements.getPanelBlock(false, studyEventDef.getAttribute("OID"), metadataHelper.elementTypes.STUDYEVENT, translatedText, studyEventDef.getAttribute("Name"));
-        panelBlock.onclick = () => loadFormsByStudyEvent(studyEventDef.getAttribute("OID"), true);
+        const studyEventOID = studyEventDef.getAttribute("OID");
+        const translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
+        const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
+        let panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedText, studyEventDef.getAttribute("Name"), dataStatus);
+        panelBlock.onclick = () => loadFormsByStudyEvent(studyEventOID, true);
         $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
     }
 
@@ -178,10 +180,12 @@ async function loadFormsByStudyEvent(studyEventOID, closeForm) {
     $("#clinicaldata-form-data").classList.add("is-hidden");
     if (closeForm) currentElementID.form = null;
 
-    for (let formDef of metadataHelper.getFormsByStudyEvent(studyEventOID)) {
-        let translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = htmlElements.getPanelBlock(false, formDef.getAttribute("OID"), metadataHelper.elementTypes.FORM, translatedText, formDef.getAttribute("Name"));
-        panelBlock.onclick = () => loadFormData(formDef.getAttribute("OID"));
+    for (let formDef of metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent)) {
+        const formOID = formDef.getAttribute("OID");
+        const translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
+        const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForForm(currentElementID.studyEvent, formOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
+        let panelBlock = htmlElements.getClinicaldataPanelBlock(formOID, translatedText, formDef.getAttribute("Name"), dataStatus);
+        panelBlock.onclick = () => loadFormData(formOID);
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
     }
 

@@ -58,7 +58,7 @@ a.panel-block:hover {
 
 .panel-block.is-active {
     background-color: hsl(0, 0%, 96%) !important;
-    border-left: 1px #3273dc solid;
+    border-left: 2px #3273dc solid;
 }
 
 .panel-icon {

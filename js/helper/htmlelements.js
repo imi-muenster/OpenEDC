@@ -2,10 +2,10 @@ const rangeCheckComparators = ["--", "LT", "LE", "GT", "GE", "EQ", "NE"];
 const dataTypes = ["text", "date", "boolean", "integer", "float", "codelist (text)", "codelist (integer)", "codelist (float)"];
 const mandatory = ["No", "Yes"];
 
-export function getPanelBlock(draggable, elementOID, elementType, displayText, fallbackText, codedValue) {
+export function getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue) {
     let panelBlock = document.createElement("a");
     panelBlock.className = "panel-block";
-    panelBlock.setAttribute("draggable", draggable);
+    panelBlock.setAttribute("draggable", true);
     panelBlock.setAttribute("oid", elementOID);
     panelBlock.setAttribute("element-type", elementType);
 
@@ -29,6 +29,44 @@ export function getPanelBlock(draggable, elementOID, elementType, displayText, f
         } else {
             panelBlock.appendChild(document.createTextNode("\u00A0"));
         }
+    }
+
+    return panelBlock;
+}
+
+export function getClinicaldataPanelBlock(elementOID, displayText, fallbackText, dataStatus) {
+    let panelBlock = document.createElement("a");
+    panelBlock.className = "panel-block";
+    panelBlock.setAttribute("oid", elementOID);
+
+    if (dataStatus) {
+        let dot = document.createElement("span");
+        dot.className = "panel-icon has-text-link";
+        let dotIcon = document.createElement("i");
+
+        switch (dataStatus) {
+            case "Empty":
+                dotIcon.className = "far fa-circle";
+                break;
+            case "Existing":
+                dotIcon.className = "fas fa-circle";
+                break;
+            case "Verified":
+                dotIcon.className = "fas fa-check-circle";
+        }
+
+        dot.appendChild(dotIcon);
+        panelBlock.appendChild(dot);
+    }
+
+    if (typeof displayText === "object" && displayText != null) {
+        panelBlock.appendChild(document.createTextNode(displayText.textContent));
+    } else if (displayText) {
+        panelBlock.appendChild(document.createTextNode(displayText));
+    } else if (fallbackText) {
+        panelBlock.appendChild(document.createTextNode(fallbackText));
+    } else {
+        panelBlock.appendChild(document.createTextNode("\u00A0"));
     }
 
     return panelBlock;
