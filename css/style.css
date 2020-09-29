@@ -144,16 +144,8 @@ a.panel-block:hover {
     color: hsl(0, 0%, 21%);
 }
 
-.has-no-margin-bottom {
-    margin-bottom: 0px !important;
-}
-
-.has-small-margin-bottom {
-    margin-bottom: 5px !important;
-}
-
 .has-small-margin-top {
-    margin-top: 5px !important;
+    margin-top: 10px;
 }
 
 .file {

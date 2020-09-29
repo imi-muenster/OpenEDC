@@ -487,6 +487,7 @@ window.openSubjectInfo = function() {
     }
 
     $("#subject-modal strong").textContent = currentElementID.subject;
+    $("#subject-modal input").value = currentElementID.subject;
     $("#subject-modal").classList.add("is-active");
 }
 

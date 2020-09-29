@@ -497,8 +497,17 @@
                             <h1 class="title">Options and Audit Trail</h1>
                             <h2 class="subtitle">of Subject: <strong></strong></h2>
                             <hr>
-                            <h2 class="subtitle">Options</h2>
-                            <p>In development ...</p><br>
+                            <h2 class="subtitle">Subject Options</h2>
+                            <div class="field">
+                                <label class="label">Subject Key</label>
+                                <div class="control">
+                                    <input class="input" type="text">
+                                </div>
+                            </div>
+                            <div class="buttons">
+                                <button class="button is-danger is-small">Save Changes</button>
+                                <button class="button is-small" onclick="hideSubjectInfo()">Cancel</button>
+                            </div>
                             <hr>
                             <h2 class="subtitle">Audit Trail</h2>
                             <div id="audit-records"></div>

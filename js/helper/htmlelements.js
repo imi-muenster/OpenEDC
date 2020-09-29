@@ -242,12 +242,11 @@ export function getSelect(name, isUnique, isFullwidth, values, selectedValue) {
 export function getAuditRecord(studyEvent, form, user, location, dateTime) {
     return new DOMParser().parseFromString(`
         <div class="notification">
-            <p>Timestamp: <strong>${dateTime.toLocaleDateString() + ", " + dateTime.toLocaleTimeString()}</strong></p>
-            <p>Event: <strong>${studyEvent}</strong></p>
-            <p>Form: <strong>${form}</strong></p>
+            <p>Timestamp: <strong>${dateTime.toLocaleDateString()} – ${dateTime.toLocaleTimeString()}</strong></p>
+            <p>Form: <strong>${studyEvent} – ${form}</strong></p>
             <p>User: <strong>${user}</strong></p>
-            <p>Location: <strong>${location}</strong></p><br>
-            <button class="button is-small">View Data</button>
+            <p>Location: <strong>${location}</strong></p>
+            <button class="button is-small has-small-margin-top">View Data</button>
         </div>
     `, "text/html").body.firstChild;
 }
