@@ -555,5 +555,6 @@ window.removeSubject = function() {
     currentElementID.subject = null;
     
     loadSubjectKeys();
+    loadStudyEvents();
     hideSubjectInfo();
 }
