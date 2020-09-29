@@ -33,10 +33,9 @@ export function init() {
     clinicaldataHelper.loadSubjects();
 }
 
+// TODO: Improve the show and hide logic. Should be handled by the clinicaldatamodule instead of app.js to stop the mode-toggling if new data has just been entered.
 export function show() {
     loadSubjectKeys();
-    // TODO: Improve the show and hide logic. Should be handled by the clinicaldatamodule instead of app.js to stop the mode-toggling if new data has just been entered.
-    skipDataHasChangedCheck = true;
     loadStudyEvents();
 
     $("#clinicaldata-section").classList.remove("is-hidden");
@@ -135,11 +134,7 @@ async function loadSubjectData(subjectKey) {
     $("#subject-info-button").disabled = currentElementID.subject ? false : true;
 
     clinicaldataHelper.loadSubject(currentElementID.subject);
-    await loadFormMetadata();
-    loadFormClinicaldata();
-
-    skipMandatoryCheck = false;
-    skipDataHasChangedCheck = false;
+    await loadStudyEvents();
 
     // If the subject was deselected, scroll to the form start to show the no-subject-selected-hint
     if (!currentElementID.subject && currentElementID.studyEvent && currentElementID.form) scrollToFormStart();
@@ -147,6 +142,8 @@ async function loadSubjectData(subjectKey) {
 
 // TODO: loadStudyEvents loads entire tree if according elements are selected, implement this analogously for metadatamodule
 export async function loadStudyEvents() {
+    skipDataHasChangedCheck = true;
+
     ioHelper.removeElements($$("#clinicaldata-study-event-panel-blocks a"));
     ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
 
@@ -309,9 +306,8 @@ window.loadNextFormData = async function() {
 
     let nextFormOID = getNextFormOID(currentElementID.form);
     if (nextFormOID) {
-        skipDataHasChangedCheck = true;
         currentElementID.form = nextFormOID
-        await loadFormData(currentElementID.form);
+        await loadStudyEvents();
         scrollToFormStart();
     } else {
         skipDataHasChangedCheck = true;
@@ -325,9 +321,8 @@ window.loadPreviousFormData = async function() {
 
     let previousFormOID = getPreviousFormOID(currentElementID.form);
     if (previousFormOID) {
-        skipDataHasChangedCheck = true;
         currentElementID.form = previousFormOID
-        await loadFormData(currentElementID.form);
+        await loadStudyEvents();
         scrollToFormStart();
     }
 }
@@ -402,7 +397,6 @@ function checkMandatoryFields(formItemDataList) {
 export function cacheFormData() {
     cachedFormData = getFormData();
     cachedFormDataIsAuditRecord = $("#audit-record-data-hint").classList.contains("is-hidden") ? false : true;
-    skipDataHasChangedCheck = true;
 }
 
 window.closeFormData = async function(saveData) {
@@ -533,12 +527,10 @@ window.hideSubjectInfo = function() {
 
 async function showAuditRecordFormData(studyEventOID, formOID, date) {
     cachedFormData = clinicaldataHelper.getAuditRecordFormData(studyEventOID, formOID, date);
-    if (cachedFormData.length == 0) return;
+    if (!cachedFormData) return;
 
     currentElementID.studyEvent = studyEventOID;
     currentElementID.form = formOID;
-
-    skipDataHasChangedCheck = true;
     await loadStudyEvents();
 
     // Show a hint if the current data or data that is equivalent to the current data is shown

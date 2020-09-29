@@ -243,7 +243,7 @@ export function getAuditRecordFormData(studyEventOID, formOID, date) {
     let dateTimeStamp = Array.from($$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"] AuditRecord DateTimeStamp`)).find(dateTimeStamp => dateTimeStamp.textContent == date.toISOString());
     let formData = dateTimeStamp ? dateTimeStamp.parentNode.parentNode : null;
 
-    return formData ? getFormItemDataList(formData) : [];
+    return formData ? getFormItemDataList(formData) : null;
 }
 
 // TODO: Improve error handling
