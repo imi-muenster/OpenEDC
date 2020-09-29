@@ -1,6 +1,6 @@
-let rangeCheckComparators = ["--", "LT", "LE", "GT", "GE", "EQ", "NE"];
-let dataTypes = ["text", "date", "boolean", "integer", "float", "codelist (text)", "codelist (integer)", "codelist (float)"];
-let mandatory = ["No", "Yes"];
+const rangeCheckComparators = ["--", "LT", "LE", "GT", "GE", "EQ", "NE"];
+const dataTypes = ["text", "date", "boolean", "integer", "float", "codelist (text)", "codelist (integer)", "codelist (float)"];
+const mandatory = ["No", "Yes"];
 
 export function getPanelBlock(draggable, elementOID, elementType, displayText, fallbackText, codedValue) {
     let panelBlock = document.createElement("a");
@@ -239,14 +239,15 @@ export function getSelect(name, isUnique, isFullwidth, values, selectedValue) {
 }
 
 // TODO: Used the DOMParser as alternative to document.createElement. Check if the performance is not significantly worse
-export function getAuditRecord(studyEvent, form, user, location, dateTime) {
+export function getAuditRecord(type, studyEvent, form, user, location, dateTime) {
     return new DOMParser().parseFromString(`
         <div class="notification">
-            <p>Timestamp: <strong>${dateTime.toLocaleDateString()} – ${dateTime.toLocaleTimeString()}</strong></p>
-            <p>Form: <strong>${studyEvent} – ${form}</strong></p>
-            <p>User: <strong>${user}</strong></p>
-            <p>Location: <strong>${location}</strong></p>
-            <button class="button is-small has-small-margin-top">View Data</button>
+            <p><strong>${type}</strong></p>
+            <p class="has-small-margin-top">Timestamp: <strong>${dateTime.toLocaleDateString()} – ${dateTime.toLocaleTimeString()}</strong></p>
+            ${form && studyEvent ? '<p>Form: <strong>' + studyEvent + ' – ' + form + '</strong></p>': ''}
+            ${user ? '<p>User: <strong>' + user + '</strong></p>': ''}
+            ${location ? '<p>User: <strong>' + location + '</strong></p>': ''}
+            ${form ? '<button class="button is-small has-small-margin-top">View Data</button>' : ""}
         </div>
     `, "text/html").body.firstChild;
 }

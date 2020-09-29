@@ -483,11 +483,21 @@ window.openSubjectInfo = function() {
     ioHelper.removeElements($$("#audit-records .notification"));
 
     for (let auditRecord of clinicaldataHelper.getAuditRecords()) {
-        $("#audit-records").appendChild(htmlElements.getAuditRecord(auditRecord.studyEvent, auditRecord.form, auditRecord.user, auditRecord.location, auditRecord.dateTime));
+        $("#audit-records").appendChild(htmlElements.getAuditRecord(clinicaldataHelper.auditRecordTypes.FORMEDITED, auditRecord.studyEvent, auditRecord.form, auditRecord.user, auditRecord.location, auditRecord.dateTime));
     }
+    $("#audit-records").appendChild(htmlElements.getAuditRecord(clinicaldataHelper.auditRecordTypes.CREATED, null, null, null, null, clinicaldataHelper.getSubject().createdDate));
 
     $("#subject-modal strong").textContent = currentElementID.subject;
     $("#subject-modal input").value = currentElementID.subject;
+
+    // Disable change functionality when there are unsaved changes in the form
+    $("#subject-modal input").disabled = false;
+    $("#subject-modal button").disabled = false;
+    if (dataHasChanged()) {
+        $("#subject-modal input").disabled = true;
+        $$("#subject-modal button:not([onclick])").forEach(button => button.disabled = true);
+    }
+
     $("#subject-modal").classList.add("is-active");
 }
 

@@ -36,6 +36,11 @@ export const sortTypes = {
     CREATEDDATE: "Creation date"
 }
 
+export const auditRecordTypes = {
+    CREATED: "Created",
+    FORMEDITED: "Form Edited"
+};
+
 let subjects = [];
 let subject = null;
 let subjectData = null;
@@ -46,6 +51,10 @@ function parseSubjectData(subjectXMLString) {
 
 function getSerializedSubjectData() {
     return new XMLSerializer().serializeToString(subjectData);
+}
+
+export function getSubject() {
+    return subject;
 }
 
 export function importClinicalData(odmXMLString) {
@@ -191,11 +200,12 @@ export function dataHasChanged(formItemDataList, studyEventOID, formOID) {
 
 export function getAuditRecords() {
     let auditRecords = [];
-    for (let studyEvent of $$("StudyEventData")) {
-        let studyEventOID = studyEvent.getAttribute("StudyEventOID");
-        for (let form of studyEvent.querySelectorAll("FormData")) {
-            let formOID = form.getAttribute("FormOID");
-            let auditRecord = form.querySelector("AuditRecord")
+    for (let studyEventData of $$("StudyEventData")) {
+        let studyEventOID = studyEventData.getAttribute("StudyEventOID");
+        for (let formData of studyEventData.querySelectorAll("FormData")) {
+            let formOID = formData.getAttribute("FormOID");
+            let auditRecord = formData.querySelector("AuditRecord")
+            if (!auditRecord) continue;
             auditRecords.push(new AuditRecord(
                 studyEventOID,
                 formOID,
