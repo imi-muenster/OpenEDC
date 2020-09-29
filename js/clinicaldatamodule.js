@@ -144,7 +144,7 @@ async function loadSubjectData(subjectKey) {
 }
 
 // TODO: loadStudyEvents loads entire tree if according elements are selected, implement this analogously for metadatamodule
-export function loadStudyEvents() {
+export async function loadStudyEvents() {
     ioHelper.removeElements($$("#clinicaldata-study-event-panel-blocks a"));
     ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
 
@@ -155,10 +155,10 @@ export function loadStudyEvents() {
         $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
     }
 
-    if (currentElementID.studyEvent) loadFormsByStudyEvent(currentElementID.studyEvent, false);
+    if (currentElementID.studyEvent) await loadFormsByStudyEvent(currentElementID.studyEvent, false);
 }
 
-function loadFormsByStudyEvent(studyEventOID, closeForm) {
+async function loadFormsByStudyEvent(studyEventOID, closeForm) {
     // Check if the data has changed / new data has been entered and show a prompt first
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
@@ -183,7 +183,7 @@ function loadFormsByStudyEvent(studyEventOID, closeForm) {
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
     }
 
-    if (currentElementID.form) loadFormData(currentElementID.form);
+    if (currentElementID.form) await loadFormData(currentElementID.form);
 }
 
 async function loadFormData(formOID) {
@@ -527,17 +527,13 @@ async function showAuditRecordFormData(studyEventOID, formOID, date) {
     currentElementID.studyEvent = studyEventOID;
     currentElementID.form = formOID;
 
-    await loadFormMetadata();
-    loadFormClinicaldata();
+    skipDataHasChangedCheck = true;
+    await loadStudyEvents();
     showAuditRecordDataView();
-    $("#clinicaldata-form-data").classList.remove("is-hidden");
 
     // Show a hint if the current data or data that is equivalent to the current data is shown
-    skipDataHasChangedCheck = false;
     dataHasChanged() ? $("#audit-record-most-current-hint").classList.add("is-hidden") : $("#audit-record-most-current-hint").classList.remove("is-hidden");
 
-    skipMandatoryCheck = true;
     skipDataHasChangedCheck = true;
-
     hideSubjectInfo();
 }
