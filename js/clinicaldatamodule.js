@@ -172,11 +172,13 @@ async function loadFormsByStudyEvent(studyEventOID, closeForm) {
     ioHelper.removeIsActiveFromElement($("#clinicaldata-study-event-panel-blocks a.is-active"));
     $(`#clinicaldata-study-event-panel-blocks [oid="${currentElementID.studyEvent}"]`).classList.add("is-active");
 
-    ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
-    ioHelper.safeRemoveElement($("#odm-html-content"));
-    $("#clinicaldata-form-data").classList.add("is-hidden");
-    if (closeForm) currentElementID.form = null;
+    if (closeForm) {
+        currentElementID.form = null;
+        ioHelper.safeRemoveElement($("#odm-html-content"));
+        $("#clinicaldata-form-data").classList.add("is-hidden");
+    }
 
+    ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
     for (let formDef of metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent)) {
         const formOID = formDef.getAttribute("OID");
         const translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
@@ -210,7 +212,7 @@ async function loadFormData(formOID) {
     skipDataHasChangedCheck = false;
 
     // Handle cachedData, that is usually cached when the language is changed
-    cachedFormDataIsAuditRecord ? showAuditRecordDataView() : hideAuditRecordDataView();
+    cachedFormDataIsAuditRecord ? showAuditRecordDataView() : (surveyViewIsActive() ? null : hideAuditRecordDataView());
     cachedFormDataIsAuditRecord = false;
     cachedFormData = null;
 }
