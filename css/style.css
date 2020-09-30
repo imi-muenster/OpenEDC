@@ -123,6 +123,10 @@ a.panel-block:hover {
     width: 100%;
 }
 
+.field label.radio:not(:last-child) {
+    margin-bottom: 5px;
+}
+
 .checkbox-button {
     margin-bottom: 12px;
     width: 100%;

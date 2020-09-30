@@ -135,9 +135,6 @@ async function loadSubjectData(subjectKey) {
 
     clinicaldataHelper.loadSubject(currentElementID.subject);
     await loadStudyEvents();
-
-    // If the subject was deselected, scroll to the form start to show the no-subject-selected-hint
-    if (!currentElementID.subject && currentElementID.studyEvent && currentElementID.form) scrollToFormStart();
 }
 
 // TODO: loadStudyEvents loads entire tree if according elements are selected, implement this analogously for metadatamodule
@@ -215,6 +212,8 @@ async function loadFormData(formOID) {
     cachedFormDataIsAuditRecord ? showAuditRecordDataView() : (surveyViewIsActive() ? null : hideAuditRecordDataView());
     cachedFormDataIsAuditRecord = false;
     cachedFormData = null;
+
+    scrollToFormStart();
 }
 
 async function loadFormMetadata() {
@@ -310,7 +309,6 @@ window.loadNextFormData = async function() {
     if (nextFormOID) {
         currentElementID.form = nextFormOID
         await loadStudyEvents();
-        scrollToFormStart();
     } else {
         skipDataHasChangedCheck = true;
         closeFormData(false);
@@ -325,7 +323,6 @@ window.loadPreviousFormData = async function() {
     if (previousFormOID) {
         currentElementID.form = previousFormOID
         await loadStudyEvents();
-        scrollToFormStart();
     }
 }
 
