@@ -1,4 +1,5 @@
 import * as clinicaldataModule from "./clinicaldatamodule.js";
+import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
 import * as metadataHelper from "./helper/metadatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
@@ -335,8 +336,8 @@ function fillDetailsPanel(elementOID, elementType) {
     $("#name-input").disabled = false;
     $("#question-textarea").disabled = false;
     $("#mandatory-select-inner").disabled = false;
-    $("#delete-button").disabled = false;
-    $("#delete-button-mobile").disabled = false;
+    $("#remove-button").disabled = false;
+    $("#remove-button-mobile").disabled = false;
     $("#duplicate-button").disabled = false;
     $("#duplicate-button-mobile").disabled = false;
     $("#more-button").disabled = false;
@@ -472,8 +473,8 @@ function resetDetailsPanel() {
     $("#name-input").disabled = true;
     $("#save-button").disabled = true;
     $("#save-button-mobile").disabled = true;
-    $("#delete-button").disabled = true;
-    $("#delete-button-mobile").disabled = true;
+    $("#remove-button").disabled = true;
+    $("#remove-button-mobile").disabled = true;
     $("#duplicate-button").disabled = true;
     $("#duplicate-button-mobile").disabled = true;
     $("#more-button").disabled = true;
@@ -700,7 +701,7 @@ function setIOListeners() {
         inputElement.tabIndex = index + 1;
     }
     $("#save-button").tabIndex = 6;
-    $("#delete-button").tabIndex = 7;
+    $("#remove-button").tabIndex = 7;
     window.addEventListener("unload", () => metadataHelper.storeMetadata());
 }
 
@@ -751,7 +752,7 @@ function arrowKeyListener(event) {
         addCurrentElementType();
     } else if (event.code == "KeyR") {
         event.preventDefault();
-        deleteElement();
+        removeElement();
     } else if (event.code == "Tab") {
         event.preventDefault();
         $("#oid-input").focus();
@@ -843,7 +844,7 @@ window.addCodeListItem = function() {
     }
 }
 
-window.deleteElement = function() {
+window.removeElement = function() {
     switch (currentElementType) {
         case metadataHelper.elementTypes.STUDYEVENT:
             metadataHelper.removeStudyEventRef(currentElementID.studyEvent);
@@ -871,7 +872,7 @@ window.deleteElement = function() {
             currentElementID.codeListItem = null;
     }
 
-    hideDeleteModal();
+    hideRemoveModal();
     resetDetailsPanel();
     reloadTree();
 }
@@ -1111,13 +1112,26 @@ window.elementDrop = function(event) {
     reloadTree();
 }
 
-window.showDeleteModal = function() {
+window.showRemoveModal = function() {
+    const subjectKeys = clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID());
+    if (subjectKeys.length > 0) {
+        $("#remove-modal .notification strong").textContent = subjectKeys.join(", ");
+        $("#remove-modal .notification").classList.remove("is-hidden");
+        $("#remove-modal p").classList.add("is-hidden");
+        $("#remove-modal button").disabled = true;
+    } else {
+        $("#remove-modal .notification strong").textContent = "";
+        $("#remove-modal .notification").classList.add("is-hidden");
+        $("#remove-modal p").classList.remove("is-hidden");
+        $("#remove-modal button").disabled = false;
+    }
+
     removeArrowKeyListener();
-    $("#delete-modal").classList.add("is-active");
+    $("#remove-modal").classList.add("is-active");
 }
 
-window.hideDeleteModal = function() {
-    $("#delete-modal").classList.remove("is-active");
+window.hideRemoveModal = function() {
+    $("#remove-modal").classList.remove("is-active");
     setArrowKeyListener();
 }
 

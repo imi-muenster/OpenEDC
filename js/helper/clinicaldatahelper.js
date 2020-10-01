@@ -263,6 +263,18 @@ export function getDataStatusForForm(studyEventOID, formOID) {
     return $(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`) ? dataStatusTypes.EXISTING : dataStatusTypes.EMPTY;
 }
 
+export function getSubjectsHavingDataForElement(elementOID) {
+    if (subjects.length == 0) loadSubjects();
+
+    let subjectKeys = [];
+    for (const subject of subjects) {
+        const subjectData = localStorage.getItem(subjectToFilename(subject));
+        if (subjectData.includes(elementOID)) subjectKeys.push(subject.key);
+    }
+
+    return subjectKeys;
+}
+
 // TODO: Move to ioHelper? Also present in metadatahelper
 function getLastElement(elements) {
     if (elements.length >= 1) {

@@ -74,7 +74,7 @@
                     </div>
                     <div class="buttons is-hidden-mobile">
                         <button class="button is-link" id="save-button" onclick="saveElement()" disabled>Save Changes</button>
-                        <button class="button is-danger" id="delete-button" onclick="showDeleteModal()" disabled>Remove</button>
+                        <button class="button is-danger" id="remove-button" onclick="showRemoveModal()" disabled>Remove</button>
                     </div>
                 </div>
                 <div class="column is-one-fifth">
@@ -107,7 +107,7 @@
                 <div class="column is-one-fifth is-hidden-tablet">
                     <div class="buttons">
                         <button class="button is-link" id="save-button-mobile" onclick="saveElement()" disabled>Save Changes</button>
-                        <button class="button is-danger" id="delete-button-mobile" onclick="showDeleteModal()" disabled>Remove</button>
+                        <button class="button is-danger" id="remove-button-mobile" onclick="showRemoveModal()" disabled>Remove</button>
                         <button class="button" id="duplicate-button-mobile" onclick="showDuplicateModal()" disabled>Duplicate</button>
                         <button class="button" id="more-button-mobile" onclick="showMoreModal()" disabled>
                             <span class="icon is-small">
@@ -291,16 +291,16 @@
             </div>
         </div>
 
-        <div class="modal" id="delete-modal">
-            <div class="modal-background" onclick="hideDeleteModal()"></div>
+        <div class="modal" id="remove-modal">
+            <div class="modal-background" onclick="hideRemoveModal()"></div>
             <div class="modal-content is-medium">
                 <div class="box has-text-centered">
                     <h2 class="subtitle">Please confirm</h2>
-                    <p>The reference to the element will be removed. The element definition will be removed as well if there was no other reference to it.</p>
-                    <br>
+                    <div class="notification is-danger is-hidden">You cannot currently remove this element since there is clinical data assigned to it for the following subjects: <strong></strong>.<br><br>Note: To keep the audit trail intact, you also cannot delete items that have been assigned data in the past.</div>
+                    <p class="mb-5">The reference to the element will be removed. The element definition will be removed as well if there was no other reference to it.</p>
                     <div class="buttons is-centered">
-                        <button class="button is-danger is-small" onclick="deleteElement()">Remove</button>
-                        <button class="button is-small" onclick="hideDeleteModal()">Cancel</button>
+                        <button class="button is-danger is-small" onclick="removeElement()">Remove</button>
+                        <button class="button is-small" onclick="hideRemoveModal()">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -534,7 +534,7 @@
                     <div class="columns is-centered">
                         <div class="column is-two-thirds">
                             <h1 class="title">About OpenEDC</h1>
-                            <h2 class="subtitle">Part of the <a target="_blank" rel="noopener noreferrer" href="https://medical-data-models.org/?lang=en">MDM Portal</a></h2>
+                            <h2 class="subtitle">Simple and secure data collection</h2>
                             <hr>
                             <p>This free and <a target="_blank" href="#">open-source</a> electronic data capture (EDC) system lets you create and conduct secure clinical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format.</p>
                             <br>
