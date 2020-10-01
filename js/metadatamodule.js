@@ -1072,6 +1072,11 @@ window.elementDrop = function(event) {
     let sourceElementRef = null;
     let targetElementRef = null;
 
+    if (sourceParentOID != targetParentOID && clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID).length > 0) {
+        ioHelper.showWarning("Error", "The element could not be moved since there is clinical data assigned to it. You can try to remove the element to see a list of subjects that contain data for this element.");
+        return;
+    }
+
     if (elementTypeOnDrag === metadataHelper.elementTypes.CODELISTITEM) {
         sourceElementRef = metadataHelper.getCodeListItem(sourceElementOID, event.dataTransfer.getData("sourceCodedValue"));
     } else {
