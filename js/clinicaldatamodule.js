@@ -37,8 +37,7 @@ export function init() {
 // TODO: Improve the show and hide logic. Should be handled by the clinicaldatamodule instead of app.js to stop the mode-toggling if new data has just been entered.
 export function show() {
     loadSubjectKeys();
-    skipDataHasChangedCheck = true;
-    loadTree(currentElementID.studyEvent, currentElementID.form);
+    reloadTree();
 
     $("#clinicaldata-section").classList.remove("is-hidden");
     $("#clinicaldata-toggle-button").classList.add("is-hidden");
@@ -150,12 +149,16 @@ async function loadSubjectData(subjectKey) {
     $("#subject-info-button").disabled = currentElementID.subject ? false : true;
 
     clinicaldataHelper.loadSubject(currentElementID.subject);
+    await reloadTree();
+}
+
+export async function reloadTree() {
     skipDataHasChangedCheck = true;
     await loadTree(currentElementID.studyEvent, currentElementID.form);
 }
 
 // TODO: Loads entire tree if according elements are passed, implement this analogously for metadatamodule
-export async function loadTree(studyEventOID, formOID) {
+async function loadTree(studyEventOID, formOID) {
     // Check if the data has changed / new data has been entered and show a prompt first
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
@@ -558,6 +561,6 @@ window.removeSubject = function() {
     currentElementID.subject = null;
     
     loadSubjectKeys();
-    loadTree(currentElementID.studyEvent, currentElementID.form);
+    reloadTree();
     hideSubjectInfo();
 }
