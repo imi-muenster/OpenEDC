@@ -495,47 +495,42 @@ function resetDetailsPanel() {
     $("#element-long-label").textContent = "Description";
 }
 
+// TODO: Can be heavily refactored and shortened (especially the middle part)
 window.saveElement = function() {
-    switch (currentElementType) {
-        case metadataHelper.elementTypes.STUDYEVENT:
-            if (metadataHelper.setElementOID(currentElementID.studyEvent, $("#oid-input").value, currentElementType)) {
-                currentElementID.studyEvent = $("#oid-input").value;
+    const newOID = $("#oid-input").value;
+    const currentElementOID = getCurrentElementOID();
+    if (currentElementOID != newOID) {
+        if (clinicaldataHelper.getSubjectsHavingDataForElement(currentElementOID) == 0) {
+            if (metadataHelper.setElementOID(currentElementOID, newOID, currentElementType)) {
+                setCurrentElementOID(newOID);
             } else {
                 ioHelper.showWarning("OID not changed", "The entered OID is already in use.");
             }
+        } else {
+            ioHelper.showWarning("OID not changed", "The OID could not be changed since there is clinical data assigned to this element. You can try to remove the element to see a list of subjects that contain data for this element.");
+        }
+    }
+
+    switch (currentElementType) {
+        case metadataHelper.elementTypes.STUDYEVENT:
             metadataHelper.setElementName(currentElementID.studyEvent, $("#name-input").value);
             metadataHelper.setElementDescription(currentElementID.studyEvent, $("#question-textarea").value, locale);
             metadataHelper.setElementMandatory(currentElementID.studyEvent, currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
             reloadStudyEvents();
             break;
         case metadataHelper.elementTypes.FORM:
-            if (metadataHelper.setElementOID(currentElementID.form, $("#oid-input").value, currentElementType)) {
-                currentElementID.form = $("#oid-input").value;
-            } else {
-                ioHelper.showWarning("OID not changed", "The entered OID is already in use.");
-            }
             metadataHelper.setElementName(currentElementID.form, $("#name-input").value);
             metadataHelper.setElementDescription(currentElementID.form, $("#question-textarea").value, locale);
             metadataHelper.setElementMandatory(currentElementID.form, currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
             reloadForms();
             break;
         case metadataHelper.elementTypes.ITEMGROUP:
-            if (metadataHelper.setElementOID(currentElementID.itemGroup, $("#oid-input").value, currentElementType)) {
-                currentElementID.itemGroup = $("#oid-input").value;
-            } else {
-                ioHelper.showWarning("OID not changed", "The entered OID is already in use.");
-            }
             metadataHelper.setElementName(currentElementID.itemGroup, $("#name-input").value);
             metadataHelper.setElementDescription(currentElementID.itemGroup, $("#question-textarea").value, locale);
             metadataHelper.setElementMandatory(currentElementID.itemGroup, currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
             reloadItemGroups();
             break;
         case metadataHelper.elementTypes.ITEM:
-            if (metadataHelper.setElementOID(currentElementID.item, $("#oid-input").value, currentElementType)) {
-                currentElementID.item = $("#oid-input").value;
-            } else {
-                ioHelper.showWarning("OID not changed", "The entered OID is already in use.");
-            }
             metadataHelper.setElementName(currentElementID.item, $("#name-input").value);
             metadataHelper.setItemQuestion(currentElementID.item, $("#question-textarea").value, locale);
             metadataHelper.setElementMandatory(currentElementID.item, currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
@@ -543,11 +538,6 @@ window.saveElement = function() {
             reloadItems();
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
-            if (metadataHelper.setElementOID(currentElementID.codeList, $("#oid-input").value, currentElementType)) {
-                currentElementID.codeList = $("#oid-input").value;
-            } else {
-                ioHelper.showWarning("OID not changed", "The entered OID is already in use.");
-            }
             metadataHelper.setCodeListItemDecodedText(currentElementID.codeList, currentElementID.codeListItem, $("#question-textarea").value, locale);
             metadataHelper.setCodeListItemCodedValue(currentElementID.codeList, currentElementID.codeListItem, $("#name-input").value);
             currentElementID.codeListItem = $("#name-input").value;
@@ -1073,7 +1063,7 @@ window.elementDrop = function(event) {
     let targetElementRef = null;
 
     if (sourceParentOID != targetParentOID && clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID).length > 0) {
-        ioHelper.showWarning("Error", "The element could not be moved since there is clinical data assigned to it. You can try to remove the element to see a list of subjects that contain data for this element.");
+        ioHelper.showWarning("Element not moved", "The element could not be moved since there is clinical data assigned to it. You can try to remove the element to see a list of subjects that contain data for this element.");
         return;
     }
 

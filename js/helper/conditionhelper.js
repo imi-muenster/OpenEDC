@@ -17,6 +17,7 @@ export function process(itemsWithCondition) {
 
         // TODO: select-one? Still needed?
         let previewFieldInput = $(`[preview-oid="${determinant}"]`);
+        if (!previewFieldInput) continue;
         if (previewFieldInput.type == "text" || previewFieldInput.type == "select-one") {
             previewFieldInput.addEventListener("input", function(event) {
                 respondToInputChange(event, conditionalItem, operator, target);
