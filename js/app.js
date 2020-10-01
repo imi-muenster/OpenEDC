@@ -31,7 +31,7 @@ document.addEventListener("LanguageChanged", languageEvent => {
         clinicaldataModule.loadStudyEvents();
     }
     
-    hideMenu();
+    ioHelper.hideMenu();
 });
 
 const startApp = () => {
@@ -55,24 +55,6 @@ const setTitles = () => {
     const studyName =  ioHelper.shortenText(metadataHelper.getStudyName(), 20);
     $("#study-title").textContent = studyName;
     $("head title").textContent = "OpenEDC – " + studyName;
-}
-
-window.showMetadata = function() {
-    metadataModule.show();
-    metadataModule.setArrowKeyListener();
-    clinicaldataModule.hide();
-    ioHelper.setTreeMaxHeight();
-
-    hideMenu();
-}
-
-window.showClinicaldata = function() {
-    metadataModule.hide();
-    metadataModule.removeArrowKeyListener();
-    clinicaldataModule.show();
-    ioHelper.setTreeMaxHeight();
-
-    hideMenu();
 }
 
 window.newProject = function() {
@@ -122,7 +104,7 @@ window.showProjectModal = function() {
     $("#study-description-textarea").value = metadataHelper.getStudyDescription();
     $("#protocol-name-input").value = metadataHelper.getStudyName();
 
-    hideMenu();
+    ioHelper.hideMenu();
 }
 
 window.hideProjectModal = function() {
@@ -134,7 +116,7 @@ window.showAboutModal = function() {
     metadataModule.removeArrowKeyListener();
     $("#about-modal").classList.add("is-active");
 
-    hideMenu();
+    ioHelper.hideMenu();
 }
 
 window.hideAboutModal = function() {
@@ -167,12 +149,6 @@ window.removeData = function() {
     location.reload();
 }
 
-const hideMenu = () => {
-    $(".navbar-menu").classList.remove("is-active");
-    $(".navbar-burger").classList.remove("is-active");
-    $("#language-dropdown").classList.add("is-hidden-touch");
-}
-
 // IO/Event listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
 // TODO: In the entire project, align onclick vs. addEventListener("click"), arrowfunctions, etc.
 // TODO: Also: oninput/onclick in html file vs. in js file
@@ -185,6 +161,7 @@ const hideMenu = () => {
 // TODO: Metadata -> MetaData, Clinicaldata -> ClinicalData
 // TODO: In some secure cases the || operator may be used to set default values to reduce code compared to the ternary operator
 // TODO: In templates.js files use only const instead of let
+// TODO: Check if data has changed in clinicaldatamodule.js could be even more generalized
 export function setIOListeners() {
     $("body").onresize = ioHelper.setTreeMaxHeight;
     // TODO: This style everywhere or onclick here

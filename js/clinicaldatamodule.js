@@ -1,3 +1,4 @@
+import * as metadataModule from "./metadatamodule.js";
 import * as metadataHelper from "./helper/metadatahelper.js";
 import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
@@ -40,11 +41,24 @@ export function show() {
 
     $("#clinicaldata-section").classList.remove("is-hidden");
     $("#clinicaldata-toggle-button").classList.add("is-hidden");
+
+    ioHelper.setTreeMaxHeight();
 }
 
 export function hide() {
+    // Check if the data has changed / new data has been entered and show a prompt first
+    if (dataHasChanged()) {
+        skipDataHasChangedCheck = true;
+        deferredFunction = () => hide();
+        $("#close-clinicaldata-modal").classList.add("is-active");
+        return;
+    }
+
     $("#clinicaldata-section").classList.add("is-hidden");
     $("#clinicaldata-toggle-button").classList.remove("is-hidden");
+
+    metadataModule.show();
+    ioHelper.hideMenu();
 }
 
 export function setLanguage(newLocale) {
@@ -56,6 +70,7 @@ function createSortTypeSelect() {
 }
 
 function setIOListeners() {
+    $("#metadata-toggle-button").onclick = () => hide();
     $("#sort-subject-select-inner").oninput = inputEvent => {
         loadSubjectKeys();
         inputEvent.target.blur();

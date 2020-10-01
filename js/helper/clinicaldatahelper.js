@@ -103,14 +103,10 @@ export function addSubject(subjectKey) {
         return;
     }
 
-    // Store the current subject
-    storeSubject();
-
     subjectData = clinicaldataTemplates.getSubjectData(subjectKey);
     subject = new Subject(subjectKey, new Date());
     subjects.push(subject);
 
-    // Store the newly created subject
     storeSubject();
 }
 
@@ -130,9 +126,6 @@ function sortSubjects(sortType) {
 }
 
 export function loadSubject(subjectKey) {
-    // Store the current subject
-    storeSubject();
-
     subject = subjects.find(subject => subject.key == subjectKey);
     subjectData = subjectKey ? parseSubjectData(localStorage.getItem(subjectToFilename(subject))) : null;
     console.log(subjectData);
@@ -141,6 +134,7 @@ export function loadSubject(subjectKey) {
 export function storeSubject() {
     if (!subject) return;
     
+    console.log("Store subject ...");
     localStorage.setItem(subjectToFilename(subject), getSerializedSubjectData());
 }
 
@@ -185,7 +179,6 @@ export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
     studyEventData.appendChild(formData);
     subjectData.appendChild(studyEventData);
 
-    // TODO: Really neccessary?
     storeSubject();
 }
 

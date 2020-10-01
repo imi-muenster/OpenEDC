@@ -14,6 +14,12 @@ export function removeIsActiveFromElement(element) {
     if (element) element.classList.remove("is-active");
 }
 
+export function hideMenu() {
+    $(".navbar-menu").classList.remove("is-active");
+    $(".navbar-burger").classList.remove("is-active");
+    $("#language-dropdown").classList.add("is-hidden-touch");
+}
+
 export function showWarning(title, message) {
     $("#warning-modal h2").textContent = title;
     $("#warning-modal p").innerHTML = message;
@@ -65,6 +71,7 @@ export function prettifyContent(content) {
 }
 
 export function setTreeMaxHeight() {
+    console.log("Set tree max height ...");
     const offset = 30;
     const minHeight = 350;
     const windowHeight = window.innerHeight;

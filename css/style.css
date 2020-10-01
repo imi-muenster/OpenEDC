@@ -10,6 +10,10 @@ html.no-scroll {
     background-color: transparent;
 }
 
+#clinicaldata-toggle-button {
+    margin-right: 0px;
+}
+
 .section {
     padding: 30px 20px 0px 20px;
 }

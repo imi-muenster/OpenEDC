@@ -1,3 +1,4 @@
+import * as clinicaldataModule from "./clinicaldatamodule.js";
 import * as metadataHelper from "./helper/metadatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
@@ -34,14 +35,22 @@ export function init() {
 export function show() {
     reloadTree();
     reloadDetailsPanel();
+    setArrowKeyListener();
 
     $("#metadata-section").classList.remove("is-hidden");
     $("#metadata-toggle-button").classList.add("is-hidden");
+
+    ioHelper.setTreeMaxHeight();
 }
 
 export function hide() {
+    removeArrowKeyListener();
+
     $("#metadata-section").classList.add("is-hidden");
     $("#metadata-toggle-button").classList.remove("is-hidden");
+
+    clinicaldataModule.show();
+    ioHelper.hideMenu();
 }
 
 export function setLanguage(newLocale) {
@@ -670,6 +679,7 @@ function handleItemDataType(itemOID, dataType) {
 }
 
 function setIOListeners() {
+    $("#clinicaldata-toggle-button").onclick = () => hide();
     let inputElements = $$("#details-panel input, #details-panel textarea, #details-panel select");
     for (let [index, inputElement] of inputElements.entries()) {
         inputElement.oninput = function() {
