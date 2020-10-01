@@ -545,7 +545,7 @@ window.saveElement = function() {
     }
 
     if (!languageHelper.getPresentLanguages().includes(locale)) {
-        languageHelper.populatePresentLanguages(metadataHelper.getODM());
+        languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
         languageHelper.createLanguageSelect();
     }
     

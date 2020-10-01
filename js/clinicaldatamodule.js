@@ -168,7 +168,7 @@ export async function loadStudyEvents() {
         $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
     }
 
-    if (currentElementID.studyEvent) await loadFormsByStudyEvent(currentElementID.studyEvent, false);
+    if (currentElementID.studyEvent) await loadFormsByStudyEvent(currentElementID.studyEvent);
 }
 
 async function loadFormsByStudyEvent(studyEventOID, closeForm) {
@@ -184,12 +184,6 @@ async function loadFormsByStudyEvent(studyEventOID, closeForm) {
     ioHelper.removeIsActiveFromElement($("#clinicaldata-study-event-panel-blocks a.is-active"));
     $(`#clinicaldata-study-event-panel-blocks [oid="${currentElementID.studyEvent}"]`).classList.add("is-active");
 
-    if (closeForm) {
-        currentElementID.form = null;
-        ioHelper.safeRemoveElement($("#odm-html-content"));
-        $("#clinicaldata-form-data").classList.add("is-hidden");
-    }
-
     ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
     for (let formDef of metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent)) {
         const formOID = formDef.getAttribute("OID");
@@ -200,7 +194,13 @@ async function loadFormsByStudyEvent(studyEventOID, closeForm) {
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
     }
 
-    if (currentElementID.form) await loadFormData(currentElementID.form);
+    if (closeForm || !currentElementID.form) {
+        currentElementID.form = null;
+        ioHelper.safeRemoveElement($("#odm-html-content"));
+        $("#clinicaldata-form-data").classList.add("is-hidden");
+    } else {
+        await loadFormData(currentElementID.form);
+    }
 }
 
 async function loadFormData(formOID) {
@@ -316,28 +316,28 @@ function showErrors(metadataNotFoundErrors, hiddenFieldWithValueError) {
     if (errorMessage.length > 0) ioHelper.showWarning("Error", errorMessage);
 }
 
-window.loadNextFormData = async function() {
+window.loadNextFormData = function() {
     // This checks whether the saving process could found unanswered mandatory fields. The form data is stored either way
     if (!saveFormData()) return;
 
     let nextFormOID = getNextFormOID(currentElementID.form);
     if (nextFormOID) {
         currentElementID.form = nextFormOID
-        await loadStudyEvents();
+        loadStudyEvents();
     } else {
         skipDataHasChangedCheck = true;
         closeFormData(false);
     }
 }
 
-window.loadPreviousFormData = async function() {
+window.loadPreviousFormData = function() {
     skipMandatoryCheck = true;
     saveFormData();
 
     let previousFormOID = getPreviousFormOID(currentElementID.form);
     if (previousFormOID) {
         currentElementID.form = previousFormOID
-        await loadStudyEvents();
+        loadStudyEvents();
     }
 }
 
@@ -413,6 +413,7 @@ export function cacheFormData() {
     cachedFormDataIsAuditRecord = $("#audit-record-data-hint").classList.contains("is-hidden") ? false : true;
 }
 
+// TODO: closeFormData and cancelFormOrSurveyEntry could be further refactored
 window.closeFormData = async function(saveData) {
     if (saveData) {
         skipMandatoryCheck = true;
@@ -430,15 +431,16 @@ window.closeFormData = async function(saveData) {
 window.cancelFormOrSurveyEntry = function(closeSurvey) {
     if (surveyViewIsActive() && !closeSurvey) {
         $("#close-clinicaldata-modal").classList.add("is-active");
+        return;
     } else if (surveyViewIsActive()) {
         $("#close-clinicaldata-modal").classList.remove("is-active");
         hideSurveyView();
         ioHelper.showWarning(languageHelper.getTranslation("survey-finished"), languageHelper.getTranslation("survey-finished-text"));
         skipDataHasChangedCheck = true;
-        loadFormsByStudyEvent(currentElementID.studyEvent, true);
-    } else {
-        loadFormsByStudyEvent(currentElementID.studyEvent, true);
     }
+
+    currentElementID.form = null;
+    loadStudyEvents();
 }
 
 window.hideCloseClinicalDataModal = function() {
