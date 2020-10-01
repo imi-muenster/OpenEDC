@@ -37,7 +37,8 @@ export function init() {
 // TODO: Improve the show and hide logic. Should be handled by the clinicaldatamodule instead of app.js to stop the mode-toggling if new data has just been entered.
 export function show() {
     loadSubjectKeys();
-    loadStudyEvents();
+    skipDataHasChangedCheck = true;
+    loadTree(currentElementID.studyEvent, currentElementID.form);
 
     $("#clinicaldata-section").classList.remove("is-hidden");
     $("#clinicaldata-toggle-button").classList.add("is-hidden");
@@ -149,38 +150,37 @@ async function loadSubjectData(subjectKey) {
     $("#subject-info-button").disabled = currentElementID.subject ? false : true;
 
     clinicaldataHelper.loadSubject(currentElementID.subject);
-    await loadStudyEvents();
-}
-
-// TODO: loadStudyEvents loads entire tree if according elements are selected, implement this analogously for metadatamodule
-export async function loadStudyEvents() {
     skipDataHasChangedCheck = true;
-
-    ioHelper.removeElements($$("#clinicaldata-study-event-panel-blocks a"));
-    ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
-
-    for (let studyEventDef of metadataHelper.getStudyEvents()) {
-        const studyEventOID = studyEventDef.getAttribute("OID");
-        const translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-        const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
-        let panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedText, studyEventDef.getAttribute("Name"), dataStatus);
-        panelBlock.onclick = () => loadFormsByStudyEvent(studyEventOID, true);
-        $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
-    }
-
-    if (currentElementID.studyEvent) await loadFormsByStudyEvent(currentElementID.studyEvent);
+    await loadTree(currentElementID.studyEvent, currentElementID.form);
 }
 
-async function loadFormsByStudyEvent(studyEventOID, closeForm) {
+// TODO: Loads entire tree if according elements are passed, implement this analogously for metadatamodule
+export async function loadTree(studyEventOID, formOID) {
     // Check if the data has changed / new data has been entered and show a prompt first
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
-        deferredFunction = () => loadFormsByStudyEvent(studyEventOID, closeForm);
+        deferredFunction = () => loadTree(studyEventOID, formOID);
         $("#close-clinicaldata-modal").classList.add("is-active");
         return;
     }
 
     currentElementID.studyEvent = studyEventOID;
+    currentElementID.form = formOID;
+
+    ioHelper.removeElements($$("#clinicaldata-study-event-panel-blocks a"));
+    for (let studyEventDef of metadataHelper.getStudyEvents()) {
+        const studyEventOID = studyEventDef.getAttribute("OID");
+        const translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
+        const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
+        let panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedText, studyEventDef.getAttribute("Name"), dataStatus);
+        panelBlock.onclick = () => loadTree(studyEventOID, null);
+        $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
+    }
+
+    if (currentElementID.studyEvent) await loadFormsByStudyEvent();
+}
+
+async function loadFormsByStudyEvent() {
     ioHelper.removeIsActiveFromElement($("#clinicaldata-study-event-panel-blocks a.is-active"));
     $(`#clinicaldata-study-event-panel-blocks [oid="${currentElementID.studyEvent}"]`).classList.add("is-active");
 
@@ -190,29 +190,19 @@ async function loadFormsByStudyEvent(studyEventOID, closeForm) {
         const translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForForm(currentElementID.studyEvent, formOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
         let panelBlock = htmlElements.getClinicaldataPanelBlock(formOID, translatedText, formDef.getAttribute("Name"), dataStatus);
-        panelBlock.onclick = () => loadFormData(formOID);
+        panelBlock.onclick = () => loadTree(currentElementID.studyEvent, formOID);
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
     }
 
-    if (closeForm || !currentElementID.form) {
-        currentElementID.form = null;
+    if (currentElementID.form) {
+        await loadFormData();
+    } else {
         ioHelper.safeRemoveElement($("#odm-html-content"));
         $("#clinicaldata-form-data").classList.add("is-hidden");
-    } else {
-        await loadFormData(currentElementID.form);
     }
 }
 
-async function loadFormData(formOID) {
-    // Check if the data has changed / new data has been entered and show a prompt first
-    if (dataHasChanged()) {
-        skipDataHasChangedCheck = true;
-        deferredFunction = async () => await loadFormData(formOID);
-        $("#close-clinicaldata-modal").classList.add("is-active");
-        return;
-    }
-
-    currentElementID.form = formOID;
+async function loadFormData() {
     ioHelper.removeIsActiveFromElement($("#clinicaldata-form-panel-blocks a.is-active"));
     $(`#clinicaldata-form-panel-blocks [oid="${currentElementID.form}"]`).classList.add("is-active");
 
@@ -321,12 +311,11 @@ window.loadNextFormData = function() {
     if (!saveFormData()) return;
 
     let nextFormOID = getNextFormOID(currentElementID.form);
+    skipDataHasChangedCheck = true;
     if (nextFormOID) {
-        currentElementID.form = nextFormOID
-        loadStudyEvents();
+        loadTree(currentElementID.studyEvent, nextFormOID);
     } else {
-        skipDataHasChangedCheck = true;
-        closeFormData(false);
+        closeFormData();
     }
 }
 
@@ -336,8 +325,8 @@ window.loadPreviousFormData = function() {
 
     let previousFormOID = getPreviousFormOID(currentElementID.form);
     if (previousFormOID) {
-        currentElementID.form = previousFormOID
-        loadStudyEvents();
+        skipDataHasChangedCheck = true;
+        loadTree(currentElementID.studyEvent, previousFormOID);
     }
 }
 
@@ -439,8 +428,7 @@ window.cancelFormOrSurveyEntry = function(closeSurvey) {
         skipDataHasChangedCheck = true;
     }
 
-    currentElementID.form = null;
-    loadStudyEvents();
+    loadTree(currentElementID.studyEvent, null);
 }
 
 window.hideCloseClinicalDataModal = function() {
@@ -545,9 +533,8 @@ async function showAuditRecordFormData(studyEventOID, formOID, date) {
     cachedFormData = clinicaldataHelper.getAuditRecordFormData(studyEventOID, formOID, date);
     if (!cachedFormData) return;
 
-    currentElementID.studyEvent = studyEventOID;
-    currentElementID.form = formOID;
-    await loadStudyEvents();
+    skipDataHasChangedCheck = true;
+    await loadTree(studyEventOID, formOID);
 
     // Show a hint if the current data or data that is equivalent to the current data is shown
     dataHasChanged() ? $("#audit-record-most-current-hint").classList.add("is-hidden") : $("#audit-record-most-current-hint").classList.remove("is-hidden");
@@ -571,6 +558,6 @@ window.removeSubject = function() {
     currentElementID.subject = null;
     
     loadSubjectKeys();
-    loadStudyEvents();
+    loadTree(currentElementID.studyEvent, currentElementID.form);
     hideSubjectInfo();
 }
