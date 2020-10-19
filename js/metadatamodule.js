@@ -288,7 +288,7 @@ function reloadStudyEvents() {
 
 function reloadForms() {
     if (currentElementID.studyEvent != null) {
-        loadFormsByStudyEvent(currentElementID.studyEvent, currentElementID.form === null);
+        loadFormsByStudyEvent(currentElementID.studyEvent, currentElementID.form == null);
         if (currentElementID.form != null) {
             $(`[oid="${currentElementID.form}"]`).classList.add("is-active");
         }
@@ -297,7 +297,7 @@ function reloadForms() {
 
 function reloadItemGroups() {
     if (currentElementID.form != null) {
-        loadItemGroupsByForm(currentElementID.form, currentElementID.itemGroup === null);
+        loadItemGroupsByForm(currentElementID.form, currentElementID.itemGroup == null);
         if (currentElementID.itemGroup != null) {
             $(`[oid="${currentElementID.itemGroup}"]`).classList.add("is-active");
         }
@@ -306,7 +306,7 @@ function reloadItemGroups() {
 
 function reloadItems() {
     if (currentElementID.itemGroup != null) {
-        loadItemsByItemGroup(currentElementID.itemGroup, currentElementID.item === null);
+        loadItemsByItemGroup(currentElementID.itemGroup, currentElementID.item == null);
         if (currentElementID.item != null) {
             $(`[oid="${currentElementID.item}"]`).classList.add("is-active");
         }
@@ -315,7 +315,7 @@ function reloadItems() {
 
 function reloadCodeListItems() {
     if (currentElementID.item) {
-        loadCodeListItemsByItem(currentElementID.item, currentElementID.codeList === null);
+        loadCodeListItemsByItem(currentElementID.item, currentElementID.codeList == null);
         if (currentElementID.codeList != null) {
             $(`[oid="${currentElementID.codeList}"][coded-value="${currentElementID.codeListItem}"]`).classList.add("is-active");
         }
@@ -871,7 +871,7 @@ window.removeElement = function() {
 }
 
 window.duplicateReference = function() {
-    if (currentElementType === metadataHelper.elementTypes.CODELISTITEM) {
+    if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) {
         let newItemOID = metadataHelper.createItem(currentElementID.itemGroup);
         metadataHelper.addCodeListRef(newItemOID, currentElementID.codeList);
     } else {
@@ -913,7 +913,7 @@ function dragStart(event) {
     elementTypeOnDrag = event.target.getAttribute("element-type");
     event.dataTransfer.setData("sourceElementOID", event.target.getAttribute("oid"));
     event.dataTransfer.setData("sourceParentOID", getParentOID(elementTypeOnDrag));
-    if (elementTypeOnDrag === metadataHelper.elementTypes.CODELISTITEM) {
+    if (elementTypeOnDrag == metadataHelper.elementTypes.CODELISTITEM) {
         event.dataTransfer.setData("sourceCodedValue", event.target.getAttribute("coded-value"));
     }
 }
@@ -923,7 +923,7 @@ function dragEnd() {
 }
 
 window.allowDrop = function(event) {
-    if (elementTypeOnDrag === event.target.getAttribute("element-type")) {
+    if (elementTypeOnDrag == event.target.getAttribute("element-type")) {
         event.preventDefault();
     }
 }
@@ -1070,14 +1070,14 @@ window.elementDrop = function(event) {
         return;
     }
 
-    if (elementTypeOnDrag === metadataHelper.elementTypes.CODELISTITEM) {
+    if (elementTypeOnDrag == metadataHelper.elementTypes.CODELISTITEM) {
         sourceElementRef = metadataHelper.getCodeListItem(sourceElementOID, event.dataTransfer.getData("sourceCodedValue"));
     } else {
         sourceElementRef = metadataHelper.getElementRefByOID(sourceElementOID, elementTypeOnDrag, sourceParentOID);
     }
 
-    if (targetElementOID != null) {
-        if (elementTypeOnDrag === metadataHelper.elementTypes.CODELISTITEM) {
+    if (targetElementOID) {
+        if (elementTypeOnDrag == metadataHelper.elementTypes.CODELISTITEM) {
             targetElementRef = metadataHelper.getCodeListItem(targetElementOID, event.target.getAttribute("coded-value"));
         } else {
             targetElementRef = metadataHelper.getElementRefByOID(targetElementOID, elementTypeOnDrag, targetParentOID);
@@ -1089,6 +1089,7 @@ window.elementDrop = function(event) {
             targetElementRef.parentNode.insertBefore(sourceElementRef, targetElementRef);
         }
     } else {
+        // Allows the movement of an element into an empty parent element by dropping it on the column title
         switch(elementTypeOnDrag) {
             case metadataHelper.elementTypes.STUDYEVENT:
                 metadataHelper.insertStudyEventRef(sourceElementRef);
@@ -1100,7 +1101,7 @@ window.elementDrop = function(event) {
                 metadataHelper.insertItemGroupRef(sourceElementRef, targetParentOID);
                 break;
             case metadataHelper.elementTypes.ITEM:
-                metadataHelper.insertItemGroupRef(sourceElementRef, targetParentOID);
+                metadataHelper.insertItemRef(sourceElementRef, targetParentOID);
                 break;
             case metadataHelper.elementTypes.CODELISTITEM:
                 metadataHelper.insertCodeListItem(sourceElementRef, metadataHelper.getCodeListOIDByItem(targetParentOID));
