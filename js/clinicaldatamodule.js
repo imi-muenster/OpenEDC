@@ -83,8 +83,6 @@ function setIOListeners() {
     };
     $("#search-subject-input").oninput = inputEvent => filterSubjects(inputEvent.target.value);
     $("#subject-modal input").oninput = inputEvent => $("#subject-modal button").disabled = inputEvent.target.value.length > 0 ? false : true;
-    // TODO: Maybe improve or do it analogously in the metadatamodule. Maybe a "wrapper" function in app.js to do it more coordinated
-    window.addEventListener("unload", () => clinicaldataHelper.storeSubject());
 }
 
 function filterSubjects(searchString) {

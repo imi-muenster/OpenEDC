@@ -60,6 +60,7 @@ const setTitles = () => {
 window.newProject = function() {
     metadataHelper.loadEmptyProject();
     startApp();
+    metadataHelper.storeMetadata();
 }
 
 window.uploadODM = async function() {
@@ -70,12 +71,14 @@ window.uploadODM = async function() {
         metadataHelper.parseMetadata(content);
         clinicaldataHelper.importClinicalData(content);
         startApp();
+        metadataHelper.storeMetadata();
     }
 }
 
 window.loadExample = async function() {
     await metadataHelper.loadExample();
     startApp();
+    metadataHelper.storeMetadata();
 }
 
 window.saveProjectModal = function() {

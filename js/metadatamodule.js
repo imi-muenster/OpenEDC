@@ -692,7 +692,6 @@ function setIOListeners() {
     }
     $("#save-button").tabIndex = 6;
     $("#remove-button").tabIndex = 7;
-    window.addEventListener("unload", () => metadataHelper.storeMetadata());
 }
 
 export function removeArrowKeyListener() {
@@ -792,6 +791,7 @@ window.addStudyEvent = function() {
     reloadDetailsPanel();
     loadFormsByStudyEvent(currentElementID.studyEvent, true);
     scrollParentToChild($(`[OID="${currentElementID.studyEvent}"]`));
+    metadataHelper.storeMetadata();
 }
 
 window.addForm = function() {
@@ -801,6 +801,7 @@ window.addForm = function() {
     reloadDetailsPanel();
     loadItemGroupsByForm(currentElementID.form, true);
     scrollParentToChild($(`[OID="${currentElementID.form}"]`));
+    metadataHelper.storeMetadata();
 }
 
 window.addItemGroup = function() {
@@ -810,6 +811,7 @@ window.addItemGroup = function() {
     reloadDetailsPanel();
     loadItemsByItemGroup(currentElementID.itemGroup, true);
     scrollParentToChild($(`[OID="${currentElementID.itemGroup}"]`));
+    metadataHelper.storeMetadata();
 }
 
 window.addItem = function() {
@@ -819,11 +821,11 @@ window.addItem = function() {
     reloadDetailsPanel();
     loadCodeListItemsByItem(currentElementID.item, true);
     scrollParentToChild($(`[OID="${currentElementID.item}"]`));
+    metadataHelper.storeMetadata();
 }
 
 window.addCodeListItem = function() {
     let codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
-
     if (codeListOID != null) {
         currentElementID.codeListItem = metadataHelper.addCodeListItem(codeListOID);
         currentElementID.codeList = codeListOID;
@@ -832,6 +834,7 @@ window.addCodeListItem = function() {
         reloadDetailsPanel();
         scrollParentToChild($(`[coded-value="${currentElementID.codeListItem}"]`));
     }
+    metadataHelper.storeMetadata();
 }
 
 window.removeElement = function() {
@@ -1105,6 +1108,7 @@ window.elementDrop = function(event) {
     }
 
     reloadTree();
+    metadataHelper.storeMetadata();
 }
 
 window.showRemoveModal = function() {
