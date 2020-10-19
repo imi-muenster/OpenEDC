@@ -1,7 +1,7 @@
 const template = string => new DOMParser().parseFromString(string, "text/xml").documentElement;
 
 export const getClinicalData = (studyOID, metadataVersionOID) => template(`
-    <ClinicalData StudyOID="${studyOID}" MetadataVersionOID="${metadataVersionOID}">
+    <ClinicalData StudyOID="${studyOID}" MetaDataVersionOID="${metadataVersionOID}">
     </ClinicalData>
 `);
 
