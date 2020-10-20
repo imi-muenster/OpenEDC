@@ -22,9 +22,10 @@ export function loadEmptyProject() {
 
 export function parseMetadata(odmXMLString) {
     metadata = new DOMParser().parseFromString(odmXMLString, "text/xml");
-    for (let clinicalData of metadata.querySelectorAll("ClinicalData")) {
-        clinicalData.remove();
-    }
+
+    // Remove ClinicalData and AdminData (note: the MetadataHelper stores the "shell" of an ODM-file, e.g., the GlobalVariables, MeasurementUnits, and both the ODM and Study elements)
+    $$("ClinicalData").forEach(clinicalData => clinicalData.remove());
+    $$("AdminData").forEach(adminData => adminData.remove());
 }
 
 export async function loadExample() {
@@ -519,7 +520,7 @@ export function setItemMeasurementUnit(itemOID, measurementUnitName) {
 
 function generateUniqueOID(oidPrefix) {
     let count = 1;
-    while ($$(`[OID="${oidPrefix+count}"]`).length > 0) {
+    while ($(`[OID="${oidPrefix+count}"]`)) {
         count += 1;
     }
 
@@ -528,7 +529,7 @@ function generateUniqueOID(oidPrefix) {
 
 function generateUniqueCodedValue(codeListOID) {
     let count = 1;
-    while ($$(`[OID="${codeListOID}"] CodeListItem[CodedValue="${count}"]`).length > 0) {
+    while ($(`[OID="${codeListOID}"] CodeListItem[CodedValue="${count}"]`)) {
         count += 1;
     }
 

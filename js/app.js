@@ -68,6 +68,7 @@ window.uploadODM = async function() {
     let content = await ioHelper.getFileContent(file.files[0]);
 
     if (content) {
+        // TODO: Align naming and functioning? parseMetadata and later storeMetadata vs importClinicalData. Implement analogously for admindataHelper
         metadataHelper.parseMetadata(content);
         clinicaldataHelper.importClinicalData(content);
         startApp();
