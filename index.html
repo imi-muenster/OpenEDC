@@ -193,10 +193,24 @@
                         </div>
                         <div class="panel-block has-no-padding-bottom has-no-border-bottom">
                             <div class="field is-fullwidth">
+                                <div class="control has-icons-left is-fullwidth" id="site-filter-control">
+                                    <div id="site-filter-select-outer" class="select is-fullwidth">
+                                        <select id="site-filter-select-inner">
+                                            <option>All Sites</option>
+                                        </select>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-block has-no-padding-bottom has-no-border-bottom">
+                            <div class="field is-fullwidth">
                                 <div class="control has-icons-left is-fullwidth" id="sort-subject-control">
-                                    <div class="icon is-small is-left">
+                                    <div class="icon">
                                         <i class="fas fa-sort-alpha-down"></i>
-                                      </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -311,7 +325,7 @@
                 <div class="box has-text-centered">
                     <h2 class="subtitle" id="close-form-title" internationalization="close-form">Close form</h2>
                     <h2 class="subtitle is-hidden" id="close-survey-title" internationalization="close-survey">Close survey</h2>
-                    <p id="close-form-text"internationalization="close-form-text">It seems that you just edited or entered new data. Do you really want to close the current form?</p>
+                    <p id="close-form-text" internationalization="close-form-text">It seems that you just edited or entered new data. Do you really want to close the current form?</p>
                     <p class="is-hidden" id="close-survey-text" internationalization="close-survey-text">It seems that you just edited or entered new data. Do you really want to close the current form?</p>
                     <br>
                     <div class="buttons is-centered">

@@ -32,8 +32,8 @@ const $$ = query => subjectData.querySelectorAll(query);
 const fileNameSeparator = "__";
 
 export const sortTypes = {
-    ALPHANUMERICALLY: "Alphanumerical",
-    CREATEDDATE: "Creation date"
+    CREATEDDATE: "Creation Date",
+    ALPHANUMERICALLY: "Alphanumerical"
 }
 
 export const auditRecordTypes = {
