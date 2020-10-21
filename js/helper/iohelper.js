@@ -7,7 +7,7 @@ export function removeElements(elements) {
 }
 
 export function safeRemoveElement(element) {
-    if (element != null) element.remove();
+    if (element) element.remove();
 }
 
 export function removeIsActiveFromElement(element) {

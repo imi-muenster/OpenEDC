@@ -496,10 +496,6 @@
                                 </div>
                                 <div class="column">
                                     <div class="field">
-                                        <label class="label">OID</label>
-                                        <input class="input" type="text" disabled>
-                                    </div>
-                                    <div class="field">
                                         <label class="label">First name</label>
                                         <input class="input" type="text" disabled>
                                     </div>
@@ -556,16 +552,12 @@
                                 </div>
                                 <div class="column">
                                     <div class="field">
-                                        <label class="label">OID</label>
-                                        <input class="input" id="site-oid-input" type="text" disabled>
-                                    </div>
-                                    <div class="field">
                                         <label class="label">Name</label>
-                                        <input class="input" id="site-name-input" type="text" disabled>
+                                        <input class="input" id="site-name-input" type="text">
                                     </div>
                                     <div class="buttons">
-                                        <button class="button is-link" id="site-save-button" disabled>Save</button>
-                                        <button class="button is-danger" id="site-remove-button" disabled>Remove</button>
+                                        <button class="button is-link" id="site-save-button" onclick="saveSite()">Save</button>
+                                        <button class="button is-danger" id="site-remove-button" onclick="removeSite()">Remove</button>
                                     </div>
                                 </div>
                             </div>

@@ -1,4 +1,6 @@
+import * as metadataHelper from "./metadatahelper.js"; 
 import * as admindataTemplates from "./admindatatemplates.js";
+import * as ioHelper from "./iohelper.js";
 
 const $ = query => admindata.querySelector(query);
 const $$ = query => admindata.querySelectorAll(query);
@@ -9,6 +11,8 @@ let admindata = null;
 
 export function loadEmptyProject(studyOID) {
     admindata = admindataTemplates.getAdminData(studyOID);
+    // TODO: It is probably better this way -- meaning that the helper itself stores the file on change
+    storeAdmindata();
 }
 
 export function parseAdmindata(odmXMLString) {
@@ -30,13 +34,19 @@ export function storeAdmindata() {
 export function loadStoredAdmindata() {
     let admindataXMLString = localStorage.getItem(admindataFileName);
     if (admindataXMLString) parseAdmindata(admindataXMLString);
+}
 
-    if (getAdmindata()) return true;
+export function getSite(siteOID) {
+    return $(`Location[OID="${siteOID}"][LocationType="Site"]`);
+}
+
+export function getSites() {
+    return $$("Location[LocationType='Site']");
 }
 
 export function addSite() {
-    const lastSite = getLastElement($$("Location [LocationType='Site']"));
-    const newSite = admindataTemplates.getSite(generateUniqueOID("Site."));
+    const lastSite = getLastElement(getSites());
+    const newSite = admindataTemplates.getSite(generateUniqueOID("Site."), metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID(), new Date().toISOString().split("T")[0]);
 
     if (lastSite) {
         lastSite.insertAdjacentElement("afterend", newSite);
@@ -45,6 +55,18 @@ export function addSite() {
     }
 
     // TODO: It is probably better this way -- meaning that the helper itself stores the file on change
+    storeAdmindata();
+
+    return newSite.getAttribute("OID");
+}
+
+export function setSiteName(siteOID, name) {
+    $(`Location[OID="${siteOID}"][LocationType="Site"]`).setAttribute("Name", name);
+    storeAdmindata();
+}
+
+export function removeSite(siteOID) {
+    ioHelper.safeRemoveElement($(`Location[OID="${siteOID}"][LocationType="Site"]`));
     storeAdmindata();
 }
 

@@ -104,9 +104,11 @@ window.hideStartModal = function() {
 window.showProjectModal = function() {
     metadataModule.removeArrowKeyListener();
     $("#project-modal").classList.add("is-active");
+    // TODO: Maybe something like metadataModule.loadStudyNameAndDescription(); for consistency?
     $("#study-name-input").value = metadataHelper.getStudyName();
     $("#study-description-textarea").value = metadataHelper.getStudyDescription();
     $("#protocol-name-input").value = metadataHelper.getStudyName();
+    admindataModule.loadSites();
 
     ioHelper.hideMenu();
 }

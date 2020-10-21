@@ -47,6 +47,10 @@ a.panel-block {
     border-bottom: none !important;
 }
 
+.has-no-border-left {
+    border-left: none !important;
+}
+
 hr {
     margin-top: 0px;
     margin-bottom: 20px;
