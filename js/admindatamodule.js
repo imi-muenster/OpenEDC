@@ -1,3 +1,4 @@
+import * as clinicaldataModule from "./clinicaldatamodule.js";
 import * as admindataHelper from "./helper/admindatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 
@@ -44,6 +45,8 @@ window.addSite = function() {
 
     loadSites();
     loadSite(siteOID);
+
+    clinicaldataModule.createSiteFilterSelect();
 }
 
 window.saveSite = function() {
@@ -53,6 +56,8 @@ window.saveSite = function() {
     admindataHelper.setSiteName(siteOID, $("#site-name-input").value);
     $("#site-name-input").value = "";
     loadSites();
+
+    clinicaldataModule.createSiteFilterSelect();
 }
 
 window.removeSite = function() {
@@ -62,4 +67,6 @@ window.removeSite = function() {
     admindataHelper.removeSite(siteOID);
     $("#site-name-input").value = "";
     loadSites();
+
+    clinicaldataModule.createSiteFilterSelect();
 }

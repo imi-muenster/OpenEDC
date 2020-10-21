@@ -1,6 +1,7 @@
 import * as metadataModule from "./metadatamodule.js";
 import * as metadataHelper from "./helper/metadatahelper.js";
 import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
+import * as admindataHelper from "./helper/admindatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as conditionHelper from "./helper/conditionhelper.js";
 import * as validationHelper from "./helper/validationhelper.js";
@@ -28,6 +29,7 @@ let deferredFunction = null;
 export function init() {
     currentElementID.subject = null;
 
+    createSiteFilterSelect();
     createSortTypeSelect();
     setIOListeners();
 
@@ -65,16 +67,29 @@ export function setLanguage(newLocale) {
     locale = newLocale;
 }
 
+export function createSiteFilterSelect() {
+    let sites = ["All Sites"];
+    admindataHelper.getSites().forEach(site => sites.push(site.getAttribute("Name")));
+
+    let currentSelection = null;
+    if ($("#site-filter-select-inner")) currentSelection = $("#site-filter-select-inner").value;
+
+    ioHelper.safeRemoveElement($("#site-filter-select-outer"));
+    $("#site-filter-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("site-filter-select", true, true, sites, currentSelection));
+}
+
 function createSortTypeSelect() {
-    $("#sort-subject-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("sort-subject-select", true, true, Object.values(clinicaldataHelper.sortTypes), clinicaldataHelper.sortTypes.ALPHABETICALLY));
+    $("#sort-subject-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("sort-subject-select", true, true, Object.values(clinicaldataHelper.sortTypes)));
 }
 
 function setIOListeners() {
     $("#metadata-toggle-button").onclick = () => hide();
-    $("#sort-subject-select-inner").oninput = inputEvent => {
-        loadSubjectKeys();
-        inputEvent.target.blur();
-    };
+    $$("#site-filter-select-innter, #sort-subject-select-inner").forEach(input => {
+        input.oninput = inputEvent => {
+            loadSubjectKeys();
+            inputEvent.target.blur();
+        };
+    });
     $("#add-subject-input").onkeydown = keyEvent => {
         if (keyEvent.code == "Enter" && !keyEvent.shiftKey) {
             keyEvent.preventDefault();
@@ -118,6 +133,8 @@ export function loadSubjectKeys() {
     ioHelper.removeElements($$("#subject-panel-blocks a"));
 
     if (clinicaldataHelper.getSubjectKeys().length > 0) $("#no-subjects-hint").classList.add("is-hidden");
+    else $("#no-subjects-hint").classList.remove("is-hidden");
+
     for (let subjectKey of clinicaldataHelper.getSubjectKeys($("#sort-subject-select-inner").value)) {
         let panelBlock = htmlElements.getClinicaldataPanelBlock(subjectKey, subjectKey, null, null);
         panelBlock.onclick = () => loadSubjectData(subjectKey);
