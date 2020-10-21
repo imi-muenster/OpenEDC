@@ -35,6 +35,10 @@ a.panel-block {
     padding: 40px;
 }
 
+#no-users-hint, #no-sites-hint {
+    padding: 30px;
+}
+
 .has-no-padding-bottom {
     padding-bottom: 0px;
 }

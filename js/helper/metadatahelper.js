@@ -96,6 +96,10 @@ export function setProtocolName(protocolName) {
     $("GlobalVariables ProtocolName").textContent = protocolName;
 }
 
+export function getStudyOID() {
+    return $("Study").getAttribute("OID");
+}
+
 export function setFileOID(fileOID) {
     $("ODM").setAttribute("FileOID", fileOID);
 }

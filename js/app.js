@@ -2,6 +2,8 @@ import * as metadataModule from "./metadatamodule.js";
 import * as metadataHelper from "./helper/metadatahelper.js";
 import * as clinicaldataModule from "./clinicaldatamodule.js";
 import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
+import * as admindataModule from "./admindatamodule.js";
+import * as admindataHelper from "./helper/admindatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 
@@ -58,7 +60,9 @@ const setTitles = () => {
 }
 
 window.newProject = function() {
+    // TODO: Store AdminData?
     metadataHelper.loadEmptyProject();
+    admindataHelper.loadEmptyProject(metadataHelper.getStudyOID());
     startApp();
     metadataHelper.storeMetadata();
 }
@@ -69,6 +73,7 @@ window.uploadODM = async function() {
 
     if (content) {
         // TODO: Align naming and functioning? parseMetadata and later storeMetadata vs importClinicalData. Implement analogously for admindataHelper
+        // TODO: Import AdminData
         metadataHelper.parseMetadata(content);
         clinicaldataHelper.importClinicalData(content);
         startApp();
@@ -77,7 +82,9 @@ window.uploadODM = async function() {
 }
 
 window.loadExample = async function() {
+    // TODO: Store AdminData?
     await metadataHelper.loadExample();
+    admindataHelper.loadEmptyProject(metadataHelper.getStudyOID());
     startApp();
     metadataHelper.storeMetadata();
 }
@@ -163,10 +170,13 @@ window.hideAboutModal = function() {
 window.downloadODM = function() {
     metadataHelper.setCreationDateTimeNow();
     metadataHelper.setFileOID(metadataHelper.getStudyName());
-
     let odm = new DOMParser().parseFromString(metadataHelper.getSerializedMetadata(), "text/xml");
+
     let clinicaldata = clinicaldataHelper.getClinicalData(odm.querySelector("Study").getAttribute("OID"), odm.querySelector("MetaDataVersion").getAttribute("OID"));
-    odm.querySelector("ODM").appendChild(clinicaldata);
+    if (clinicaldata) odm.querySelector("ODM").appendChild(clinicaldata);
+
+    let admindata = admindataHelper.getAdmindata();
+    if (admindata) odm.querySelector("ODM").appendChild(admindata);
 
     ioHelper.download(metadataHelper.getStudyName()+".xml", new XMLSerializer().serializeToString(odm));
 }

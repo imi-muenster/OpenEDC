@@ -6,8 +6,8 @@ const admindataFileName = "admindata";
 
 let admindata = null;
 
-export function loadEmptyProject() {
-    admindata = admindataTemplates.getAdminData();
+export function loadEmptyProject(studyOID) {
+    admindata = admindataTemplates.getAdminData(studyOID);
 }
 
 export function getSerializedAdmindata() {
