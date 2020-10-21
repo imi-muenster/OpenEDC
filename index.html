@@ -125,7 +125,7 @@
                         <p class="panel-heading has-text-centered" element-type="studyevent" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Events</p>
                         <div class="tree-panel-blocks" id="study-event-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                         </div>
-                        <div class="panel-block panel-block-add" id="study-events-add-button">
+                        <div class="panel-block has-light-border-top" id="study-events-add-button">
                             <button class="button is-link is-fullwidth" onclick="addStudyEvent()">Add</button>
                         </div>
                     </nav>
@@ -135,7 +135,7 @@
                             <p class="panel-heading has-text-centered" element-type="form" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Forms</p>
                             <div class="tree-panel-blocks" id="form-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                             </div>
-                            <div class="panel-block panel-block-add" id="forms-add-button">
+                            <div class="panel-block has-light-border-top" id="forms-add-button">
                                 <button class="button is-link is-fullwidth" onclick="addForm()" disabled>Add</button>
                             </div>
                         </nav>
@@ -145,7 +145,7 @@
                             <p class="panel-heading has-text-centered" element-type="itemgroup" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Groups</p>
                             <div class="tree-panel-blocks" id="item-group-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                             </div>
-                            <div class="panel-block panel-block-add" id="item-groups-add-button">
+                            <div class="panel-block has-light-border-top" id="item-groups-add-button">
                                 <button class="button is-link is-fullwidth" onclick="addItemGroup()" disabled>Add</button>
                             </div>
                         </nav>
@@ -155,7 +155,7 @@
                             <p class="panel-heading has-text-centered" element-type="item" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Items</p>
                             <div class="tree-panel-blocks" id="item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                             </div>
-                            <div class="panel-block panel-block-add" id="items-add-button">
+                            <div class="panel-block has-light-border-top" id="items-add-button">
                                 <button class="button is-link is-fullwidth" onclick="addItem()" disabled>Add</button>
                             </div>
                         </nav>
@@ -165,7 +165,7 @@
                             <p class="panel-heading has-text-centered" element-type="codelistitem" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Choices</p>
                             <div class="tree-panel-blocks" id="code-list-item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                             </div>
-                            <div class="panel-block panel-block-add" id="code-list-items-add-button">
+                            <div class="panel-block has-light-border-top" id="code-list-items-add-button">
                                 <button class="button is-link is-fullwidth" onclick="addCodeListItem()" disabled>Add</button>
                             </div>
                         </nav>
@@ -469,7 +469,8 @@
                     <div class="tabs is-centered" id="project-tabs">
                         <ul>
                             <li class="is-active" id="general-options-tab" onclick="projectTabClicked(event)"><a>General Options</a></li>
-                            <li id="users-locations-tab" onclick="projectTabClicked(event)"><a>Users and Locations</a></li>
+                            <li id="users-options-tab" onclick="projectTabClicked(event)"><a>Users</a></li>
+                            <li id="sites-options-tab" onclick="projectTabClicked(event)"><a>Sites</a></li>
                             <li id="name-description-tab" onclick="projectTabClicked(event)"><a>Name and Description</a></li>
                         </ul>
                     </div>
@@ -478,10 +479,96 @@
                             <button class="button is-small" onclick="downloadODM()">Download ODM (Metadata and Clinicaldata)</button><br><br>
                             <button class="button is-small" onclick="downloadMetadata()">Download ODM (Only Metadata)</button><br><br>
                             <button class="button is-danger is-small" onclick="removeData()">Remove all data</button><br><br>
-                            <h1 class="subtitle is-5">In development ...</h1>
+                            <h1 class="subtitle is-5">Page is in development ...</h1>
                         </div>
-                        <div class="column is-three-quarters is-hidden" id="users-locations">
-                            Users and Locations
+                        <div class="column is-three-quarters is-hidden" id="users-options">
+                            <div class="notification is-link">Please note that you can only add new users when you are connected to an OpenEDC Server.</div>
+                            <div class="columns">
+                                <div class="column">
+                                    <nav class="panel">
+                                        <a class="panel-block">User 1</a>
+                                        <a class="panel-block">User 2</a>
+                                        <a class="panel-block">User 3</a>
+                                        <div class="panel-block">
+                                            <button class="button is-link is-light is-fullwidth">Add</button>
+                                        </div>
+                                    </nav>
+                                </div>
+                                <div class="column">
+                                    <div class="field">
+                                        <label class="label">OID</label>
+                                        <input class="input" type="text" disabled>
+                                    </div>
+                                    <div class="field">
+                                        <label class="label">First name</label>
+                                        <input class="input" type="text" disabled>
+                                    </div>
+                                    <div class="field">
+                                        <label class="label">Last name</label>
+                                        <input class="input" type="text" disabled>
+                                    </div>
+                                    <div class="field">
+                                        <label class="label">Site</label>
+                                        <input class="input" type="text" disabled>
+                                    </div>
+                                    <hr>
+                                    <div class="field">
+                                        <label class="label">Login name</label>
+                                        <input class="input" type="text" disabled>
+                                    </div>
+                                    <div class="field">
+                                        <label class="label">Initial password</label>
+                                        <input class="input" type="text" disabled>
+                                    </div>
+                                    <div class="field">
+                                        <button class="button is-small is-fullwidth is-danger" disabled>Set or reset login</button>
+                                    </div>
+                                    <hr>
+                                    <div class="field">
+                                        <label class="label">User rights</label>
+                                        <label class="checkbox">
+                                            <input type="checkbox" disabled>
+                                            Configure project
+                                        </label>
+                                        <label class="checkbox">
+                                            <input type="checkbox" disabled>
+                                            Edit metadata
+                                        </label>
+                                    </div>
+                                    <div class="buttons">
+                                        <button class="button is-link" disabled>Save</button>
+                                        <button class="button is-danger" disabled>Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column is-three-quarters is-hidden" id="sites-options">
+                            <div class="columns">
+                                <div class="column">
+                                    <nav class="panel">
+                                        <a class="panel-block">Site 1</a>
+                                        <a class="panel-block">Site 2</a>
+                                        <a class="panel-block">Site 3</a>
+                                        <div class="panel-block">
+                                            <button class="button is-link is-light is-fullwidth">Add</button>
+                                        </div>
+                                    </nav>
+                                </div>
+                                <div class="column">
+                                    <div class="field">
+                                        <label class="label">OID</label>
+                                        <input class="input" type="text" disabled>
+                                    </div>
+                                    <div class="field">
+                                        <label class="label">Name</label>
+                                        <input class="input" type="text" disabled>
+                                    </div>
+                                    <div class="buttons">
+                                        <button class="button is-link" disabled>Save</button>
+                                        <button class="button is-danger" disabled>Remove</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="column is-three-quarters is-hidden" id="name-description">
                             <div class="field">
@@ -496,12 +583,8 @@
                                 <label class="label">Protocol name</label>
                                 <input class="input" id="protocol-name-input" type="text">
                             </div>
-                        </div>
-                    </div>
-                    <div class="columns is-centered">
-                        <div class="column is-three-quarters">
                             <div class="buttons">
-                                <button class="button is-link" id="save-global-variables-button" onclick="saveProjectModal()">Save Changes</button>
+                                <button class="button is-link" id="save-global-variables-button" onclick="saveStudyNameDescription()">Save Changes</button>
                                 <button class="button" id="cancel-global-variables-button" onclick="hideProjectModal()">Cancel</button>
                             </div>
                         </div>
@@ -567,7 +650,7 @@
                             </div>
                             <a class="button is-rounded is-small is-link" target="_blank" href="https://medical-data-models.org/imprint?lang=en#data-privacy">
                                 <span class="icon">
-                                        <i class="fas fa-arrow-right"></i>
+                                    <i class="fas fa-arrow-right"></i>
                                 </span>
                                 <span>Data Protection Policy</span>
                             </a>

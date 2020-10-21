@@ -82,15 +82,6 @@ window.loadExample = async function() {
     metadataHelper.storeMetadata();
 }
 
-window.saveProjectModal = function() {
-    metadataHelper.setStudyName($("#study-name-input").value);
-    metadataHelper.setStudyDescription($("#study-description-textarea").value);
-    metadataHelper.setProtocolName($("#protocol-name-input").value);
-    hideProjectModal();
-    setTitles();
-    metadataModule.setArrowKeyListener();
-}
-
 window.showStartModal = function() {
     metadataModule.removeArrowKeyListener();
     $("#start-modal").classList.add("is-active");
@@ -113,6 +104,47 @@ window.showProjectModal = function() {
 
 window.hideProjectModal = function() {
     $("#project-modal").classList.remove("is-active");
+    metadataModule.setArrowKeyListener();
+}
+
+window.projectTabClicked = function(event) {
+    ioHelper.removeIsActiveFromElement($("#project-tabs ul li.is-active"));
+    event.target.parentNode.classList.add("is-active");
+
+    switch(event.target.parentNode.id) {
+        case "general-options-tab":
+            $("#general-options").classList.remove("is-hidden");
+            $("#users-options").classList.add("is-hidden");
+            $("#sites-options").classList.add("is-hidden");
+            $("#name-description").classList.add("is-hidden");
+            break;
+        case "users-options-tab":
+            $("#general-options").classList.add("is-hidden");
+            $("#users-options").classList.remove("is-hidden");
+            $("#sites-options").classList.add("is-hidden");
+            $("#name-description").classList.add("is-hidden");
+            break;
+        case "sites-options-tab":
+            $("#general-options").classList.add("is-hidden");
+            $("#users-options").classList.add("is-hidden");
+            $("#sites-options").classList.remove("is-hidden");
+            $("#name-description").classList.add("is-hidden");
+            break;
+        case "name-description-tab":
+            $("#general-options").classList.add("is-hidden");
+            $("#users-options").classList.add("is-hidden");
+            $("#sites-options").classList.add("is-hidden");
+            $("#name-description").classList.remove("is-hidden");
+    }
+}
+
+window.saveStudyNameDescription = function() {
+    metadataHelper.setStudyName($("#study-name-input").value);
+    metadataHelper.setStudyDescription($("#study-description-textarea").value);
+    metadataHelper.setProtocolName($("#protocol-name-input").value);
+    metadataHelper.storeMetadata();
+    hideProjectModal();
+    setTitles();
     metadataModule.setArrowKeyListener();
 }
 

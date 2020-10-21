@@ -94,7 +94,7 @@ a.panel-block:hover {
     border-radius: 0px;
 }
 
-.panel-block-add {
+.has-light-border-top {
     border-top: 1px solid #ededed;
 }
 

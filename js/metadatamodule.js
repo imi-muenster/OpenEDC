@@ -1186,28 +1186,6 @@ window.addConditionInput = function() {
     emptyConditionFields[emptyConditionFields.length-1].insertAdjacentElement("afterend", htmlElements.getEmptyConditionInputElement());    
 }
 
-window.projectTabClicked = function(event) {
-    ioHelper.removeIsActiveFromElement($("#project-tabs ul li.is-active"));
-    event.target.parentNode.classList.add("is-active");
-
-    switch(event.target.parentNode.id) {
-        case "general-options-tab":
-            $("#general-options").classList.remove("is-hidden");
-            $("#users-locations").classList.add("is-hidden");
-            $("#name-description").classList.add("is-hidden");
-            break;
-        case "users-locations-tab":
-            $("#general-options").classList.add("is-hidden");
-            $("#users-locations").classList.remove("is-hidden");
-            $("#name-description").classList.add("is-hidden");
-            break;
-        case "name-description-tab":
-            $("#general-options").classList.add("is-hidden");
-            $("#users-locations").classList.add("is-hidden");
-            $("#name-description").classList.remove("is-hidden");
-    }
-}
-
 window.moreTabClicked = function(event) {
     ioHelper.removeIsActiveFromElement($("#more-tabs ul li.is-active"));
     event.target.parentNode.classList.add("is-active");
