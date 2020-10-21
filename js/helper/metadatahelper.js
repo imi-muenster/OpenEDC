@@ -100,6 +100,10 @@ export function getStudyOID() {
     return $("Study").getAttribute("OID");
 }
 
+export function getMetaDataVersionOID() {
+    return $("MetaDataVersion").getAttribute("OID");
+}
+
 export function setFileOID(fileOID) {
     $("ODM").setAttribute("FileOID", fileOID);
 }

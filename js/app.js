@@ -174,7 +174,7 @@ window.downloadODM = function() {
     metadataHelper.setFileOID(metadataHelper.getStudyName());
     let odm = new DOMParser().parseFromString(metadataHelper.getSerializedMetadata(), "text/xml");
 
-    let clinicaldata = clinicaldataHelper.getClinicalData(odm.querySelector("Study").getAttribute("OID"), odm.querySelector("MetaDataVersion").getAttribute("OID"));
+    let clinicaldata = clinicaldataHelper.getClinicalData(metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID());
     if (clinicaldata) odm.querySelector("ODM").appendChild(clinicaldata);
 
     let admindata = admindataHelper.getAdmindata();
