@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     setIOListeners();
 
     if (metadataHelper.loadStoredMetadata()) {
+        // Only load stored admindata if metadata exists -- usually, however, it should not happen that admindata exists without metadata
+        admindataHelper.loadStoredAdmindata();
         startApp();
     } else {
         showStartModal();

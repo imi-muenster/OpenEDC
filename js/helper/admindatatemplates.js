@@ -14,8 +14,8 @@ export const getUser = (oid, firstName, lastName, locationRef) => template(`
     </User>
 `);
 
-export const getLocation = (oid, name, studyOID, metadataVersionOID, date) => template(`
-    <Location OID="${oid}" Name="${name}" LocationType="Site">
+export const getSite = (oid, studyOID, metadataVersionOID, date) => template(`
+    <Location OID="${oid}" Name="New Site" LocationType="Site">
         <MetaDataVersionRef StudyOID="${studyOID}" MetaDataVersionOID="${metadataVersionOID}" EffectiveDate="${date}"></MetaDataVersionRef>
     </Location>
 `);

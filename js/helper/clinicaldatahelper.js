@@ -275,7 +275,7 @@ export function getSubjectsHavingDataForElement(elementOID) {
     return subjectKeys;
 }
 
-// TODO: Move to ioHelper? Also present in metadatahelper
+// TODO: Move to ioHelper? Also present in metadatahelper and admindatahelper
 function getLastElement(elements) {
     if (elements.length >= 1) {
         return elements[elements.length - 1];
