@@ -7,7 +7,6 @@ export const getAdminData = studyOID => template(`
 
 export const getUser = (oid, firstName, lastName, locationRef) => template(`
     <User OID="${oid}">
-        <DisplayName>${lastName}, ${firstName}</DisplayName>
         <FirstName>${firstName}</FirstName>
         <LastName>${lastName}</LastName>
         <LocationRef>${locationRef}</LocationRef>
