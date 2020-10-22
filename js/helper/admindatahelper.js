@@ -40,14 +40,21 @@ export function getSite(siteOID) {
     return $(`Location[OID="${siteOID}"][LocationType="Site"]`);
 }
 
+export function getSiteOIDByName(siteName) {
+    const site = $(`Location[Name="${siteName}"][LocationType="Site"]`);
+    
+    return site ? site.getAttribute("OID") : null;
+}
+
 export function getSites() {
     return $$("Location[LocationType='Site']");
 }
 
 export function addSite() {
+    const newSiteOID = generateUniqueOID("L.");
+    const newSite = admindataTemplates.getSite(newSiteOID, metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID(), new Date().toISOString().split("T")[0]);
+    
     const lastSite = getLastElement(getSites());
-    const newSite = admindataTemplates.getSite(generateUniqueOID("Site."), metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID(), new Date().toISOString().split("T")[0]);
-
     if (lastSite) {
         lastSite.insertAdjacentElement("afterend", newSite);
     } else {
@@ -57,7 +64,7 @@ export function addSite() {
     // TODO: It is probably better this way -- meaning that the helper itself stores the file on change
     storeAdmindata();
 
-    return newSite.getAttribute("OID");
+    return newSiteOID;
 }
 
 export function setSiteName(siteOID, name) {

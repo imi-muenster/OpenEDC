@@ -2,8 +2,9 @@ import * as clinicaldataTemplates from "./clinicaldatatemplates.js";
 import * as ioHelper from "./iohelper.js";
 
 class Subject {
-    constructor(key, createdDate) {
+    constructor(key, site, createdDate) {
         this.key = key;
+        this.site = site;
         this.createdDate = createdDate;
     }
 }
@@ -31,10 +32,10 @@ const $$ = query => subjectData.querySelectorAll(query);
 
 const fileNameSeparator = "__";
 
-export const sortTypes = {
+export const sortOrderTypes = {
     CREATEDDATE: "Creation Date",
     ALPHANUMERICALLY: "Alphanumerical"
-}
+};
 
 export const auditRecordTypes = {
     CREATED: "Subject Created",
@@ -45,7 +46,7 @@ export const dataStatusTypes = {
     EMPTY: "Empty",
     EXISTING: "Existing",
     VERIFIED: "Verified"
-}
+};
 
 let subjects = [];
 let subject = null;
@@ -66,8 +67,9 @@ export function getSubject() {
 export function importClinicalData(odmXMLString) {
     const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
     for (let subjectData of odm.querySelectorAll("ClinicalData SubjectData")) {
+        const site = subjectData.querySelector("SiteRef") ? subjectData.querySelector("SiteRef").getAttribute("LocationOID") : null;
         // TODO: Take the created date from the audit trail
-        const subject = new Subject(subjectData.getAttribute("SubjectKey"), new Date());
+        const subject = new Subject(subjectData.getAttribute("SubjectKey"), site, new Date());
         const fileName = subjectToFilename(subject);
         localStorage.setItem(fileName, new XMLSerializer().serializeToString(subjectData));
     }
@@ -76,7 +78,7 @@ export function importClinicalData(odmXMLString) {
 export function getClinicalData(studyOID, metadataVersionOID) {
     let clinicalData = clinicaldataTemplates.getClinicalData(studyOID, metadataVersionOID);
 
-    sortSubjects(sortTypes.CREATEDDATE);
+    subjects = sortSubjects(subjects, sortOrderTypes.CREATEDDATE);
     for (let subject of subjects) {
         clinicalData.appendChild(parseSubjectData(localStorage.getItem(subjectToFilename(subject))));
     }
@@ -85,6 +87,7 @@ export function getClinicalData(studyOID, metadataVersionOID) {
 }
 
 export function loadSubjects() {
+    console.log("Load subjects ...");
     subjects = [];
 
     for (let fileName of Object.keys(localStorage)) {
@@ -92,7 +95,7 @@ export function loadSubjects() {
     }
 }
 
-export function addSubject(subjectKey) {
+export function addSubject(subjectKey, site) {
     if (subjectKey.length == 0) {
         ioHelper.showWarning("Enter Subject Key", "Please enter a key for the subject first.");
         return;
@@ -104,25 +107,31 @@ export function addSubject(subjectKey) {
     }
 
     subjectData = clinicaldataTemplates.getSubjectData(subjectKey);
-    subject = new Subject(subjectKey, new Date());
+    if (site) subjectData.insertAdjacentElement("afterbegin", clinicaldataTemplates.getSiteRef(site));
+
+    subject = new Subject(subjectKey, site, new Date());
     subjects.push(subject);
 
     storeSubject();
 }
 
-export function getSubjectKeys(sortOrder) {
-    if (sortOrder) sortSubjects(sortOrder);
-    return subjects.map(subject => subject.key);
+export function getSubjectKeys(site, sortOrder) {
+    let filteredSubjects = site ? subjects.filter(subject => subject.site == site) : subjects;
+    filteredSubjects = sortOrder ? sortSubjects(filteredSubjects, sortOrder) : filteredSubjects;
+
+    return filteredSubjects.map(subject => subject.key);
 }
 
-function sortSubjects(sortType) {
-    switch(sortType) {
-        case sortTypes.ALPHANUMERICALLY:
+function sortSubjects(subjects, sortOrder) {
+    switch(sortOrder) {
+        case sortOrderTypes.ALPHANUMERICALLY:
             subjects.sort((a, b) => a.key > b.key ? 1 : (a.key < b.key ? -1 : 0));
             break;
-        case sortTypes.CREATEDDATE:
+        case sortOrderTypes.CREATEDDATE:
             subjects.sort((a, b) => a.createdDate > b.createdDate ? 1 : (a.createdDate < b.createdDate ? -1 : 0));
     }
+
+    return subjects;
 }
 
 export function loadSubject(subjectKey) {
@@ -151,11 +160,17 @@ export function removeSubject() {
 }
 
 function fileNameToSubject(fileName) {
-    return new Subject(fileName.split(fileNameSeparator)[0], new Date(parseInt(fileName.split(fileNameSeparator)[1])));
+    const fileNameParts = fileName.split(fileNameSeparator);
+    const key = fileNameParts[0];
+    const site = fileNameParts[1] || null;
+    const createdDate = fileNameParts[2];
+
+    return new Subject(key, site, new Date(parseInt(createdDate)));
 }
 
 function subjectToFilename(subject) {
-    return subject.key + fileNameSeparator + subject.createdDate.getTime();
+    console.log(subject.key + fileNameSeparator + (subject.site || "") + fileNameSeparator + subject.createdDate.getTime());
+    return subject.key + fileNameSeparator + (subject.site || "") + fileNameSeparator + subject.createdDate.getTime();
 }
 
 export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {

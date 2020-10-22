@@ -36,3 +36,7 @@ export const getAuditRecord = (userRef, locationRef, dateTimeStamp) => template(
         <DateTimeStamp>${dateTimeStamp}</DateTimeStamp>
     </AuditRecord>
 `);
+
+export const getSiteRef = locationOID => template(`
+    <SiteRef LocationOID="${locationOID}"/>
+`);

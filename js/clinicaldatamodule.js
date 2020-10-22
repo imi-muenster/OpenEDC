@@ -76,20 +76,24 @@ export function createSiteFilterSelect() {
 
     ioHelper.safeRemoveElement($("#site-filter-select-outer"));
     $("#site-filter-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("site-filter-select", true, true, sites, currentSelection));
+    $("#site-filter-select-inner").oninput = inputEvent => {
+        currentElementID.subject = null;
+        loadSubjectKeys();
+        loadSubjectData();
+        inputEvent.target.blur();
+    };
 }
 
 function createSortTypeSelect() {
-    $("#sort-subject-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("sort-subject-select", true, true, Object.values(clinicaldataHelper.sortTypes)));
+    $("#sort-subject-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("sort-subject-select", true, true, Object.values(clinicaldataHelper.sortOrderTypes)));
+    $("#sort-subject-select-inner").oninput = inputEvent => {
+        loadSubjectKeys();
+        inputEvent.target.blur();
+    };
 }
 
 function setIOListeners() {
     $("#metadata-toggle-button").onclick = () => hide();
-    $$("#site-filter-select-innter, #sort-subject-select-inner").forEach(input => {
-        input.oninput = inputEvent => {
-            loadSubjectKeys();
-            inputEvent.target.blur();
-        };
-    });
     $("#add-subject-input").onkeydown = keyEvent => {
         if (keyEvent.code == "Enter" && !keyEvent.shiftKey) {
             keyEvent.preventDefault();
@@ -120,10 +124,11 @@ window.addSubject = function() {
         return;
     }
 
-    let subjectKey = $("#add-subject-input").value;
+    const site = admindataHelper.getSiteOIDByName($("#site-filter-select-inner").value);
+    const subjectKey = $("#add-subject-input").value;
     $("#add-subject-input").value = "";
     
-    clinicaldataHelper.addSubject(subjectKey);
+    clinicaldataHelper.addSubject(subjectKey, site);
     loadSubjectKeys();
     skipDataHasChangedCheck = true;
     if (subjectKey) loadSubjectData(subjectKey);
@@ -135,7 +140,10 @@ export function loadSubjectKeys() {
     if (clinicaldataHelper.getSubjectKeys().length > 0) $("#no-subjects-hint").classList.add("is-hidden");
     else $("#no-subjects-hint").classList.remove("is-hidden");
 
-    for (let subjectKey of clinicaldataHelper.getSubjectKeys($("#sort-subject-select-inner").value)) {
+    const site = admindataHelper.getSiteOIDByName($("#site-filter-select-inner").value);
+    const sortOrder = $("#sort-subject-select-inner").value;
+
+    for (let subjectKey of clinicaldataHelper.getSubjectKeys(site, sortOrder)) {
         let panelBlock = htmlElements.getClinicaldataPanelBlock(subjectKey, subjectKey, null, null);
         panelBlock.onclick = () => loadSubjectData(subjectKey);
         $("#subject-panel-blocks").appendChild(panelBlock);
