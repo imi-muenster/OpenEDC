@@ -48,6 +48,13 @@ export const dataStatusTypes = {
     VERIFIED: "Verified"
 };
 
+// TODO: Implement anaologously in other helpers?
+// TODO: Could implement other enums with ints as well if there is no string representation needed
+export const errors = {
+    SUBJECTKEYEMPTY: 0,
+    SUBJECTKEYEXISTENT: 1
+}
+
 let subjects = [];
 let subject = null;
 let subjectData = null;
@@ -96,15 +103,8 @@ export function loadSubjects() {
 }
 
 export function addSubject(subjectKey, site) {
-    if (subjectKey.length == 0) {
-        ioHelper.showWarning("Enter Subject Key", "Please enter a key for the subject first.");
-        return;
-    }
-
-    if (subjects.map(subject => subject.key).includes(subjectKey)) {
-        ioHelper.showWarning("Subject Key Existent", "The entered subject key already exists. Please enter another one.");
-        return;
-    }
+    if (subjectKey.length == 0) return Promise.reject(errors.SUBJECTKEYEMPTY);
+    if (subjects.map(subject => subject.key).includes(subjectKey)) return Promise.reject(errors.SUBJECTKEYEXISTENT);
 
     subjectData = clinicaldataTemplates.getSubjectData(subjectKey);
     if (site) subjectData.insertAdjacentElement("afterbegin", clinicaldataTemplates.getSiteRef(site));
@@ -113,6 +113,9 @@ export function addSubject(subjectKey, site) {
     subjects.push(subject);
 
     storeSubject();
+
+    // TODO: Good practice?
+    return Promise.resolve();
 }
 
 export function getSubjectKeys(site, sortOrder) {

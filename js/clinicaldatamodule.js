@@ -128,20 +128,32 @@ window.addSubject = function() {
     const subjectKey = $("#add-subject-input").value;
     $("#add-subject-input").value = "";
     
-    clinicaldataHelper.addSubject(subjectKey, site);
-    loadSubjectKeys();
-    skipDataHasChangedCheck = true;
-    if (subjectKey) loadSubjectData(subjectKey);
+    // TODO: Good practice?
+    clinicaldataHelper.addSubject(subjectKey, site)
+        .then(() => {
+            loadSubjectKeys();
+            skipDataHasChangedCheck = true;
+            loadSubjectData(subjectKey);
+        })
+        .catch(error => {
+            switch (error) {
+                case clinicaldataHelper.errors.SUBJECTKEYEMPTY:
+                    ioHelper.showWarning("Enter Subject Key", "Please enter a key for the subject first.");
+                    break;
+                case clinicaldataHelper.errors.SUBJECTKEYEXISTENT:
+                    ioHelper.showWarning("Subject Key Existent", "The entered subject key already exists. Please enter another one.");
+            }
+        });
 }
 
 export function loadSubjectKeys() {
     ioHelper.removeElements($$("#subject-panel-blocks a"));
 
-    if (clinicaldataHelper.getSubjectKeys().length > 0) $("#no-subjects-hint").classList.add("is-hidden");
-    else $("#no-subjects-hint").classList.remove("is-hidden");
-
     const site = admindataHelper.getSiteOIDByName($("#site-filter-select-inner").value);
     const sortOrder = $("#sort-subject-select-inner").value;
+
+    if (clinicaldataHelper.getSubjectKeys(site).length > 0) $("#no-subjects-hint").classList.add("is-hidden");
+    else $("#no-subjects-hint").classList.remove("is-hidden");
 
     for (let subjectKey of clinicaldataHelper.getSubjectKeys(site, sortOrder)) {
         let panelBlock = htmlElements.getClinicaldataPanelBlock(subjectKey, subjectKey, null, null);
