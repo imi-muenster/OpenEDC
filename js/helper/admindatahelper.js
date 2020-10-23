@@ -19,6 +19,16 @@ export function parseAdmindata(odmXMLString) {
     admindata = new DOMParser().parseFromString(odmXMLString, "text/xml").documentElement;
 }
 
+export function importAdmindata(odmXMLString) {
+    const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
+    if (odm.querySelector("AdminData")) {
+        admindata = odm.querySelector("AdminData");
+        storeAdmindata();
+    } else {
+        loadEmptyProject();
+    }
+}
+
 export function getSerializedAdmindata() {
     return new XMLSerializer().serializeToString(admindata);
 }

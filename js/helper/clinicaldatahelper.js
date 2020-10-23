@@ -56,15 +56,7 @@ function parseSubjectData(subjectXMLString) {
     return new DOMParser().parseFromString(subjectXMLString, "text/xml").documentElement;
 }
 
-function getSerializedSubjectData() {
-    return new XMLSerializer().serializeToString(subjectData);
-}
-
-export function getSubject() {
-    return subject;
-}
-
-export function importClinicalData(odmXMLString) {
+export function importClinicaldata(odmXMLString) {
     const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
     for (let subjectData of odm.querySelectorAll("ClinicalData SubjectData")) {
         const site = subjectData.querySelector("SiteRef") ? subjectData.querySelector("SiteRef").getAttribute("LocationOID") : null;
@@ -73,6 +65,14 @@ export function importClinicalData(odmXMLString) {
         const fileName = subjectToFilename(subject);
         localStorage.setItem(fileName, new XMLSerializer().serializeToString(subjectData));
     }
+}
+
+function getSerializedSubjectData() {
+    return new XMLSerializer().serializeToString(subjectData);
+}
+
+export function getSubject() {
+    return subject;
 }
 
 export function getClinicalData(studyOID, metadataVersionOID) {
