@@ -9,6 +9,11 @@ import * as languageHelper from "./helper/languagehelper.js";
 
 const $ = query => document.querySelector(query);
 
+const appModes = {
+    METADATA: "METADATA",
+    CLINICALDATA: "CLINICALDATA"
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
     ioHelper.setTreeMaxHeight();
     setIOListeners();
@@ -24,13 +29,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 document.addEventListener("LanguageChanged", languageEvent => {
     metadataModule.setLanguage(languageEvent.detail);
-    if (!$("#metadata-section").classList.contains("is-hidden")) {
+    if (getCurrentMode() == appModes.METADATA) {
         metadataModule.reloadTree();
         metadataModule.reloadDetailsPanel();
     }
 
     clinicaldataModule.setLanguage(languageEvent.detail);
-    if (!$("#clinicaldata-section").classList.contains("is-hidden")) {
+    if (getCurrentMode() == appModes.CLINICALDATA) {
         clinicaldataModule.cacheFormData();
         clinicaldataModule.reloadTree();
     }
@@ -113,7 +118,7 @@ window.showProjectModal = function() {
 
 window.hideProjectModal = function() {
     $("#project-modal").classList.remove("is-active");
-    metadataModule.setArrowKeyListener();
+    if (getCurrentMode() == appModes.METADATA) metadataModule.setArrowKeyListener();
 }
 
 window.projectTabClicked = function(event) {
@@ -220,4 +225,8 @@ export function setIOListeners() {
     });
     $("#current-language").addEventListener("click", () => $("#language-dropdown").classList.toggle("is-hidden-touch"));
     $("#warning-modal button").addEventListener("click", () => $("#warning-modal").classList.remove("is-active"));
+}
+
+function getCurrentMode() {
+    return $("#metadata-section").classList.contains("is-hidden") ? appModes.CLINICALDATA : appModes.METADATA;
 }
