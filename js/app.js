@@ -117,6 +117,12 @@ window.showProjectModal = function() {
 }
 
 window.hideProjectModal = function() {
+    ioHelper.removeIsActiveFromElement($("#project-tabs ul li.is-active"));
+    $("#general-options-tab").classList.add("is-active");
+    $("#general-options").classList.remove("is-hidden");
+    $("#users-options").classList.add("is-hidden");
+    $("#sites-options").classList.add("is-hidden");
+    $("#name-description").classList.add("is-hidden");
     $("#project-modal").classList.remove("is-active");
     if (getCurrentMode() == appModes.METADATA) metadataModule.setArrowKeyListener();
 }
@@ -171,7 +177,7 @@ window.showAboutModal = function() {
 
 window.hideAboutModal = function() {
     $("#about-modal").classList.remove("is-active");
-    metadataModule.setArrowKeyListener();
+    if (getCurrentMode() == appModes.METADATA) metadataModule.setArrowKeyListener();
 }
 
 window.downloadODM = function() {
