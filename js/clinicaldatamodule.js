@@ -151,11 +151,10 @@ export function loadSubjectKeys() {
 
     const site = admindataHelper.getSiteOIDByName($("#site-filter-select-inner").value);
     const sortOrder = $("#sort-subject-select-inner").value;
+    const subjectKeys = clinicaldataHelper.getSubjectKeys(site, sortOrder)
+    subjectKeys.length > 0 ? $("#no-subjects-hint").classList.add("is-hidden") : $("#no-subjects-hint").classList.remove("is-hidden");
 
-    if (clinicaldataHelper.getSubjectKeys(site).length > 0) $("#no-subjects-hint").classList.add("is-hidden");
-    else $("#no-subjects-hint").classList.remove("is-hidden");
-
-    for (let subjectKey of clinicaldataHelper.getSubjectKeys(site, sortOrder)) {
+    for (let subjectKey of subjectKeys) {
         let panelBlock = htmlElements.getClinicaldataPanelBlock(subjectKey, subjectKey, null, null);
         panelBlock.onclick = () => loadSubjectData(subjectKey);
         $("#subject-panel-blocks").appendChild(panelBlock);
@@ -288,7 +287,7 @@ function loadFormClinicaldata() {
     if (!currentElementID.studyEvent || !currentElementID.form) return;
     currentElementID.subject ? $("#no-subject-selected-hint").classList.add("is-hidden") : $("#no-subject-selected-hint").classList.remove("is-hidden");
 
-    // Two types of errors than can occur during the data loading process
+    // Two types of errors that can occur during the data loading process
     let metadataNotFoundErrors = [];
     let hiddenFieldWithValueError = false;
 
@@ -436,6 +435,8 @@ function checkMandatoryFields(formItemDataList) {
 }
 
 export function cacheFormData() {
+    if (!currentElementID.studyEvent || !currentElementID.form || !currentElementID.subject) return;
+
     cachedFormData = getFormData();
     cachedFormDataIsAuditRecord = $("#audit-record-data-hint").classList.contains("is-hidden") ? false : true;
 }
