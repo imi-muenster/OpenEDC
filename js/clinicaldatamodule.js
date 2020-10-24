@@ -76,7 +76,7 @@ export function createSiteFilterSelect() {
 
     ioHelper.safeRemoveElement($("#site-filter-select-outer"));
     $("#site-filter-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("site-filter-select", true, true, sites, currentSelection));
-    $("#site-filter-select-inner").onclick = clickEvent => {
+    $("#site-filter-select-inner").onmouseup = clickEvent => {
         if (dataHasChanged()) {
             skipDataHasChangedCheck = true;
             deferredFunction = () => loadTree(currentElementID.studyEvent, null);
@@ -569,9 +569,11 @@ window.showSubjectInfo = function() {
     // Disable change functionality when there are unsaved changes in the form
     $("#subject-modal input").disabled = false;
     $("#change-site-select-inner").disabled = false;
+    $("#save-subject-info-button").disabled = false;
     if (dataHasChanged()) {
         $("#subject-modal input").disabled = true;
         $("#change-site-select-inner").disabled = true;
+        $("#save-subject-info-button").disabled = true;
         $$("#subject-modal button:not([onclick])").forEach(button => button.disabled = true);
     }
 
@@ -599,11 +601,17 @@ async function showAuditRecordFormData(studyEventOID, formOID, date) {
 window.saveSubjectInfo = function() {
     const key = $("#subject-key-input").value;
     const site = admindataHelper.getSiteOIDByName($("#change-site-select-inner").value);
+    const currentSite = clinicaldataHelper.getSubject().site;
     clinicaldataHelper.setSubjectInfo(key, site)
         .then(() => {
-            currentElementID.subject = clinicaldataHelper.getSubject().key;
+            if (site == currentSite) {
+                currentElementID.subject = clinicaldataHelper.getSubject().key;
+            } else {
+                currentElementID.subject = null;
+                loadSubjectData();
+            }
             loadSubjectKeys();
-            showSubjectInfo();
+            hideSubjectInfo();
         })
         .catch(error => {
             switch (error) {
