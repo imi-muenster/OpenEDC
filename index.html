@@ -218,7 +218,7 @@
                             </div>
                         </div>
                         <div class="panel-block">
-                            <button class="button is-small is-fullwidth" id="subject-info-button" onclick="openSubjectInfo()" disabled>Options and Audit Trail</button>
+                            <button class="button is-small is-fullwidth" id="subject-info-button" onclick="showSubjectInfo()" disabled>Options and Audit Trail</button>
                         </div>
                         <div class="tree-panel-blocks" id="subject-panel-blocks">
                             <div class="panel-block has-text-centered has-text-grey-light" id="no-subjects-hint">
@@ -580,10 +580,14 @@
                             <hr>
                             <h2 class="subtitle">Subject Options</h2>
                             <div class="field">
-                                <label class="label">Subject Key</label>
+                                <label class="label">Key</label>
                                 <div class="control">
-                                    <input class="input" type="text">
+                                    <input class="input" id="subject-key-input" type="text">
                                 </div>
+                            </div>
+                            <div class="field">
+                                <label class="label">Site</label>
+                                <div class="control" id="change-site-control"></div>
                             </div>
                             <div class="buttons">
                                 <button class="button is-danger is-small" onclick="saveSubjectInfo()">Save Changes</button>

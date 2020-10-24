@@ -60,6 +60,12 @@ export function getSiteOIDByName(siteName) {
     return site ? site.getAttribute("OID") : null;
 }
 
+export function getSiteNameByOID(siteOID) {
+    const site = $(`Location[OID="${siteOID}"][LocationType="Site"]`);
+    
+    return site ? site.getAttribute("Name") : null;
+}
+
 export function getSites() {
     return $$("Location[LocationType='Site']");
 }

@@ -101,7 +101,6 @@ function setIOListeners() {
         }
     };
     $("#search-subject-input").oninput = inputEvent => filterSubjects(inputEvent.target.value);
-    $("#subject-modal input").oninput = inputEvent => $("#subject-modal button").disabled = inputEvent.target.value.length > 0 ? false : true;
 }
 
 function filterSubjects(searchString) {
@@ -540,9 +539,9 @@ function dataHasChanged() {
     return !skipDataHasChangedCheck && currentElementID.subject && currentElementID.studyEvent && currentElementID.form && clinicaldataHelper.dataHasChanged(getFormData(), currentElementID.studyEvent, currentElementID.form)
 }
 
-window.openSubjectInfo = function() {
+window.showSubjectInfo = function() {
+    // Create audit record entries
     ioHelper.removeElements($$("#audit-records .notification"));
-
     for (let auditRecord of clinicaldataHelper.getAuditRecords()) {
         let auditRecordElement = htmlElements.getAuditRecord(clinicaldataHelper.auditRecordTypes.FORMEDITED, auditRecord.studyEventOID, auditRecord.formOID, auditRecord.user, auditRecord.location, auditRecord.date);
         auditRecordElement.querySelector("button").onclick = () => showAuditRecordFormData(auditRecord.studyEventOID, auditRecord.formOID, auditRecord.date);
@@ -550,14 +549,21 @@ window.openSubjectInfo = function() {
     }
     $("#audit-records").appendChild(htmlElements.getAuditRecord(clinicaldataHelper.auditRecordTypes.CREATED, null, null, null, null, clinicaldataHelper.getSubject().createdDate));
 
+    // Fill inputs to change subject key and site
+    let sites = ["No Site"];
+    admindataHelper.getSites().forEach(site => sites.push(site.getAttribute("Name")));
+    ioHelper.safeRemoveElement($("#change-site-select-outer"));
+    const currentSiteName = admindataHelper.getSiteNameByOID(clinicaldataHelper.getSubject().site);
+    $("#change-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("change-site-select", true, true, sites, currentSiteName));
     $("#subject-modal strong").textContent = currentElementID.subject;
     $("#subject-modal input").value = currentElementID.subject;
 
     // Disable change functionality when there are unsaved changes in the form
     $("#subject-modal input").disabled = false;
-    $("#subject-modal button").disabled = true;
+    $("#change-site-select-inner").disabled = false;
     if (dataHasChanged()) {
         $("#subject-modal input").disabled = true;
+        $("#change-site-select-inner").disabled = true;
         $$("#subject-modal button:not([onclick])").forEach(button => button.disabled = true);
     }
 
@@ -583,13 +589,24 @@ async function showAuditRecordFormData(studyEventOID, formOID, date) {
 }
 
 window.saveSubjectInfo = function() {
-    if (!clinicaldataHelper.renameSubject($("#subject-modal input").value)) return;
-    currentElementID.subject = clinicaldataHelper.getSubject().key;
+    const key = $("#subject-key-input").value;
+    const site = admindataHelper.getSiteOIDByName($("#change-site-select-inner").value);
+    clinicaldataHelper.setSubjectInfo(key, site)
+        .then(() => {
+            currentElementID.subject = clinicaldataHelper.getSubject().key;
+            loadSubjectKeys();
+        })
+        .catch(error => {
+            switch (error) {
+                case clinicaldataHelper.errors.SUBJECTKEYEMPTY:
+                    ioHelper.showWarning("Enter subject key", "Please enter a key for the subject first.");
+                    break;
+                case clinicaldataHelper.errors.SUBJECTKEYEXISTENT:
+                    ioHelper.showWarning("Subject key existent", "The entered subject key already exists. Please enter another one.");
+            }
+        });
 
-    $("#subject-modal strong").textContent = currentElementID.subject;
-    $("#subject-modal button").disabled = true;
-
-    loadSubjectKeys();
+    showSubjectInfo();
 }
 
 window.removeSubject = function() {

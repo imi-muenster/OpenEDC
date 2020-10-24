@@ -1,5 +1,4 @@
 import * as clinicaldataTemplates from "./clinicaldatatemplates.js";
-import * as ioHelper from "./iohelper.js";
 
 class Subject {
     constructor(key, site, createdDate) {
@@ -257,20 +256,31 @@ export function getAuditRecordFormData(studyEventOID, formOID, date) {
     return formData ? getFormItemDataList(formData) : null;
 }
 
-// TODO: Improve error handling
-export function renameSubject(subjectKey) {
-    // Check if there is another subject with the same key
+export function setSubjectInfo(subjectKey, site) {
+    // Check if if key is set or if there is another subject with the same key
+    if (subjectKey.length == 0) return Promise.reject(errors.SUBJECTKEYEMPTY);
     const subjectWithKey = subjects.find(subject => subject.key == subjectKey);
-    if (subjectWithKey != null && subjectWithKey.key != subject.key) return false;
+    if (subjectWithKey != null && subjectWithKey.key != subject.key) return Promise.reject(errors.SUBJECTKEYEXISTENT);
 
+    // Remove currenlty stored subject
     localStorage.removeItem(subjectToFilename(subject));
 
+    // Adjust subject and its clinicaldata
     subject.key = subjectKey;
+    subject.site = site;
     subjectData.setAttribute("SubjectKey", subject.key);
+    let siteRef = subjectData.querySelector("SiteRef");
+    if (subject.site) {
+        if (siteRef) siteRef.setAttribute("LocationOID", subject.site);
+        else subjectData.insertAdjacentElement("afterbegin", clinicaldataTemplates.getSiteRef(subject.site));
+    } else {
+        if (siteRef) siteRef.remove();
+    }
+
     storeSubject();
     loadSubjects();
 
-    return true;
+    return Promise.resolve();
 }
 
 export function getDataStatusForStudyEvent(studyEventOID) {
