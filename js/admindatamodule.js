@@ -64,9 +64,16 @@ window.removeSite = function() {
     const siteOID = $("#sites-options .panel a.is-active").getAttribute("oid");
     if (!siteOID) return;
 
-    admindataHelper.removeSite(siteOID);
-    $("#site-name-input").value = "";
-    loadSites();
-
-    clinicaldataModule.createSiteFilterSelect();
+    admindataHelper.removeSite(siteOID)
+        .then(() => {
+            $("#site-name-input").value = "";
+            loadSites();
+            clinicaldataModule.createSiteFilterSelect();
+        })
+        .catch(error => {
+            switch (error) {
+                case admindataHelper.errors.SITEHASSUBJECTS:
+                    ioHelper.showWarning("Site not removed", "The site could not be removed since there is at least one subject assigned to it. To remove a site, you have to remove all subjects assigned to this site first.");
+            }
+        });
 }

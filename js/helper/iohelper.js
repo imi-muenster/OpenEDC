@@ -6,6 +6,7 @@ export function removeElements(elements) {
     }
 }
 
+// TODO: Really needed? Only used by clinicaldatamodule
 export function safeRemoveElement(element) {
     if (element) element.remove();
 }

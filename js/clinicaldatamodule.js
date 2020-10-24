@@ -138,10 +138,10 @@ window.addSubject = function() {
         .catch(error => {
             switch (error) {
                 case clinicaldataHelper.errors.SUBJECTKEYEMPTY:
-                    ioHelper.showWarning("Enter Subject Key", "Please enter a key for the subject first.");
+                    ioHelper.showWarning("Enter subject key", "Please enter a key for the subject first.");
                     break;
                 case clinicaldataHelper.errors.SUBJECTKEYEXISTENT:
-                    ioHelper.showWarning("Subject Key Existent", "The entered subject key already exists. Please enter another one.");
+                    ioHelper.showWarning("Subject key existent", "The entered subject key already exists. Please enter another one.");
             }
         });
 }

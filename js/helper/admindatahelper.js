@@ -1,11 +1,15 @@
-import * as metadataHelper from "./metadatahelper.js"; 
+import * as metadataHelper from "./metadatahelper.js";
+import * as clinicaldataHelper from "./clinicaldatahelper.js";
 import * as admindataTemplates from "./admindatatemplates.js";
-import * as ioHelper from "./iohelper.js";
 
 const $ = query => admindata.querySelector(query);
 const $$ = query => admindata.querySelectorAll(query);
 
 const admindataFileName = "admindata";
+
+export const errors = {
+    SITEHASSUBJECTS: 0
+}
 
 let admindata = null;
 
@@ -83,8 +87,13 @@ export function setSiteName(siteOID, name) {
 }
 
 export function removeSite(siteOID) {
-    ioHelper.safeRemoveElement($(`Location[OID="${siteOID}"][LocationType="Site"]`));
+    if (clinicaldataHelper.getSubjectKeys(siteOID).length > 0) return Promise.reject(errors.SITEHASSUBJECTS);
+
+    const site = $(`Location[OID="${siteOID}"][LocationType="Site"]`);
+    if (site) site.remove();
     storeAdmindata();
+
+    return Promise.resolve();
 }
 
 function generateUniqueOID(oidPrefix) {
