@@ -8,6 +8,7 @@ const $$ = query => document.querySelectorAll(query);
 export function loadSites() {
     ioHelper.removeElements($$("#sites-options .panel a"));
 
+    $("#site-name-input").value = "";
     $("#site-name-input").disabled = true;
     $("#site-save-button").disabled = true;
     $("#site-remove-button").disabled = true;
@@ -34,7 +35,6 @@ function loadSite(siteOID) {
     $(`#sites-options .panel a[oid="${site.getAttribute("OID")}"]`).classList.add("is-active");
 
     $("#site-name-input").value = site.getAttribute("Name");
-
     $("#site-name-input").disabled = false;
     $("#site-save-button").disabled = false;
     $("#site-remove-button").disabled = false;
@@ -54,7 +54,6 @@ window.saveSite = function() {
     if (!siteOID) return;
 
     admindataHelper.setSiteName(siteOID, $("#site-name-input").value);
-    $("#site-name-input").value = "";
     loadSites();
 
     clinicaldataModule.createSiteFilterSelect();
@@ -66,9 +65,9 @@ window.removeSite = function() {
 
     admindataHelper.removeSite(siteOID)
         .then(() => {
-            $("#site-name-input").value = "";
             loadSites();
             clinicaldataModule.createSiteFilterSelect();
+            clinicaldataModule.loadSubjectKeys();
         })
         .catch(error => {
             switch (error) {
