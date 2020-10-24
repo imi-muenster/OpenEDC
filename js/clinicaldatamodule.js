@@ -127,7 +127,7 @@ window.addSubject = function() {
     const subjectKey = $("#add-subject-input").value;
     $("#add-subject-input").value = "";
     
-    // TODO: Good practice?
+    // TODO: Good practice? Problem: .then() and .catch() are executed async, which must be considered
     clinicaldataHelper.addSubject(subjectKey, site)
         .then(() => {
             loadSubjectKeys();
@@ -595,6 +595,7 @@ window.saveSubjectInfo = function() {
         .then(() => {
             currentElementID.subject = clinicaldataHelper.getSubject().key;
             loadSubjectKeys();
+            showSubjectInfo();
         })
         .catch(error => {
             switch (error) {
@@ -604,9 +605,8 @@ window.saveSubjectInfo = function() {
                 case clinicaldataHelper.errors.SUBJECTKEYEXISTENT:
                     ioHelper.showWarning("Subject key existent", "The entered subject key already exists. Please enter another one.");
             }
+            showSubjectInfo();
         });
-
-    showSubjectInfo();
 }
 
 window.removeSubject = function() {
