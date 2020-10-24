@@ -76,6 +76,14 @@ export function createSiteFilterSelect() {
 
     ioHelper.safeRemoveElement($("#site-filter-select-outer"));
     $("#site-filter-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("site-filter-select", true, true, sites, currentSelection));
+    $("#site-filter-select-inner").onclick = clickEvent => {
+        if (dataHasChanged()) {
+            skipDataHasChangedCheck = true;
+            deferredFunction = () => loadTree(currentElementID.studyEvent, null);
+            $("#close-clinicaldata-modal").classList.add("is-active");
+            clickEvent.target.blur();
+        }
+    };
     $("#site-filter-select-inner").oninput = inputEvent => {
         currentElementID.subject = null;
         loadSubjectKeys();
