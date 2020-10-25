@@ -27,7 +27,7 @@ a.panel-block {
     padding: 20px;
 }
 
-#study-title {
+#study-title, #mobile-back-button {
     font-weight: 500;
 }
 
@@ -195,6 +195,10 @@ a.panel-block:hover {
 
 .navbar-start {
     padding-top: 1px;
+}
+
+#mobile-back-button {
+    padding-bottom: 6px;
 }
 
 @media only screen and (max-width: 768px)  {

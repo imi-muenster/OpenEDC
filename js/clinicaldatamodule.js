@@ -221,6 +221,7 @@ async function loadTree(studyEventOID, formOID) {
         $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
     }
 
+    showColumnOnMobile();
     if (currentElementID.studyEvent) await loadFormsByStudyEvent();
 }
 
@@ -632,4 +633,44 @@ window.removeSubject = function() {
     loadSubjectKeys();
     reloadTree();
     hideSubjectInfo();
+}
+
+// The following two functions constitute logic to only show one column at a time on mobile devices including a navbar back button
+window.backOnMobile = function() {
+    if (currentElementID.subject && currentElementID.studyEvent && currentElementID.form) {
+        loadTree(currentElementID.studyEvent, null);
+    } else if (currentElementID.subject && currentElementID.studyEvent) {
+        loadTree(null, null);
+    } else {
+        $("#clinicaldata-study-events-column").classList.add("is-hidden-touch");
+        $("#subjects-column").classList.remove("is-hidden-touch");
+        $("#study-title").parentNode.classList.remove("is-hidden-touch");
+        $("#mobile-back-button").classList.add("is-hidden");
+        $("#mobile-back-button").classList.remove("is-hidden-desktop");
+    }
+}
+
+function showColumnOnMobile() {
+    // Hide or show navbar back button
+    if (currentElementID.subject || currentElementID.studyEvent || currentElementID.form) {
+        $("#study-title").parentNode.classList.add("is-hidden-touch");
+        $("#mobile-back-button").classList.remove("is-hidden");
+        $("#mobile-back-button").classList.add("is-hidden-desktop");
+    } else {
+        $("#study-title").parentNode.classList.remove("is-hidden-touch");
+        $("#mobile-back-button").classList.add("is-hidden");
+        $("#mobile-back-button").classList.remove("is-hidden-desktop");
+    }
+
+    // Show respective column
+    $$("#subjects-column, #clinicaldata-study-events-column, #clinicaldata-forms-column, #clinicaldata-column").forEach(column => column.classList.add("is-hidden-touch"));
+    if (currentElementID.subject && currentElementID.studyEvent && currentElementID.form) {
+        $("#clinicaldata-column").classList.remove("is-hidden-touch");
+    } else if (currentElementID.subject && currentElementID.studyEvent) {
+        $("#clinicaldata-forms-column").classList.remove("is-hidden-touch");
+    } else if (currentElementID.subject) {
+        $("#clinicaldata-study-events-column").classList.remove("is-hidden-touch");
+    } else {
+        $("#subjects-column").classList.remove("is-hidden-touch");
+    }
 }
