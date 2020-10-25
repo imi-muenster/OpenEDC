@@ -392,7 +392,7 @@ function getPreviousFormOID(nextFormOID) {
 function scrollToFormStart() {
     // Scroll to the beginning of the form on desktop and mobile
     document.querySelector("#clinicaldata-form-data").scrollIntoView();
-    document.querySelector("#clinicaldata-column").scrollIntoView();
+    document.documentElement.scrollTop = 0;
 }
 
 function saveFormData() {
@@ -492,8 +492,7 @@ window.showSurveyView = function() {
     $("#clinicaldata-forms-column").classList.add("is-hidden");
     $("#clinicaldata-column .panel").classList.add("is-shadowless");
     $("#clinicaldata-column .panel-heading").classList.add("is-hidden");
-    $("#clinicaldata-column .panel").classList.add("is-shadowless");
-    $("#clinicaldata-column").classList.remove("is-two-fifths");
+    $("#clinicaldata-column").classList.remove("is-two-fifths-desktop");
     $("#clinicaldata-column").classList.add("is-full");
     $("#clinicaldata-column .tree-panel-blocks").classList.add("is-survey-view");
     $("#clinicaldata-section").classList.add("p-3");
@@ -514,8 +513,7 @@ function hideSurveyView() {
     $("#clinicaldata-forms-column").classList.remove("is-hidden");
     $("#clinicaldata-column .panel").classList.remove("is-shadowless");
     $("#clinicaldata-column .panel-heading").classList.remove("is-hidden");
-    $("#clinicaldata-column .panel").classList.remove("is-shadowless");
-    $("#clinicaldata-column").classList.add("is-two-fifths");
+    $("#clinicaldata-column").classList.add("is-two-fifths-desktop");
     $("#clinicaldata-column").classList.remove("is-full");
     $("#clinicaldata-column .tree-panel-blocks").classList.remove("is-survey-view");
     $("#clinicaldata-section").classList.remove("p-3");
