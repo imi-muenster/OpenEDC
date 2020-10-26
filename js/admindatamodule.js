@@ -1,15 +1,19 @@
 import * as clinicaldataModule from "./clinicaldatamodule.js";
 import * as admindataHelper from "./helper/admindatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
+import * as htmlElements from "./helper/htmlelements.js";
 
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
 export function loadUsers() {
     ioHelper.removeElements($$("#users-options .panel a"));
+    ioHelper.safeRemoveElement($("#user-site-select-outer"));
 
+    $("#user-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("user-site-select", true, true, [], null));
     $("#user-first-name-input").value = "";
     $("#user-last-name-input").value = "";
+    $("#user-site-select-inner").disabled = true;
     $("#user-first-name-input").disabled = true;
     $("#user-last-name-input").disabled = true;
     $("#user-save-button").disabled = true;
@@ -36,8 +40,19 @@ function loadUser(userOID) {
     ioHelper.removeIsActiveFromElement($("#users-options .panel a.is-active"));
     $(`#users-options .panel a[oid="${userOID}"]`).classList.add("is-active");
 
+    // Create site select
+    let sites = ["No Site"];
+    admindataHelper.getSites().forEach(site => sites.push(site.getAttribute("Name")));
+    ioHelper.safeRemoveElement($("#user-site-select-outer"));
+    let currentSiteName = null;
+    const locationRef = user.querySelector("LocationRef");
+    if (locationRef) currentSiteName = admindataHelper.getSiteNameByOID(locationRef.getAttribute("LocationOID"));
+    $("#user-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("user-site-select", true, true, sites, currentSiteName));
+
+    // Fill other inputs and adjust enable status
     $("#user-first-name-input").value = user.querySelector("FirstName").textContent;
     $("#user-last-name-input").value = user.querySelector("LastName").textContent;
+    $("#user-site-select-inner").disabled = false;
     $("#user-first-name-input").disabled = false;
     $("#user-last-name-input").disabled = false;
     $("#user-save-button").disabled = false;
@@ -55,7 +70,7 @@ window.saveUser = function() {
     const userOID = $("#users-options .panel a.is-active").getAttribute("oid");
     if (!userOID) return;
 
-    admindataHelper.setUserInfo(userOID, $("#user-first-name-input").value, $("#user-last-name-input").value, null);
+    admindataHelper.setUserInfo(userOID, $("#user-first-name-input").value, $("#user-last-name-input").value, admindataHelper.getSiteOIDByName($("#user-site-select-inner").value));
     loadUsers();
 }
 
