@@ -550,7 +550,8 @@ window.showSubjectInfo = function() {
     // Create audit record entries
     ioHelper.removeElements($$("#audit-records .notification"));
     for (let auditRecord of clinicaldataHelper.getAuditRecords()) {
-        let auditRecordElement = htmlElements.getAuditRecord(clinicaldataHelper.auditRecordTypes.FORMEDITED, auditRecord.studyEventOID, auditRecord.formOID, auditRecord.user, auditRecord.location, auditRecord.date);
+        const siteName = admindataHelper.getSiteNameByOID(auditRecord.locationOID);
+        let auditRecordElement = htmlElements.getAuditRecord(clinicaldataHelper.auditRecordTypes.FORMEDITED, auditRecord.studyEventOID, auditRecord.formOID, auditRecord.userOID, siteName, auditRecord.date);
         auditRecordElement.querySelector("button").onclick = () => showAuditRecordFormData(auditRecord.studyEventOID, auditRecord.formOID, auditRecord.date);
         $("#audit-records").appendChild(auditRecordElement);
     }

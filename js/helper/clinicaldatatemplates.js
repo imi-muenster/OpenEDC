@@ -29,10 +29,10 @@ export const getItemData = (itemOID, value) => template(`
     <ItemData ItemOID="${itemOID}" Value="${value}"/>
 `);
 
-export const getAuditRecord = (userRef, locationRef, dateTimeStamp) => template(`
+export const getAuditRecord = (userOID, locationOID, dateTimeStamp) => template(`
     <AuditRecord>
-        <UserRef UserOID="${userRef}"/>
-        <LocationRef LocationOID="${locationRef}"/>
+        <UserRef UserOID="${userOID}"/>
+        <LocationRef LocationOID="${locationOID}"/>
         <DateTimeStamp>${dateTimeStamp}</DateTimeStamp>
     </AuditRecord>
 `);

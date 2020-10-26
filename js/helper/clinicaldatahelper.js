@@ -17,11 +17,11 @@ export class FormItemData {
 }
 
 export class AuditRecord {
-    constructor(studyEventOID, formOID, user, location, date) {
+    constructor(studyEventOID, formOID, userOID, locationOID, date) {
         this.studyEventOID = studyEventOID;
         this.formOID = formOID;
-        this.user = user;
-        this.location = location;
+        this.userOID = userOID;
+        this.locationOID = locationOID;
         this.date = date;
     }
 }
@@ -192,7 +192,7 @@ export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
     }
 
     if (itemGroupData) formData.appendChild(itemGroupData);
-    formData.appendChild(clinicaldataTemplates.getAuditRecord("LocalUser", "LocalSite", new Date().toISOString()));
+    formData.appendChild(clinicaldataTemplates.getAuditRecord("LocalUser", subject.site ? subject.site : "", new Date().toISOString()));
     studyEventData.appendChild(formData);
     subjectData.appendChild(studyEventData);
 

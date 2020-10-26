@@ -277,14 +277,14 @@ export function getSelect(name, isUnique, isFullwidth, values, selectedValue) {
 }
 
 // TODO: Used the DOMParser as alternative to document.createElement. Check if the performance is not significantly worse
-export function getAuditRecord(type, studyEvent, form, user, location, dateTime) {
+export function getAuditRecord(type, studyEvent, form, user, site, dateTime) {
     return new DOMParser().parseFromString(`
         <div class="notification">
             <p class="mb-3"><strong>${type}</strong></p>
             <p>Timestamp: <strong>${dateTime.toLocaleDateString()} – ${dateTime.toLocaleTimeString()}</strong></p>
             ${form && studyEvent ? '<p>Form: <strong>' + studyEvent + ' – ' + form + '</strong></p>': ''}
             ${user ? '<p>User: <strong>' + user + '</strong></p>': ''}
-            ${location ? '<p>User: <strong>' + location + '</strong></p>': ''}
+            ${site ? '<p>Site: <strong>' + site + '</strong></p>': ''}
             ${form ? '<button class="button is-small mt-3">View Data</button>' : ""}
         </div>
     `, "text/html").body.firstChild;
