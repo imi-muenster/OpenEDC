@@ -50,19 +50,66 @@ export function loadStoredAdmindata() {
     if (admindataXMLString) parseAdmindata(admindataXMLString);
 }
 
+export function getUser(userOID) {
+    return $(`User[OID="${userOID}"]`);
+}
+
+export function getUsers() {
+    return $$("User");
+}
+
+export function addUser() {
+    const newUserOID = generateUniqueOID("U.");
+    const newUser = admindataTemplates.getUser(newUserOID);
+    
+    const lastUser = getLastElement(getUsers());
+    if (lastUser) {
+        lastUser.insertAdjacentElement("afterend", newUser);
+    } else {
+        admindata.appendChild(newUser);
+    }
+
+    // TODO: It is probably better this way -- meaning that the helper itself stores the file on change
+    storeAdmindata();
+
+    return newUserOID;
+}
+
+export function setUserInfo(userOID, firstName, lastName, site) {
+    let user = getUser(userOID);
+    if (!user) return;
+
+    user.querySelector("FirstName").textContent = firstName;
+    user.querySelector("LastName").textContent = lastName;
+
+    let locationRef = user.querySelector("LocationRef");
+    if (site) {
+        if (locationRef) locationRef.setAttribute("LocationOID", site);
+        else user.appendChild(admindataTemplates.getLocationRef(site));
+    } else {
+        if (locationRef) locationRef.remove();
+    }
+
+    storeAdmindata();
+}
+
+export function removeUser(userOID) {
+    const user = getUser(userOID);
+    if (user) user.remove();
+    storeAdmindata();
+}
+
 export function getSite(siteOID) {
     return $(`Location[OID="${siteOID}"][LocationType="Site"]`);
 }
 
 export function getSiteOIDByName(siteName) {
     const site = $(`Location[Name="${siteName}"][LocationType="Site"]`);
-    
     return site ? site.getAttribute("OID") : null;
 }
 
 export function getSiteNameByOID(siteOID) {
-    const site = $(`Location[OID="${siteOID}"][LocationType="Site"]`);
-    
+    const site = getSite(siteOID);
     return site ? site.getAttribute("Name") : null;
 }
 
@@ -88,14 +135,15 @@ export function addSite() {
 }
 
 export function setSiteName(siteOID, name) {
-    $(`Location[OID="${siteOID}"][LocationType="Site"]`).setAttribute("Name", name);
+    const site = getSite(siteOID);
+    if (site) site.setAttribute("Name", name);
     storeAdmindata();
 }
 
 export function removeSite(siteOID) {
     if (clinicaldataHelper.getSubjectKeys(siteOID).length > 0) return Promise.reject(errors.SITEHASSUBJECTS);
 
-    const site = $(`Location[OID="${siteOID}"][LocationType="Site"]`);
+    const site = getSite(siteOID);
     if (site) site.remove();
     storeAdmindata();
 

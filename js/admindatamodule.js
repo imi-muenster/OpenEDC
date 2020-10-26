@@ -5,6 +5,68 @@ import * as ioHelper from "./helper/iohelper.js";
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
+export function loadUsers() {
+    ioHelper.removeElements($$("#users-options .panel a"));
+
+    $("#user-first-name-input").value = "";
+    $("#user-last-name-input").value = "";
+    $("#user-first-name-input").disabled = true;
+    $("#user-last-name-input").disabled = true;
+    $("#user-save-button").disabled = true;
+    $("#user-remove-button").disabled = true;
+
+    const users = admindataHelper.getUsers();
+    if (users.length > 0) $("#no-users-hint").classList.add("is-hidden");
+    else $("#no-users-hint").classList.remove("is-hidden");
+
+    for (let user of users) {
+        const panelBlock = document.createElement("a");
+        panelBlock.className = "panel-block has-no-border-left";
+        panelBlock.textContent = user.querySelector("FirstName").textContent + " " + user.querySelector("LastName").textContent;
+        panelBlock.setAttribute("oid", user.getAttribute("OID"));
+        panelBlock.onclick = () => loadUser(user.getAttribute("OID"));
+        $("#add-user-button").insertAdjacentElement("beforebegin", panelBlock);
+    }
+}
+
+function loadUser(userOID) {
+    const user = admindataHelper.getUser(userOID);
+    if (!user) return;
+
+    ioHelper.removeIsActiveFromElement($("#users-options .panel a.is-active"));
+    $(`#users-options .panel a[oid="${userOID}"]`).classList.add("is-active");
+
+    $("#user-first-name-input").value = user.querySelector("FirstName").textContent;
+    $("#user-last-name-input").value = user.querySelector("LastName").textContent;
+    $("#user-first-name-input").disabled = false;
+    $("#user-last-name-input").disabled = false;
+    $("#user-save-button").disabled = false;
+    $("#user-remove-button").disabled = false;
+}
+
+window.addUser = function() {
+    const userOID = admindataHelper.addUser();
+
+    loadUsers();
+    loadUser(userOID);
+}
+
+window.saveUser = function() {
+    const userOID = $("#users-options .panel a.is-active").getAttribute("oid");
+    if (!userOID) return;
+
+    admindataHelper.setUserInfo(userOID, $("#user-first-name-input").value, $("#user-last-name-input").value, null);
+    loadUsers();
+}
+
+window.removeUser = function() {
+    const userOID = $("#users-options .panel a.is-active").getAttribute("oid");
+    if (!userOID) return;
+
+    admindataHelper.removeUser(userOID);
+    loadUsers();
+}
+
 export function loadSites() {
     ioHelper.removeElements($$("#sites-options .panel a"));
 
@@ -32,7 +94,7 @@ function loadSite(siteOID) {
     if (!site) return;
 
     ioHelper.removeIsActiveFromElement($("#sites-options .panel a.is-active"));
-    $(`#sites-options .panel a[oid="${site.getAttribute("OID")}"]`).classList.add("is-active");
+    $(`#sites-options .panel a[oid="${siteOID}"]`).classList.add("is-active");
 
     $("#site-name-input").value = site.getAttribute("Name");
     $("#site-name-input").disabled = false;

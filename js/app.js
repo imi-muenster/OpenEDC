@@ -111,6 +111,7 @@ window.showProjectModal = function() {
     $("#study-name-input").value = metadataHelper.getStudyName();
     $("#study-description-textarea").value = metadataHelper.getStudyDescription();
     $("#protocol-name-input").value = metadataHelper.getStudyName();
+    admindataModule.loadUsers();
     admindataModule.loadSites();
 
     ioHelper.hideMenu();
