@@ -453,13 +453,36 @@
                         </ul>
                     </div>
                     <div class="width-is-three-quarters" id="general-options">
-                        <button class="button is-small" onclick="downloadODM()">Download ODM (metadata, clinicaldata, admindata)</button><br><br>
-                        <button class="button is-small" onclick="downloadMetadata()">Download ODM (only metadata)</button><br><br>
-                        <button class="button is-danger is-small" onclick="removeData()">Remove all data</button><br><br>
-                        <h1 class="subtitle is-5">Page is in development ...</h1>
+                        <div class="notification is-link is-light">
+                            <h1 class="title is-4">Connect to Server</h1>
+                            <p>These options lets you download the project in CDISC ODM-XML format. You can either download all data (including the metadata, admindata, and data from all subjects) or only the metadata.</p><br>
+                        </div>
+                        <div class="notification is-link is-light">
+                            <h1 class="title is-4">Encrypt Data</h1>
+                            <p>With this option you can fully encrypt all locally stored data. Just enter a password that should be used for encrypten and click on <i>Set Encryption</i>. All currently stored and future data will then be encrypted. When you open the app again, you need to enter the password to decrypt the data.<br><br><strong>Warning: If you forget the password, all data will be permanently lost.</strong></p><br>
+                        </div>
+                        <div class="notification is-link is-light">
+                            <h1 class="title is-4">Export Data</h1>
+                            <p>These options lets you download the project in CDISC ODM-XML format. You can either download all data (including the metadata, admindata, and data from all subjects) or only the metadata.</p><br>
+                            <div class="buttons">
+                                <button class="button is-link is-small" onclick="downloadODM()">Download ODM (complete)</button>
+                                <button class="button is-link is-small" onclick="downloadMetadata()">Download ODM (only metadata)</button>
+                            </div>
+                        </div>
+                        <div class="notification is-danger is-light">
+                            <h1 class="title is-4">Remove Data</h1>
+                            <p>The following option lets you remove all stored data and thereby reset the current project.<br><br><strong>Warning: This cannot be undone.</strong></p><br>
+                            <div class="buttons">
+                                <button class="button is-danger is-small" onclick="removeData()">Remove data (complete)</button>
+                                <button class="button is-danger is-small">Remove data (only clinicaldata)</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="width-is-three-quarters is-hidden" id="users-options">
-                        <div class="notification is-link">Please note that you can only add new users when you are connected to an OpenEDC Server.</div>
+                        <div class="notification is-link is-light">
+                            <h1 class="title is-4">Users</h1>
+                            <p>The following panel lets you add users to the current project. Please note that you can only add new users when you are connected to an OpenEDC Server.</p>
+                        </div>
                         <div class="columns">
                             <div class="column">
                                 <nav class="panel">
@@ -516,6 +539,10 @@
                         </div>
                     </div>
                     <div class="width-is-three-quarters is-hidden" id="sites-options">
+                        <div class="notification is-link is-light">
+                            <h1 class="title is-4">Sites</h1>
+                            <p>With the following panel you can add and edit sites. Subjects can be assigned to sites to conduct multi-centric research projects.</p>
+                        </div>
                         <div class="columns">
                             <div class="column">
                                 <nav class="panel">
@@ -540,6 +567,10 @@
                         </div>
                     </div>
                     <div class="width-is-three-quarters is-hidden" id="name-description">
+                        <div class="notification is-link is-light">
+                            <h1 class="title is-4">Name and Description</h1>
+                            <p>The following panel lets you edit the study name, study description, and protocol name. The study name will be displayed in the top navigation bar of this app.</p>
+                        </div>
                         <div class="field">
                             <label class="label">Study name</label>
                             <input class="input" id="study-name-input" type="text">
