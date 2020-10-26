@@ -201,8 +201,22 @@ a.panel-block:hover {
     padding-bottom: 6px;
 }
 
+.width-is-three-quarters {
+    width: 75%;
+    margin: 0 auto;
+}
+
+.width-is-two-thirds {
+    width: 66%;
+    margin: 0 auto;
+}
+
 @media only screen and (max-width: 768px)  {
     #start-modal .modal-content, #about-modal .modal-content {
         max-height: none;
+    }
+
+    .width-is-three-quarters, .width-is-two-thirds {
+        width: 100%;
     }
 }

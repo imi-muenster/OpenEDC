@@ -358,61 +358,51 @@
                             <li id="measurement-units-tab" onclick="moreTabClicked(event)"><a>Measurement Units</a></li>
                         </ul>
                     </div>
-                    <div class="columns is-centered" id="element-options">
-                        <div class="column is-three-quarters">
-                            <div class="field">
-                                <label class="label" id="condition-label">Collection Exception Condition</label>
-                            </div>
-                            <div class="field">
-                                <label class="label" id="measurement-unit-label">Measurement Unit</label>
-                            </div>
-                            <label class="label" id="range-check-label">Range Check</label>
-                            <button class="button is-small is-pulled-right" id="add-range-check-button" onclick="addRangeCheckInput()">+</button>
-                            <br>
-                            <label class="label" id="alias-label">Alias</label>
-                            <div class="buttons is-pulled-right are-small">
-                                <button class="button" onclick="addAliasInput()">+</button>
-                            </div>
+                    <div class="width-is-three-quarters" id="element-options">
+                        <div class="field">
+                            <label class="label" id="condition-label">Collection Exception Condition</label>
+                        </div>
+                        <div class="field">
+                            <label class="label" id="measurement-unit-label">Measurement Unit</label>
+                        </div>
+                        <label class="label" id="range-check-label">Range Check</label>
+                        <button class="button is-small is-pulled-right" id="add-range-check-button" onclick="addRangeCheckInput()">+</button>
+                        <br>
+                        <label class="label" id="alias-label">Alias</label>
+                        <div class="buttons is-pulled-right are-small">
+                            <button class="button" onclick="addAliasInput()">+</button>
                         </div>
                     </div>
-                    <div class="columns is-centered is-hidden" id="element-description">
-                        <div class="column is-three-quarters">
-                            <div class="notification is-success">
-                                This system is built for good usability while also encouraging best practices.
-                                Therefore, the main details panel does not show the description of an item but its question instead.
-                                If required, the description of an item can be edited here.
-                            </div>
-                            <label class="label" id="element-description-label">Description</label>
-                            <textarea class="textarea" id="element-description-textarea"></textarea>
+                    <div class="width-is-three-quarters is-hidden" id="element-description">
+                        <div class="notification is-success">
+                            This system is built for good usability while also encouraging best practices.
+                            Therefore, the main details panel does not show the description of an item but its question instead.
+                            If required, the description of an item can be edited here.
                         </div>
+                        <label class="label" id="element-description-label">Description</label>
+                        <textarea class="textarea" id="element-description-textarea"></textarea>
                     </div>
-                    <div class="columns is-centered is-hidden" id="conditions">
-                        <div class="column is-three-quarters">
-                            <div class="notification is-success">
-                                Conditions are used to define a collection exception for an item.
-                                The system automatically hides an item if the specified condition evaluates to true.
-                                <strong>Example:</strong> To hide an item with the OID <i>ispregnant</i> if the CodedValue or Text of another item with the OID <i>gender</i> is not set to <i>female</i>, enter <i><u>gender != "female"</u></i> and reference it in the <i>ispregnant</i> item.
-                            </div>
-                            <label class="label" id="conditions-label">Collection Exception Conditions</label>
-                            <button class="button is-small is-pulled-right" onclick="addConditionInput()">+</button>
+                    <div class="width-is-three-quarters is-hidden" id="conditions">
+                        <div class="notification is-success">
+                            Conditions are used to define a collection exception for an item.
+                            The system automatically hides an item if the specified condition evaluates to true.
+                            <strong>Example:</strong> To hide an item with the OID <i>ispregnant</i> if the CodedValue or Text of another item with the OID <i>gender</i> is not set to <i>female</i>, enter <i><u>gender != "female"</u></i> and reference it in the <i>ispregnant</i> item.
                         </div>
+                        <label class="label" id="conditions-label">Collection Exception Conditions</label>
+                        <button class="button is-small is-pulled-right" onclick="addConditionInput()">+</button>
                     </div>
-                    <div class="columns is-centered is-hidden" id="measurement-units">
-                        <div class="column is-three-quarters">
-                            <div class="notification is-success">
-                                Measurement units defined here are available for each item in every study event.
-                                The symbol is a translated text and corresponds to the current selected language.
-                            </div>
-                            <label class="label" id="measurement-units-label">Measurement Units</label>
-                            <button class="button is-small is-pulled-right" onclick="addMeasurementUnitInput()">+</button>
+                    <div class="width-is-three-quarters is-hidden" id="measurement-units">
+                        <div class="notification is-success">
+                            Measurement units defined here are available for each item in every study event.
+                            The symbol is a translated text and corresponds to the current selected language.
                         </div>
+                        <label class="label" id="measurement-units-label">Measurement Units</label>
+                        <button class="button is-small is-pulled-right" onclick="addMeasurementUnitInput()">+</button>
                     </div>
-                    <div class="columns is-centered">
-                        <div class="column is-three-quarters">
-                            <div class="buttons">
-                                <button class="button is-link" id="save-more-button" onclick="saveMoreModal()">Save Changes</button>
-                                <button class="button" id="cancel-more-button" onclick="hideMoreModal()">Cancel</button>
-                            </div>
+                    <div class="width-is-three-quarters mt-6">
+                        <div class="buttons">
+                            <button class="button is-link" id="save-more-button" onclick="saveMoreModal()">Save Changes</button>
+                            <button class="button" id="cancel-more-button" onclick="hideMoreModal()">Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -423,29 +413,27 @@
             <div class="modal-background"></div>
             <div class="modal-content is-large">
                 <div class="box">
-                    <div class="columns is-centered">
-                        <div class="column is-two-thirds">
-                            <h1 class="title">OpenEDC – Start</h1>
-                            <h2 class="subtitle">Please choose a starting point</h2>
-                            <hr>
-                            <p>This free and <a target="_blank" href="#">open-source</a> electronic data capture (EDC) system lets you create and conduct secure clinical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format.</p>
-                            <br>
-                            <p>All data is entirely processed on your local device. No data is ever send to our server. You can optionally connect to your own <a target="_blank" href="#">OpenEDC Server</a> to simply create multi-centric research studies with multiple users.</p>
-                            <br>
-                            <p>For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you have an ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an exemplary project and see how it all works.</p>
-                            <br>
-                            <div class="buttons is-centered">
-                                <button class="button" onclick="newProject()">New Project</button>
-                                <div class="file">
-                                    <label class="file-label">
-                                        <input class="file-input" type="file" name="resume" id="odm-upload" onchange="uploadODM()">
-                                        <span class="file-cta">
-                                            <span class="file-label">Open</span>
-                                        </span>
-                                    </label>
-                                </div>
-                                <button class="button" onclick="loadExample()">Example</button>
+                    <div class="width-is-two-thirds">
+                        <h1 class="title">OpenEDC – Start</h1>
+                        <h2 class="subtitle">Please choose a starting point</h2>
+                        <hr>
+                        <p>This free and <a target="_blank" href="#">open-source</a> electronic data capture (EDC) system lets you create and conduct secure clinical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format.</p>
+                        <br>
+                        <p>All data is entirely processed on your local device. No data is ever send to our server. You can optionally connect to your own <a target="_blank" href="#">OpenEDC Server</a> to simply create multi-centric research studies with multiple users.</p>
+                        <br>
+                        <p>For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you have an ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an exemplary project and see how it all works.</p>
+                        <br>
+                        <div class="buttons is-centered">
+                            <button class="button" onclick="newProject()">New Project</button>
+                            <div class="file">
+                                <label class="file-label">
+                                    <input class="file-input" type="file" name="resume" id="odm-upload" onchange="uploadODM()">
+                                    <span class="file-cta">
+                                        <span class="file-label">Open</span>
+                                    </span>
+                                </label>
                             </div>
+                            <button class="button" onclick="loadExample()">Example</button>
                         </div>
                     </div>
                 </div>
@@ -464,111 +452,109 @@
                             <li id="name-description-tab" onclick="projectTabClicked(event)"><a>Name and Description</a></li>
                         </ul>
                     </div>
-                    <div class="columns is-centered">
-                        <div class="column is-three-quarters" id="general-options">
-                            <button class="button is-small" onclick="downloadODM()">Download ODM (metadata, clinicaldata, admindata)</button><br><br>
-                            <button class="button is-small" onclick="downloadMetadata()">Download ODM (only metadata)</button><br><br>
-                            <button class="button is-danger is-small" onclick="removeData()">Remove all data</button><br><br>
-                            <h1 class="subtitle is-5">Page is in development ...</h1>
-                        </div>
-                        <div class="column is-three-quarters is-hidden" id="users-options">
-                            <div class="notification is-link">Please note that you can only add new users when you are connected to an OpenEDC Server.</div>
-                            <div class="columns">
-                                <div class="column">
-                                    <nav class="panel">
-                                        <div class="panel-block has-text-centered has-text-grey-light" id="no-users-hint">
-                                            <p>No users available. Please add a new user with the button below.</p>
-                                        </div>
-                                        <div class="panel-block" id="add-user-button">
-                                            <button class="button is-link is-light is-fullwidth" onclick="addUser()">Add User</button>
-                                        </div>
-                                    </nav>
+                    <div class="width-is-three-quarters" id="general-options">
+                        <button class="button is-small" onclick="downloadODM()">Download ODM (metadata, clinicaldata, admindata)</button><br><br>
+                        <button class="button is-small" onclick="downloadMetadata()">Download ODM (only metadata)</button><br><br>
+                        <button class="button is-danger is-small" onclick="removeData()">Remove all data</button><br><br>
+                        <h1 class="subtitle is-5">Page is in development ...</h1>
+                    </div>
+                    <div class="width-is-three-quarters is-hidden" id="users-options">
+                        <div class="notification is-link">Please note that you can only add new users when you are connected to an OpenEDC Server.</div>
+                        <div class="columns">
+                            <div class="column">
+                                <nav class="panel">
+                                    <div class="panel-block has-text-centered has-text-grey-light" id="no-users-hint">
+                                        <p>No users available. Please add a new user with the button below.</p>
+                                    </div>
+                                    <div class="panel-block" id="add-user-button">
+                                        <button class="button is-link is-light is-fullwidth" onclick="addUser()">Add User</button>
+                                    </div>
+                                </nav>
+                            </div>
+                            <div class="column">
+                                <div class="field">
+                                    <label class="label">First name</label>
+                                    <input class="input" id="user-first-name-input" type="text">
                                 </div>
-                                <div class="column">
-                                    <div class="field">
-                                        <label class="label">First name</label>
-                                        <input class="input" id="user-first-name-input" type="text">
-                                    </div>
-                                    <div class="field">
-                                        <label class="label">Last name</label>
-                                        <input class="input" id="user-last-name-input" type="text">
-                                    </div>
-                                    <div class="field">
-                                        <label class="label">Site</label>
-                                        <div class="control" id="user-site-control"></div>
-                                    </div>
-                                    <hr>
-                                    <div class="field">
-                                        <label class="label">Login name</label>
-                                        <input class="input" type="text" disabled>
-                                    </div>
-                                    <div class="field">
-                                        <label class="label">Initial password</label>
-                                        <input class="input" type="text" disabled>
-                                    </div>
-                                    <div class="field">
-                                        <button class="button is-small is-fullwidth is-danger" disabled>Set or reset login</button>
-                                    </div>
-                                    <hr>
-                                    <div class="field">
-                                        <label class="label">User rights</label>
-                                        <label class="checkbox">
-                                            <input type="checkbox" disabled>
-                                            Configure project
-                                        </label>
-                                        <label class="checkbox">
-                                            <input type="checkbox" disabled>
-                                            Edit metadata
-                                        </label>
-                                    </div>
-                                    <div class="buttons">
-                                        <button class="button is-link" id="user-save-button" onclick="saveUser()">Save</button>
-                                        <button class="button is-danger" id="user-remove-button" onclick="removeUser()">Remove</button>
-                                    </div>
+                                <div class="field">
+                                    <label class="label">Last name</label>
+                                    <input class="input" id="user-last-name-input" type="text">
+                                </div>
+                                <div class="field">
+                                    <label class="label">Site</label>
+                                    <div class="control" id="user-site-control"></div>
+                                </div>
+                                <hr>
+                                <div class="field">
+                                    <label class="label">Login name</label>
+                                    <input class="input" type="text" disabled>
+                                </div>
+                                <div class="field">
+                                    <label class="label">Initial password</label>
+                                    <input class="input" type="text" disabled>
+                                </div>
+                                <div class="field">
+                                    <button class="button is-small is-fullwidth is-danger" disabled>Set or reset login</button>
+                                </div>
+                                <hr>
+                                <div class="field">
+                                    <label class="label">User rights</label>
+                                    <label class="checkbox">
+                                        <input type="checkbox" disabled>
+                                        Configure project
+                                    </label>
+                                    <label class="checkbox">
+                                        <input type="checkbox" disabled>
+                                        Edit metadata
+                                    </label>
+                                </div>
+                                <div class="buttons">
+                                    <button class="button is-link" id="user-save-button" onclick="saveUser()">Save</button>
+                                    <button class="button is-danger" id="user-remove-button" onclick="removeUser()">Remove</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="column is-three-quarters is-hidden" id="sites-options">
-                            <div class="columns">
-                                <div class="column">
-                                    <nav class="panel">
-                                        <div class="panel-block has-text-centered has-text-grey-light" id="no-sites-hint">
-                                            <p>No sites available. Please add a new site with the button below.</p>
-                                        </div>
-                                        <div class="panel-block" id="add-site-button">
-                                            <button class="button is-link is-light is-fullwidth" onclick="addSite()">Add Site</button>
-                                        </div>
-                                    </nav>
+                    </div>
+                    <div class="width-is-three-quarters is-hidden" id="sites-options">
+                        <div class="columns">
+                            <div class="column">
+                                <nav class="panel">
+                                    <div class="panel-block has-text-centered has-text-grey-light" id="no-sites-hint">
+                                        <p>No sites available. Please add a new site with the button below.</p>
+                                    </div>
+                                    <div class="panel-block" id="add-site-button">
+                                        <button class="button is-link is-light is-fullwidth" onclick="addSite()">Add Site</button>
+                                    </div>
+                                </nav>
+                            </div>
+                            <div class="column">
+                                <div class="field">
+                                    <label class="label">Name</label>
+                                    <input class="input" id="site-name-input" type="text">
                                 </div>
-                                <div class="column">
-                                    <div class="field">
-                                        <label class="label">Name</label>
-                                        <input class="input" id="site-name-input" type="text">
-                                    </div>
-                                    <div class="buttons">
-                                        <button class="button is-link" id="site-save-button" onclick="saveSite()">Save</button>
-                                        <button class="button is-danger" id="site-remove-button" onclick="removeSite()">Remove</button>
-                                    </div>
+                                <div class="buttons">
+                                    <button class="button is-link" id="site-save-button" onclick="saveSite()">Save</button>
+                                    <button class="button is-danger" id="site-remove-button" onclick="removeSite()">Remove</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="column is-three-quarters is-hidden" id="name-description">
-                            <div class="field">
-                                <label class="label">Study name</label>
-                                <input class="input" id="study-name-input" type="text">
-                            </div>
-                            <div class="field">
-                                <label class="label">Study description</label>
-                                <textarea class="textarea" id="study-description-textarea"></textarea>
-                            </div>
-                            <div class="field">
-                                <label class="label">Protocol name</label>
-                                <input class="input" id="protocol-name-input" type="text">
-                            </div>
-                            <div class="buttons">
-                                <button class="button is-link" id="save-global-variables-button" onclick="saveStudyNameDescription()">Save Changes</button>
-                                <button class="button" id="cancel-global-variables-button" onclick="hideProjectModal()">Cancel</button>
-                            </div>
+                    </div>
+                    <div class="width-is-three-quarters is-hidden" id="name-description">
+                        <div class="field">
+                            <label class="label">Study name</label>
+                            <input class="input" id="study-name-input" type="text">
+                        </div>
+                        <div class="field">
+                            <label class="label">Study description</label>
+                            <textarea class="textarea" id="study-description-textarea"></textarea>
+                        </div>
+                        <div class="field">
+                            <label class="label">Protocol name</label>
+                            <input class="input" id="protocol-name-input" type="text">
+                        </div>
+                        <div class="buttons">
+                            <button class="button is-link" id="save-global-variables-button" onclick="saveStudyNameDescription()">Save Changes</button>
+                            <button class="button" id="cancel-global-variables-button" onclick="hideProjectModal()">Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -579,31 +565,29 @@
             <div class="modal-background" onclick="hideSubjectInfo()"></div>
             <div class="modal-content is-large">
                 <div class="box">
-                    <div class="columns is-centered">
-                        <div class="column is-two-thirds">
-                            <h1 class="title">Options and Audit Trail</h1>
-                            <h2 class="subtitle">of Subject: <strong></strong></h2>
-                            <hr>
-                            <h2 class="subtitle">Subject Options</h2>
-                            <div class="field">
-                                <label class="label">Key</label>
-                                <div class="control">
-                                    <input class="input" id="subject-key-input" type="text">
-                                </div>
+                    <div class="width-is-two-thirds">
+                        <h1 class="title">Options and Audit Trail</h1>
+                        <h2 class="subtitle">of Subject: <strong></strong></h2>
+                        <hr>
+                        <h2 class="subtitle">Subject Options</h2>
+                        <div class="field">
+                            <label class="label">Key</label>
+                            <div class="control">
+                                <input class="input" id="subject-key-input" type="text">
                             </div>
-                            <div class="field">
-                                <label class="label">Site</label>
-                                <div class="control" id="subject-site-control"></div>
-                            </div>
-                            <div class="buttons">
-                                <button class="button is-danger is-small" id="save-subject-info-button" onclick="saveSubjectInfo()">Save Changes</button>
-                                <button class="button is-small" onclick="hideSubjectInfo()">Cancel</button>
-                            </div>
-                            <hr>
-                            <h2 class="subtitle">Audit Trail</h2>
-                            <div id="audit-records"></div>
-                            <button class="button is-danger is-small" onclick="removeSubject()">Remove Subject</button>
                         </div>
+                        <div class="field">
+                            <label class="label">Site</label>
+                            <div class="control" id="subject-site-control"></div>
+                        </div>
+                        <div class="buttons">
+                            <button class="button is-danger is-small" id="save-subject-info-button" onclick="saveSubjectInfo()">Save Changes</button>
+                            <button class="button is-small" onclick="hideSubjectInfo()">Cancel</button>
+                        </div>
+                        <hr>
+                        <h2 class="subtitle">Audit Trail</h2>
+                        <div id="audit-records"></div>
+                        <button class="button is-danger is-small" onclick="removeSubject()">Remove Subject</button>
                     </div>
                 </div>
             </div>
@@ -613,36 +597,34 @@
             <div class="modal-background" onclick="hideAboutModal()"></div>
             <div class="modal-content is-large">
                 <div class="box">
-                    <div class="columns is-centered">
-                        <div class="column is-two-thirds">
-                            <h1 class="title">About OpenEDC</h1>
-                            <h2 class="subtitle">Simple and secure data collection</h2>
-                            <hr>
-                            <p>This free and <a target="_blank" href="#">open-source</a> electronic data capture (EDC) system lets you create and conduct secure clinical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format.</p>
+                    <div class="width-is-two-thirds">
+                        <h1 class="title">About OpenEDC</h1>
+                        <h2 class="subtitle">Simple and secure data collection</h2>
+                        <hr>
+                        <p>This free and <a target="_blank" href="#">open-source</a> electronic data capture (EDC) system lets you create and conduct secure clinical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format.</p>
+                        <br>
+                        <p>All data is entirely processed on your local device. No data is ever send to our server. You can optionally connect to your own <a target="_blank" href="#">OpenEDC Server</a> to simply create multi-centric research studies with multiple users.</p>
+                        <br>
+                        <p>This EDC system is currently in a beta, but yet stable state. For any questions, bug reports, or feature requests, please contact:</p>
+                        <br>
+                        <div class="notification">
+                            <p>Leonard Greulich</p>
+                            <p>+49 (251) 83-54730</p>
+                            <p><a href="mailto:leonard.greulich@ukmuenster.de">leonard.greulich@uni-muenster.de</a></p>
                             <br>
-                            <p>All data is entirely processed on your local device. No data is ever send to our server. You can optionally connect to your own <a target="_blank" href="#">OpenEDC Server</a> to simply create multi-centric research studies with multiple users.</p>
-                            <br>
-                            <p>This EDC system is currently in a beta, but yet stable state. For any questions, bug reports, or feature requests, please contact:</p>
-                            <br>
-                            <div class="notification">
-                                <p>Leonard Greulich</p>
-                                <p>+49 (251) 83-54730</p>
-                                <p><a href="mailto:leonard.greulich@ukmuenster.de">leonard.greulich@uni-muenster.de</a></p>
-                                <br>
-                                <p><strong>Institute for Medical Informatics</strong></p>
-                                <p>Director: Prof. Dr. Martin Dugas</p>
-                                <p>Albert-Schweitzer-Campus 1, A11</p>
-                                <p>48149 Münster, Germany</p>
-                            </div>
-                            <a class="button is-rounded is-small is-link" target="_blank" href="https://medical-data-models.org/imprint?lang=en#data-privacy">
-                                <span class="icon">
-                                    <i class="fas fa-arrow-right"></i>
-                                </span>
-                                <span>Data Protection Policy</span>
-                            </a>
-                            <br><br>
-                            <button class="button" onclick="hideAboutModal()">Close</button>
+                            <p><strong>Institute for Medical Informatics</strong></p>
+                            <p>Director: Prof. Dr. Martin Dugas</p>
+                            <p>Albert-Schweitzer-Campus 1, A11</p>
+                            <p>48149 Münster, Germany</p>
                         </div>
+                        <a class="button is-rounded is-small is-link" target="_blank" href="https://medical-data-models.org/imprint?lang=en#data-privacy">
+                            <span class="icon">
+                                <i class="fas fa-arrow-right"></i>
+                            </span>
+                            <span>Data Protection Policy</span>
+                        </a>
+                        <br><br>
+                        <button class="button" onclick="hideAboutModal()">Close</button>
                     </div>
                 </div>
             </div>
