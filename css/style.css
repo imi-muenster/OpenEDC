@@ -81,11 +81,6 @@ a.panel-block:hover {
     max-width: 400px;
 }
 
-.modal-content.is-more-modal {
-    min-width: 700px;
-    max-width: 700px;
-}
-
 .modal-background {
     background-color: rgba(0, 0, 0, 0.7);
 }
