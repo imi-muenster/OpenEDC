@@ -72,11 +72,11 @@ export function createSiteFilterSelect() {
     admindataHelper.getSites().forEach(site => sites.push(site.getAttribute("Name")));
 
     let currentSelection = null;
-    if ($("#site-filter-select-inner")) currentSelection = $("#site-filter-select-inner").value;
+    if ($("#filter-site-select-inner")) currentSelection = $("#filter-site-select-inner").value;
 
-    ioHelper.safeRemoveElement($("#site-filter-select-outer"));
-    $("#site-filter-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("site-filter-select", true, true, sites, currentSelection));
-    $("#site-filter-select-inner").onmouseup = clickEvent => {
+    ioHelper.safeRemoveElement($("#filter-site-select-outer"));
+    $("#filter-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("filter-site-select", true, true, sites, currentSelection));
+    $("#filter-site-select-inner").onmouseup = clickEvent => {
         if (dataHasChanged()) {
             skipDataHasChangedCheck = true;
             deferredFunction = () => loadTree(currentElementID.studyEvent, null);
@@ -84,7 +84,7 @@ export function createSiteFilterSelect() {
             clickEvent.target.blur();
         }
     };
-    $("#site-filter-select-inner").oninput = inputEvent => {
+    $("#filter-site-select-inner").oninput = inputEvent => {
         currentElementID.subject = null;
         loadSubjectKeys();
         loadSubjectData();
@@ -131,7 +131,7 @@ window.addSubject = function() {
         return;
     }
 
-    const site = admindataHelper.getSiteOIDByName($("#site-filter-select-inner").value);
+    const site = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
     const subjectKey = $("#add-subject-input").value;
     $("#add-subject-input").value = "";
     
@@ -156,7 +156,7 @@ window.addSubject = function() {
 export function loadSubjectKeys() {
     ioHelper.removeElements($$("#subject-panel-blocks a"));
 
-    const site = admindataHelper.getSiteOIDByName($("#site-filter-select-inner").value);
+    const site = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
     const sortOrder = $("#sort-subject-select-inner").value;
     const subjectKeys = clinicaldataHelper.getSubjectKeys(site, sortOrder)
     subjectKeys.length > 0 ? $("#no-subjects-hint").classList.add("is-hidden") : $("#no-subjects-hint").classList.remove("is-hidden");
@@ -560,19 +560,19 @@ window.showSubjectInfo = function() {
     // Fill inputs to change subject key and site
     let sites = ["No Site"];
     admindataHelper.getSites().forEach(site => sites.push(site.getAttribute("Name")));
-    ioHelper.safeRemoveElement($("#change-site-select-outer"));
+    ioHelper.safeRemoveElement($("#subject-site-select-outer"));
     const currentSiteName = admindataHelper.getSiteNameByOID(clinicaldataHelper.getSubject().site);
-    $("#change-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("change-site-select", true, true, sites, currentSiteName));
+    $("#subject-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("subject-site-select", true, true, sites, currentSiteName));
     $("#subject-modal strong").textContent = currentElementID.subject;
     $("#subject-modal input").value = currentElementID.subject;
 
     // Disable change functionality when there are unsaved changes in the form
     $("#subject-modal input").disabled = false;
-    $("#change-site-select-inner").disabled = false;
+    $("#subject-site-select-inner").disabled = false;
     $("#save-subject-info-button").disabled = false;
     if (dataHasChanged()) {
         $("#subject-modal input").disabled = true;
-        $("#change-site-select-inner").disabled = true;
+        $("#subject-site-select-inner").disabled = true;
         $("#save-subject-info-button").disabled = true;
         $$("#subject-modal button:not([onclick])").forEach(button => button.disabled = true);
     }
@@ -600,7 +600,7 @@ async function showAuditRecordFormData(studyEventOID, formOID, date) {
 
 window.saveSubjectInfo = function() {
     const key = $("#subject-key-input").value;
-    const site = admindataHelper.getSiteOIDByName($("#change-site-select-inner").value);
+    const site = admindataHelper.getSiteOIDByName($("#subject-site-select-inner").value);
     const currentSite = clinicaldataHelper.getSubject().site;
     clinicaldataHelper.setSubjectInfo(key, site)
         .then(() => {
