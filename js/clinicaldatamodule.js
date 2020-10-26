@@ -561,7 +561,7 @@ window.showSubjectInfo = function() {
     let sites = ["No Site"];
     admindataHelper.getSites().forEach(site => sites.push(site.getAttribute("Name")));
     ioHelper.safeRemoveElement($("#subject-site-select-outer"));
-    const currentSiteName = admindataHelper.getSiteNameByOID(clinicaldataHelper.getSubject().site);
+    const currentSiteName = admindataHelper.getSiteNameByOID(clinicaldataHelper.getSubject().siteOID);
     $("#subject-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("subject-site-select", true, true, sites, currentSiteName));
     $("#subject-modal strong").textContent = currentElementID.subject;
     $("#subject-modal input").value = currentElementID.subject;
@@ -601,7 +601,7 @@ async function showAuditRecordFormData(studyEventOID, formOID, date) {
 window.saveSubjectInfo = function() {
     const key = $("#subject-key-input").value;
     const site = admindataHelper.getSiteOIDByName($("#subject-site-select-inner").value);
-    const currentSite = clinicaldataHelper.getSubject().site;
+    const currentSite = clinicaldataHelper.getSubject().siteOID;
     clinicaldataHelper.setSubjectInfo(key, site)
         .then(() => {
             if (site == currentSite) {

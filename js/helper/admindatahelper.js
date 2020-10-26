@@ -75,7 +75,7 @@ export function addUser() {
     return newUserOID;
 }
 
-export function setUserInfo(userOID, firstName, lastName, site) {
+export function setUserInfo(userOID, firstName, lastName, locationOID) {
     let user = getUser(userOID);
     if (!user) return;
 
@@ -83,9 +83,9 @@ export function setUserInfo(userOID, firstName, lastName, site) {
     user.querySelector("LastName").textContent = lastName;
 
     let locationRef = user.querySelector("LocationRef");
-    if (site) {
-        if (locationRef) locationRef.setAttribute("LocationOID", site);
-        else user.appendChild(admindataTemplates.getLocationRef(site));
+    if (locationOID) {
+        if (locationRef) locationRef.setAttribute("LocationOID", locationOID);
+        else user.appendChild(admindataTemplates.getLocationRef(locationOID));
     } else {
         if (locationRef) locationRef.remove();
     }

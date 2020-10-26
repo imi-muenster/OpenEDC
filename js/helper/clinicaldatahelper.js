@@ -1,9 +1,9 @@
 import * as clinicaldataTemplates from "./clinicaldatatemplates.js";
 
 class Subject {
-    constructor(key, site, createdDate) {
+    constructor(key, siteOID, createdDate) {
         this.key = key;
-        this.site = site;
+        this.siteOID = siteOID;
         this.createdDate = createdDate;
     }
 }
@@ -65,9 +65,9 @@ function parseSubjectData(subjectXMLString) {
 export function importClinicaldata(odmXMLString) {
     const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
     for (let subjectData of odm.querySelectorAll("ClinicalData SubjectData")) {
-        const site = subjectData.querySelector("SiteRef") ? subjectData.querySelector("SiteRef").getAttribute("LocationOID") : null;
+        const siteOID = subjectData.querySelector("SiteRef") ? subjectData.querySelector("SiteRef").getAttribute("LocationOID") : null;
         // TODO: Take the created date from the audit trail
-        const subject = new Subject(subjectData.getAttribute("SubjectKey"), site, new Date());
+        const subject = new Subject(subjectData.getAttribute("SubjectKey"), siteOID, new Date());
         const fileName = subjectToFilename(subject);
         localStorage.setItem(fileName, new XMLSerializer().serializeToString(subjectData));
     }
@@ -101,14 +101,14 @@ export function loadSubjects() {
     }
 }
 
-export function addSubject(subjectKey, site) {
+export function addSubject(subjectKey, siteOID) {
     if (subjectKey.length == 0) return Promise.reject(errors.SUBJECTKEYEMPTY);
     if (subjects.map(subject => subject.key).includes(subjectKey)) return Promise.reject(errors.SUBJECTKEYEXISTENT);
 
     subjectData = clinicaldataTemplates.getSubjectData(subjectKey);
-    if (site) subjectData.insertAdjacentElement("afterbegin", clinicaldataTemplates.getSiteRef(site));
+    if (siteOID) subjectData.insertAdjacentElement("afterbegin", clinicaldataTemplates.getSiteRef(siteOID));
 
-    subject = new Subject(subjectKey, site, new Date());
+    subject = new Subject(subjectKey, siteOID, new Date());
     subjects.push(subject);
 
     storeSubject();
@@ -117,8 +117,8 @@ export function addSubject(subjectKey, site) {
     return Promise.resolve();
 }
 
-export function getSubjectKeys(site, sortOrder) {
-    let filteredSubjects = site ? subjects.filter(subject => subject.site == site) : subjects;
+export function getSubjectKeys(siteOID, sortOrder) {
+    let filteredSubjects = siteOID ? subjects.filter(subject => subject.siteOID == siteOID) : subjects;
     filteredSubjects = sortOrder ? sortSubjects(filteredSubjects, sortOrder) : filteredSubjects;
 
     return filteredSubjects.map(subject => subject.key);
@@ -164,15 +164,15 @@ export function removeSubject() {
 function fileNameToSubject(fileName) {
     const fileNameParts = fileName.split(fileNameSeparator);
     const key = fileNameParts[0];
-    const site = fileNameParts[1] || null;
+    const siteOID = fileNameParts[1] || null;
     const createdDate = fileNameParts[2];
 
-    return new Subject(key, site, new Date(parseInt(createdDate)));
+    return new Subject(key, siteOID, new Date(parseInt(createdDate)));
 }
 
 function subjectToFilename(subject) {
-    console.log(subject.key + fileNameSeparator + (subject.site || "") + fileNameSeparator + subject.createdDate.getTime());
-    return subject.key + fileNameSeparator + (subject.site || "") + fileNameSeparator + subject.createdDate.getTime();
+    console.log(subject.key + fileNameSeparator + (subject.siteOID || "") + fileNameSeparator + subject.createdDate.getTime());
+    return subject.key + fileNameSeparator + (subject.siteOID || "") + fileNameSeparator + subject.createdDate.getTime();
 }
 
 export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
@@ -192,7 +192,7 @@ export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
     }
 
     if (itemGroupData) formData.appendChild(itemGroupData);
-    formData.appendChild(clinicaldataTemplates.getAuditRecord("LocalUser", subject.site ? subject.site : "", new Date().toISOString()));
+    formData.appendChild(clinicaldataTemplates.getAuditRecord("LocalUser", subject.siteOID ? subject.siteOID : "", new Date().toISOString()));
     studyEventData.appendChild(formData);
     subjectData.appendChild(studyEventData);
 
@@ -256,7 +256,7 @@ export function getAuditRecordFormData(studyEventOID, formOID, date) {
     return formData ? getFormItemDataList(formData) : null;
 }
 
-export function setSubjectInfo(subjectKey, site) {
+export function setSubjectInfo(subjectKey, siteOID) {
     // Check if if key is set or if there is another subject with the same key
     if (subjectKey.length == 0) return Promise.reject(errors.SUBJECTKEYEMPTY);
     const subjectWithKey = subjects.find(subject => subject.key == subjectKey);
@@ -267,12 +267,12 @@ export function setSubjectInfo(subjectKey, site) {
 
     // Adjust subject and its clinicaldata
     subject.key = subjectKey;
-    subject.site = site;
+    subject.siteOID = siteOID;
     subjectData.setAttribute("SubjectKey", subject.key);
     let siteRef = subjectData.querySelector("SiteRef");
-    if (subject.site) {
-        if (siteRef) siteRef.setAttribute("LocationOID", subject.site);
-        else subjectData.insertAdjacentElement("afterbegin", clinicaldataTemplates.getSiteRef(subject.site));
+    if (subject.siteOID) {
+        if (siteRef) siteRef.setAttribute("LocationOID", subject.siteOID);
+        else subjectData.insertAdjacentElement("afterbegin", clinicaldataTemplates.getSiteRef(subject.siteOID));
     } else {
         if (siteRef) siteRef.remove();
     }
