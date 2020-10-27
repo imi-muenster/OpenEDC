@@ -199,6 +199,7 @@ export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
     storeSubject();
 }
 
+// TODO: Assumes that the data is ordered chronologically -- should be ensured during import
 export function getSubjectFormData(studyEventOID, formOID) {
     if (!subject) return [];
 
@@ -301,6 +302,45 @@ export function getSubjectsHavingDataForElement(elementOID) {
     }
 
     return subjectKeys;
+}
+
+export function getCSVData(csvHeaders) {
+    let csvData = [];
+
+    subjects = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY);
+    for (let subject of subjects) {
+        const subjectData = parseSubjectData(localStorage.getItem(subjectToFilename(subject)));
+
+        let subjectCSVData = [subject.key];
+        let formData = null;
+        let currentStudyEventOID = null;
+        let currentFormOID = null;
+        for (const csvHeader of csvHeaders) {
+            const studyEventOID = csvHeader[0];
+            const formOID = csvHeader[1];
+            const itemGroupOID = csvHeader[2];
+            const itemOID = csvHeader[3];
+
+            // Ensures that the form data is not loaded for every item again
+            if (!currentStudyEventOID || !currentFormOID || currentStudyEventOID != studyEventOID || currentFormOID != formOID) {
+                formData = getLastElement(subjectData.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`));
+                currentStudyEventOID = studyEventOID;
+                currentFormOID = formOID;
+            }
+
+            if (!formData) {
+                subjectCSVData.push("");
+                continue;
+            }
+
+            const itemData = formData.querySelector(`ItemGroupData[ItemGroupOID="${itemGroupOID}"] ItemData[ItemOID="${itemOID}"]`);
+            subjectCSVData.push(itemData ? itemData.getAttribute("Value") : "");
+        }
+
+        csvData.push(subjectCSVData);
+    }
+
+    return csvData;
 }
 
 // TODO: Move to ioHelper? Also present in metadatahelper and admindatahelper

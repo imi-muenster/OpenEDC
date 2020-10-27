@@ -65,6 +65,7 @@ export function clearMetadata() {
 }
 
 export async function getFormAsHTML(formOID, locale) {
+    // TODO: Required? Removing could lead to performance improvements
     let prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
 
     let xsltResponse = await fetch(ioHelper.getBaseURL() + "/xsl/odmtohtml.xsl");
@@ -133,9 +134,10 @@ export function setCreationDateTimeNow() {
     $("ODM").setAttribute("CreationDateTime", creationDateTime);
 }
 
+// TODO: This and the following functions could be reduced
 export function getStudyEvents() {
     let studyEventDefs = [];
-    for (let studyEventRef of $$("StudyEventRef")) {
+    for (let studyEventRef of $$("Protocol StudyEventRef")) {
         let studyEventOID = studyEventRef.getAttribute("StudyEventOID");
         let studyEventDef = $(`[OID="${studyEventOID}"]`);
         if (studyEventDef != null) {
@@ -935,21 +937,6 @@ export function copyCodeList(codeListOID) {
     return newCodeListOID;
 }
 
-export function getStudyEventAndFormList() {
-    let studyEventAndFormList = [];
-
-    let studyEventDefs = getStudyEvents();
-    for (let studyEventDef of studyEventDefs) {
-        studyEventAndFormList.push({"name": studyEventDef.getAttribute("Name"), "type": elementTypes.STUDYEVENT, "oid": studyEventDef.getAttribute("OID")});
-        let formDefs = getFormsByStudyEvent(studyEventDef.getAttribute("OID"));
-        for (let formDef of formDefs) {
-            studyEventAndFormList.push({"name": formDef.getAttribute("Name"), "type": elementTypes.FORM, "oid": formDef.getAttribute("OID")});
-        }
-    }
-
-    return studyEventAndFormList;
-}
-
 export function getHierarchyLevelOfElementType(elementType) {
     switch (elementType) {
         case elementTypes.STUDYEVENT:
@@ -963,6 +950,34 @@ export function getHierarchyLevelOfElementType(elementType) {
         case elementTypes.CODELISTITEM:
             return 4;
     }
+}
+
+export function getCSVHeaders() {
+    let headers = [];
+
+    for (const studyEventRef of $$("Protocol StudyEventRef")) {
+        const studyEventOID = studyEventRef.getAttribute("StudyEventOID");
+        for (const formRef of $$(`StudyEventDef[OID="${studyEventOID}"] FormRef`)) {
+            const formOID = formRef.getAttribute("FormOID");
+            for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
+                const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
+                for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
+                    const itemOID = itemRef.getAttribute("ItemOID");
+                    const itemDef = $(`ItemDef[OID="${itemOID}"]`);
+                    const itemName = itemDef.getAttribute("Name");
+                    headers.push([
+                        studyEventOID,
+                        formOID,
+                        itemGroupOID,
+                        itemOID,
+                        itemName
+                    ]);
+                }
+            }
+        }
+    }
+
+    return headers;
 }
 
 function getLastElement(elements) {

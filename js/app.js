@@ -195,11 +195,22 @@ window.downloadODM = function() {
     ioHelper.download(metadataHelper.getStudyName()+".xml", new XMLSerializer().serializeToString(odm));
 }
 
-window.downloadMetadata = function() {
+window.downloadODMMetadata = function() {
     metadataHelper.setCreationDateTimeNow();
     metadataHelper.setFileOID(metadataHelper.getStudyName());
 
     ioHelper.download(metadataHelper.getStudyName()+"_metadata.xml", metadataHelper.getSerializedMetadata());
+}
+
+window.downloadCSV = function() {
+    const csvHeaders = metadataHelper.getCSVHeaders();
+    const csvData = clinicaldataHelper.getCSVData(csvHeaders);
+    // const csvString = ioHelper.getCSVString(csvData);
+
+    // ioHelper.download(metadataHelper.getStudyName()+"_clinicaldata.csv", csvString);
+
+    console.log(csvHeaders);
+    console.log(csvData);
 }
 
 window.removeData = function() {

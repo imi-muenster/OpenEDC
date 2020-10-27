@@ -457,18 +457,19 @@
                     <div class="width-is-three-quarters" id="general-options">
                         <div class="notification is-link is-light">
                             <h1 class="title is-4">Connect to Server</h1>
-                            <p>These options lets you download the project in CDISC ODM-XML format. You can either download all data (including the metadata, admindata, and data from all subjects) or only the metadata.</p><br>
+                            <p>With this option you can connect to an OpenEDC Server. This lets you create projects with multiple users. This also backups all data for you automatically. All data is end-to-end-encrypted by default.</p>
                         </div>
                         <div class="notification is-link is-light">
                             <h1 class="title is-4">Encrypt Data</h1>
-                            <p>With this option you can fully encrypt all locally stored data. Just enter a password that should be used for encrypten and click on <i>Set Encryption</i>. All currently stored and future data will then be encrypted. When you open the app again, you need to enter the password to decrypt the data.<br><br><strong>Warning: If you forget the password, all data will be permanently lost.</strong></p><br>
+                            <p>With this option you can fully encrypt all locally stored data. Just enter a password that should be used for encrypten and click on <i>Set Encryption</i>. All currently stored and future data will then be encrypted. When you open the app again, you need to enter the password to decrypt the data.<br><br><strong>Warning: If you forget the password, all data will be permanently lost.</strong></p>
                         </div>
                         <div class="notification is-link is-light">
                             <h1 class="title is-4">Export Data</h1>
-                            <p>These options lets you download the project in CDISC ODM-XML format. You can either download all data (including the metadata, admindata, and data from all subjects) or only the metadata.</p><br>
+                            <p>These options lets you download the project in CDISC ODM-XML or CSV format. You can either download all data (including the metadata, admindata, and data from all subjects including the entire audit trail), or only the metadata or clinicaldata. Please note that only the first option creates a backup of your project.</p><br>
                             <div class="buttons">
                                 <button class="button is-link is-small" onclick="downloadODM()">Download ODM (complete)</button>
-                                <button class="button is-link is-small" onclick="downloadMetadata()">Download ODM (only metadata)</button>
+                                <button class="button is-small" onclick="downloadODMMetadata()">Download ODM (only metadata)</button>
+                                <button class="button is-small" onclick="downloadCSV()">Download CSV (only clinicaldata)</button>
                             </div>
                         </div>
                         <div class="notification is-danger is-light">
