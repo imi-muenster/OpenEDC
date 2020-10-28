@@ -68,7 +68,7 @@ export async function getFormAsHTML(formOID, locale) {
     // TODO: Required? Removing could lead to performance improvements
     let prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
 
-    let xsltResponse = await fetch(ioHelper.getBaseURL() + "/xsl/odmtohtml.xsl");
+    let xsltResponse = await fetch(ioHelper.getBaseURL() + "xsl/odmtohtml.xsl");
     let xsltStylesheet = await xsltResponse.text();
 
     let xsltProcessor = new XSLTProcessor();

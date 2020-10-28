@@ -36,7 +36,6 @@ export function init() {
     clinicaldataHelper.loadSubjects();
 }
 
-// TODO: Improve the show and hide logic. Should be handled by the clinicaldatamodule instead of app.js to stop the mode-toggling if new data has just been entered.
 export function show() {
     loadSubjectKeys();
     reloadTree();

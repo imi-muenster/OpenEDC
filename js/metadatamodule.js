@@ -28,9 +28,7 @@ export function init() {
     currentElementType = null;
 
     createDatatypeMandatorySelect();
-    resetDetailsPanel();
     setIOListeners();
-    setArrowKeyListener();
 }
 
 export function show() {

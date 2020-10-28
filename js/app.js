@@ -19,8 +19,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     setIOListeners();
 
     if (metadataHelper.loadStoredMetadata()) {
-        // Only load stored admindata if metadata exists -- usually, however, it should not happen that admindata exists without metadata
-        admindataHelper.loadStoredAdmindata();
         startApp();
     } else {
         showStartModal();
@@ -56,19 +54,38 @@ const startApp = () => {
     
     metadataModule.init();
     metadataModule.setLanguage(languageHelper.getCurrentLocale());
-    metadataModule.loadStudyEvents();
+
+    admindataModule.init();
 
     clinicaldataModule.init();
     clinicaldataModule.setLanguage(languageHelper.getCurrentLocale());
 
     setTitles();
     hideStartModal();
+    showNavbar();
+
+    // If there is at least one subject stored, automatically open the clinicaldata module
+    clinicaldataHelper.getSubjectKeys().length > 0 ? metadataModule.hide() : metadataModule.show();
 }
 
 const setTitles = () => {
     const studyName =  ioHelper.shortenText(metadataHelper.getStudyName(), 20);
     $("#study-title").textContent = studyName;
     $("head title").textContent = "OpenEDC – " + studyName;
+}
+
+function showStartModal() {
+    metadataModule.removeArrowKeyListener();
+    $("#start-modal").classList.add("is-active");
+}
+
+function hideStartModal() {
+    $("#start-modal").classList.remove("is-active");
+    metadataModule.setArrowKeyListener();
+}
+
+function showNavbar() {
+    $(".navbar").classList.remove("is-hidden");
 }
 
 window.newProject = function() {
@@ -97,16 +114,6 @@ window.loadExample = async function() {
     admindataHelper.loadEmptyProject(metadataHelper.getStudyOID());
     startApp();
     metadataHelper.storeMetadata();
-}
-
-window.showStartModal = function() {
-    metadataModule.removeArrowKeyListener();
-    $("#start-modal").classList.add("is-active");
-}
-
-window.hideStartModal = function() {
-    $("#start-modal").classList.remove("is-active");
-    metadataModule.setArrowKeyListener();
 }
 
 window.showProjectModal = function() {

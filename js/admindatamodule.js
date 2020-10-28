@@ -6,6 +6,10 @@ import * as htmlElements from "./helper/htmlelements.js";
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
+export function init() {
+    admindataHelper.loadStoredAdmindata();
+}
+
 export function loadUsers() {
     ioHelper.removeElements($$("#users-options .panel a"));
     ioHelper.safeRemoveElement($("#user-site-select-outer"));

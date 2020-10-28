@@ -18,10 +18,10 @@
         <script src="./js/app.js" type="module"></script>
     </head>
     <body>
-        <nav class="navbar is-fixed-top has-shadow">
+        <nav class="navbar is-fixed-top has-shadow is-hidden">
             <div class="navbar-brand">
                 <div class="navbar-item">
-                    <h1 class="subtitle" id="study-title">New Project</h1>
+                    <h1 class="subtitle" id="study-title"></h1>
                 </div>
                 <a class="navbar-item is-hidden" id="mobile-back-button" onclick="backOnMobile()">
                     <span class="icon">
@@ -38,10 +38,8 @@
             <div class="navbar-menu">
                 <div class="navbar-start">
                     <div class="navbar-item has-dropdown is-hoverable">
-                        <a class="navbar-link" id="current-language">English</a>
-                        <div class="navbar-dropdown is-hidden-touch" id="language-dropdown">
-                            <a class="navbar-item">English</a>
-                        </div>
+                        <a class="navbar-link" id="current-language"></a>
+                        <div class="navbar-dropdown is-hidden-touch" id="language-dropdown"></div>
                     </div>
                     <a class="navbar-item" onclick="showAboutModal()">About</a>
                 </div>
@@ -67,7 +65,7 @@
             </div>
         </nav>
 
-        <section class="section" id="metadata-section">
+        <section class="section is-hidden" id="metadata-section">
             <div class="columns is-desktop is-centered" id="details-panel">
                 <div class="column is-one-fifth-desktop">
                     <div class="field">
