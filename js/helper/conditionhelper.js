@@ -15,10 +15,9 @@ export function process(itemsWithCondition) {
             $(`[preview-field-oid="${conditionalItem}"]`).classList.add("is-hidden");
         }
 
-        // TODO: select-one? Still needed?
         let previewFieldInput = $(`[preview-oid="${determinant}"]`);
         if (!previewFieldInput) continue;
-        if (previewFieldInput.type == "text" || previewFieldInput.type == "select-one") {
+        if (previewFieldInput.type == "text" || previewFieldInput.type == "select") {
             previewFieldInput.addEventListener("input", function(event) {
                 respondToInputChange(event, conditionalItem, operator, target);
             });
@@ -49,17 +48,16 @@ function respondToInputChange(event, conditionalItem, operator, target) {
             emptyConditionalItem(conditionalItem);
         } else {
             $(`[preview-field-oid="${conditionalItem}"]`).classList.remove("is-hidden");
-        }        
+        }
     }
 }
 
 function emptyConditionalItem(previewOID) {
-    // TODO: Replace with switch statement. What about select? Select-one?
     let previewFieldInput = $(`[preview-oid="${previewOID}"]`);
     if (previewFieldInput.type == "text" || previewFieldInput.type == "date") {
         previewFieldInput.value = "";
         previewFieldInput.dispatchEvent(new Event("input"));
-    } else if (previewFieldInput.type == "select-one") {
+    } else if (previewFieldInput.type == "select") {
         previewFieldInput.selectedIndex = 0;
         previewFieldInput.dispatchEvent(new Event("input"));
     } else if (previewFieldInput.type == "radio") {
@@ -68,7 +66,6 @@ function emptyConditionalItem(previewOID) {
         for (radioItem of radioItems) {
             radioItem.checked = false;
         }
-        // TODO: Do these three lines are really necessary? It seems that a simple event like above is sufficient
         let event = new Event("input");
         Object.defineProperty(event, "target", {value: "", enumerable: true});
         radioItem.dispatchEvent(event);

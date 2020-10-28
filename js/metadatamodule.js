@@ -572,6 +572,8 @@ window.saveMoreModal = function() {
     saveMeasurementUnits();
     hideMoreModal();
     setArrowKeyListener();
+
+    metadataHelper.storeMetadata();
 }
 
 function saveCondition() {
