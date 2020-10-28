@@ -957,19 +957,22 @@ export function getCSVHeaders() {
 
     for (const studyEventRef of $$("Protocol StudyEventRef")) {
         const studyEventOID = studyEventRef.getAttribute("StudyEventOID");
+        const studyEventName = $(`StudyEventDef[OID="${studyEventOID}"]`).getAttribute("Name");
         for (const formRef of $$(`StudyEventDef[OID="${studyEventOID}"] FormRef`)) {
             const formOID = formRef.getAttribute("FormOID");
+            const formName = $(`FormDef[OID="${formOID}"]`).getAttribute("Name");
             for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
                 const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
                 for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
                     const itemOID = itemRef.getAttribute("ItemOID");
-                    const itemDef = $(`ItemDef[OID="${itemOID}"]`);
-                    const itemName = itemDef.getAttribute("Name");
+                    const itemName = $(`ItemDef[OID="${itemOID}"]`).getAttribute("Name");
                     headers.push([
                         studyEventOID,
                         formOID,
                         itemGroupOID,
                         itemOID,
+                        studyEventName,
+                        formName,
                         itemName
                     ]);
                 }

@@ -205,12 +205,9 @@ window.downloadODMMetadata = function() {
 window.downloadCSV = function() {
     const csvHeaders = metadataHelper.getCSVHeaders();
     const csvData = clinicaldataHelper.getCSVData(csvHeaders);
-    // const csvString = ioHelper.getCSVString(csvData);
+    const csvString = ioHelper.getCSVString(csvHeaders, csvData);
 
-    // ioHelper.download(metadataHelper.getStudyName()+"_clinicaldata.csv", csvString);
-
-    console.log(csvHeaders);
-    console.log(csvData);
+    ioHelper.download(metadataHelper.getStudyName()+"_clinicaldata.csv", csvString);
 }
 
 window.removeData = function() {

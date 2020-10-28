@@ -42,6 +42,39 @@ export function download(filename, content) {
     document.body.removeChild(element);
 }
 
+export function getCSVString(csvHeaders, csvData) {
+    let csvString = "";
+
+    // First, transpose the csv headers and add them to the csv string
+    for (let i = 0; i < csvHeaders[0].length; i++) {
+        // Do not create a header for the ItemGroupOID
+        if (i <= 3) continue;
+
+        // Add a heading for the subject key
+        if (i == 6) csvString += "Subject";
+        csvString += ",";
+        
+        // Add the actual header
+        for (let j = 0; j < csvHeaders.length; j++) {
+            // += is the most efficient way for string concatenation in javascript
+            if (j == 0 || csvHeaders[j][i] != csvHeaders[j-1][i]) csvString += csvHeaders[j][i].replaceAll(",", "");
+            if (j < csvHeaders.length-1) csvString += ",";
+        }
+        csvString += "\n";
+    }
+
+    // Second, add the clinicaldata to it
+    for (let i = 0; i < csvData.length; i++) {
+        for (let j = 0; j < csvData[i].length; j++) {
+            csvString += csvData[i][j];
+            if (j < csvData[i].length-1) csvString += ",";
+        }
+        csvString += "\n";
+    }
+
+    return csvString;
+}
+
 export function shortenText(text, places) {
     return text.length > places ? text.substr(0, places) + " ..." :  text;
 }
