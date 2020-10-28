@@ -157,7 +157,15 @@ export function clearSubject() {
 export function removeSubject() {
     localStorage.removeItem(subjectToFilename(subject));
     clearSubject();
+    loadSubjects();
+}
 
+export function removeClinicaldata() {
+    for (let subject of subjects) {
+        localStorage.removeItem(subjectToFilename(subject));
+    }
+
+    clearSubject();
     loadSubjects();
 }
 

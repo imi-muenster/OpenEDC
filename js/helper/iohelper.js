@@ -47,7 +47,7 @@ export function getCSVString(csvHeaders, csvData) {
 
     // First, transpose the csv headers and add them to the csv string
     for (let i = 0; i < csvHeaders[0].length; i++) {
-        // Do not create a header for the ItemGroupOID
+        // Do not create a header for the oids
         if (i <= 3) continue;
 
         // Add a heading for the subject key

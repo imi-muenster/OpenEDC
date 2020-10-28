@@ -217,6 +217,11 @@ window.removeData = function() {
     location.reload();
 }
 
+window.removeClinicaldata = function() {
+    clinicaldataHelper.removeClinicaldata();
+    location.reload();
+}
+
 // IO/Event listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
 // TODO: In the entire project, align onclick vs. addEventListener("click"), arrowfunctions, etc.
 // TODO: Also: oninput/onclick in html file vs. in js file
