@@ -25,6 +25,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
         showStartModal();
     }
+
+    // Register serviceworker for offline capabilities
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/serviceworker.js");
+    }
 });
 
 document.addEventListener("LanguageChanged", languageEvent => {

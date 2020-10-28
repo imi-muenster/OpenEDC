@@ -36,7 +36,7 @@ export function init() {
 }
 
 export async function internationalize() {
-    let translationResponse = await fetch(ioHelper.getBaseURL() + "/internationalization/" + currentLocale + ".json");
+    let translationResponse = await fetch(ioHelper.getBaseURL() + "internationalization/" + currentLocale + ".json");
     translations = await translationResponse.json();
 
     let translatableElements = document.querySelectorAll("[internationalization]");
