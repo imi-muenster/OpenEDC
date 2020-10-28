@@ -388,7 +388,7 @@
                     <div class="width-is-three-quarters is-hidden" id="conditions">
                         <div class="notification is-link is-light">
                             <h1 class="title is-4">Conditions</h1>
-                            <p>Conditions are used to define a collection exception for an item. The system automatically hides an item if the specified condition evaluates to true. <strong>Example:</strong> To hide an item with the OID <i>ispregnant</i> if the CodedValue or Text of another item with the OID <i>gender</i> is not set to <i>female</i>, enter <i><u>gender != "female"</u></i> and reference it in the <i>ispregnant</i> item.</p>
+                            <p>Conditions are used to define a collection exception for an item. The system automatically hides an item if the specified condition evaluates to true. <strong>Example:</strong> To hide an item with the OID <i>diabetes_therapy</i> if the value of the item with the OID <i>diagnosis</i> is not set to <i>diabetes</i>, enter <i><u>diagnosis != "diabetes"</u></i> and reference it in the <i>diabetes_therapy</i> item.</p>
                         </div>
                         <label class="label" id="conditions-label">Collection Exception Conditions</label>
                         <button class="button is-small is-pulled-right" onclick="addConditionInput()">+</button>
