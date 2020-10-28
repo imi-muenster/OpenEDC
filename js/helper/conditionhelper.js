@@ -17,11 +17,11 @@ export function process(itemsWithCondition) {
 
         const previewFieldInput = $(`[preview-oid="${determinant}"]`);
         if (!previewFieldInput) continue;
-        if (previewFieldInput.type == "text" || previewFieldInput.type == "select") {
+        if (previewFieldInput.getAttribute("type") == "text" || previewFieldInput.getAttribute("type") == "select") {
             previewFieldInput.addEventListener("input", function(event) {
                 respondToInputChange(event, conditionalItem, operator, target);
             });
-        } else if (previewFieldInput.type == "radio") {
+        } else if (previewFieldInput.getAttribute("type") == "radio") {
             const radioItems = $$(`[preview-oid="${determinant}"]`)
             for (const radioItem of radioItems) {
                 radioItem.addEventListener("input", function(event) {
@@ -40,13 +40,13 @@ function respondToInputChange(event, conditionalItem, operator, target) {
     } else if (operator == "==" || operator == "=") {
         showOrHideConditionalItem(conditionalItem, value == target);
     } else if (operator == ">=") {
-        showOrHideConditionalItem(conditionalItem, value >= target);
+        showOrHideConditionalItem(conditionalItem, !isNaN(value) && value >= target);
     } else if (operator == "<=") {
-        showOrHideConditionalItem(conditionalItem, value <= target);
+        showOrHideConditionalItem(conditionalItem, !isNaN(value) && value <= target);
     } else if (operator == ">") {
-        showOrHideConditionalItem(conditionalItem, value > target);
+        showOrHideConditionalItem(conditionalItem, !isNaN(value) && value > target);
     } else if (operator == "<") {
-        showOrHideConditionalItem(conditionalItem, value < target);
+        showOrHideConditionalItem(conditionalItem, !isNaN(value) && value < target);
     }
 }
 
@@ -61,13 +61,13 @@ function showOrHideConditionalItem(previewOID, hide) {
 
 function emptyConditionalItem(previewOID) {
     const previewFieldInput = $(`[preview-oid="${previewOID}"]`);
-    if (previewFieldInput.type == "text" || previewFieldInput.type == "date") {
+    if (previewFieldInput.getAttribute("type") == "text" || previewFieldInput.getAttribute("type") == "date") {
         previewFieldInput.value = "";
         previewFieldInput.dispatchEvent(new Event("input"));
-    } else if (previewFieldInput.type == "select") {
+    } else if (previewFieldInput.getAttribute("type") == "select") {
         previewFieldInput.selectedIndex = 0;
         previewFieldInput.dispatchEvent(new Event("input"));
-    } else if (previewFieldInput.type == "radio") {
+    } else if (previewFieldInput.getAttribute("type") == "radio") {
         const radioItems = $$(`[preview-oid="${previewOID}"]`);
         let radioItem = null;
         for (radioItem of radioItems) {
