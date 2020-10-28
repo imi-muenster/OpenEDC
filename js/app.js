@@ -15,9 +15,12 @@ const appModes = {
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
-    ioHelper.setTreeMaxHeight();
-    setIOListeners();
+    // If index.html is requested, redirect to the base url
+    if (window.location.pathname.includes("/index.html")) {
+        window.location.replace(ioHelper.getBaseURL().replace("/index.html", ""));
+    }
 
+    // Initialize the application
     if (metadataHelper.loadStoredMetadata()) {
         startApp();
     } else {
@@ -25,8 +28,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Register serviceworker for offline capabilities
-    if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/serviceworker.js");
+    if ("serviceWorker" in window.navigator) {
+        window.navigator.serviceWorker.register("/serviceworker.js");
     }
 });
 
@@ -63,6 +66,7 @@ const startApp = () => {
     setTitles();
     hideStartModal();
     showNavbar();
+    setIOListeners();
 
     // If there is at least one subject stored, automatically open the clinicaldata module
     clinicaldataHelper.getSubjectKeys().length > 0 ? metadataModule.hide() : metadataModule.show();
@@ -226,12 +230,12 @@ window.removeData = function() {
     metadataHelper.clearMetadata();
     clinicaldataHelper.clearSubject();
     localStorage.clear();
-    location.reload();
+    window.location.reload();
 }
 
 window.removeClinicaldata = function() {
     clinicaldataHelper.removeClinicaldata();
-    location.reload();
+    window.location.reload();
 }
 
 // IO/Event listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule

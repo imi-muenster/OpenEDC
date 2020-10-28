@@ -35,7 +35,6 @@ const staticAssets = [
     "/odm/example.xml",
     "/xsl/odmtohtml.xsl",
     "/favicon.ico",
-    "/index.html",
     "/manifest.json"
 ];
 
