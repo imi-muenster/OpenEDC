@@ -1,4 +1,4 @@
-const staticCacheName = "static-cache";
+const staticCacheName = "static-cache-v1";
 
 const staticAssets = [
     "/",
@@ -38,6 +38,7 @@ const staticAssets = [
     "/manifest.json"
 ];
 
+// Cache static assets
 self.addEventListener("install", installEvent => {
     installEvent.waitUntil(
         caches.open(staticCacheName).then(cache => {
@@ -46,6 +47,19 @@ self.addEventListener("install", installEvent => {
     );
 });
 
+// Remove old static assets
+self.addEventListener("activate", activateEvent => {
+    activateEvent.waitUntil(
+        caches.keys().then(keys => {
+            return Promise.all(keys
+                .filter(key => key != staticCacheName)
+                .map(key => caches.delete(key))
+            )
+        })
+    );
+});
+
+// Return static assets
 self.addEventListener("fetch", fetchEvent => {
     fetchEvent.respondWith(
         caches.match(fetchEvent.request).then(cacheResponse => {
