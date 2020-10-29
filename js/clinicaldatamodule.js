@@ -211,6 +211,8 @@ async function loadTree(studyEventOID, formOID) {
     currentElementID.form = formOID;
 
     ioHelper.removeElements($$("#clinicaldata-study-event-panel-blocks a"));
+    ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
+    
     for (let studyEventDef of metadataHelper.getStudyEvents()) {
         const studyEventOID = studyEventDef.getAttribute("OID");
         const translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
@@ -228,7 +230,6 @@ async function loadFormsByStudyEvent() {
     ioHelper.removeIsActiveFromElement($("#clinicaldata-study-event-panel-blocks a.is-active"));
     $(`#clinicaldata-study-event-panel-blocks [oid="${currentElementID.studyEvent}"]`).classList.add("is-active");
 
-    ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
     for (let formDef of metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent)) {
         const formOID = formDef.getAttribute("OID");
         const translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
