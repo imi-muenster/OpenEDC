@@ -125,52 +125,52 @@
             <hr>
             <div class="columns is-desktop">
                 <div class="column">
-                    <nav class="panel">
+                    <nav class="panel is-link">
                         <p class="panel-heading has-text-centered" element-type="studyevent" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Events</p>
                         <div class="tree-panel-blocks" id="study-event-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                         </div>
                         <div class="panel-block has-light-border-top" id="study-events-add-button">
-                            <button class="button is-link is-fullwidth" onclick="addStudyEvent()">Add</button>
+                            <button class="button is-link is-light is-fullwidth" onclick="addStudyEvent()">Add</button>
                         </div>
                     </nav>
                 </div>
                 <div class="column">
-                    <nav class="panel">
+                    <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" element-type="form" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Forms</p>
                             <div class="tree-panel-blocks" id="form-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                             </div>
                             <div class="panel-block has-light-border-top" id="forms-add-button">
-                                <button class="button is-link is-fullwidth" onclick="addForm()" disabled>Add</button>
+                                <button class="button is-link is-light is-fullwidth" onclick="addForm()" disabled>Add</button>
                             </div>
                         </nav>
                 </div>
                 <div class="column">
-                    <nav class="panel">
+                    <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" element-type="itemgroup" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Groups</p>
                             <div class="tree-panel-blocks" id="item-group-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                             </div>
                             <div class="panel-block has-light-border-top" id="item-groups-add-button">
-                                <button class="button is-link is-fullwidth" onclick="addItemGroup()" disabled>Add</button>
+                                <button class="button is-link is-light is-fullwidth" onclick="addItemGroup()" disabled>Add</button>
                             </div>
                         </nav>
                 </div>
                 <div class="column">
-                    <nav class="panel">
+                    <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" element-type="item" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Items</p>
                             <div class="tree-panel-blocks" id="item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                             </div>
                             <div class="panel-block has-light-border-top" id="items-add-button">
-                                <button class="button is-link is-fullwidth" onclick="addItem()" disabled>Add</button>
+                                <button class="button is-link is-light is-fullwidth" onclick="addItem()" disabled>Add</button>
                             </div>
                         </nav>
                 </div>
                 <div class="column">
-                    <nav class="panel">
+                    <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" element-type="codelistitem" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Choices</p>
                             <div class="tree-panel-blocks" id="code-list-item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
                             </div>
                             <div class="panel-block has-light-border-top" id="code-list-items-add-button">
-                                <button class="button is-link is-fullwidth" onclick="addCodeListItem()" disabled>Add</button>
+                                <button class="button is-link is-light is-fullwidth" onclick="addCodeListItem()" disabled>Add</button>
                             </div>
                         </nav>
                 </div>
@@ -180,7 +180,7 @@
         <section class="section is-hidden" id="clinicaldata-section">
             <div class="columns is-desktop">
                 <div class="column" id="subjects-column">
-                    <nav class="panel">
+                    <nav class="panel is-link">
                         <p class="panel-heading has-text-centered">Subjects</p>
                         <div class="panel-block has-no-padding-bottom has-no-border-bottom">
                             <div class="field is-grouped is-fullwidth">
@@ -191,7 +191,7 @@
                                     </span>
                                 </div>
                                 <div class="control">
-                                    <button class="button is-link" onclick="addSubject()">Add</button>
+                                    <button class="button is-link is-light" onclick="addSubject()">Add</button>
                                 </div>
                             </div>
                         </div>
@@ -232,31 +232,33 @@
                     </nav>
                 </div>
                 <div class="column is-hidden-touch" id="clinicaldata-study-events-column">
-                    <nav class="panel">
+                    <nav class="panel is-link">
                         <p class="panel-heading has-text-centered">Events</p>
                         <div class="tree-panel-blocks" id="clinicaldata-study-event-panel-blocks">
                         </div>
                     </nav>
                 </div>
                 <div class="column is-hidden-touch" id="clinicaldata-forms-column">
-                    <nav class="panel">
+                    <nav class="panel is-link">
                         <p class="panel-heading has-text-centered">Forms</p>
                         <div class="tree-panel-blocks" id="clinicaldata-form-panel-blocks">
                         </div>
                     </nav>
                 </div>
                 <div class="column is-two-fifths-desktop is-hidden-touch" id="clinicaldata-column">
-                    <nav class="panel">
+                    <nav class="panel is-link">
                         <p class="panel-heading has-text-centered">Data</p>
                         <div class="tree-panel-blocks">
                             <div class="is-hidden" id="clinicaldata-form-data">
-                                <div class="notification is-link has-text-centered is-hidden" id="no-subject-selected-hint">
-                                    <p internationalization="no-subject-selected-hint">No subject selected. You can still view and test the form but entered data will not be stored.</p>
-                                </div>
-                                <div class="notification is-link has-text-centered is-hidden" id="audit-record-data-hint">
-                                    <p internationalization="audit-record-data-hint">You are currently viewing data from the audit trail.</p>
-                                    <p id="audit-record-most-current-hint" internationalization="audit-record-most-current-hint">This is the most current data or equivalent to the most current data.</p>
-                                </div>
+                                <article class="message is-danger is-hidden" id="no-subject-selected-hint">
+                                    <div class="message-body" internationalization="no-subject-selected-hint">No subject selected. You can still view and test the form but entered data will not be stored.</div>
+                                </article>
+                                <article class="message is-link is-hidden" id="audit-record-data-hint">
+                                    <div class="message-body">
+                                        <p internationalization="audit-record-data-hint">You are currently viewing data from the audit trail.</p>
+                                        <p id="audit-record-most-current-hint" internationalization="audit-record-most-current-hint">This is the most current data or equivalent to the most current data.</p>
+                                    </div>
+                                </article>
                                 <nav class="level">
                                     <div class="level-left" id="clinicaldata-form-title">
                                         <div class="level-item">

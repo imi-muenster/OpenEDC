@@ -116,22 +116,7 @@ export function setFileOID(fileOID) {
 }
 
 export function setCreationDateTimeNow() {
-    let now = new Date();
-    let date = now.getFullYear()+"-"+("0"+(now.getMonth()+1)).slice(-2)+"-"+("0"+now.getDate()).slice(-2);
-    let time = ("0"+now.getHours()).slice(-2) + ":" + ("0"+now.getMinutes()).slice(-2) + ":" + ("0"+now.getSeconds()).slice(-2);
-    let offset = now.getTimezoneOffset()/60;
-
-    let creationDateTime;
-    if (offset >= 0) {
-        offset = ("0"+offset).slice(-2)+":00";
-        creationDateTime = date+"T"+time+"-"+offset;
-    } else {
-        offset = offset*(-1);
-        offset = ("0"+offset).slice(-2)+":00";
-        creationDateTime = date+"T"+time+"+"+offset;
-    }
-
-    $("ODM").setAttribute("CreationDateTime", creationDateTime);
+    $("ODM").setAttribute("CreationDateTime", new Date().toISOString());
 }
 
 // TODO: This and the following functions could be reduced
