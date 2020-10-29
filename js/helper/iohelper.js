@@ -2,10 +2,35 @@ const $ = query => document.querySelector(query);
 
 const globalOptionsFileName = "globaloptions";
 
+let encryptionPassword = null;
+
 // Keeps app options that are equal for all users of the app -- options may have default values assigned
 let globalOptions = {
     surveyCode: "0000"
 };
+
+export function getStoredXMLData(fileName) {
+    const xmlString = localStorage.getItem(fileName);
+    if (encryptionPassword) {
+        // Decrypt the xmlString
+    }
+
+    const xmlDocument = new DOMParser().parseFromString(xmlString, "text/xml");
+    if (xmlDocument.querySelector("parsererror")) {
+        // xmlString might be encrypted, ask for encryptionPassword
+    } else {
+        return xmlDocument;
+    }
+}
+
+export function storeXMLData(fileName, xmlDocument) {
+    const xmlString = new XMLSerializer().serializeToString(xmlDocument);
+    if (encryptionPassword) {
+        // Encrypt the xmlString
+    }
+
+    localStorage.setItem(fileName, xmlString);
+}
 
 export function loadGlobalOptions() {
     const globalOptionsString = localStorage.getItem(globalOptionsFileName);
