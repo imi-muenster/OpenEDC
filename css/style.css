@@ -6,6 +6,12 @@ html.no-scroll {
     overflow-y: hidden;
 }
 
+html, body {
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
 .navbar-burger:hover {
     background-color: transparent;
 }
@@ -216,7 +222,7 @@ a.panel-block:hover {
 }
 
 @media only screen and (max-width: 768px)  {
-    #start-modal .modal-content, #about-modal .modal-content {
+    #start-modal .modal-content, #about-modal .modal-content, #survey-code-modal .modal-content {
         max-height: none;
     }
 
