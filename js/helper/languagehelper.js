@@ -98,13 +98,7 @@ export function createLanguageSelect() {
 
     if (localesInODM.length > 0) {
         for (let locale of localesInODM) {
-            let option = document.createElement("a");
-            option.className = "navbar-item";
-            option.textContent = getLanguageNameByLocale(locale);
-            option.setAttribute("locale", locale);
-            option.onclick = clickEvent => changeLanguage(clickEvent.target.getAttribute("locale"));
-            if (locale == currentLocale) $("#current-language").textContent = getLanguageNameByLocale(locale);
-            $("#language-dropdown").appendChild(option);
+            addLanguageOption(locale);
         }
     
         let divider = document.createElement("hr");
@@ -113,13 +107,20 @@ export function createLanguageSelect() {
     }
 
     for (let locale of localesNotInODM) {
-        let option = document.createElement("a");
-        option.className = "navbar-item";
-        option.textContent = getLanguageNameByLocale(locale);
-        option.setAttribute("locale", locale);
-        option.onclick = clickEvent => changeLanguage(clickEvent.target.getAttribute("locale"));
-        $("#language-dropdown").appendChild(option);
+        addLanguageOption(locale);
     }
+
+    $("#current-language").textContent = getLanguageNameByLocale(currentLocale);
+}
+
+function addLanguageOption(locale) {
+    let option = document.createElement("a");
+    option.className = "navbar-item";
+    option.textContent = getLanguageNameByLocale(locale);
+    option.setAttribute("locale", locale);
+    option.onclick = clickEvent => changeLanguage(clickEvent.target.getAttribute("locale"));
+    
+    $("#language-dropdown").appendChild(option);
 }
 
 function changeLanguage(locale) {
