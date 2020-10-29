@@ -125,7 +125,7 @@ window.loadExample = async function() {
 window.showProjectModal = function() {
     metadataModule.removeArrowKeyListener();
     $("#project-modal").classList.add("is-active");
-    if (ioHelper.getSurveyCode() != ioHelper.globalOptionsDefaults.surveyCode) $("#survey-code-input").value = ioHelper.getSurveyCode();
+    if (ioHelper.getSurveyCode() != "0000") $("#survey-code-input").value = ioHelper.getSurveyCode();
     // TODO: Maybe something like metadataModule.loadStudyNameAndDescription(); for consistency?
     $("#study-name-input").value = metadataHelper.getStudyName();
     $("#study-description-textarea").value = metadataHelper.getStudyDescription();
@@ -179,7 +179,9 @@ window.projectTabClicked = function(event) {
 }
 
 window.setSurveyCode = function() {
-    ioHelper.setSurveyCode($("#survey-code-input").value);
+    ioHelper.setSurveyCode($("#survey-code-input").value)
+        .then(() => hideProjectModal())
+        .catch(() => ioHelper.showWarning("Survey code not set", "The survey code could not be set. Enter a 4-digit numerical code."));
 }
 
 window.saveStudyNameDescription = function() {

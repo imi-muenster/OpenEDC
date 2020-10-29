@@ -1,37 +1,33 @@
 const $ = query => document.querySelector(query);
 
-const globalOptionaFileName = "globaloptions";
+const globalOptionsFileName = "globaloptions";
 
-// TODO: Will keep, with globalOptions, other persistent options such as the set order type for subjects or the currently selected site
-export const globalOptionsDefaults = {
-    surveyCode: "0000"
-}
-
+// Keeps app options that are equal for all users of the app -- options may have default values assigned
 let globalOptions = {
-    surveyCode: null
+    surveyCode: "0000"
 };
 
 export function loadGlobalOptions() {
-    const globalOptionsString = localStorage.getItem(globalOptionaFileName);
+    const globalOptionsString = localStorage.getItem(globalOptionsFileName);
     if (globalOptionsString) globalOptions = JSON.parse(globalOptionsString);
 }
 
 function storeGlobalOptions() {
-    localStorage.setItem(globalOptionaFileName, JSON.stringify(globalOptions));
+    localStorage.setItem(globalOptionsFileName, JSON.stringify(globalOptions));
 }
 
 export function setSurveyCode(surveyCode) {
     if (parseInt(surveyCode) == surveyCode && surveyCode.length == 4) {
         globalOptions.surveyCode = surveyCode;
         storeGlobalOptions();
-        showWarning("Survey code set", "The survey code was set successfully.");
+        return Promise.resolve();
     } else {
-        showWarning("Survey code not set", "The survey code could not be set. Enter a 4-digit numerical code.");
+        return Promise.reject();
     }
 }
 
 export function getSurveyCode() {
-    return globalOptions.surveyCode ? globalOptions.surveyCode : globalOptionsDefaults.surveyCode;
+    return globalOptions.surveyCode;
 }
 
 export function removeElements(elements) {

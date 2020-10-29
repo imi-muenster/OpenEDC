@@ -458,21 +458,43 @@
                         <div class="notification is-link is-light">
                             <h1 class="title is-4">Connect to Server</h1>
                             <p>With this option you can connect to an OpenEDC Server. This lets you create projects with multiple users. This also backups all data for you automatically. All data is end-to-end-encrypted by default.</p>
+                            <div class="field has-addons mt-5">
+                                <div class="control">
+                                    <input class="input is-small" id="server-url-input" type="text" placeholder="Server URL">
+                                </div>
+                                <div class="control">
+                                    <a class="button is-link is-small" onclick="">Connect</a>
+                                </div>
+                            </div>
                         </div>
                         <div class="notification is-link is-light">
                             <h1 class="title is-4">Encrypt Data</h1>
                             <p>With this option you can fully encrypt all locally stored data. Just enter a password that should be used for encrypten and click on <i>Set Encryption</i>. All currently stored and future data will then be encrypted. When you open the app again, you need to enter the password to decrypt the data.<br><br><strong>Warning: If you forget the password, all data will be permanently lost.</strong></p>
+                            <div class="field has-addons mt-5">
+                                <div class="control">
+                                    <input class="input is-small" id="encryption-password-input" type="text" placeholder="Encryption password">
+                                </div>
+                                <div class="control">
+                                    <a class="button is-link is-small" onclick="">Encrypt</a>
+                                </div>
+                            </div>
                         </div>
                         <div class="notification is-link is-light">
                             <h1 class="title is-4">Survey Code</h1>
                             <p>This option lets you set a four-digit numerical code that needs to be entered after a local survey (started with the <i>SurveyView</i> button) is finished or canceled. This prevents study participants from seeing foreign data.</p>
-                            <input class="input is-small mt-3" id="survey-code-input" type="text" placeholder="4-digit numeric survey code">
-                            <button class="button is-link is-small mt-3" onclick="setSurveyCode()">Set code</button>
+                            <div class="field has-addons mt-5">
+                                <div class="control">
+                                    <input class="input is-small" id="survey-code-input" type="text" placeholder="Survey code">
+                                </div>
+                                <div class="control">
+                                    <a class="button is-link is-small" onclick="setSurveyCode()">Set</a>
+                                </div>
+                            </div>
                         </div>
                         <div class="notification is-link is-light">
                             <h1 class="title is-4">Export Data</h1>
-                            <p>These options lets you download the project in CDISC ODM-XML or CSV format. You can either download all data (including the metadata, admindata, and data from all subjects including the entire audit trail), or only the metadata or clinicaldata. Please note that only the first option creates a backup of your project.</p><br>
-                            <div class="buttons">
+                            <p>These options lets you download the project in CDISC ODM-XML or CSV format. You can either download all data (including the metadata, admindata, and data from all subjects including the entire audit trail), or only the metadata or clinicaldata. Please note that only the first option creates a backup of your project.</p>
+                            <div class="buttons mt-5">
                                 <button class="button is-link is-small" onclick="downloadODM()">Download ODM (complete)</button>
                                 <button class="button is-small" onclick="downloadODMMetadata()">Download ODM (only metadata)</button>
                                 <button class="button is-small" onclick="downloadCSV()">Download CSV (only clinicaldata)</button>
@@ -480,8 +502,8 @@
                         </div>
                         <div class="notification is-danger is-light">
                             <h1 class="title is-4">Remove Data</h1>
-                            <p>The following option lets you remove all stored data and thereby reset the current project.<br><br><strong>Warning: This cannot be undone.</strong></p><br>
-                            <div class="buttons">
+                            <p>The following option lets you remove all stored data and thereby reset the current project.<br><br><strong>Warning: This cannot be undone.</strong></p>
+                            <div class="buttons mt-5">
                                 <button class="button is-danger is-small" onclick="removeData()">Remove data (complete)</button>
                                 <button class="button is-danger is-small" onclick="removeClinicaldata()">Remove data (only clinicaldata)</button>
                             </div>

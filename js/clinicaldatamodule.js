@@ -528,30 +528,31 @@ function hideSurveyView() {
 
 // Renders and shows the close survey modal with the key numpad for the survey code
 function showCloseSurveyModal() {
-    // Create numpad
-    ioHelper.removeElements($$(".numpad .buttons button"));
-    for (let i = 1; i <= 12; i++) {
-        const button = document.createElement("button");
-        if (i <= 9) {
-            button.className = "button is-large is-rounded";
-            button.textContent = i;
-            button.onclick = () => surveyCodeButtonPressed(i);
-        } else if (i == 10) {
-            button.className = "button is-large is-rounded is-invisible";
-            button.textContent = "";
-        } else if (i == 11) {
-            button.className = "button is-large is-rounded";
-            button.textContent = "0";
-            button.onclick = () => surveyCodeButtonPressed(0);
-        } else if (i == 12) {
-            button.className = "button is-large is-rounded";
-            button.innerHTML = `<span class="icon is-small"><i class="fas fa-arrow-left"></i></span>`;
-            button.onclick = () => surveyCodeButtonPressed(-1);
+    // Create buttons for numpad if they dont exist
+    if (!$(".numpad .buttons").hasChildNodes()) {
+        for (let i = 1; i <= 12; i++) {
+            const button = document.createElement("button");
+            if (i <= 9) {
+                button.className = "button is-large is-rounded";
+                button.textContent = i;
+                button.onclick = () => surveyCodeButtonPressed(i);
+            } else if (i == 10) {
+                button.className = "button is-large is-rounded is-invisible";
+                button.textContent = "";
+            } else if (i == 11) {
+                button.className = "button is-large is-rounded";
+                button.textContent = "0";
+                button.onclick = () => surveyCodeButtonPressed(0);
+            } else if (i == 12) {
+                button.className = "button is-large is-rounded";
+                button.innerHTML = `<span class="icon is-small"><i class="fas fa-arrow-left"></i></span>`;
+                button.onclick = () => surveyCodeButtonPressed(-1);
+            }
+            $(".numpad .buttons").appendChild(button);
         }
-        $(".numpad .buttons").appendChild(button);
     }
 
-    // Create status that indicates how many digits have been pressed
+    // Create or reset status dots that indicates how many digits have been pressed
     ioHelper.removeElements($$(".numpad .status span"));
     for (let i = 0; i < 4; i++) {
         $(".numpad .status").insertAdjacentHTML("beforeend", `<span class="icon empty-dot"><i class="far fa-circle"></i></span>`);
@@ -581,7 +582,7 @@ function surveyCodeButtonPressed(value) {
             $("#survey-code-modal").classList.remove("is-active");
         } else {
             $("#wrong-survey-code-hint").classList.remove("is-hidden");
-            if (ioHelper.getSurveyCode() == ioHelper.globalOptionsDefaults.surveyCode) $("#default-survey-code-hint").classList.remove("is-hidden");
+            if (ioHelper.getSurveyCode() == "0000") $("#default-survey-code-hint").classList.remove("is-hidden");
             surveyCode = "";
             $$(".numpad .status .filled-dot").forEach(dot => {
                 dot.remove();
