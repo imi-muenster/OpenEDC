@@ -63,6 +63,8 @@ const startApp = () => {
     clinicaldataModule.init();
     clinicaldataModule.setLanguage(languageHelper.getCurrentLocale());
 
+    ioHelper.loadGlobalOptions();
+
     setTitles();
     hideStartModal();
     showNavbar();
@@ -123,6 +125,7 @@ window.loadExample = async function() {
 window.showProjectModal = function() {
     metadataModule.removeArrowKeyListener();
     $("#project-modal").classList.add("is-active");
+    if (ioHelper.getSurveyCode() != ioHelper.globalOptionsDefaults.surveyCode) $("#survey-code-input").value = ioHelper.getSurveyCode();
     // TODO: Maybe something like metadataModule.loadStudyNameAndDescription(); for consistency?
     $("#study-name-input").value = metadataHelper.getStudyName();
     $("#study-description-textarea").value = metadataHelper.getStudyDescription();
@@ -173,6 +176,10 @@ window.projectTabClicked = function(event) {
             $("#sites-options").classList.add("is-hidden");
             $("#name-description").classList.remove("is-hidden");
     }
+}
+
+window.setSurveyCode = function() {
+    ioHelper.setSurveyCode($("#survey-code-input").value);
 }
 
 window.saveStudyNameDescription = function() {

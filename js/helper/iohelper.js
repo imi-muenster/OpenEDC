@@ -1,12 +1,45 @@
 const $ = query => document.querySelector(query);
 
+const globalOptionaFileName = "globaloptions";
+
+// TODO: Will keep, with globalOptions, other persistent options such as the set order type for subjects or the currently selected site
+export const globalOptionsDefaults = {
+    surveyCode: "0000"
+}
+
+let globalOptions = {
+    surveyCode: null
+};
+
+export function loadGlobalOptions() {
+    const globalOptionsString = localStorage.getItem(globalOptionaFileName);
+    if (globalOptionsString) globalOptions = JSON.parse(globalOptionsString);
+}
+
+function storeGlobalOptions() {
+    localStorage.setItem(globalOptionaFileName, JSON.stringify(globalOptions));
+}
+
+export function setSurveyCode(surveyCode) {
+    if (parseInt(surveyCode) == surveyCode && surveyCode.length == 4) {
+        globalOptions.surveyCode = surveyCode;
+        storeGlobalOptions();
+        showWarning("Survey code set", "The survey code was set successfully.");
+    } else {
+        showWarning("Survey code not set", "The survey code could not be set. Enter a 4-digit numerical code.");
+    }
+}
+
+export function getSurveyCode() {
+    return globalOptions.surveyCode ? globalOptions.surveyCode : globalOptionsDefaults.surveyCode;
+}
+
 export function removeElements(elements) {
     for (let element of elements) {
         element.remove();
     }
 }
 
-// TODO: Really needed? Only used by clinicaldatamodule
 export function safeRemoveElement(element) {
     if (element) element.remove();
 }

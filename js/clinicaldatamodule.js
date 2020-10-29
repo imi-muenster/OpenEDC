@@ -529,6 +529,7 @@ function hideSurveyView() {
 // Renders and shows the close survey modal with the key numpad for the survey code
 function showCloseSurveyModal() {
     // Create numpad
+    ioHelper.removeElements($$(".numpad .buttons button"));
     for (let i = 1; i <= 12; i++) {
         const button = document.createElement("button");
         if (i <= 9) {
@@ -551,6 +552,7 @@ function showCloseSurveyModal() {
     }
 
     // Create status that indicates how many digits have been pressed
+    ioHelper.removeElements($$(".numpad .status span"));
     for (let i = 0; i < 4; i++) {
         $(".numpad .status").insertAdjacentHTML("beforeend", `<span class="icon empty-dot"><i class="far fa-circle"></i></span>`);
     }
@@ -573,11 +575,13 @@ function surveyCodeButtonPressed(value) {
     }
 
     $("#wrong-survey-code-hint").classList.add("is-hidden");
+    $("#default-survey-code-hint").classList.add("is-hidden");
     if (surveyCode.length == 4) {
-        if (false) {
-            // Check for correctness
+        if (surveyCode == ioHelper.getSurveyCode()) {
+            $("#survey-code-modal").classList.remove("is-active");
         } else {
             $("#wrong-survey-code-hint").classList.remove("is-hidden");
+            if (ioHelper.getSurveyCode() == ioHelper.globalOptionsDefaults.surveyCode) $("#default-survey-code-hint").classList.remove("is-hidden");
             surveyCode = "";
             $$(".numpad .status .filled-dot").forEach(dot => {
                 dot.remove();

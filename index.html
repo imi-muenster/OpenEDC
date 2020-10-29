@@ -466,8 +466,8 @@
                         <div class="notification is-link is-light">
                             <h1 class="title is-4">Survey Code</h1>
                             <p>This option lets you set a four-digit numerical code that needs to be entered after a local survey (started with the <i>SurveyView</i> button) is finished or canceled. This prevents study participants from seeing foreign data.</p>
-                            <input class="input is-small mt-3" type="text" placeholder="4-digit numeric survey code">
-                            <button class="button is-link is-small mt-3" disabled>Set code</button>
+                            <input class="input is-small mt-3" id="survey-code-input" type="text" placeholder="4-digit numeric survey code">
+                            <button class="button is-link is-small mt-3" onclick="setSurveyCode()">Set code</button>
                         </div>
                         <div class="notification is-link is-light">
                             <h1 class="title is-4">Export Data</h1>
@@ -646,6 +646,7 @@
                         <div class="buttons is-centered"></div>
                     </div>
                     <p class="has-text-danger mt-5 is-hidden" id="wrong-survey-code-hint" internationalization="wrong-survey-code-hint">Wrong code entered. Please try again.</p>
+                    <p class="has-text-danger is-hidden" id="default-survey-code-hint" internationalization="default-survey-code-hint">Default: 0000.</p>
                 </div>
             </div>
         </div>

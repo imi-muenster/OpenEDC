@@ -7,6 +7,7 @@
     "survey-finished-text": "Danke, dass Sie an der Umfrage teilgenommen haben.",
     "survey-finished-code-text": "Bitte geben sie den Umfrage-Code ein um dieses Fenster zu schließen.",
     "wrong-survey-code-hint": "Falscher Code. Bitte versuchen Sie es erneut.",
+    "default-survey-code-hint": " Voreinstellung: 0000.",
     "back": "Zurück",
     "continue": "Weiter",
     "finish": "Beenden",
