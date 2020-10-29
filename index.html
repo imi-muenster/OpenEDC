@@ -464,6 +464,12 @@
                             <p>With this option you can fully encrypt all locally stored data. Just enter a password that should be used for encrypten and click on <i>Set Encryption</i>. All currently stored and future data will then be encrypted. When you open the app again, you need to enter the password to decrypt the data.<br><br><strong>Warning: If you forget the password, all data will be permanently lost.</strong></p>
                         </div>
                         <div class="notification is-link is-light">
+                            <h1 class="title is-4">Survey Code</h1>
+                            <p>This option lets you set a four-digit numerical code that needs to be entered after a local survey (started with the <i>SurveyView</i> button) is finished or canceled. This prevents study participants from seeing foreign data.</p>
+                            <input class="input is-small mt-3" type="text" placeholder="4-digit numeric survey code">
+                            <button class="button is-link is-small mt-3" disabled>Set code</button>
+                        </div>
+                        <div class="notification is-link is-light">
                             <h1 class="title is-4">Export Data</h1>
                             <p>These options lets you download the project in CDISC ODM-XML or CSV format. You can either download all data (including the metadata, admindata, and data from all subjects including the entire audit trail), or only the metadata or clinicaldata. Please note that only the first option creates a backup of your project.</p><br>
                             <div class="buttons">
@@ -627,6 +633,23 @@
             </div>
         </div>
 
+        <div class="modal" id="survey-code-modal">
+            <div class="modal-background"></div>
+            <div class="modal-content is-large">
+                <div class="box has-text-centered">
+                    <h2 class="subtitle" internationalization="survey-finished">Survey finished</h2>
+                    <p internationalization="survey-finished-text">Thank you for taking the survey.</p>
+                    <p class="mb-5" internationalization="survey-finished-code-text">Please enter the survey code to close this window.</p>
+                    <div class="numpad has-text-centered">
+                        <hr>
+                        <div class="status mb-5"></div>
+                        <div class="buttons is-centered"></div>
+                    </div>
+                    <p class="has-text-danger mt-5 is-hidden" id="wrong-survey-code-hint" internationalization="wrong-survey-code-hint">Wrong code entered. Please try again.</p>
+                </div>
+            </div>
+        </div>
+
         <div class="modal" id="about-modal">
             <div class="modal-background" onclick="hideAboutModal()"></div>
             <div class="modal-content is-large">
@@ -674,5 +697,6 @@
                 </div>
             </div>
         </div>
+
     </body>
 </html>

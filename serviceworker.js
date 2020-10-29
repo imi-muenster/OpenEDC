@@ -42,7 +42,7 @@ const staticAssets = [
 self.addEventListener("install", installEvent => {
     installEvent.waitUntil(
         caches.open(staticCacheName).then(cache => {
-            cache.addAll(staticAssets);
+            // cache.addAll(staticAssets);
         })
     );
 });

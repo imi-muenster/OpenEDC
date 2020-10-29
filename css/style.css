@@ -206,6 +206,15 @@ a.panel-block:hover {
     margin: 0 auto;
 }
 
+.numpad {
+    max-width: 250px;
+    margin: 0 auto;
+}
+
+.button.is-large.is-rounded{
+    width: 0px;
+}
+
 @media only screen and (max-width: 768px)  {
     #start-modal .modal-content, #about-modal .modal-content {
         max-height: none;

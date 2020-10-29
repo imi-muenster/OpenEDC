@@ -25,6 +25,7 @@ let skipDataHasChangedCheck = false;
 let cachedFormData = null;
 let cachedFormDataIsAuditRecord = false;
 let deferredFunction = null;
+let surveyCode = null;
 
 export function init() {
     currentElementID.subject = null;
@@ -212,7 +213,7 @@ async function loadTree(studyEventOID, formOID) {
 
     ioHelper.removeElements($$("#clinicaldata-study-event-panel-blocks a"));
     ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
-    
+
     for (let studyEventDef of metadataHelper.getStudyEvents()) {
         const studyEventOID = studyEventDef.getAttribute("OID");
         const translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
@@ -471,7 +472,7 @@ window.cancelFormOrSurveyEntry = function(closeSurvey) {
     } else if (surveyViewIsActive()) {
         $("#close-clinicaldata-modal").classList.remove("is-active");
         hideSurveyView();
-        ioHelper.showWarning(languageHelper.getTranslation("survey-finished"), languageHelper.getTranslation("survey-finished-text"));
+        showCloseSurveyModal();
         skipDataHasChangedCheck = true;
     }
 
@@ -523,6 +524,67 @@ function hideSurveyView() {
     $("#close-survey-title").classList.add("is-hidden");
     $("#close-survey-text").classList.add("is-hidden");
     $("#survey-view-button").classList.remove("is-hidden");
+}
+
+// Renders and shows the close survey modal with the key numpad for the survey code
+function showCloseSurveyModal() {
+    // Create numpad
+    for (let i = 1; i <= 12; i++) {
+        const button = document.createElement("button");
+        if (i <= 9) {
+            button.className = "button is-large is-rounded";
+            button.textContent = i;
+            button.onclick = () => surveyCodeButtonPressed(i);
+        } else if (i == 10) {
+            button.className = "button is-large is-rounded is-invisible";
+            button.textContent = "";
+        } else if (i == 11) {
+            button.className = "button is-large is-rounded";
+            button.textContent = "0";
+            button.onclick = () => surveyCodeButtonPressed(0);
+        } else if (i == 12) {
+            button.className = "button is-large is-rounded";
+            button.innerHTML = `<span class="icon is-small"><i class="fas fa-arrow-left"></i></span>`;
+            button.onclick = () => surveyCodeButtonPressed(-1);
+        }
+        $(".numpad .buttons").appendChild(button);
+    }
+
+    // Create status that indicates how many digits have been pressed
+    for (let i = 0; i < 4; i++) {
+        $(".numpad .status").insertAdjacentHTML("beforeend", `<span class="icon empty-dot"><i class="far fa-circle"></i></span>`);
+    }
+
+    surveyCode = "";
+    $("#survey-code-modal").classList.add("is-active");
+}
+
+function surveyCodeButtonPressed(value) {
+    if (value >= 0) {
+        if (surveyCode.length >= 4) return;
+        surveyCode += value;
+        $(".numpad .status .empty-dot").remove();
+        $(".numpad .status").insertAdjacentHTML("afterbegin", `<span class="icon filled-dot"><i class="fas fa-circle"></i></span>`);
+    } else {
+        if (surveyCode.length <= 0) return;
+        surveyCode = surveyCode.slice(0, -1);
+        $(".numpad .status .filled-dot").remove();
+        $(".numpad .status").insertAdjacentHTML("beforeend", `<span class="icon empty-dot"><i class="far fa-circle"></i></span>`);
+    }
+
+    $("#wrong-survey-code-hint").classList.add("is-hidden");
+    if (surveyCode.length == 4) {
+        if (false) {
+            // Check for correctness
+        } else {
+            $("#wrong-survey-code-hint").classList.remove("is-hidden");
+            surveyCode = "";
+            $$(".numpad .status .filled-dot").forEach(dot => {
+                dot.remove();
+                $(".numpad .status").insertAdjacentHTML("beforeend", `<span class="icon empty-dot"><i class="far fa-circle"></i></span>`);
+            });
+        }
+    }
 }
 
 function showAuditRecordDataView() {

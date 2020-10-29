@@ -5,6 +5,8 @@
     "survey-view": "Survey View",
     "survey-finished": "Survey finished",
     "survey-finished-text": "Thank you for taking the survey.",
+    "survey-finished-code-text": "Please enter the survey code to close this window.",
+    "wrong-survey-code-hint": "Wrong code entered. Please try again.",
     "back": "Back",
     "continue": "Continue",
     "finish": "Finish",
