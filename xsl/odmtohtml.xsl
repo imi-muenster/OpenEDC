@@ -64,7 +64,7 @@
             </xsl:when>
             <xsl:when test="$item/odm:MeasurementUnitRef">
                 <div class="field has-addons">
-                    <div class="control input-has-addons">
+                    <div class="control is-expanded">
                         <xsl:call-template name="input">
                             <xsl:with-param name="item" select="$item"/>
                             <xsl:with-param name="itemGroupOID" select="$itemGroupOID"/>
