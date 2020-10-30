@@ -83,9 +83,7 @@ function createConditionSelect() {
         }
     
         let itemCondition = metadataHelper.getConditionByItem(currentElementID.item, currentElementID.itemGroup);   
-        if (itemCondition != null) {
-            selectedCondition = itemCondition.getAttribute("Name");
-        }
+        if (itemCondition) selectedCondition = itemCondition.getAttribute("Name");
     }
 
     let select = htmlElements.getSelect("condition-select", true, true, conditions, selectedCondition);
@@ -108,9 +106,7 @@ function createMeasurementUnitSelect() {
         }
     
         let itemMeasurementUnit = metadataHelper.getMeasurementUnitByItem(currentElementID.item);   
-        if (itemMeasurementUnit != null) {
-            selectedMeasurementUnit = itemMeasurementUnit.getAttribute("Name");
-        }
+        if (itemMeasurementUnit) selectedMeasurementUnit = itemMeasurementUnit.getAttribute("Name");
     }
 
     let select = htmlElements.getSelect("measurement-unit-select", true, true, measurementUnits, selectedMeasurementUnit);
@@ -254,9 +250,7 @@ function itemClicked(event) {
 function loadCodeListItemsByItem(itemOID, hideTree) {
     hideCodeListItems(hideTree);
 
-    if (metadataHelper.itemHasCodeList(itemOID)) {
-        $("#code-list-items-add-button button").disabled = false;
-    }
+    if (metadataHelper.itemHasCodeList(itemOID)) $("#code-list-items-add-button button").disabled = false;
 
     let codeListItems = metadataHelper.getCodeListItemsByItem(itemOID);
     for (let codeListItem of codeListItems) {
@@ -279,44 +273,34 @@ function codeListItemClicked(event) {
 
 function reloadStudyEvents() {
     loadStudyEvents();
-    if (currentElementID.studyEvent != null) {
-        $(`[oid="${currentElementID.studyEvent}"]`).classList.add("is-active");
-    }
+    if (currentElementID.studyEvent) $(`[oid="${currentElementID.studyEvent}"]`).classList.add("is-active");
 }
 
 function reloadForms() {
-    if (currentElementID.studyEvent != null) {
+    if (currentElementID.studyEvent) {
         loadFormsByStudyEvent(currentElementID.studyEvent, currentElementID.form == null);
-        if (currentElementID.form != null) {
-            $(`[oid="${currentElementID.form}"]`).classList.add("is-active");
-        }
+        if (currentElementID.form) $(`[oid="${currentElementID.form}"]`).classList.add("is-active");
     }
 }
 
 function reloadItemGroups() {
-    if (currentElementID.form != null) {
+    if (currentElementID.form) {
         loadItemGroupsByForm(currentElementID.form, currentElementID.itemGroup == null);
-        if (currentElementID.itemGroup != null) {
-            $(`[oid="${currentElementID.itemGroup}"]`).classList.add("is-active");
-        }
+        if (currentElementID.itemGroup) $(`[oid="${currentElementID.itemGroup}"]`).classList.add("is-active");
     }
 }
 
 function reloadItems() {
-    if (currentElementID.itemGroup != null) {
+    if (currentElementID.itemGroup) {
         loadItemsByItemGroup(currentElementID.itemGroup, currentElementID.item == null);
-        if (currentElementID.item != null) {
-            $(`[oid="${currentElementID.item}"]`).classList.add("is-active");
-        }
+        if (currentElementID.item) $(`[oid="${currentElementID.item}"]`).classList.add("is-active");
     }
 }
 
 function reloadCodeListItems() {
     if (currentElementID.item) {
         loadCodeListItemsByItem(currentElementID.item, currentElementID.codeList == null);
-        if (currentElementID.codeList != null) {
-            $(`[oid="${currentElementID.codeList}"][coded-value="${currentElementID.codeListItem}"]`).classList.add("is-active");
-        }
+        if (currentElementID.codeList) $(`[oid="${currentElementID.codeList}"][coded-value="${currentElementID.codeListItem}"]`).classList.add("is-active");
     }
 }
 
@@ -357,13 +341,7 @@ function fillDetailsPanel(elementOID, elementType) {
     let translatedText = null;
     switch(elementType) {
         case metadataHelper.elementTypes.STUDYEVENT:
-            $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
-            translatedText = element.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-            break;
         case metadataHelper.elementTypes.FORM:
-            $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
-            translatedText = element.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-            break;
         case metadataHelper.elementTypes.ITEMGROUP:
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             translatedText = element.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
@@ -384,9 +362,8 @@ function fillDetailsPanel(elementOID, elementType) {
             $("#name-input").value = element.getAttribute("CodedValue");
             translatedText = element.querySelector(`Decode TranslatedText[*|lang="${locale}"]`);
     }
-    if (translatedText != null) {
-        $("#question-textarea").value = translatedText.textContent;
-    }
+
+    if (translatedText) $("#question-textarea").value = translatedText.textContent;
 }
 
 export function reloadDetailsPanel() {
@@ -430,9 +407,7 @@ function fillElementDescription() {
     } else if (currentElementType == metadataHelper.elementTypes.ITEM) {
         let element = metadataHelper.getElementDefByOID(currentElementID.item);
         let translatedText = element.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-        if (translatedText != null) {
-            $("#element-description-textarea").value = translatedText.textContent;
-        }
+        if (translatedText) $("#element-description-textarea").value = translatedText.textContent;
     } else {
         $("#element-description-textarea").value = $("#question-textarea").value;
     }
@@ -442,8 +417,7 @@ function fillConditions() {
     ioHelper.removeElements($$(".condition-input"));
     $("#conditions-label").insertAdjacentElement("afterend", htmlElements.getEmptyConditionInputElement());
     
-    let conditions = metadataHelper.getConditions();
-    for (let condition of conditions) {
+    for (let condition of metadataHelper.getConditions()) {
         let formalExpression = condition.querySelector(`FormalExpression`).textContent;
         let newInput = htmlElements.getConditionInputElement(condition.getAttribute("OID"), condition.getAttribute("Name"), formalExpression);
         $(".empty-condition-field").insertAdjacentElement("beforebegin", newInput);
@@ -454,13 +428,10 @@ function fillMeasurementUnits() {
     ioHelper.removeElements($$(".measurement-unit-input"));
     $("#measurement-units-label").insertAdjacentElement("afterend", htmlElements.getEmptyMeasurementUnitInputElement());
 
-    let measurementUnits = metadataHelper.getMeasurementUnits();
-    for (let measurementUnit of measurementUnits) {
+    for (let measurementUnit of metadataHelper.getMeasurementUnits()) {
         let translatedText = measurementUnit.querySelector(`Symbol TranslatedText[*|lang="${locale}"]`);
         let symbol = null;
-        if (translatedText != null) {
-            symbol = translatedText.textContent;
-        }
+        if (translatedText) symbol = translatedText.textContent;
         let newInput = htmlElements.getMeasurementUnitInputElement(measurementUnit.getAttribute("OID"), measurementUnit.getAttribute("Name"), symbol);
         $(".empty-measurement-unit-field").insertAdjacentElement("beforebegin", newInput);
     }
@@ -493,7 +464,6 @@ function resetDetailsPanel() {
     $("#element-long-label").textContent = "Description";
 }
 
-// TODO: Can be heavily refactored and shortened (especially the middle part)
 window.saveElement = function() {
     const newOID = $("#oid-input").value;
     const currentElementOID = getCurrentElementOID();
@@ -511,28 +481,18 @@ window.saveElement = function() {
 
     switch (currentElementType) {
         case metadataHelper.elementTypes.STUDYEVENT:
-            metadataHelper.setElementName(currentElementID.studyEvent, $("#name-input").value);
-            metadataHelper.setElementDescription(currentElementID.studyEvent, $("#question-textarea").value, locale);
-            metadataHelper.setElementMandatory(currentElementID.studyEvent, currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
-            reloadStudyEvents();
-            break;
         case metadataHelper.elementTypes.FORM:
-            metadataHelper.setElementName(currentElementID.form, $("#name-input").value);
-            metadataHelper.setElementDescription(currentElementID.form, $("#question-textarea").value, locale);
-            metadataHelper.setElementMandatory(currentElementID.form, currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
-            reloadForms();
-            break;
         case metadataHelper.elementTypes.ITEMGROUP:
-            metadataHelper.setElementName(currentElementID.itemGroup, $("#name-input").value);
-            metadataHelper.setElementDescription(currentElementID.itemGroup, $("#question-textarea").value, locale);
-            metadataHelper.setElementMandatory(currentElementID.itemGroup, currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
-            reloadItemGroups();
+            metadataHelper.setElementName(getCurrentElementOID(), $("#name-input").value);
+            metadataHelper.setElementDescription(getCurrentElementOID(), $("#question-textarea").value, locale);
+            metadataHelper.setElementMandatory(getCurrentElementOID(), currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
+            reloadTree();
             break;
         case metadataHelper.elementTypes.ITEM:
-            metadataHelper.setElementName(currentElementID.item, $("#name-input").value);
-            metadataHelper.setItemQuestion(currentElementID.item, $("#question-textarea").value, locale);
-            metadataHelper.setElementMandatory(currentElementID.item, currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
-            handleItemDataType(currentElementID.item, $("#datatype-select-inner").value);
+            metadataHelper.setElementName(getCurrentElementOID(), $("#name-input").value);
+            metadataHelper.setItemQuestion(getCurrentElementOID(), $("#question-textarea").value, locale);
+            metadataHelper.setElementMandatory(getCurrentElementOID(), currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
+            handleItemDataType(getCurrentElementOID(), $("#datatype-select-inner").value);
             reloadItems();
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
@@ -653,7 +613,7 @@ function handleItemDataType(itemOID, dataType) {
     let codeListType = dataTypeIsCodelist ? dataType.match(/\((.*)\)/)[1] : null;
 
     let codeListRef = metadataHelper.getElementDefByOID(itemOID).querySelector("CodeListRef");
-    if (codeListRef != null && !dataTypeIsCodelist) {
+    if (codeListRef && !dataTypeIsCodelist) {
         metadataHelper.removeCodeListRef(itemOID, codeListRef.getAttribute("CodeListOID"));
         reloadCodeListItems();
     } else if (codeListRef == null && dataTypeIsCodelist) {
@@ -708,21 +668,13 @@ function arrowKeyListener(event) {
     if (event.code == "ArrowUp") {
         event.preventDefault();
         let currentElement = $(`[oid="${getCurrentElementOID()}"]`);
-        if (currentElement != null) {
-            target = currentElement.previousSibling;
-        }
-        if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) {
-            target = $(`[coded-value="${currentElementID.codeListItem}"]`).previousSibling;
-        }
+        if (currentElement) target = currentElement.previousSibling;
+        if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) target = $(`[coded-value="${currentElementID.codeListItem}"]`).previousSibling;
     } else if (event.code == "ArrowDown") {
         event.preventDefault();
         let currentElement = $(`[oid="${getCurrentElementOID()}"]`);
-        if (currentElement != null) {
-            target = currentElement.nextSibling;
-        }
-        if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) {
-            target = $(`[coded-value="${currentElementID.codeListItem}"]`).nextSibling;
-        }
+        if (currentElement) target = currentElement.nextSibling;
+        if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) target = $(`[coded-value="${currentElementID.codeListItem}"]`).nextSibling;
     } else if (event.code == "ArrowLeft") {
         event.preventDefault();
         if (currentElementType != metadataHelper.elementTypes.STUDYEVENT) {
@@ -732,7 +684,7 @@ function arrowKeyListener(event) {
         }
     } else if (event.code == "ArrowRight") {
         event.preventDefault();
-        if (currentElementType != metadataHelper.elementTypes.CODELISTITEM && getCurrentElementFirstChild() != null) {
+        if (currentElementType != metadataHelper.elementTypes.CODELISTITEM && getCurrentElementFirstChild()) {
             target = getCurrentElementFirstChild();
             currentElementType = getChildElementType(currentElementType);
         }
@@ -753,13 +705,11 @@ function arrowKeyListener(event) {
         currentElementType = metadataHelper.elementTypes.STUDYEVENT;        
     }
 
-    if (target != null && target.tagName == "A") {
+    if (target && target.tagName == "A") {
         setCurrentElementOID(target.getAttribute("oid"));
-        if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) {
-            currentElementID.codeListItem = target.getAttribute("coded-value");
-        }
+        if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) currentElementID.codeListItem = target.getAttribute("coded-value");
+        
         reloadDetailsPanel();
-    
         reloadTree();
 
         if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) {
@@ -826,7 +776,7 @@ window.addItem = function() {
 
 window.addCodeListItem = function() {
     let codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
-    if (codeListOID != null) {
+    if (codeListOID) {
         currentElementID.codeListItem = metadataHelper.addCodeListItem(codeListOID);
         currentElementID.codeList = codeListOID;
         currentElementType = metadataHelper.elementTypes.CODELISTITEM;

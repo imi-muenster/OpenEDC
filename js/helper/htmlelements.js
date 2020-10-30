@@ -12,7 +12,7 @@ export function getMetadataPanelBlock(elementOID, elementType, displayText, fall
     if (codedValue) {
         panelBlock.setAttribute("coded-value", codedValue);
     }
-    if (typeof displayText === "object" && displayText != null) {
+    if (typeof displayText === "object" && displayText) {
         panelBlock.appendChild(document.createTextNode(displayText.textContent));
     } else if (displayText) {
         panelBlock.appendChild(document.createTextNode(displayText));
@@ -59,7 +59,7 @@ export function getClinicaldataPanelBlock(elementOID, displayText, fallbackText,
         panelBlock.appendChild(dot);
     }
 
-    if (typeof displayText === "object" && displayText != null) {
+    if (typeof displayText === "object" && displayText) {
         panelBlock.appendChild(document.createTextNode(displayText.textContent));
     } else if (displayText) {
         panelBlock.appendChild(document.createTextNode(displayText));

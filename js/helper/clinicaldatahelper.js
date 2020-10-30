@@ -186,7 +186,7 @@ export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
     let itemGroupData = null;
     for (let formItemData of formItemDataList) {
         if (itemGroupData == null || itemGroupData.getAttribute("ItemGroupOID") != formItemData.itemGroupOID) {
-            if (itemGroupData != null) formData.appendChild(itemGroupData);
+            if (itemGroupData) formData.appendChild(itemGroupData);
             itemGroupData = clinicaldataTemplates.getItemGroupData(formItemData.itemGroupOID);
         };
         itemGroupData.appendChild(clinicaldataTemplates.getItemData(formItemData.itemOID, formItemData.value));
@@ -262,7 +262,7 @@ export function setSubjectInfo(subjectKey, siteOID) {
     // Check if if key is set or if there is another subject with the same key
     if (subjectKey.length == 0) return Promise.reject(errors.SUBJECTKEYEMPTY);
     const subjectWithKey = subjects.find(subject => subject.key == subjectKey);
-    if (subjectWithKey != null && subjectWithKey.key != subject.key) return Promise.reject(errors.SUBJECTKEYEXISTENT);
+    if (subjectWithKey && subjectWithKey.key != subject.key) return Promise.reject(errors.SUBJECTKEYEXISTENT);
 
     // Remove currenlty stored subject
     localStorage.removeItem(subjectToFilename(subject));
