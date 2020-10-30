@@ -127,7 +127,11 @@ function showDecryptionPasswordModal() {
             });
     };
     $("#login-modal #password-input").onkeydown = keyEvent => {
-        if (keyEvent.code == "Enter") $("#login-modal #open-button").click();
+        if (keyEvent.code == "Enter") {
+            // .focus() hides the password manager prompt on macOS Safari
+            $("#login-modal #open-button").focus();
+            $("#login-modal #open-button").click();
+        }
     };
 
     $("#login-modal").classList.add("is-active");
