@@ -16,7 +16,6 @@ let admindata = null;
 
 export function loadEmptyProject(studyOID) {
     admindata = admindataTemplates.getAdminData(studyOID);
-    // TODO: It is probably better this way -- meaning that the helper itself stores the file on change
     storeAdmindata();
 }
 
@@ -62,7 +61,6 @@ export function addUser() {
         admindata.appendChild(newUser);
     }
 
-    // TODO: It is probably better this way -- meaning that the helper itself stores the file on change
     storeAdmindata();
 
     return newUserOID;
@@ -121,7 +119,6 @@ export function addSite() {
         admindata.appendChild(newSite);
     }
 
-    // TODO: It is probably better this way -- meaning that the helper itself stores the file on change
     storeAdmindata();
 
     return newSiteOID;

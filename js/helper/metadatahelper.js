@@ -18,6 +18,7 @@ let metadata = null;
 
 export function loadEmptyProject() {
     metadata = metadataTemplates.getODMTemplate();
+    storeMetadata();
 }
 
 export function importMetadata(odmXMLString) {
@@ -35,6 +36,7 @@ export async function loadExample() {
     let exampleODM = await exampleResponse.text();
 
     metadata = new DOMParser().parseFromString(exampleODM, "text/xml");
+    storeMetadata();
 }
 
 export function getSerializedMetadata() {
@@ -64,6 +66,8 @@ export function clearMetadata() {
 }
 
 export async function getFormAsHTML(formOID, locale) {
+    let prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
+
     let xsltResponse = await fetch(ioHelper.getBaseURL() + "xsl/odmtohtml.xsl");
     let xsltStylesheet = await xsltResponse.text();
 
@@ -72,7 +76,7 @@ export async function getFormAsHTML(formOID, locale) {
     xsltProcessor.importStylesheet(domParser.parseFromString(xsltStylesheet, "text/xml"));
     xsltProcessor.setParameter(null, "formOID", formOID);
     xsltProcessor.setParameter(null, "locale", locale);
-    return xsltProcessor.transformToFragment(metadata, document);
+    return xsltProcessor.transformToFragment(domParser.parseFromString(prettifiedODM, "text/xml"), document);
 }
 
 export function getStudyName() {

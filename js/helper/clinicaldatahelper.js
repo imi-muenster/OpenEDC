@@ -106,7 +106,6 @@ export function addSubject(subjectKey, siteOID) {
 
     storeSubject();
 
-    // TODO: Good practice?
     return Promise.resolve();
 }
 

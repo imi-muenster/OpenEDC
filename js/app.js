@@ -134,11 +134,9 @@ function showDecryptionPasswordModal() {
 }
 
 window.newProject = function() {
-    // TODO: Store AdminData?
     metadataHelper.loadEmptyProject();
     admindataHelper.loadEmptyProject(metadataHelper.getStudyOID());
     startApp();
-    metadataHelper.storeMetadata();
 }
 
 window.uploadODM = async function() {
@@ -154,11 +152,9 @@ window.uploadODM = async function() {
 }
 
 window.loadExample = async function() {
-    // TODO: Store AdminData?
     await metadataHelper.loadExample();
     admindataHelper.loadEmptyProject(metadataHelper.getStudyOID());
     startApp();
-    metadataHelper.storeMetadata();
 }
 
 window.showProjectModal = function() {
