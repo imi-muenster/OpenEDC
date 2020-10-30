@@ -23,27 +23,25 @@ let globalOptions = {
 };
 
 export function getStoredXMLData(fileName) {
-    const xmlString = localStorage.getItem(fileName);
+    let xmlString = localStorage.getItem(fileName);
     if (!xmlString) {
         throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND, "The XML data could not be loaded. It seems that no data has been stored yet.");
     }
 
     if (encryptionPassword) {
         try {
-            xmlString = CryptoJS.AES.decrypt(xmlString, decryptionPassword).toString(CryptoJS.enc.Utf8);
+            xmlString = CryptoJS.AES.decrypt(xmlString, encryptionPassword).toString(CryptoJS.enc.Utf8);
         } catch (error) {
-            console.log(error);
-            throw new LoadXMLException(loadXMLExceptionCodes.NOTDECRYPTABLE, "Fatal error. The XML data could not neither be loaded nor decrypted.");
+            throw new LoadXMLException(loadXMLExceptionCodes.NOTDECRYPTABLE, "The XML data could not be decrypted.");
         }
     }
 
     const xmlDocument = new DOMParser().parseFromString(xmlString, "text/xml");
     if (xmlDocument.querySelector("parsererror")) {
         if (!encryptionPassword) {
-            showDecryptionPasswordModal(fileName);
             throw new LoadXMLException(loadXMLExceptionCodes.DATAENCRYPTED, "The XML data could not be loaded. It seems that the data is encrypted.");
         } else {
-            throw new LoadXMLException(loadXMLExceptionCodes.NOTDECRYPTABLE, "Fatal error. The XML data could not neither be loaded nor decrypted.");
+            throw new LoadXMLException(loadXMLExceptionCodes.NOTDECRYPTABLE, "The XML data could not be decrypted.");
         }
     } else {
         return xmlDocument;
@@ -53,10 +51,29 @@ export function getStoredXMLData(fileName) {
 export function storeXMLData(fileName, xmlDocument) {
     const xmlString = new XMLSerializer().serializeToString(xmlDocument);
     if (encryptionPassword) {
-        // Encrypt the xmlString
+        xmlString = CryptoJS.AES.encrypt(xmlString, encryptionPassword).toString();
     }
 
     localStorage.setItem(fileName, xmlString);
+}
+
+export function encryptXMLData(password) {
+    if (password.length < 8) return Promise.reject();
+
+    encryptionPassword = password;
+    for (const fileName of Object.keys(localStorage)) {
+        if (fileName == globalOptionsFileName) continue;
+
+        let xmlString = localStorage.getItem(fileName);
+        const xmlDocument = new DOMParser().parseFromString(xmlString, "text/xml");
+        if (!xmlDocument.querySelector("parsererror")) {
+            xmlString = new XMLSerializer().serializeToString(xmlDocument);
+            xmlString = CryptoJS.AES.encrypt(xmlString, encryptionPassword).toString();
+            localStorage.setItem(fileName, xmlString);
+        }
+    }
+
+    return Promise.resolve();
 }
 
 export function loadGlobalOptions() {
@@ -108,36 +125,17 @@ export function showWarning(title, message) {
     $("#warning-modal").classList.add("is-active");
 }
 
-function showDecryptionPasswordModal(fileName) {
-    // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
-    $("#login-modal #username-input").parentNode.parentNode.classList.add("is-hidden");
-    $("#login-modal #password-input").parentNode.parentNode.classList.remove("is-hidden");
-    $("#login-modal #password-incorrect-hint").classList.add("is-hidden");
+export function setDecryptionPassword() {
+    const decryptionPassword = $("#login-modal #password-input").value;
+    const xmlString = localStorage.getItem("metadata");
 
-    $("#login-modal #open-button").onclick = () => setDecryptionPassword(fileName);
-
-    $("#login-modal").classList.add("is-active");
-}
-
-function enterDecryptionPassword(fileName) {
-    const decryptionPassword = $("#login-modal #open-button").value;
-    let xmlString = localStorage.getItem(fileName);
     try {
-        xmlString = CryptoJS.AES.decrypt(xmlString, decryptionPassword).toString(CryptoJS.enc.Utf8);
-    } catch (error) {
-        console.log(error);
-        throw new LoadXMLException(loadXMLExceptionCodes.NOTDECRYPTABLE, "Fatal error. The XML data could not neither be loaded nor decrypted.");
-    }
-
-    const xmlDocument = new DOMParser().parseFromString(xmlString, "text/xml");
-    if (xmlDocument.querySelector("parsererror")) {
-        $("#password-incorrect-hint").classList.remove("is-hidden");
-    } else {
+        CryptoJS.AES.decrypt(xmlString, decryptionPassword).toString(CryptoJS.enc.Utf8);
         encryptionPassword = decryptionPassword;
-        document.dispatchEvent(new CustomEvent("DecryptionPasswordEntered"));
+        return Promise.resolve();
+    } catch (error) {
+        return Promise.reject(error);
     }
-
-    $("#login-modal #open-button").value = "";
 }
 
 export function download(filename, content) {

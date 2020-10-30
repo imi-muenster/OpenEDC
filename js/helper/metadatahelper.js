@@ -54,6 +54,7 @@ export function loadStoredMetadata() {
         metadata = ioHelper.getStoredXMLData(metadataFileName);
         return Promise.resolve()
     } catch (error) {
+        console.log(error);
         return Promise.reject(error);
     }
 }

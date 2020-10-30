@@ -22,10 +22,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Initialize the application
     metadataHelper.loadStoredMetadata()
-        .then(() => startApp())
+        .then(() => {
+            startApp();
+        })
         .catch(error => {
-            console.log(error);
             if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND) showStartModal();
+            else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionPasswordModal();
         });
 
     // Register serviceworker for offline capabilities
@@ -93,6 +95,34 @@ function hideStartModal() {
 
 function showNavbar() {
     $(".navbar").classList.remove("is-hidden");
+}
+
+function showDecryptionPasswordModal() {
+    // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
+    $("#login-modal #username-input").parentNode.parentNode.classList.add("is-hidden");
+    $("#login-modal #password-input").parentNode.parentNode.classList.remove("is-hidden");
+    $("#login-modal #password-incorrect-hint").classList.add("is-hidden");
+
+    // Adjust the project options modal accordingly
+    $("#encryption-password-input").parentNode.parentNode.classList.add("is-hidden");
+    $("#data-encryption-warning").classList.add("is-hidden");
+    $("#data-encrypted-hint").classList.remove("is-hidden");
+
+    // Set the click handler when clicking on the Open button
+    $("#login-modal #open-button").onclick = clickEvent => {
+        clickEvent.preventDefault();
+        ioHelper.setDecryptionPassword()
+            .then(() => {
+                $("#login-modal #password-input").value = "";
+                $("#login-modal").classList.remove("is-active");
+                metadataHelper.loadStoredMetadata().then(() => startApp());
+            })
+            .catch(() => {
+                $("#login-modal #password-incorrect-hint").classList.remove("is-hidden");
+            });
+    };
+
+    $("#login-modal").classList.add("is-active");
 }
 
 window.newProject = function() {
@@ -177,6 +207,12 @@ window.projectTabClicked = function(event) {
             $("#sites-options").classList.add("is-hidden");
             $("#name-description").classList.remove("is-hidden");
     }
+}
+
+window.encryptData = function() {
+    ioHelper.encryptXMLData($("#encryption-password-input").value)
+        .then(() => window.location.reload())
+        .catch(() => ioHelper.showWarning("Data not encrypted", "The data could not be encrypted. Enter a password with at least 8 characters."));
 }
 
 window.setSurveyCode = function() {
