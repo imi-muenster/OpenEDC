@@ -103,10 +103,7 @@ function createSortTypeSelect() {
 function setIOListeners() {
     $("#metadata-toggle-button").onclick = () => hide();
     $("#add-subject-input").onkeydown = keyEvent => {
-        if (keyEvent.code == "Enter" && !keyEvent.shiftKey) {
-            keyEvent.preventDefault();
-            addSubject();
-        }
+        if (keyEvent.code == "Enter") addSubject();
     };
     $("#search-subject-input").oninput = inputEvent => filterSubjects(inputEvent.target.value);
 }

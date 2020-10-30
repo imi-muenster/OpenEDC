@@ -102,9 +102,13 @@ function showDecryptionPasswordModal() {
     $("#login-modal #username-input").parentNode.parentNode.classList.add("is-hidden");
     $("#login-modal #password-input").parentNode.parentNode.classList.remove("is-hidden");
     $("#login-modal #password-incorrect-hint").classList.add("is-hidden");
+    $("#login-modal h2").textContent = "Data is encrypted";
+    $("#login-modal p").textContent = "Please enter the password that you used for the data encryption.";
+
 
     // Adjust the project options modal accordingly
     $("#encryption-password-input").parentNode.parentNode.classList.add("is-hidden");
+    $("#confirm-encryption-password-input").parentNode.parentNode.classList.add("is-hidden");
     $("#data-encryption-warning").classList.add("is-hidden");
     $("#data-encrypted-hint").classList.remove("is-hidden");
 
@@ -118,8 +122,12 @@ function showDecryptionPasswordModal() {
                 metadataHelper.loadStoredMetadata().then(() => startApp());
             })
             .catch(() => {
+                $("#login-modal #password-input").value = "";
                 $("#login-modal #password-incorrect-hint").classList.remove("is-hidden");
             });
+    };
+    $("#login-modal #password-input").onkeydown = keyEvent => {
+        if (keyEvent.code == "Enter") $("#login-modal #open-button").click();
     };
 
     $("#login-modal").classList.add("is-active");
@@ -210,6 +218,16 @@ window.projectTabClicked = function(event) {
 }
 
 window.encryptData = function() {
+    if ($("#confirm-encryption-password-input").parentNode.parentNode.classList.contains("is-hidden")) {
+        $("#confirm-encryption-password-input").parentNode.parentNode.classList.remove("is-hidden");
+        return;
+    }
+
+    if ($("#encryption-password-input").value != $("#confirm-encryption-password-input").value) {
+        ioHelper.showWarning("Data not encrypted", "The two passwords are not equal.");
+        return;
+    }
+
     ioHelper.encryptXMLData($("#encryption-password-input").value)
         .then(() => window.location.reload())
         .catch(() => ioHelper.showWarning("Data not encrypted", "The data could not be encrypted. Enter a password with at least 8 characters."));
