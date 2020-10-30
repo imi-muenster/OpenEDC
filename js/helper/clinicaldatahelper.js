@@ -1,4 +1,5 @@
 import * as clinicaldataTemplates from "./clinicaldatatemplates.js";
+import * as ioHelper from "./iohelper.js";
 
 class Subject {
     constructor(key, siteOID, createdDate) {
@@ -58,10 +59,6 @@ let subjects = [];
 let subject = null;
 let subjectData = null;
 
-function parseSubjectData(subjectXMLString) {
-    return new DOMParser().parseFromString(subjectXMLString, "text/xml").documentElement;
-}
-
 export function importClinicaldata(odmXMLString) {
     const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
     for (let subjectData of odm.querySelectorAll("ClinicalData SubjectData")) {
@@ -73,10 +70,6 @@ export function importClinicaldata(odmXMLString) {
     }
 }
 
-function getSerializedSubjectData() {
-    return new XMLSerializer().serializeToString(subjectData);
-}
-
 export function getSubject() {
     return subject;
 }
@@ -86,7 +79,7 @@ export function getClinicalData(studyOID, metadataVersionOID) {
 
     subjects = sortSubjects(subjects, sortOrderTypes.CREATEDDATE);
     for (let subject of subjects) {
-        clinicalData.appendChild(parseSubjectData(localStorage.getItem(subjectToFilename(subject))));
+        clinicalData.appendChild(ioHelper.getStoredXMLData(subjectToFilename(subject)).documentElement);
     }
 
     return clinicalData;
@@ -138,7 +131,7 @@ function sortSubjects(subjects, sortOrder) {
 
 export function loadSubject(subjectKey) {
     subject = subjects.find(subject => subject.key == subjectKey);
-    subjectData = subjectKey ? parseSubjectData(localStorage.getItem(subjectToFilename(subject))) : null;
+    subjectData = subjectKey ? ioHelper.getStoredXMLData(subjectToFilename(subject)).documentElement : null;
     console.log(subjectData);
 }
 
@@ -146,7 +139,7 @@ export function storeSubject() {
     if (!subject) return;
     
     console.log("Store subject ...");
-    localStorage.setItem(subjectToFilename(subject), getSerializedSubjectData());
+    ioHelper.storeXMLData(subjectToFilename(subject), subjectData);
 }
 
 export function clearSubject() {
@@ -317,7 +310,7 @@ export function getCSVData(csvHeaders) {
 
     subjects = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY);
     for (let subject of subjects) {
-        const subjectData = parseSubjectData(localStorage.getItem(subjectToFilename(subject)));
+        const subjectData = ioHelper.getStoredXMLData(subjectToFilename(subject)).documentElement;
 
         let subjectCSVData = [subject.key];
         let formData = null;

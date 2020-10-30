@@ -46,7 +46,7 @@ export function getMetadata() {
 }
 
 export function storeMetadata() {
-    localStorage.setItem(metadataFileName, getSerializedMetadata());
+    ioHelper.storeXMLData(metadataFileName, metadata);
 }
 
 export function loadStoredMetadata() {
@@ -64,9 +64,6 @@ export function clearMetadata() {
 }
 
 export async function getFormAsHTML(formOID, locale) {
-    // TODO: Required? Removing could lead to performance improvements
-    let prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
-
     let xsltResponse = await fetch(ioHelper.getBaseURL() + "xsl/odmtohtml.xsl");
     let xsltStylesheet = await xsltResponse.text();
 
@@ -75,7 +72,7 @@ export async function getFormAsHTML(formOID, locale) {
     xsltProcessor.importStylesheet(domParser.parseFromString(xsltStylesheet, "text/xml"));
     xsltProcessor.setParameter(null, "formOID", formOID);
     xsltProcessor.setParameter(null, "locale", locale);
-    return xsltProcessor.transformToFragment(domParser.parseFromString(prettifiedODM, "text/xml"), document);
+    return xsltProcessor.transformToFragment(metadata, document);
 }
 
 export function getStudyName() {

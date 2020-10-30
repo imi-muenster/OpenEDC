@@ -1,6 +1,7 @@
 import * as metadataHelper from "./metadatahelper.js";
 import * as clinicaldataHelper from "./clinicaldatahelper.js";
 import * as admindataTemplates from "./admindatatemplates.js";
+import * as ioHelper from "./iohelper.js";
 
 const $ = query => admindata.querySelector(query);
 const $$ = query => admindata.querySelectorAll(query);
@@ -19,10 +20,6 @@ export function loadEmptyProject(studyOID) {
     storeAdmindata();
 }
 
-export function parseAdmindata(odmXMLString) {
-    admindata = new DOMParser().parseFromString(odmXMLString, "text/xml").documentElement;
-}
-
 export function importAdmindata(odmXMLString) {
     const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
     if (odm.querySelector("AdminData")) {
@@ -33,21 +30,17 @@ export function importAdmindata(odmXMLString) {
     }
 }
 
-export function getSerializedAdmindata() {
-    return new XMLSerializer().serializeToString(admindata);
-}
-
 export function getAdmindata() {
     return admindata;
 }
 
 export function storeAdmindata() {
-    localStorage.setItem(admindataFileName, getSerializedAdmindata());
+    ioHelper.storeXMLData(admindataFileName, admindata);
 }
 
 export function loadStoredAdmindata() {
-    let admindataXMLString = localStorage.getItem(admindataFileName);
-    if (admindataXMLString) parseAdmindata(admindataXMLString);
+    admindata = ioHelper.getStoredXMLData(admindataFileName).documentElement;
+    if (!admindata) loadEmptyProject();
 }
 
 export function getUser(userOID) {

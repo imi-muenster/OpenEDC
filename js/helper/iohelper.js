@@ -49,7 +49,7 @@ export function getStoredXMLData(fileName) {
 }
 
 export function storeXMLData(fileName, xmlDocument) {
-    const xmlString = new XMLSerializer().serializeToString(xmlDocument);
+    let xmlString = new XMLSerializer().serializeToString(xmlDocument);
     if (encryptionPassword) {
         xmlString = CryptoJS.AES.encrypt(xmlString, encryptionPassword).toString();
     }
