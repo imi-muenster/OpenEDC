@@ -21,11 +21,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Initialize the application
-    if (metadataHelper.loadStoredMetadata()) {
-        startApp();
-    } else {
-        showStartModal();
-    }
+    metadataHelper.loadStoredMetadata()
+        .then(() => startApp())
+        .catch(error => {
+            console.log(error);
+            if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND) showStartModal();
+        });
 
     // Register serviceworker for offline capabilities
     if ("serviceWorker" in window.navigator) {

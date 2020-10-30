@@ -15,6 +15,7 @@
         <script defer src="./lib/fontawesome-base.js"></script>
         <script defer src="./lib/fontawesome-solid.js"></script>
         <script defer src="./lib/fontawesome-regular.js"></script>
+        <script defer src="./lib/crypto-js.js"></script>
         <script src="./js/app.js" type="module"></script>
     </head>
     <body>
@@ -669,6 +670,38 @@
                     </div>
                     <p class="has-text-danger mt-5 is-hidden" id="wrong-survey-code-hint" internationalization="wrong-survey-code-hint">Wrong code entered. Please try again.</p>
                     <p class="has-text-danger is-hidden" id="default-survey-code-hint" internationalization="default-survey-code-hint">Default: 0000.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="login-modal">
+            <div class="modal-background"></div>
+            <div class="modal-content is-large">
+                <div class="box has-text-centered">
+                    <div class="width-is-two-thirds">
+                        <h2 class="subtitle">Login</h2>
+                        <p>Please enter your password.</p>
+                        <form class="mt-5">
+                            <div class="field">
+                                <div class="control has-icons-left">
+                                    <input class="input" id="username-input" type="text" autocomplete="username" placeholder="Username">
+                                    <span class="icon is-small is-left">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="control has-icons-left">
+                                    <input class="input" id="password-input" type="password" autocomplete="current-password" placeholder="Password">
+                                    <span class="icon is-small is-left">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <button class="button is-link mt-3" id="open-button">Open</button>
+                        </form>
+                        <p class="has-text-danger mt-5 is-hidden" id="password-incorrect-hint">The password is incorrect. Please try again.</p>
+                    </div>
                 </div>
             </div>
         </div>

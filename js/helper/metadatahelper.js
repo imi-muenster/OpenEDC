@@ -20,10 +20,6 @@ export function loadEmptyProject() {
     metadata = metadataTemplates.getODMTemplate();
 }
 
-export function parseMetadata(odmXMLString) {
-    metadata = new DOMParser().parseFromString(odmXMLString, "text/xml");
-}
-
 export function importMetadata(odmXMLString) {
     parseMetadata(odmXMLString);
     
@@ -54,10 +50,12 @@ export function storeMetadata() {
 }
 
 export function loadStoredMetadata() {
-    let metadataXMLString = localStorage.getItem(metadataFileName);
-    if (metadataXMLString) parseMetadata(metadataXMLString);
-
-    if (getMetadata()) return true;
+    try {
+        metadata = ioHelper.getStoredXMLData(metadataFileName);
+        return Promise.resolve()
+    } catch (error) {
+        return Promise.reject(error);
+    }
 }
 
 export function clearMetadata() {
