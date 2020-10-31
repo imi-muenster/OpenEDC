@@ -66,7 +66,7 @@ const startApp = () => {
     clinicaldataModule.init();
     clinicaldataModule.setLanguage(languageHelper.getCurrentLocale());
 
-    ioHelper.loadGlobalOptions();
+    ioHelper.loadOptions();
 
     setTitles();
     hideStartModal();
@@ -215,6 +215,12 @@ window.projectTabClicked = function(event) {
             $("#sites-options").classList.add("is-hidden");
             $("#name-description").classList.remove("is-hidden");
     }
+}
+
+window.connectToServer = function() {
+    ioHelper.setServerURL($("#server-url-input").value)
+        .then(test => console.log(test))
+        .catch(error => console.log(error));
 }
 
 window.encryptData = function() {

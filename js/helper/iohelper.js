@@ -14,12 +14,18 @@ export const loadXMLExceptionCodes = {
 const $ = query => document.querySelector(query);
 
 const globalOptionsFileName = "globaloptions";
+const localOptionsFileName = "localoptions";
 
 let encryptionPassword = null;
 
 // Keeps app options that are equal for all users of the app -- options may have default values assigned
 let globalOptions = {
     surveyCode: "0000"
+};
+
+// Keeps app options for the local user
+let localOptions = {
+    serverURL: null
 };
 
 export function getStoredXMLData(fileName) {
@@ -76,19 +82,23 @@ export function encryptXMLData(password) {
     return Promise.resolve();
 }
 
-export function loadGlobalOptions() {
+export function loadOptions() {
     const globalOptionsString = localStorage.getItem(globalOptionsFileName);
     if (globalOptionsString) globalOptions = JSON.parse(globalOptionsString);
+
+    const localOptionsString = localStorage.getItem(localOptionsFileName);
+    if (localOptionsString) localOptions = JSON.parse(localOptionsString);
 }
 
-function storeGlobalOptions() {
+function storeOptions() {
     localStorage.setItem(globalOptionsFileName, JSON.stringify(globalOptions));
+    localStorage.setItem(localOptionsFileName, JSON.stringify(localOptions));
 }
 
 export function setSurveyCode(surveyCode) {
     if (parseInt(surveyCode) == surveyCode && surveyCode.length == 4) {
         globalOptions.surveyCode = surveyCode;
-        storeGlobalOptions();
+        storeOptions();
         return Promise.resolve();
     } else {
         return Promise.reject();
@@ -97,6 +107,22 @@ export function setSurveyCode(surveyCode) {
 
 export function getSurveyCode() {
     return globalOptions.surveyCode;
+}
+
+export function setServerURL(serverURL) {
+    if (!serverURL.includes("http") && !serverURL.includes("https")) serverURL = "https://" + serverURL;
+    return fetch(serverURL + "/api/status")
+        .then(async response => {
+            const serverStatus = await response.json();
+            if (serverStatus.initialized) {
+                return Promise.reject("Initialized");
+            } else {
+                return Promise.resolve("Not initialized");
+            }
+        })
+        .catch(error => {
+            return Promise.reject(error);
+        });
 }
 
 export function removeElements(elements) {
