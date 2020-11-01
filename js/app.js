@@ -231,7 +231,7 @@ window.connectToServer = function() {
                     ioHelper.showWarning("Server not found", "There could be no OpenEDC Server found for this URL.");
                     break;
                 case ioHelper.serverConnectionErrors.SERVERINITIALIZED:
-                    // TODO
+                    ioHelper.showWarning("Server initialized", "The server has already been initialized.");
             }
         });
 }
@@ -254,9 +254,15 @@ window.initializeServer = function(event) {
         return;
     }
 
-    ioHelper.setServerOwner(serverURL, username, password)
-        .then(user => console.log(user))
-        .catch(error => console.log(error));
+    if (password.length < 8) {
+        ioHelper.showWarning("Account not created", "Please use a password with at least 8 characters.");
+        return;
+    }
+
+    // Initialize the server, i.e., set the owner of the server with the entered data
+    ioHelper.initializeServer(serverURL, username, password)
+        .then(() => console.log("All good."))
+        .catch(error => ioHelper.showWarning("Account not created", error));
 }
 
 window.encryptData = function() {

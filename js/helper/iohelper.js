@@ -13,8 +13,7 @@ export const loadXMLExceptionCodes = {
 
 export const serverConnectionErrors = {
     SERVERNOTFOUND: 0,
-    SERVERINITIALIZED: 1,
-    PASSWORDTOOSHORT: 2
+    SERVERINITIALIZED: 1
 }
 
 const $ = query => document.querySelector(query);
@@ -70,6 +69,7 @@ export function storeXMLData(fileName, xmlDocument) {
 }
 
 export function encryptXMLData(password) {
+    // TODO: Move to app.js or add this analogously to initializeServer
     if (password.length < 8) return Promise.reject();
 
     encryptionPassword = password;
@@ -115,49 +115,45 @@ export function getSurveyCode() {
     return globalOptions.surveyCode;
 }
 
-export function setServerURL(serverURL) {
+export async function setServerURL(serverURL) {
     if (!serverURL.includes("http") && !serverURL.includes("https")) serverURL = "https://" + serverURL;
-    return fetch(serverURL + "/api/status")
-        .then(async response => {
-            const serverStatus = await response.json();
-            if (serverStatus.serverVersion && !serverStatus.initialized) {
-                return Promise.resolve();
-            } else if (serverStatus.serverVersion && serverStatus.initialized) {
-                return Promise.reject(serverConnectionErrors.SERVERINITIALIZED);
-            } else {
-                return Promise.reject(serverConnectionErrors.SERVERNOTFOUND);
-            }
-        })
-        .catch(error => {
-            return Promise.reject(serverConnectionErrors.SERVERNOTFOUND);
-        });
+    
+    // Note: For fetch requests better use await instead of then (still use catch)
+    const response = await fetch(serverURL + "/api/status").catch(() => Promise.reject(serverConnectionErrors.SERVERNOTFOUND));
+    const serverStatus = await response.json();
+
+    if (serverStatus.serverVersion && !serverStatus.initialized) {
+        return Promise.resolve();
+    } else if (serverStatus.serverVersion && serverStatus.initialized) {
+        return Promise.reject(serverConnectionErrors.SERVERINITIALIZED);
+    } else {
+        return Promise.reject(serverConnectionErrors.SERVERNOTFOUND);
+    }
 }
 
-export function setServerOwner(serverURL, username, password) {
-    if (password.length < 8) return Promise.reject(serverConnectionErrors.PASSWORDTOOSHORT);
-
+export async function initializeServer(serverURL, username, password) {
     // Create a random key that is used for data encryption and encrypt it with the password of the user
-    const decryptionKey = CryptoJS.lib.WordArray.random(32);
+    const decryptionKey = CryptoJS.lib.WordArray.random(32).toString();
     const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, password).toString();
 
     // Hash the user password before sending it to the server
     const hashedPassword = CryptoJS.SHA1(password).toString();
     const credentials = { username, hashedPassword, encryptedDecryptionKey };
 
-    console.log(JSON.stringify(credentials));
-
-    return fetch(serverURL + "/api/users/initialize", {
+    // Create the owner user on the server
+    const response = await fetch(serverURL + "/api/users/initialize", {
             method: "POST",
             body: JSON.stringify(credentials)
-        })
-        .then(async response => {
-            if (!response.ok) return Promise.reject(await response.text());
-            const user = await response.json();
-            return Promise.resolve(user);
-        })
-        .catch(error => {
-            return Promise.reject(error);
         });
+    if (!response.ok) return Promise.reject(await response.text());
+    const user = await response.json();
+
+    // Send all existing data encrypted to the server
+    // TODO: Improve on parameter (filename)
+    const metadata = getStoredXMLData("metadata");
+    let metadataString = new XMLSerializer().serializeToString(metadata);
+    metadataString = CryptoJS.AES.encrypt(metadataString, decryptionKey).toString();
+    console.log("Encrypted metadata!");
 }
 
 export function removeElements(elements) {
