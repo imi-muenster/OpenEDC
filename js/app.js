@@ -218,8 +218,44 @@ window.projectTabClicked = function(event) {
 }
 
 window.connectToServer = function() {
-    ioHelper.setServerURL($("#server-url-input").value)
-        .then(test => console.log(test))
+    const serverURL = $("#server-url-input").value;
+
+    ioHelper.setServerURL(serverURL)
+        .then(() => {
+            $("#initialize-server-form").classList.remove("is-hidden");
+            $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
+        })
+        .catch(error => {
+            switch (error) {
+                case ioHelper.serverConnectionErrors.SERVERNOTFOUND:
+                    ioHelper.showWarning("Server not found", "There could be no OpenEDC Server found for this URL.");
+                    break;
+                case ioHelper.serverConnectionErrors.SERVERINITIALIZED:
+                    // TODO
+            }
+        });
+}
+
+window.initializeServer = function(event) {
+    event.preventDefault();
+
+    const serverURL = $("#server-url-input").value;
+    const username = $("#owner-username-input").value;
+    const password = $("#owner-password-input").value;
+    const confirmPassword = $("#owner-confirm-password-input").value;
+
+    if (!username || !password || !confirmPassword) {
+        ioHelper.showWarning("Account not created", "Please enter all fields.");
+        return;
+    }
+
+    if (password != confirmPassword) {
+        ioHelper.showWarning("Account not created", "The two password fields are not equal.");
+        return;
+    }
+
+    ioHelper.setServerOwner(serverURL, username, password)
+        .then(user => console.log(user))
         .catch(error => console.log(error));
 }
 

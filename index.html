@@ -467,6 +467,13 @@
                                     <a class="button is-link is-small" onclick="connectToServer()">Connect</a>
                                 </div>
                             </div>
+                            <form class="mt-5 is-hidden" id="initialize-server-form">
+                                <strong>A new OpenEDC Server could be found. You can now create an account for the server.</strong>
+                                <input class="input is-small mt-5" id="owner-username-input" type="text" placeholder="Username" value="owner">
+                                <input class="input is-small mt-3" id="owner-password-input" type="text" placeholder="Password" value="test1234">
+                                <input class="input is-small mt-3" id="owner-confirm-password-input" type="text" placeholder="Password (confirm)" value="test1234">
+                                <button class="button is-link is-small mt-5" onclick="initializeServer(event)">Create user</button>
+                            </form>
                         </div>
                         <div class="notification is-link is-light">
                             <h1 class="title is-4">Encrypt Data</h1>
@@ -483,7 +490,7 @@
                                         <a class="button is-link is-small" onclick="encryptData()">Encrypt</a>
                                     </div>
                                 </div>
-                                <div class="field has-addons mt-3 is-hidden">
+                                <div class="field has-addons is-hidden">
                                     <div class="control is-expanded">
                                         <input class="input is-small" id="confirm-encryption-password-input" type="password" placeholder="Confirm encryption password" autocomplete="new-password">
                                     </div>

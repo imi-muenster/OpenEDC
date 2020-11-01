@@ -11,6 +11,12 @@ export const loadXMLExceptionCodes = {
     NOTDECRYPTABLE: 2
 }
 
+export const serverConnectionErrors = {
+    SERVERNOTFOUND: 0,
+    SERVERINITIALIZED: 1,
+    PASSWORDTOOSHORT: 2
+}
+
 const $ = query => document.querySelector(query);
 
 const globalOptionsFileName = "globaloptions";
@@ -114,11 +120,40 @@ export function setServerURL(serverURL) {
     return fetch(serverURL + "/api/status")
         .then(async response => {
             const serverStatus = await response.json();
-            if (serverStatus.initialized) {
-                return Promise.reject("Initialized");
+            if (serverStatus.serverVersion && !serverStatus.initialized) {
+                return Promise.resolve();
+            } else if (serverStatus.serverVersion && serverStatus.initialized) {
+                return Promise.reject(serverConnectionErrors.SERVERINITIALIZED);
             } else {
-                return Promise.resolve("Not initialized");
+                return Promise.reject(serverConnectionErrors.SERVERNOTFOUND);
             }
+        })
+        .catch(error => {
+            return Promise.reject(serverConnectionErrors.SERVERNOTFOUND);
+        });
+}
+
+export function setServerOwner(serverURL, username, password) {
+    if (password.length < 8) return Promise.reject(serverConnectionErrors.PASSWORDTOOSHORT);
+
+    // Create a random key that is used for data encryption and encrypt it with the password of the user
+    const decryptionKey = CryptoJS.lib.WordArray.random(32);
+    const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, password).toString();
+
+    // Hash the user password before sending it to the server
+    const hashedPassword = CryptoJS.SHA1(password).toString();
+    const credentials = { username, hashedPassword, encryptedDecryptionKey };
+
+    console.log(JSON.stringify(credentials));
+
+    return fetch(serverURL + "/api/users/initialize", {
+            method: "POST",
+            body: JSON.stringify(credentials)
+        })
+        .then(async response => {
+            if (!response.ok) return Promise.reject(await response.text());
+            const user = await response.json();
+            return Promise.resolve(user);
         })
         .catch(error => {
             return Promise.reject(error);
