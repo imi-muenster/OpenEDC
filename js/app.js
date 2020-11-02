@@ -21,8 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Load locally persisted options (e.g., the server url if a connection to an OpenEDC Server exists)
-    // TODO: Rename to init or something like this
-    ioHelper.loadOptions();
+    ioHelper.init();
 
     // Initialize the application
     metadataHelper.loadStoredMetadata()
@@ -31,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         })
         .catch(error => {
             if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND) showStartModal();
-            else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionPasswordModal()
+            else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionKeyModal()
             else if (error.code == ioHelper.loadXMLExceptionCodes.NOTLOGGEDIN) showLoginModal();
         });
 
@@ -100,31 +99,55 @@ function showNavbar() {
     $(".navbar").classList.remove("is-hidden");
 }
 
-function showDecryptionPasswordModal() {
+function showDecryptionKeyModal() {
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
-    $("#login-modal h2").textContent = "Data is encrypted";
-    $("#login-modal p").textContent = "Please enter the password that you used for the data encryption.";
-
-    // Adjust the project options modal accordingly
-    $("#encryption-password-input").parentNode.parentNode.classList.add("is-hidden");
-    $("#data-encryption-warning").classList.add("is-hidden");
-    $("#data-encrypted-hint").classList.remove("is-hidden");
+    $("#login-title").textContent = "Data is encrypted";
+    $("#login-text").textContent = "Please enter the password that you used for the data encryption.";
+    $("#login-incorrect-hint .message-body").textContent = "The password is incorrect. Please try again.";
 
     // Set the click handler when clicking on the Open button
     $("#login-modal #open-button").onclick = clickEvent => {
         clickEvent.preventDefault();
-        const decryptionPassword = $("#login-modal #password-input").value;
-        ioHelper.setDecryptionPassword(decryptionPassword)
-            .then(() => {
-                $("#login-modal #password-input").value = "";
-                $("#login-modal").classList.remove("is-active");
-                metadataHelper.loadStoredMetadata().then(() => startApp());
-            })
-            .catch(() => {
-                $("#login-modal #password-input").value = "";
-                $("#login-modal #password-incorrect-hint").classList.remove("is-hidden");
-            });
+        const decryptionKey = $("#login-modal #password-input").value;
+        ioHelper.setDecryptionKey(decryptionKey)
+            .then(loginSuccessful)
+            .catch(loginNotSuccessful);
     };
+
+    prepareLoginModal();
+}
+
+function showLoginModal() {
+    // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
+    $("#login-modal #username-input").parentNode.parentNode.classList.remove("is-hidden");
+    $("#login-modal #server-url").classList.remove("is-hidden");
+    $("#login-title").textContent = "Please login";
+    $("#login-text").textContent = "You are connected to an OpenEDC Server. Please login with your credentials.";
+    $("#login-incorrect-hint .message-body").textContent = "The username or password is incorrect. Please try again.";
+    $("#login-modal #server-url").textContent = "OpenEDC Server: " + ioHelper.getServerURL();
+
+    // Adjust the project options modal accordingly
+    $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
+    $("#server-connected-hint").classList.remove("is-hidden");
+
+    // Set the click handler when clicking on the Open button
+    $("#login-modal #open-button").onclick = clickEvent => {
+        clickEvent.preventDefault();
+        const username = $("#login-modal #username-input").value;
+        const password = $("#login-modal #password-input").value;
+        ioHelper.loginToServer(username, password)
+            .then(loginSuccessful)
+            .catch(loginNotSuccessful);
+    };
+
+    prepareLoginModal();
+}
+
+function prepareLoginModal() {
+    $("#encryption-password-input").parentNode.parentNode.classList.add("is-hidden");
+    $("#data-encryption-warning").classList.add("is-hidden");
+    $("#data-encrypted-hint").classList.remove("is-hidden");
+
     $("#login-modal #password-input").onkeydown = keyEvent => {
         if (keyEvent.code == "Enter") {
             // .focus() hides the password manager prompt on macOS Safari
@@ -136,47 +159,16 @@ function showDecryptionPasswordModal() {
     $("#login-modal").classList.add("is-active");
 }
 
-function showLoginModal() {
-    // TODO: Similar to previous function, both should share code to reduce code
+function loginSuccessful() {
+    $("#login-modal #username-input").value = "";
+    $("#login-modal #password-input").value = "";
+    $("#login-modal").classList.remove("is-active");
+    metadataHelper.loadStoredMetadata().then(() => startApp());
+}
 
-    // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
-    $("#login-modal #username-input").parentNode.parentNode.classList.remove("is-hidden");
-    $("#login-modal h2").textContent = "Please login";
-    $("#login-modal p").innerHTML = "You are connected to an OpenEDC Server. Please login with your credentials.<br><br>Server: " + ioHelper.getServerURL();
-
-    // Adjust the project options modal accordingly
-    $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
-    $("#server-connected-hint").classList.remove("is-hidden");
-    $("#encryption-password-input").parentNode.parentNode.classList.add("is-hidden");
-    $("#data-encryption-warning").classList.add("is-hidden");
-    $("#data-encrypted-hint").classList.remove("is-hidden");
-
-    // Set the click handler when clicking on the Open button
-    $("#login-modal #open-button").onclick = clickEvent => {
-        clickEvent.preventDefault();
-        const username = $("#login-modal #username-input").value;
-        const password = $("#login-modal #password-input").value;
-        ioHelper.loginToServer(username, password)
-            .then(() => {
-                $("#login-modal #username-input").value = "";
-                $("#login-modal #password-input").value = "";
-                $("#login-modal").classList.remove("is-active");
-                metadataHelper.loadStoredMetadata().then(() => startApp());
-            })
-            .catch(() => {
-                $("#login-modal #password-input").value = "";
-                $("#login-modal #username-password-incorrect-hint").classList.remove("is-hidden");
-            });
-    };
-    $("#login-modal #password-input").onkeydown = keyEvent => {
-        if (keyEvent.code == "Enter") {
-            // .focus() hides the password manager prompt on macOS Safari
-            $("#login-modal #open-button").focus();
-            $("#login-modal #open-button").click();
-        }
-    };
-
-    $("#login-modal").classList.add("is-active");
+function loginNotSuccessful() {
+    $("#login-modal #password-input").value = "";
+    $("#login-modal #login-incorrect-hint").classList.remove("is-hidden");
 }
 
 window.newProject = function() {
@@ -269,20 +261,18 @@ window.projectTabClicked = function(event) {
 window.connectToEmptyServer = function() {
     const serverURL = $("#server-url-input").value;
 
-    ioHelper.isServerEmpty(serverURL)
-        .then(() => {
-            $("#initialize-server-form").classList.remove("is-hidden");
-            $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
-        })
-        .catch(error => {
-            switch (error) {
-                case ioHelper.serverConnectionErrors.SERVERNOTFOUND:
-                    ioHelper.showWarning("Server not found", "There could be no OpenEDC Server found for this URL.");
+    ioHelper.getServerStatus(serverURL)
+        .then(status => {
+            switch (status) {
+                case ioHelper.serverConnectionStatus.SERVERNOTINITIALIZED:
+                    $("#initialize-server-form").classList.remove("is-hidden");
+                    $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
                     break;
-                case ioHelper.serverConnectionErrors.SERVERINITIALIZED:
+                case ioHelper.serverConnectionStatus.SERVERINITIALIZED:
                     ioHelper.showWarning("Server initialized", "The server has already been initialized.");
             }
-        });
+        })
+        .catch(() => ioHelper.showWarning("Server not found", "There could be no OpenEDC Server found for this URL."));
 }
 
 window.showConnectToExistingServer = function() {
@@ -293,17 +283,18 @@ window.showConnectToExistingServer = function() {
 window.connectToExistingServer = function() {
     const serverURL = $("#existing-server-url-input").value;
 
-    ioHelper.setExistingServerURL(serverURL)
-        .then(() => window.location.reload())
-        .catch(error => {
-            switch (error) {
-                case ioHelper.serverConnectionErrors.SERVERNOTFOUND:
-                    ioHelper.showWarning("Server not found", "There could be no OpenEDC Server found for this URL.");
-                    break;
-                case ioHelper.serverConnectionErrors.SERVERNOTINITIALIZED:
-                    ioHelper.showWarning("Server not initialized", "The server has not been initialized and is empty. You can initialize the server by going back, opening a local project, and then connecting to the server via the Project Options button.");
-            }
-        });
+    ioHelper.getServerStatus(serverURL)
+    .then(status => {
+        switch (status) {
+            case ioHelper.serverConnectionStatus.SERVERNOTINITIALIZED:
+                ioHelper.showWarning("Server not initialized", "The server has not been initialized and is empty. You can initialize the server by going back, opening a local project, and then connecting to the server via the Project Options button.");
+                break;
+            case ioHelper.serverConnectionStatus.SERVERINITIALIZED:
+                ioHelper.setServerURL(serverURL);
+                window.location.reload();
+        }
+    })
+    .catch(() => ioHelper.showWarning("Server not found", "There could be no OpenEDC Server found for this URL."));
 }
 
 window.initializeServer = function(event) {

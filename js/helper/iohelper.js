@@ -1,7 +1,6 @@
 class LoadXMLException {
-    constructor(code, message) {
+    constructor(code) {
         this.code = code;
-        this.message = message;
     }
 }
 
@@ -12,10 +11,10 @@ export const loadXMLExceptionCodes = {
     NOTLOGGEDIN: 3
 }
 
-export const serverConnectionErrors = {
+export const serverConnectionStatus = {
     SERVERNOTFOUND: 0,
     SERVERINITIALIZED: 1,
-    SERVERNOTINITIALIZED: 1
+    SERVERNOTINITIALIZED: 2
 }
 
 const $ = query => document.querySelector(query);
@@ -28,7 +27,7 @@ const globalOptionsFileName = "globaloptions";
 const localOptionsFileName = "localoptions";
 
 let user = null;
-let encryptionPassword = null;
+let decryptionKey = null;
 
 // Keeps app options that are equal for all users of the app -- options may have default values assigned
 let globalOptions = {
@@ -40,36 +39,46 @@ let localOptions = {
     serverURL: null
 };
 
+export function init() {
+    const globalOptionsString = localStorage.getItem(globalOptionsFileName);
+    if (globalOptionsString) globalOptions = JSON.parse(globalOptionsString);
+
+    const localOptionsString = localStorage.getItem(localOptionsFileName);
+    if (localOptionsString) localOptions = JSON.parse(localOptionsString);
+
+    setIOListeners();
+}
+
 async function getStoredXMLData(fileName) {
     let xmlString = null;
 
     if (localOptions.serverURL) {
-        if (!user) throw new LoadXMLException(loadXMLExceptionCodes.NOTLOGGEDIN, "The XML data could not be loaded. A server connection exists but the user is not logged in.");
+        if (!user) throw new LoadXMLException(loadXMLExceptionCodes.NOTLOGGEDIN);
         // TODO: Not always load metadata!
         const xmlResponse = await fetch(localOptions.serverURL + "/api/metadata", {
             headers: getHeaders(true)
         });
-        if (!xmlResponse.ok) console.log("TODO");
+        if (!xmlResponse.ok) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
         xmlString = await xmlResponse.text();
     } else {
         xmlString = localStorage.getItem(fileName);
-        if (!xmlString) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND, "The XML data could not be loaded. It seems that no data has been stored yet.");
+        if (!xmlString) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
     }
 
-    if (encryptionPassword) {
+    if (decryptionKey) {
         try {
-            xmlString = CryptoJS.AES.decrypt(xmlString, encryptionPassword).toString(CryptoJS.enc.Utf8);
+            xmlString = CryptoJS.AES.decrypt(xmlString, decryptionKey).toString(CryptoJS.enc.Utf8);
         } catch (error) {
-            throw new LoadXMLException(loadXMLExceptionCodes.NOTDECRYPTABLE, "The XML data could not be decrypted.");
+            throw new LoadXMLException(loadXMLExceptionCodes.NOTDECRYPTABLE);
         }
     }
 
     const xmlDocument = new DOMParser().parseFromString(xmlString, "text/xml");
     if (xmlDocument.querySelector("parsererror")) {
-        if (!encryptionPassword) {
-            throw new LoadXMLException(loadXMLExceptionCodes.DATAENCRYPTED, "The XML data could not be loaded. It seems that the data is encrypted.");
+        if (!decryptionKey) {
+            throw new LoadXMLException(loadXMLExceptionCodes.DATAENCRYPTED);
         } else {
-            throw new LoadXMLException(loadXMLExceptionCodes.NOTDECRYPTABLE, "The XML data could not be decrypted.");
+            throw new LoadXMLException(loadXMLExceptionCodes.NOTDECRYPTABLE);
         }
     } else {
         return xmlDocument;
@@ -78,18 +87,15 @@ async function getStoredXMLData(fileName) {
 
 function storeXMLData(fileName, xmlDocument) {
     let xmlString = new XMLSerializer().serializeToString(xmlDocument);
-    if (encryptionPassword) {
-        xmlString = CryptoJS.AES.encrypt(xmlString, encryptionPassword).toString();
-    }
+    if (decryptionKey) xmlString = CryptoJS.AES.encrypt(xmlString, decryptionKey).toString();
 
     localStorage.setItem(fileName, xmlString);
 }
 
-export function encryptXMLData(password) {
+export function encryptXMLData(key) {
     // TODO: Move to app.js or add this analogously to initializeServer
-    if (password.length < 8) return Promise.reject();
+    if (key.length < 8) return Promise.reject();
 
-    encryptionPassword = password;
     for (const fileName of Object.keys(localStorage)) {
         if (fileName == globalOptionsFileName) continue;
 
@@ -97,22 +103,22 @@ export function encryptXMLData(password) {
         const xmlDocument = new DOMParser().parseFromString(xmlString, "text/xml");
         if (!xmlDocument.querySelector("parsererror")) {
             xmlString = new XMLSerializer().serializeToString(xmlDocument);
-            xmlString = CryptoJS.AES.encrypt(xmlString, encryptionPassword).toString();
+            xmlString = CryptoJS.AES.encrypt(xmlString, key).toString();
             localStorage.setItem(fileName, xmlString);
         }
     }
 
+    decryptionKey = key;
     return Promise.resolve();
 }
 
 // TODO: Have a look if this is okay -- only valid for local encryption
-export function setDecryptionPassword(decryptionPassword) {
+export function setDecryptionKey(key) {
     const xmlString = localStorage.getItem("metadata");
 
     try {
-        CryptoJS.AES.decrypt(xmlString, decryptionPassword).toString(CryptoJS.enc.Utf8);
-        // TODO: Naming -- encryptionPassword or decryptionPassword? Rather decryptionKey
-        encryptionPassword = decryptionPassword;
+        CryptoJS.AES.decrypt(xmlString, key).toString(CryptoJS.enc.Utf8);
+        decryptionKey = key;
         return Promise.resolve();
     } catch (error) {
         return Promise.reject(error);
@@ -159,19 +165,14 @@ export function getSubjectFileNames() {
     return subjectFileNames;
 }
 
-export function loadOptions() {
-    const globalOptionsString = localStorage.getItem(globalOptionsFileName);
-    if (globalOptionsString) globalOptions = JSON.parse(globalOptionsString);
-
-    const localOptionsString = localStorage.getItem(localOptionsFileName);
-    if (localOptionsString) localOptions = JSON.parse(localOptionsString);
-
-    $("#warning-modal button").addEventListener("click", () => $("#warning-modal").classList.remove("is-active"));
-}
-
 function storeOptions() {
     localStorage.setItem(globalOptionsFileName, JSON.stringify(globalOptions));
     localStorage.setItem(localOptionsFileName, JSON.stringify(localOptions));
+}
+
+export function setServerURL(serverURL) {
+    localOptions.serverURL = serverURL;
+    storeOptions();
 }
 
 export function getServerURL() {
@@ -192,18 +193,18 @@ export function getSurveyCode() {
     return globalOptions.surveyCode;
 }
 
-export async function isServerEmpty(serverURL) {
+export async function getServerStatus(serverURL) {
     if (!serverURL.includes("http") && !serverURL.includes("https")) serverURL = "https://" + serverURL;
     
-    const response = await fetch(serverURL + "/api/status").catch(() => Promise.reject(serverConnectionErrors.SERVERNOTFOUND));
+    const response = await fetch(serverURL + "/api/status").catch(() => Promise.reject(serverConnectionStatus.SERVERNOTFOUND));
     const serverStatus = await response.json();
 
-    if (serverStatus.serverVersion && !serverStatus.initialized) {
-        return Promise.resolve();
-    } else if (serverStatus.serverVersion && serverStatus.initialized) {
-        return Promise.reject(serverConnectionErrors.SERVERINITIALIZED);
+    if (serverStatus.serverVersion && serverStatus.initialized) {
+        return Promise.resolve(serverConnectionStatus.SERVERINITIALIZED);
+    } else if (serverStatus.serverVersion && !serverStatus.initialized) {
+        return Promise.resolve(serverConnectionStatus.SERVERNOTINITIALIZED);
     } else {
-        return Promise.reject(serverConnectionErrors.SERVERNOTFOUND);
+        return Promise.reject(serverConnectionStatus.SERVERNOTFOUND);
     }
 }
 
@@ -243,24 +244,6 @@ export async function initializeServer(serverURL, username, password) {
     return Promise.resolve();
 }
 
-// TODO: Very similar to isServerEmpty -- instead, one "getServerStatus" function and another function "setServerURL" before "getServerURL"
-export async function setExistingServerURL(serverURL) {
-    if (!serverURL.includes("http") && !serverURL.includes("https")) serverURL = "https://" + serverURL;
-    
-    const response = await fetch(serverURL + "/api/status").catch(() => Promise.reject(serverConnectionErrors.SERVERNOTFOUND));
-    const serverStatus = await response.json();
-
-    if (serverStatus.serverVersion && serverStatus.initialized) {
-        localOptions.serverURL = serverURL;
-        storeOptions();
-        return Promise.resolve();
-    } else if (serverStatus.serverVersion && !serverStatus.initialized) {
-        return Promise.reject(serverConnectionErrors.SERVERNOTINITIALIZED);
-    } else {
-        return Promise.reject(serverConnectionErrors.SERVERNOTFOUND);
-    }
-}
-
 export async function loginToServer(username, password) {
     const hashedPassword = CryptoJS.SHA1(password).toString();
     const userResponse = await fetch(localOptions.serverURL + "/api/users/me", {
@@ -269,15 +252,12 @@ export async function loginToServer(username, password) {
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
     user = await userResponse.json();
 
-    // Get the encryptedDecryptionPassword of the user, decrypt it and store it in the decryptionPassword variable
-    // TODO: Naming -- decryptionKey or decryptionPassword?
+    // Get the encryptedDecryptionKey of the user, decrypt it and store it in the decryptionKey variable
     try {
-        encryptionPassword = CryptoJS.AES.decrypt(user.encryptedDecryptionKey, password).toString(CryptoJS.enc.Utf8);
+        decryptionKey = CryptoJS.AES.decrypt(user.encryptedDecryptionKey, password).toString(CryptoJS.enc.Utf8);
     } catch (error) {
         console.log(error);
     }
-
-    console.log(encryptionPassword);
 
     return Promise.resolve();
 }
@@ -416,4 +396,8 @@ export function setTreeMaxHeight() {
 
         treePanelBlock.style.maxHeight = `${remainingSpace}px`;
     }
+}
+
+function setIOListeners() {
+    $("#warning-modal button").addEventListener("click", () => $("#warning-modal").classList.remove("is-active"));
 }

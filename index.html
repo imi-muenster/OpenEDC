@@ -722,8 +722,11 @@
             <div class="modal-content is-large">
                 <div class="box has-text-centered">
                     <div class="width-is-two-thirds">
-                        <h2 class="subtitle"></h2>
-                        <p></p>
+                        <h2 class="subtitle" id="login-title"></h2>
+                        <p id="login-text"></p>
+                        <article class="message is-danger mt-5 is-hidden" id="login-incorrect-hint">
+                            <div class="message-body"></div>
+                        </article>
                         <form class="mt-5">
                             <div class="field is-hidden">
                                 <div class="control has-icons-left">
@@ -741,14 +744,13 @@
                                     </span>
                                 </div>
                             </div>
-                            <button class="button is-link" id="open-button" type="submit">Open</button>
+                            <button class="button is-link mt-3" id="open-button" type="submit">Open</button>
                             <div class="buttons is-centered mt-5">
                                 <button class="button is-text is-small">Forgot password?</button>
                                 <button class="button is-text is-small" onclick="removeData()">Remove server connection?</button>
                             </div>
                         </form>
-                        <p class="has-text-danger mt-5 is-hidden" id="username-password-incorrect-hint">The username or password is incorrect. Please try again.</p>
-                        <p class="has-text-danger mt-5 is-hidden" id="password-incorrect-hint">The password is incorrect. Please try again.</p>
+                        <p class="is-size-7 mt-3 is-hidden" id="server-url"></p>
                     </div>
                 </div>
             </div>
