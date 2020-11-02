@@ -420,23 +420,45 @@
                         <h1 class="title">OpenEDC – Start</h1>
                         <h2 class="subtitle">Please choose a starting point</h2>
                         <hr>
-                        <p>This free and <a target="_blank" href="#">open-source</a> electronic data capture (EDC) system lets you create and conduct secure clinical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format.</p>
-                        <br>
-                        <p>All data is entirely processed on your local device. No data is ever send to our server. You can optionally connect to your own <a target="_blank" href="#">OpenEDC Server</a> to simply create multi-centric research studies with multiple users.</p>
-                        <br>
-                        <p>For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you have an ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an exemplary project and see how it all works.</p>
-                        <br>
-                        <div class="buttons is-centered">
+                        <div id="introduction-text">
+                            <p>This free and <a target="_blank" href="#">open-source</a> electronic data capture (EDC) system lets you create and conduct secure clinical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format.</p>
+                            <br>
+                            <p>All data is entirely processed on your local device. No data is ever send to our server. You can optionally connect to your own <a target="_blank" href="#">OpenEDC Server</a> to simply create multi-centric research studies with multiple users.</p>
+                            <br>
+                            <p>For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you want to connect to an OpenEDC Server or have an ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an exemplary project and see how it all works.</p>
+                        </div>
+                        <div class="is-hidden" id="connect-to-existing-server">
+                            <p>With the following option you can connect to an OpenEDC Server. Please note that you need a username and password that were given to you by the server owner.</p>
+                            <div class="field has-addons mt-5 mb-5">
+                                <div class="control is-expanded">
+                                    <input class="input" id="existing-server-url-input" type="text" placeholder="Server URL" value="http://localhost:3000">
+                                </div>
+                                <div class="control">
+                                    <a class="button is-link" onclick="connectToExistingServer()">Connect</a>
+                                </div>
+                            </div>
+                            <p>You can also create your own OpenEDC Server. For this, go back, create a new project, and follow the instructions.</p>
+                        </div>
+                        <div class="buttons is-centered mt-5 mb-0" id="start-buttons">
                             <button class="button" onclick="newProject()">New Project</button>
+                            <button class="button" onclick="toggleOpenProjectButtons()">Open</button>
+                            <button class="button" onclick="loadExample()">Example</button>
+                        </div>
+                        <div class="buttons is-centered mt-5 mb-0 is-hidden" id="open-buttons">
+                            <button class="button is-text" onclick="toggleOpenProjectButtons()">
+                                <span class="icon">
+                                    <i class="fas fa-arrow-left"></i>
+                                </span>
+                            </button>
+                            <button class="button" onclick="showConnectToExistingServer()">Connect to Server</button>
                             <div class="file">
                                 <label class="file-label">
                                     <input class="file-input" type="file" name="resume" id="odm-upload" onchange="uploadODM()">
                                     <span class="file-cta">
-                                        <span class="file-label">Open</span>
+                                        <span class="file-label">Open ODM</span>
                                     </span>
                                 </label>
                             </div>
-                            <button class="button" onclick="loadExample()">Example</button>
                         </div>
                     </div>
                 </div>
@@ -465,7 +487,7 @@
                                     <input class="input is-small" id="server-url-input" type="text" placeholder="Server URL" value="http://localhost:3000">
                                 </div>
                                 <div class="control">
-                                    <a class="button is-link is-small" onclick="connectToServer()">Connect</a>
+                                    <a class="button is-link is-small" onclick="connectToEmptyServer()">Connect</a>
                                 </div>
                             </div>
                             <form class="mt-5 is-hidden" id="initialize-server-form">
@@ -719,7 +741,11 @@
                                     </span>
                                 </div>
                             </div>
-                            <button class="button is-link mt-3" id="open-button" type="submit">Open</button>
+                            <button class="button is-link" id="open-button" type="submit">Open</button>
+                            <div class="buttons is-centered mt-5">
+                                <button class="button is-text is-small">Forgot password?</button>
+                                <button class="button is-text is-small" onclick="removeData()">Remove server connection?</button>
+                            </div>
                         </form>
                         <p class="has-text-danger mt-5 is-hidden" id="username-password-incorrect-hint">The username or password is incorrect. Please try again.</p>
                         <p class="has-text-danger mt-5 is-hidden" id="password-incorrect-hint">The password is incorrect. Please try again.</p>

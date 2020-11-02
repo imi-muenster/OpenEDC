@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Load locally persisted options (e.g., the server url if a connection to an OpenEDC Server exists)
-    // TODO: Rename to configuration
+    // TODO: Rename to init or something like this
     ioHelper.loadOptions();
 
     // Initialize the application
@@ -142,7 +142,7 @@ function showLoginModal() {
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
     $("#login-modal #username-input").parentNode.parentNode.classList.remove("is-hidden");
     $("#login-modal h2").textContent = "Please login";
-    $("#login-modal p").textContent = "You are connected to an OpenEDC Server. Please login with your credentials.";
+    $("#login-modal p").innerHTML = "You are connected to an OpenEDC Server. Please login with your credentials.<br><br>Server: " + ioHelper.getServerURL();
 
     // Adjust the project options modal accordingly
     $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
@@ -183,6 +183,13 @@ window.newProject = function() {
     metadataHelper.loadEmptyProject();
     admindataHelper.loadEmptyProject(metadataHelper.getStudyOID());
     startApp();
+}
+
+window.toggleOpenProjectButtons = function() {
+    $("#start-buttons").classList.toggle("is-hidden");
+    $("#open-buttons").classList.toggle("is-hidden");
+    $("#introduction-text").classList.remove("is-hidden");
+    $("#connect-to-existing-server").classList.add("is-hidden");
 }
 
 window.uploadODM = async function() {
@@ -259,10 +266,10 @@ window.projectTabClicked = function(event) {
     }
 }
 
-window.connectToServer = function() {
+window.connectToEmptyServer = function() {
     const serverURL = $("#server-url-input").value;
 
-    ioHelper.setServerURL(serverURL)
+    ioHelper.isServerEmpty(serverURL)
         .then(() => {
             $("#initialize-server-form").classList.remove("is-hidden");
             $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
@@ -274,6 +281,27 @@ window.connectToServer = function() {
                     break;
                 case ioHelper.serverConnectionErrors.SERVERINITIALIZED:
                     ioHelper.showWarning("Server initialized", "The server has already been initialized.");
+            }
+        });
+}
+
+window.showConnectToExistingServer = function() {
+    $("#introduction-text").classList.add("is-hidden");
+    $("#connect-to-existing-server").classList.remove("is-hidden");
+}
+
+window.connectToExistingServer = function() {
+    const serverURL = $("#existing-server-url-input").value;
+
+    ioHelper.setExistingServerURL(serverURL)
+        .then(() => window.location.reload())
+        .catch(error => {
+            switch (error) {
+                case ioHelper.serverConnectionErrors.SERVERNOTFOUND:
+                    ioHelper.showWarning("Server not found", "There could be no OpenEDC Server found for this URL.");
+                    break;
+                case ioHelper.serverConnectionErrors.SERVERNOTINITIALIZED:
+                    ioHelper.showWarning("Server not initialized", "The server has not been initialized and is empty. You can initialize the server by going back, opening a local project, and then connecting to the server via the Project Options button.");
             }
         });
 }
@@ -414,7 +442,6 @@ export function setIOListeners() {
         $("#language-dropdown").classList.add("is-hidden-touch");
     });
     $("#current-language").addEventListener("click", () => $("#language-dropdown").classList.toggle("is-hidden-touch"));
-    $("#warning-modal button").addEventListener("click", () => $("#warning-modal").classList.remove("is-active"));
 }
 
 function getCurrentMode() {

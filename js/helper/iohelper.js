@@ -14,7 +14,8 @@ export const loadXMLExceptionCodes = {
 
 export const serverConnectionErrors = {
     SERVERNOTFOUND: 0,
-    SERVERINITIALIZED: 1
+    SERVERINITIALIZED: 1,
+    SERVERNOTINITIALIZED: 1
 }
 
 const $ = query => document.querySelector(query);
@@ -44,6 +45,7 @@ async function getStoredXMLData(fileName) {
 
     if (localOptions.serverURL) {
         if (!user) throw new LoadXMLException(loadXMLExceptionCodes.NOTLOGGEDIN, "The XML data could not be loaded. A server connection exists but the user is not logged in.");
+        // TODO: Not always load metadata!
         const xmlResponse = await fetch(localOptions.serverURL + "/api/metadata", {
             headers: getHeaders(true)
         });
@@ -163,11 +165,17 @@ export function loadOptions() {
 
     const localOptionsString = localStorage.getItem(localOptionsFileName);
     if (localOptionsString) localOptions = JSON.parse(localOptionsString);
+
+    $("#warning-modal button").addEventListener("click", () => $("#warning-modal").classList.remove("is-active"));
 }
 
 function storeOptions() {
     localStorage.setItem(globalOptionsFileName, JSON.stringify(globalOptions));
     localStorage.setItem(localOptionsFileName, JSON.stringify(localOptions));
+}
+
+export function getServerURL() {
+    return localOptions.serverURL;
 }
 
 export function setSurveyCode(surveyCode) {
@@ -184,10 +192,9 @@ export function getSurveyCode() {
     return globalOptions.surveyCode;
 }
 
-export async function setServerURL(serverURL) {
+export async function isServerEmpty(serverURL) {
     if (!serverURL.includes("http") && !serverURL.includes("https")) serverURL = "https://" + serverURL;
     
-    // Note: For fetch requests better use await instead of then (still use catch)
     const response = await fetch(serverURL + "/api/status").catch(() => Promise.reject(serverConnectionErrors.SERVERNOTFOUND));
     const serverStatus = await response.json();
 
@@ -234,6 +241,24 @@ export async function initializeServer(serverURL, username, password) {
     storeOptions();
     
     return Promise.resolve();
+}
+
+// TODO: Very similar to isServerEmpty -- instead, one "getServerStatus" function and another function "setServerURL" before "getServerURL"
+export async function setExistingServerURL(serverURL) {
+    if (!serverURL.includes("http") && !serverURL.includes("https")) serverURL = "https://" + serverURL;
+    
+    const response = await fetch(serverURL + "/api/status").catch(() => Promise.reject(serverConnectionErrors.SERVERNOTFOUND));
+    const serverStatus = await response.json();
+
+    if (serverStatus.serverVersion && serverStatus.initialized) {
+        localOptions.serverURL = serverURL;
+        storeOptions();
+        return Promise.resolve();
+    } else if (serverStatus.serverVersion && !serverStatus.initialized) {
+        return Promise.reject(serverConnectionErrors.SERVERNOTINITIALIZED);
+    } else {
+        return Promise.reject(serverConnectionErrors.SERVERNOTFOUND);
+    }
 }
 
 export async function loginToServer(username, password) {
