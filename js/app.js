@@ -259,7 +259,7 @@ window.initializeServer = function(event) {
         return;
     }
 
-    // Initialize the server, i.e., set the owner of the server with the entered data
+    // Initialize the server, i.e., set the owner of the server with the entered data and transfer all data
     ioHelper.initializeServer(serverURL, username, password)
         .then(() => console.log("All good."))
         .catch(error => ioHelper.showWarning("Account not created", error));

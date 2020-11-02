@@ -6,8 +6,6 @@ import * as ioHelper from "./iohelper.js";
 const $ = query => admindata.querySelector(query);
 const $$ = query => admindata.querySelectorAll(query);
 
-const admindataFileName = "admindata";
-
 export const errors = {
     SITEHASSUBJECTS: 0
 }
@@ -16,14 +14,14 @@ let admindata = null;
 
 export function loadEmptyProject(studyOID) {
     admindata = admindataTemplates.getAdminData(studyOID);
-    storeAdmindata();
+    ioHelper.storeAdmindata(admindata);
 }
 
 export function importAdmindata(odmXMLString) {
     const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
     if (odm.querySelector("AdminData")) {
         admindata = odm.querySelector("AdminData");
-        storeAdmindata();
+        ioHelper.storeAdmindata(admindata);
     } else {
         loadEmptyProject();
     }
@@ -33,12 +31,8 @@ export function getAdmindata() {
     return admindata;
 }
 
-export function storeAdmindata() {
-    ioHelper.storeXMLData(admindataFileName, admindata);
-}
-
 export function loadStoredAdmindata() {
-    admindata = ioHelper.getStoredXMLData(admindataFileName).documentElement;
+    admindata = ioHelper.getAdminata();
     if (!admindata) loadEmptyProject();
 }
 
@@ -61,7 +55,7 @@ export function addUser() {
         admindata.appendChild(newUser);
     }
 
-    storeAdmindata();
+    ioHelper.storeAdmindata(admindata);
 
     return newUserOID;
 }
@@ -81,13 +75,13 @@ export function setUserInfo(userOID, firstName, lastName, locationOID) {
         if (locationRef) locationRef.remove();
     }
 
-    storeAdmindata();
+    ioHelper.storeAdmindata(admindata);
 }
 
 export function removeUser(userOID) {
     const user = getUser(userOID);
     if (user) user.remove();
-    storeAdmindata();
+    ioHelper.storeAdmindata(admindata);
 }
 
 export function getSite(siteOID) {
@@ -119,7 +113,7 @@ export function addSite() {
         admindata.appendChild(newSite);
     }
 
-    storeAdmindata();
+    ioHelper.storeAdmindata(admindata);
 
     return newSiteOID;
 }
@@ -127,7 +121,7 @@ export function addSite() {
 export function setSiteName(siteOID, name) {
     const site = getSite(siteOID);
     if (site) site.setAttribute("Name", name);
-    storeAdmindata();
+    ioHelper.storeAdmindata(admindata);
 }
 
 export function removeSite(siteOID) {
@@ -135,7 +129,7 @@ export function removeSite(siteOID) {
 
     const site = getSite(siteOID);
     if (site) site.remove();
-    storeAdmindata();
+    ioHelper.storeAdmindata(admindata);
 
     return Promise.resolve();
 }

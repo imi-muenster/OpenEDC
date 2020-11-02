@@ -4,8 +4,6 @@ import * as ioHelper from "./iohelper.js";
 const $ = query => metadata.querySelector(query);
 const $$ = query => metadata.querySelectorAll(query);
 
-const metadataFileName = "metadata";
-
 export const elementTypes = {
     STUDYEVENT: "studyevent",
     FORM: "form",
@@ -39,26 +37,25 @@ export async function loadExample() {
     storeMetadata();
 }
 
+export function loadStoredMetadata() {
+    try {
+        metadata = ioHelper.getMetadata();
+        return Promise.resolve()
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+
+export function storeMetadata() {
+    ioHelper.storeMetadata(metadata);
+}
+
 export function getSerializedMetadata() {
     return new XMLSerializer().serializeToString(metadata);
 }
 
 export function getMetadata() {
     return metadata;
-}
-
-export function storeMetadata() {
-    ioHelper.storeXMLData(metadataFileName, metadata);
-}
-
-export function loadStoredMetadata() {
-    try {
-        metadata = ioHelper.getStoredXMLData(metadataFileName);
-        return Promise.resolve()
-    } catch (error) {
-        console.log(error);
-        return Promise.reject(error);
-    }
 }
 
 export function clearMetadata() {

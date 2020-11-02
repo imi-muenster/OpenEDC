@@ -18,6 +18,10 @@ export const serverConnectionErrors = {
 
 const $ = query => document.querySelector(query);
 
+const metadataFileName = "metadata";
+const admindataFileName = "admindata";
+export const fileNameSeparator = "__";
+
 const globalOptionsFileName = "globaloptions";
 const localOptionsFileName = "localoptions";
 
@@ -33,7 +37,7 @@ let localOptions = {
     serverURL: null
 };
 
-export function getStoredXMLData(fileName) {
+function getStoredXMLData(fileName) {
     let xmlString = localStorage.getItem(fileName);
     if (!xmlString) {
         throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND, "The XML data could not be loaded. It seems that no data has been stored yet.");
@@ -59,7 +63,7 @@ export function getStoredXMLData(fileName) {
     }
 }
 
-export function storeXMLData(fileName, xmlDocument) {
+function storeXMLData(fileName, xmlDocument) {
     let xmlString = new XMLSerializer().serializeToString(xmlDocument);
     if (encryptionPassword) {
         xmlString = CryptoJS.AES.encrypt(xmlString, encryptionPassword).toString();
@@ -86,6 +90,44 @@ export function encryptXMLData(password) {
     }
 
     return Promise.resolve();
+}
+
+export function getMetadata() {
+    return getStoredXMLData(metadataFileName);
+}
+
+export function storeMetadata(metadata) {
+    storeXMLData(metadataFileName, metadata);
+}
+
+export function getAdminata() {
+    return getStoredXMLData(admindataFileName).documentElement;
+}
+
+export function storeAdmindata(admindata) {
+    storeXMLData(admindataFileName, admindata);
+}
+
+export function getSubjectData(fileName) {
+    return getStoredXMLData(fileName).documentElement;
+}
+
+export function storeSubjectData(fileName, subjectData) {
+    storeXMLData(fileName, subjectData);
+}
+
+export function removeSubjectData(fileName) {
+    localStorage.removeItem(fileName);
+}
+
+export function getSubjectFileNames() {
+    const subjectFileNames = [];
+
+    for (let fileName of Object.keys(localStorage)) {
+        if (fileName.split(fileNameSeparator).length > 1) subjectFileNames.push(fileName);
+    }
+
+    return subjectFileNames;
 }
 
 export function loadOptions() {

@@ -30,8 +30,6 @@ export class AuditRecord {
 const $ = query => subjectData.querySelector(query);
 const $$ = query => subjectData.querySelectorAll(query);
 
-const fileNameSeparator = "__";
-
 export const sortOrderTypes = {
     CREATEDDATE: "Creation Date",
     ALPHANUMERICALLY: "Alphanumerical"
@@ -66,7 +64,7 @@ export function importClinicaldata(odmXMLString) {
         // TODO: Take the created date from the audit trail
         const subject = new Subject(subjectData.getAttribute("SubjectKey"), siteOID, new Date());
         const fileName = subjectToFilename(subject);
-        localStorage.setItem(fileName, new XMLSerializer().serializeToString(subjectData));
+        ioHelper.storeSubjectData(fileName, subjectData);
     }
 }
 
@@ -79,7 +77,7 @@ export function getClinicalData(studyOID, metadataVersionOID) {
 
     subjects = sortSubjects(subjects, sortOrderTypes.CREATEDDATE);
     for (let subject of subjects) {
-        clinicalData.appendChild(ioHelper.getStoredXMLData(subjectToFilename(subject)).documentElement);
+        clinicalData.appendChild(ioHelper.getSubjectData(subjectToFilename(subject)));
     }
 
     return clinicalData;
@@ -89,8 +87,8 @@ export function loadSubjects() {
     console.log("Load subjects ...");
     subjects = [];
 
-    for (let fileName of Object.keys(localStorage)) {
-        if (fileName.split(fileNameSeparator).length > 1) subjects.push(fileNameToSubject(fileName));
+    for (let fileName of ioHelper.getSubjectFileNames()) {
+        subjects.push(fileNameToSubject(fileName));
     }
 }
 
@@ -130,7 +128,7 @@ function sortSubjects(subjects, sortOrder) {
 
 export function loadSubject(subjectKey) {
     subject = subjects.find(subject => subject.key == subjectKey);
-    subjectData = subjectKey ? ioHelper.getStoredXMLData(subjectToFilename(subject)).documentElement : null;
+    subjectData = subjectKey ? ioHelper.getSubjectData(subjectToFilename(subject)) : null;
     console.log(subjectData);
 }
 
@@ -138,7 +136,7 @@ export function storeSubject() {
     if (!subject) return;
     
     console.log("Store subject ...");
-    ioHelper.storeXMLData(subjectToFilename(subject), subjectData);
+    ioHelper.storeSubjectData(subjectToFilename(subject), subjectData);
 }
 
 export function clearSubject() {
@@ -147,14 +145,14 @@ export function clearSubject() {
 }
 
 export function removeSubject() {
-    localStorage.removeItem(subjectToFilename(subject));
+    ioHelper.removeSubjectData(subjectToFilename(subject));
     clearSubject();
     loadSubjects();
 }
 
 export function removeClinicaldata() {
     for (let subject of subjects) {
-        localStorage.removeItem(subjectToFilename(subject));
+        ioHelper.removeSubjectData(subjectToFilename(subject));
     }
 
     clearSubject();
@@ -162,7 +160,7 @@ export function removeClinicaldata() {
 }
 
 function fileNameToSubject(fileName) {
-    const fileNameParts = fileName.split(fileNameSeparator);
+    const fileNameParts = fileName.split(ioHelper.fileNameSeparator);
     const key = fileNameParts[0];
     const siteOID = fileNameParts[1] || null;
     const createdDate = fileNameParts[2];
@@ -171,8 +169,8 @@ function fileNameToSubject(fileName) {
 }
 
 function subjectToFilename(subject) {
-    console.log(subject.key + fileNameSeparator + (subject.siteOID || "") + fileNameSeparator + subject.createdDate.getTime());
-    return subject.key + fileNameSeparator + (subject.siteOID || "") + fileNameSeparator + subject.createdDate.getTime();
+    console.log(subject.key + ioHelper.fileNameSeparator + (subject.siteOID || "") + ioHelper.fileNameSeparator + subject.createdDate.getTime());
+    return subject.key + ioHelper.fileNameSeparator + (subject.siteOID || "") + ioHelper.fileNameSeparator + subject.createdDate.getTime();
 }
 
 export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
@@ -264,7 +262,7 @@ export function setSubjectInfo(subjectKey, siteOID) {
     if (subjectWithKey && subjectWithKey.key != subject.key) return Promise.reject(errors.SUBJECTKEYEXISTENT);
 
     // Remove currenlty stored subject
-    localStorage.removeItem(subjectToFilename(subject));
+    ioHelper.removeSubjectData(subjectToFilename(subject));
 
     // Adjust subject and its clinicaldata
     subject.key = subjectKey;
@@ -297,7 +295,7 @@ export function getSubjectsHavingDataForElement(elementOID) {
 
     let subjectKeys = [];
     for (const subject of subjects) {
-        const subjectData = localStorage.getItem(subjectToFilename(subject));
+        const subjectData = ioHelper.getSubjectData(localStorage.getItem(subjectToFilename(subject)));
         if (subjectData.includes(elementOID)) subjectKeys.push(subject.key);
     }
 
@@ -309,7 +307,7 @@ export function getCSVData(csvHeaders) {
 
     subjects = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY);
     for (let subject of subjects) {
-        const subjectData = ioHelper.getStoredXMLData(subjectToFilename(subject)).documentElement;
+        const subjectData = ioHelper.getSubjectData(subjectToFilename(subject));
 
         let subjectCSVData = [subject.key];
         let formData = null;
