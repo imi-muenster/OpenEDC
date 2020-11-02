@@ -72,12 +72,12 @@ export function getSubject() {
     return subject;
 }
 
-export function getClinicalData(studyOID, metadataVersionOID) {
+export async function getClinicalData(studyOID, metadataVersionOID) {
     let clinicalData = clinicaldataTemplates.getClinicalData(studyOID, metadataVersionOID);
 
     subjects = sortSubjects(subjects, sortOrderTypes.CREATEDDATE);
     for (let subject of subjects) {
-        clinicalData.appendChild(ioHelper.getSubjectData(subjectToFilename(subject)));
+        clinicalData.appendChild(await ioHelper.getSubjectData(subjectToFilename(subject)));
     }
 
     return clinicalData;
@@ -126,10 +126,14 @@ function sortSubjects(subjects, sortOrder) {
     return subjects;
 }
 
-export function loadSubject(subjectKey) {
+export async function loadSubject(subjectKey) {
     subject = subjects.find(subject => subject.key == subjectKey);
-    subjectData = subjectKey ? ioHelper.getSubjectData(subjectToFilename(subject)) : null;
-    console.log(subjectData);
+    
+    if (subject) {
+        subjectData = await ioHelper.getSubjectData(subjectToFilename(subject))
+    } else {
+        subjectData = null;
+    }
 }
 
 export function storeSubject() {
@@ -169,7 +173,6 @@ function fileNameToSubject(fileName) {
 }
 
 function subjectToFilename(subject) {
-    console.log(subject.key + ioHelper.fileNameSeparator + (subject.siteOID || "") + ioHelper.fileNameSeparator + subject.createdDate.getTime());
     return subject.key + ioHelper.fileNameSeparator + (subject.siteOID || "") + ioHelper.fileNameSeparator + subject.createdDate.getTime();
 }
 
@@ -290,24 +293,24 @@ export function getDataStatusForForm(studyEventOID, formOID) {
     return $(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`) ? dataStatusTypes.EXISTING : dataStatusTypes.EMPTY;
 }
 
-export function getSubjectsHavingDataForElement(elementOID) {
+export async function getSubjectsHavingDataForElement(elementOID) {
     if (subjects.length == 0) loadSubjects();
 
     let subjectKeys = [];
     for (const subject of subjects) {
-        const subjectData = ioHelper.getSubjectData(localStorage.getItem(subjectToFilename(subject)));
+        const subjectData = await ioHelper.getSubjectData(localStorage.getItem(subjectToFilename(subject)));
         if (subjectData.includes(elementOID)) subjectKeys.push(subject.key);
     }
 
     return subjectKeys;
 }
 
-export function getCSVData(csvHeaders) {
+export async function getCSVData(csvHeaders) {
     let csvData = [];
 
     subjects = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY);
     for (let subject of subjects) {
-        const subjectData = ioHelper.getSubjectData(subjectToFilename(subject));
+        const subjectData = await ioHelper.getSubjectData(subjectToFilename(subject));
 
         let subjectCSVData = [subject.key];
         let formData = null;

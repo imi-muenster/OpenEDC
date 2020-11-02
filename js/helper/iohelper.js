@@ -135,8 +135,8 @@ export function storeAdmindata(admindata) {
 }
 
 export async function getSubjectData(fileName) {
-    const subjectData = getStoredXMLData(fileName);
-    return await subjectData.documentElement;
+    const subjectData = await getStoredXMLData(fileName);
+    return subjectData.documentElement;
 }
 
 export function storeSubjectData(fileName, subjectData) {

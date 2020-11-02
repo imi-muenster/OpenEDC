@@ -351,12 +351,12 @@ window.hideAboutModal = function() {
     if (getCurrentMode() == appModes.METADATA) metadataModule.setArrowKeyListener();
 }
 
-window.downloadODM = function() {
+window.downloadODM = async function() {
     metadataHelper.setCreationDateTimeNow();
     metadataHelper.setFileOID(metadataHelper.getStudyName());
     let odm = new DOMParser().parseFromString(metadataHelper.getSerializedMetadata(), "text/xml");
 
-    let clinicaldata = clinicaldataHelper.getClinicalData(metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID());
+    let clinicaldata = await clinicaldataHelper.getClinicalData(metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID());
     if (clinicaldata) odm.querySelector("ODM").appendChild(clinicaldata);
 
     let admindata = admindataHelper.getAdmindata();
@@ -372,9 +372,9 @@ window.downloadODMMetadata = function() {
     ioHelper.download(metadataHelper.getStudyName()+"_metadata.xml", metadataHelper.getSerializedMetadata());
 }
 
-window.downloadCSV = function() {
+window.downloadCSV = async function() {
     const csvHeaders = metadataHelper.getCSVHeaders();
-    const csvData = clinicaldataHelper.getCSVData(csvHeaders);
+    const csvData = await clinicaldataHelper.getCSVData(csvHeaders);
     const csvString = ioHelper.getCSVString(csvHeaders, csvData);
 
     ioHelper.download(metadataHelper.getStudyName()+"_clinicaldata.csv", csvString);

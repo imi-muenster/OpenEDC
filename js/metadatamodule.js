@@ -464,11 +464,11 @@ function resetDetailsPanel() {
     $("#element-long-label").textContent = "Description";
 }
 
-window.saveElement = function() {
+window.saveElement = async function() {
     const newOID = $("#oid-input").value;
     const currentElementOID = getCurrentElementOID();
     if (currentElementOID != newOID) {
-        if (clinicaldataHelper.getSubjectsHavingDataForElement(currentElementOID) == 0) {
+        if (await clinicaldataHelper.getSubjectsHavingDataForElement(currentElementOID) == 0) {
             if (metadataHelper.setElementOID(currentElementOID, newOID, currentElementType)) {
                 setCurrentElementOID(newOID);
             } else {
@@ -1007,7 +1007,7 @@ function setCurrentElementOID(elementOID) {
     }
 }
 
-window.elementDrop = function(event) {
+window.elementDrop = async function(event) {
     let sourceElementOID = event.dataTransfer.getData("sourceElementOID");
     let targetElementOID = event.target.getAttribute("oid");
     let sourceParentOID = event.dataTransfer.getData("sourceParentOID");
@@ -1015,7 +1015,7 @@ window.elementDrop = function(event) {
     let sourceElementRef = null;
     let targetElementRef = null;
 
-    if (sourceParentOID != targetParentOID && clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID).length > 0) {
+    if (sourceParentOID != targetParentOID && await clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID).length > 0) {
         ioHelper.showWarning("Element not moved", "The element could not be moved since there is clinical data assigned to it. You can try to remove the element to see a list of subjects that contain data for this element.");
         return;
     }
@@ -1062,8 +1062,8 @@ window.elementDrop = function(event) {
     metadataHelper.storeMetadata();
 }
 
-window.showRemoveModal = function() {
-    const subjectKeys = clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID());
+window.showRemoveModal = async function() {
+    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID());
     if (subjectKeys.length > 0) {
         $("#remove-modal .notification strong").textContent = subjectKeys.join(", ");
         $("#remove-modal .notification").classList.remove("is-hidden");
