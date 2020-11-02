@@ -25,6 +25,7 @@ export const fileNameSeparator = "__";
 const globalOptionsFileName = "globaloptions";
 const localOptionsFileName = "localoptions";
 
+let user = null;
 let encryptionPassword = null;
 
 // Keeps app options that are equal for all users of the app -- options may have default values assigned
@@ -183,19 +184,31 @@ export async function initializeServer(serverURL, username, password) {
     const credentials = { username, hashedPassword, encryptedDecryptionKey };
 
     // Create the owner user on the server
-    const response = await fetch(serverURL + "/api/users/initialize", {
+    const userResponse = await fetch(serverURL + "/api/users/initialize", {
             method: "POST",
+            headers: getHeaders(false, true),
             body: JSON.stringify(credentials)
         });
-    if (!response.ok) return Promise.reject(await response.text());
-    const user = await response.json();
+    if (!userResponse.ok) return Promise.reject(await userResponse.text());
+    user = await userResponse.json();
 
     // Send all existing data encrypted to the server
-    // TODO: Improve on parameter (filename)
-    const metadata = getStoredXMLData("metadata");
-    let metadataString = new XMLSerializer().serializeToString(metadata);
+    let metadataString = new XMLSerializer().serializeToString(getMetadata());
     metadataString = CryptoJS.AES.encrypt(metadataString, decryptionKey).toString();
-    console.log("Encrypted metadata!");
+    const metadataResponse = await fetch(serverURL + "/api/metadata", {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: metadataString
+    });
+    if (!metadataResponse.ok) return Promise.reject(await metadataResponse.text());
+}
+
+function getHeaders(authorization, contentTypeJSON) {
+    let headers = {};
+    if (authorization) headers["Authorization"] = `Basic ${btoa(user.username + ":" + user.hashedPassword)}`;
+    if (contentTypeJSON) headers["Content-Type"] = "application/json";
+
+    return headers;
 }
 
 export function removeElements(elements) {
