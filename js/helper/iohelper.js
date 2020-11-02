@@ -50,17 +50,19 @@ export function init() {
 }
 
 async function getStoredXMLData(fileName) {
+    // TODO: Why is this function sometimes called twice for metadata and admindata?
     let xmlString = null;
 
     if (localOptions.serverURL) {
+        console.log("Load stored xml data from server ...", fileName);
         if (!user) throw new LoadXMLException(loadXMLExceptionCodes.NOTLOGGEDIN);
-        // TODO: Not always load metadata!
-        const xmlResponse = await fetch(localOptions.serverURL + "/api/metadata", {
+        const xmlResponse = await fetch(getApiUrlFromFileName(fileName), {
             headers: getHeaders(true)
         });
         if (!xmlResponse.ok) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
         xmlString = await xmlResponse.text();
     } else {
+        console.log("Load stored xml data locally ...", fileName);
         xmlString = localStorage.getItem(fileName);
         if (!xmlString) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
     }
@@ -85,11 +87,30 @@ async function getStoredXMLData(fileName) {
     }
 }
 
-function storeXMLData(fileName, xmlDocument) {
+async function storeXMLData(fileName, xmlDocument) {
     let xmlString = new XMLSerializer().serializeToString(xmlDocument);
     if (decryptionKey) xmlString = CryptoJS.AES.encrypt(xmlString, decryptionKey).toString();
 
-    localStorage.setItem(fileName, xmlString);
+    if (localOptions.serverURL) {
+        // TODO: Error handling
+        // TODO: Consider that this function is async -- adjust the callers when needed
+        await fetch(getApiUrlFromFileName(fileName), {
+            method: "PUT",
+            headers: getHeaders(true),
+            body: xmlString
+        });
+    } else {
+        localStorage.setItem(fileName, xmlString);
+    }
+}
+
+function getApiUrlFromFileName(fileName) {
+    let apiUrl = localOptions.serverURL + "/api/";
+
+    if (fileName == metadataFileName || fileName == admindataFileName) apiUrl += fileName
+    else apiUrl += "clinicaldata/" + fileName;
+
+    return apiUrl;
 }
 
 export function encryptXMLData(key) {
@@ -235,6 +256,15 @@ export async function initializeServer(serverURL, username, password) {
         body: metadataString
     });
     if (!metadataResponse.ok) return Promise.reject(await metadataResponse.text());
+
+    let admindataString = new XMLSerializer().serializeToString(await getAdmindata());
+    admindataString = CryptoJS.AES.encrypt(admindataString, decryptionKey).toString();
+    const admindataResponse = await fetch(serverURL + "/api/admindata", {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: admindataString
+    });
+    if (!admindataResponse.ok) return Promise.reject(await admindataResponse.text());
 
     localStorage.clear();
 
