@@ -8,7 +8,8 @@ class LoadXMLException {
 export const loadXMLExceptionCodes = {
     NODATAFOUND: 0,
     DATAENCRYPTED: 1,
-    NOTDECRYPTABLE: 2
+    NOTDECRYPTABLE: 2,
+    NOTLOGGEDIN: 3
 }
 
 export const serverConnectionErrors = {
@@ -38,10 +39,19 @@ let localOptions = {
     serverURL: null
 };
 
-function getStoredXMLData(fileName) {
-    let xmlString = localStorage.getItem(fileName);
-    if (!xmlString) {
-        throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND, "The XML data could not be loaded. It seems that no data has been stored yet.");
+async function getStoredXMLData(fileName) {
+    let xmlString = null;
+
+    if (localOptions.serverURL) {
+        if (!user) throw new LoadXMLException(loadXMLExceptionCodes.NOTLOGGEDIN, "The XML data could not be loaded. A server connection exists but the user is not logged in.");
+        const xmlResponse = await fetch(localOptions.serverURL + "/api/metadata", {
+            headers: getHeaders(true)
+        });
+        if (!xmlResponse.ok) console.log("TODO");
+        xmlString = await xmlResponse.text();
+    } else {
+        xmlString = localStorage.getItem(fileName);
+        if (!xmlString) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND, "The XML data could not be loaded. It seems that no data has been stored yet.");
     }
 
     if (encryptionPassword) {
@@ -93,24 +103,40 @@ export function encryptXMLData(password) {
     return Promise.resolve();
 }
 
-export function getMetadata() {
-    return getStoredXMLData(metadataFileName);
+// TODO: Have a look if this is okay -- only valid for local encryption
+export function setDecryptionPassword(decryptionPassword) {
+    const xmlString = localStorage.getItem("metadata");
+
+    try {
+        CryptoJS.AES.decrypt(xmlString, decryptionPassword).toString(CryptoJS.enc.Utf8);
+        // TODO: Naming -- encryptionPassword or decryptionPassword? Rather decryptionKey
+        encryptionPassword = decryptionPassword;
+        return Promise.resolve();
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+
+export async function getMetadata() {
+    return await getStoredXMLData(metadataFileName);
 }
 
 export function storeMetadata(metadata) {
     storeXMLData(metadataFileName, metadata);
 }
 
-export function getAdminata() {
-    return getStoredXMLData(admindataFileName).documentElement;
+export async function getAdmindata() {
+    const admindata = await getStoredXMLData(admindataFileName);
+    return admindata.documentElement;
 }
 
 export function storeAdmindata(admindata) {
     storeXMLData(admindataFileName, admindata);
 }
 
-export function getSubjectData(fileName) {
-    return getStoredXMLData(fileName).documentElement;
+export async function getSubjectData(fileName) {
+    const subjectData = getStoredXMLData(fileName);
+    return await subjectData.documentElement;
 }
 
 export function storeSubjectData(fileName, subjectData) {
@@ -193,7 +219,7 @@ export async function initializeServer(serverURL, username, password) {
     user = await userResponse.json();
 
     // Send all existing data encrypted to the server
-    let metadataString = new XMLSerializer().serializeToString(getMetadata());
+    let metadataString = new XMLSerializer().serializeToString(await getMetadata());
     metadataString = CryptoJS.AES.encrypt(metadataString, decryptionKey).toString();
     const metadataResponse = await fetch(serverURL + "/api/metadata", {
         method: "PUT",
@@ -201,6 +227,34 @@ export async function initializeServer(serverURL, username, password) {
         body: metadataString
     });
     if (!metadataResponse.ok) return Promise.reject(await metadataResponse.text());
+
+    localStorage.clear();
+
+    localOptions.serverURL = serverURL;
+    storeOptions();
+    
+    return Promise.resolve();
+}
+
+export async function loginToServer(username, password) {
+    const hashedPassword = CryptoJS.SHA1(password).toString();
+    const userResponse = await fetch(localOptions.serverURL + "/api/users/me", {
+        headers: { "Authorization" : `Basic ${btoa(username + ":" + hashedPassword)}` }
+    });
+    if (!userResponse.ok) return Promise.reject(await userResponse.text());
+    user = await userResponse.json();
+
+    // Get the encryptedDecryptionPassword of the user, decrypt it and store it in the decryptionPassword variable
+    // TODO: Naming -- decryptionKey or decryptionPassword?
+    try {
+        encryptionPassword = CryptoJS.AES.decrypt(user.encryptedDecryptionKey, password).toString(CryptoJS.enc.Utf8);
+    } catch (error) {
+        console.log(error);
+    }
+
+    console.log(encryptionPassword);
+
+    return Promise.resolve();
 }
 
 function getHeaders(authorization, contentTypeJSON) {
@@ -235,19 +289,6 @@ export function showWarning(title, message) {
     $("#warning-modal h2").textContent = title;
     $("#warning-modal p").innerHTML = message;
     $("#warning-modal").classList.add("is-active");
-}
-
-export function setDecryptionPassword() {
-    const decryptionPassword = $("#login-modal #password-input").value;
-    const xmlString = localStorage.getItem("metadata");
-
-    try {
-        CryptoJS.AES.decrypt(xmlString, decryptionPassword).toString(CryptoJS.enc.Utf8);
-        encryptionPassword = decryptionPassword;
-        return Promise.resolve();
-    } catch (error) {
-        return Promise.reject(error);
-    }
 }
 
 export function download(filename, content) {

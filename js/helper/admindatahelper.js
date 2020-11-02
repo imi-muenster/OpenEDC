@@ -31,8 +31,8 @@ export function getAdmindata() {
     return admindata;
 }
 
-export function loadStoredAdmindata() {
-    admindata = ioHelper.getAdminata();
+export async function loadStoredAdmindata() {
+    admindata = await ioHelper.getAdmindata();
     if (!admindata) loadEmptyProject();
 }
 

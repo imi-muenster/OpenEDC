@@ -37,9 +37,9 @@ export async function loadExample() {
     storeMetadata();
 }
 
-export function loadStoredMetadata() {
+export async function loadStoredMetadata() {
     try {
-        metadata = ioHelper.getMetadata();
+        metadata = await ioHelper.getMetadata();
         return Promise.resolve()
     } catch (error) {
         return Promise.reject(error);

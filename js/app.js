@@ -20,6 +20,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.replace(ioHelper.getBaseURL().replace("/index.html", ""));
     }
 
+    // Load locally persisted options (e.g., the server url if a connection to an OpenEDC Server exists)
+    // TODO: Rename to configuration
+    ioHelper.loadOptions();
+
     // Initialize the application
     metadataHelper.loadStoredMetadata()
         .then(() => {
@@ -27,7 +31,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         })
         .catch(error => {
             if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND) showStartModal();
-            else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionPasswordModal();
+            else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionPasswordModal()
+            else if (error.code == ioHelper.loadXMLExceptionCodes.NOTLOGGEDIN) showLoginModal();
         });
 
     // Register serviceworker for offline capabilities
@@ -52,7 +57,7 @@ document.addEventListener("LanguageChanged", languageEvent => {
     ioHelper.hideMenu();
 });
 
-const startApp = () => {
+const startApp = async () => {
     languageHelper.init();
     languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
     languageHelper.createLanguageSelect();
@@ -61,12 +66,10 @@ const startApp = () => {
     metadataModule.init();
     metadataModule.setLanguage(languageHelper.getCurrentLocale());
 
-    admindataModule.init();
+    await admindataHelper.loadStoredAdmindata();
 
     clinicaldataModule.init();
     clinicaldataModule.setLanguage(languageHelper.getCurrentLocale());
-
-    ioHelper.loadOptions();
 
     setTitles();
     hideStartModal();
@@ -99,23 +102,19 @@ function showNavbar() {
 
 function showDecryptionPasswordModal() {
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
-    $("#login-modal #username-input").parentNode.parentNode.classList.add("is-hidden");
-    $("#login-modal #password-input").parentNode.parentNode.classList.remove("is-hidden");
-    $("#login-modal #password-incorrect-hint").classList.add("is-hidden");
     $("#login-modal h2").textContent = "Data is encrypted";
     $("#login-modal p").textContent = "Please enter the password that you used for the data encryption.";
 
-
     // Adjust the project options modal accordingly
     $("#encryption-password-input").parentNode.parentNode.classList.add("is-hidden");
-    $("#confirm-encryption-password-input").parentNode.parentNode.classList.add("is-hidden");
     $("#data-encryption-warning").classList.add("is-hidden");
     $("#data-encrypted-hint").classList.remove("is-hidden");
 
     // Set the click handler when clicking on the Open button
     $("#login-modal #open-button").onclick = clickEvent => {
         clickEvent.preventDefault();
-        ioHelper.setDecryptionPassword()
+        const decryptionPassword = $("#login-modal #password-input").value;
+        ioHelper.setDecryptionPassword(decryptionPassword)
             .then(() => {
                 $("#login-modal #password-input").value = "";
                 $("#login-modal").classList.remove("is-active");
@@ -124,6 +123,49 @@ function showDecryptionPasswordModal() {
             .catch(() => {
                 $("#login-modal #password-input").value = "";
                 $("#login-modal #password-incorrect-hint").classList.remove("is-hidden");
+            });
+    };
+    $("#login-modal #password-input").onkeydown = keyEvent => {
+        if (keyEvent.code == "Enter") {
+            // .focus() hides the password manager prompt on macOS Safari
+            $("#login-modal #open-button").focus();
+            $("#login-modal #open-button").click();
+        }
+    };
+
+    $("#login-modal").classList.add("is-active");
+}
+
+function showLoginModal() {
+    // TODO: Similar to previous function, both should share code to reduce code
+
+    // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
+    $("#login-modal #username-input").parentNode.parentNode.classList.remove("is-hidden");
+    $("#login-modal h2").textContent = "Please login";
+    $("#login-modal p").textContent = "You are connected to an OpenEDC Server. Please login with your credentials.";
+
+    // Adjust the project options modal accordingly
+    $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
+    $("#server-connected-hint").classList.remove("is-hidden");
+    $("#encryption-password-input").parentNode.parentNode.classList.add("is-hidden");
+    $("#data-encryption-warning").classList.add("is-hidden");
+    $("#data-encrypted-hint").classList.remove("is-hidden");
+
+    // Set the click handler when clicking on the Open button
+    $("#login-modal #open-button").onclick = clickEvent => {
+        clickEvent.preventDefault();
+        const username = $("#login-modal #username-input").value;
+        const password = $("#login-modal #password-input").value;
+        ioHelper.loginToServer(username, password)
+            .then(() => {
+                $("#login-modal #username-input").value = "";
+                $("#login-modal #password-input").value = "";
+                $("#login-modal").classList.remove("is-active");
+                metadataHelper.loadStoredMetadata().then(() => startApp());
+            })
+            .catch(() => {
+                $("#login-modal #password-input").value = "";
+                $("#login-modal #username-password-incorrect-hint").classList.remove("is-hidden");
             });
     };
     $("#login-modal #password-input").onkeydown = keyEvent => {
@@ -261,7 +303,7 @@ window.initializeServer = function(event) {
 
     // Initialize the server, i.e., set the owner of the server with the entered data and transfer all data
     ioHelper.initializeServer(serverURL, username, password)
-        .then(() => console.log("All good."))
+        .then(() => window.location.reload())
         .catch(error => ioHelper.showWarning("Account not created", error));
 }
 
