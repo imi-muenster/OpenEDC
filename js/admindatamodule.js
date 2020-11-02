@@ -149,7 +149,10 @@ window.removeSite = function() {
         .catch(error => {
             switch (error) {
                 case admindataHelper.errors.SITEHASSUBJECTS:
-                    ioHelper.showWarning("Site not removed", "The site could not be removed since there is at least one subject assigned to it. To remove a site, you have to remove all subjects assigned to this site first.");
+                    ioHelper.showWarning("Site not removed", "The site could not be removed since there is at least one subject assigned to it.");
+                    break;
+                case admindataHelper.errors.SITEHASUSERS:
+                    ioHelper.showWarning("Site not removed", "The site could not be removed since there is at least one user assigned to it.");
             }
         });
 }

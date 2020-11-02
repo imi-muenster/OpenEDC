@@ -7,7 +7,8 @@ const $ = query => admindata.querySelector(query);
 const $$ = query => admindata.querySelectorAll(query);
 
 export const errors = {
-    SITEHASSUBJECTS: 0
+    SITEHASSUBJECTS: 0,
+    SITEHASUSERS: 1
 }
 
 let admindata = null;
@@ -126,6 +127,7 @@ export function setSiteName(siteOID, name) {
 
 export function removeSite(siteOID) {
     if (clinicaldataHelper.getSubjectKeys(siteOID).length > 0) return Promise.reject(errors.SITEHASSUBJECTS);
+    if ($(`User LocationRef[LocationOID="${siteOID}"]`)) return Promise.reject(errors.SITEHASUSERS);
 
     const site = getSite(siteOID);
     if (site) site.remove();
