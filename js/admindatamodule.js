@@ -37,9 +37,13 @@ export async function loadUsers() {
     }
 
     // Also, if connected to a server, add the user rights
-    if (ioHelper.getServerURL) {
+    if (ioHelper.getServerURL()) {
+        $("#user-rights").classList.remove("is-hidden");
         const userRights = await ioHelper.getUserRights();
-        console.log(userRights);
+        ioHelper.removeElements($$("#user-rights .checkbox"));
+        for (let userRight of Object.values(userRights)) {
+            $("#user-rights").insertAdjacentHTML("beforeend", `<label class="checkbox"><input type="checkbox"> <span>${userRight}</span></label>`);
+        }
     }
 }
 
