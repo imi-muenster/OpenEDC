@@ -67,7 +67,7 @@ const startApp = async () => {
 
     await admindataHelper.loadStoredAdmindata();
 
-    clinicaldataModule.init();
+    await clinicaldataModule.init();
     clinicaldataModule.setLanguage(languageHelper.getCurrentLocale());
 
     setTitles();
@@ -114,7 +114,7 @@ function showDecryptionKeyModal() {
             .catch(loginNotSuccessful);
     };
 
-    prepareLoginModal();
+    renderLoginModal();
 }
 
 function showLoginModal() {
@@ -140,21 +140,13 @@ function showLoginModal() {
             .catch(loginNotSuccessful);
     };
 
-    prepareLoginModal();
+    renderLoginModal();
 }
 
-function prepareLoginModal() {
-    $("#encryption-password-input").parentNode.parentNode.classList.add("is-hidden");
-    $("#data-encryption-warning").classList.add("is-hidden");
-    $("#data-encrypted-hint").classList.remove("is-hidden");
-
-    $("#login-modal #password-input").onkeydown = keyEvent => {
-        if (keyEvent.code == "Enter") {
-            // .focus() hides the password manager prompt on macOS Safari
-            $("#login-modal #open-button").focus();
-            $("#login-modal #open-button").click();
-        }
-    };
+function renderLoginModal() {
+    $("#project-modal #encryption-password-input").parentNode.parentNode.classList.add("is-hidden");
+    $("#project-modal #data-encryption-warning").classList.add("is-hidden");
+    $("#project-modal #data-encrypted-hint").classList.remove("is-hidden");
 
     $("#login-modal").classList.add("is-active");
 }
@@ -284,17 +276,17 @@ window.connectToExistingServer = function() {
     const serverURL = $("#existing-server-url-input").value;
 
     ioHelper.getServerStatus(serverURL)
-    .then(status => {
-        switch (status) {
-            case ioHelper.serverConnectionStatus.SERVERNOTINITIALIZED:
-                ioHelper.showWarning("Server not initialized", "The server has not been initialized and is empty. You can initialize the server by going back, opening a local project, and then connecting to the server via the Project Options button.");
-                break;
-            case ioHelper.serverConnectionStatus.SERVERINITIALIZED:
-                ioHelper.setServerURL(serverURL);
-                window.location.reload();
-        }
-    })
-    .catch(() => ioHelper.showWarning("Server not found", "There could be no OpenEDC Server found for this URL."));
+        .then(status => {
+            switch (status) {
+                case ioHelper.serverConnectionStatus.SERVERNOTINITIALIZED:
+                    ioHelper.showWarning("Server not initialized", "The server has not been initialized and is empty. You can initialize the server by going back, opening a local project, and then connecting to the server via the Project Options button.");
+                    break;
+                case ioHelper.serverConnectionStatus.SERVERINITIALIZED:
+                    ioHelper.setServerURL(serverURL);
+                    window.location.reload();
+            }
+        })
+        .catch(() => ioHelper.showWarning("Server not found", "There could be no OpenEDC Server found for this URL."));
 }
 
 window.initializeServer = function(event) {

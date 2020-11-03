@@ -56,9 +56,7 @@ async function getStoredXMLData(fileName) {
     if (localOptions.serverURL) {
         console.log("Load stored xml data from server ...", fileName);
         if (!user) throw new LoadXMLException(loadXMLExceptionCodes.NOTLOGGEDIN);
-        const xmlResponse = await fetch(getApiUrlFromFileName(fileName), {
-            headers: getHeaders(true)
-        });
+        const xmlResponse = await fetch(getApiUrlFromFileName(fileName), { headers: getHeaders(true) });
         if (!xmlResponse.ok) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
         xmlString = await xmlResponse.text();
     } else {
@@ -111,6 +109,21 @@ function getApiUrlFromFileName(fileName) {
     else apiUrl += "clinicaldata/" + fileName;
 
     return apiUrl;
+}
+
+export async function getSubjectFileNames() {
+    let subjectFileNames = [];
+
+    if (localOptions.serverURL) {
+        const response = await fetch(localOptions.serverURL + "/api/clinicaldata", { headers: getHeaders(true) });
+        subjectFileNames = await response.json();
+    } else {
+        for (let fileName of Object.keys(localStorage)) {
+            if (fileName.split(fileNameSeparator).length > 1) subjectFileNames.push(fileName);
+        }
+    }
+
+    return subjectFileNames;
 }
 
 export function encryptXMLData(key) {
@@ -168,22 +181,12 @@ export async function getSubjectData(fileName) {
     return subjectData.documentElement;
 }
 
-export function storeSubjectData(fileName, subjectData) {
-    storeXMLData(fileName, subjectData);
+export async function storeSubjectData(fileName, subjectData) {
+    await storeXMLData(fileName, subjectData);
 }
 
 export function removeSubjectData(fileName) {
     localStorage.removeItem(fileName);
-}
-
-export function getSubjectFileNames() {
-    const subjectFileNames = [];
-
-    for (let fileName of Object.keys(localStorage)) {
-        if (fileName.split(fileNameSeparator).length > 1) subjectFileNames.push(fileName);
-    }
-
-    return subjectFileNames;
 }
 
 function storeOptions() {
@@ -247,7 +250,7 @@ export async function initializeServer(serverURL, username, password) {
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
     user = await userResponse.json();
 
-    // Send all existing data encrypted to the server
+    // Send all existing metadata encrypted to the server
     let metadataString = new XMLSerializer().serializeToString(await getMetadata());
     metadataString = CryptoJS.AES.encrypt(metadataString, decryptionKey).toString();
     const metadataResponse = await fetch(serverURL + "/api/metadata", {
@@ -257,6 +260,7 @@ export async function initializeServer(serverURL, username, password) {
     });
     if (!metadataResponse.ok) return Promise.reject(await metadataResponse.text());
 
+    // Send all existing metadata encrypted to the server
     let admindataString = new XMLSerializer().serializeToString(await getAdmindata());
     admindataString = CryptoJS.AES.encrypt(admindataString, decryptionKey).toString();
     const admindataResponse = await fetch(serverURL + "/api/admindata", {
@@ -265,6 +269,20 @@ export async function initializeServer(serverURL, username, password) {
         body: admindataString
     });
     if (!admindataResponse.ok) return Promise.reject(await admindataResponse.text());
+
+    // Send all existing clinicaldata encrypted to the server
+    // TODO: Naming -- subjectData vs subjectdata?
+    const subjectFileNames = await getSubjectFileNames();
+    for (const subjectFileName of subjectFileNames) {
+        let subjectDataString = new XMLSerializer().serializeToString(await getSubjectData(subjectFileName));
+        subjectDataString = CryptoJS.AES.encrypt(subjectDataString, decryptionKey).toString();
+        const clinicaldataResponse = await fetch(serverURL + "/api/clinicaldata/" + subjectFileName, {
+            method: "PUT",
+            headers: getHeaders(true),
+            body: subjectDataString
+        });
+        if (!clinicaldataResponse.ok) return Promise.reject(await admindataResponse.text());
+    }
 
     localStorage.clear();
 

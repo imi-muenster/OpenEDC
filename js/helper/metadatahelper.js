@@ -63,6 +63,7 @@ export function clearMetadata() {
 }
 
 export async function getFormAsHTML(formOID, locale) {
+    // TODO: prettifiedODM and xsltStylesheet could be cached to improve performance
     let prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
 
     let xsltResponse = await fetch(ioHelper.getBaseURL() + "xsl/odmtohtml.xsl");

@@ -83,26 +83,28 @@ export async function getClinicalData(studyOID, metadataVersionOID) {
     return clinicalData;
 }
 
-export function loadSubjects() {
+export async function loadSubjects() {
     console.log("Load subjects ...");
     subjects = [];
 
-    for (let fileName of ioHelper.getSubjectFileNames()) {
+    const subjectFileNames = await ioHelper.getSubjectFileNames();
+    for (let fileName of subjectFileNames) {
         subjects.push(fileNameToSubject(fileName));
     }
 }
 
-export function addSubject(subjectKey, siteOID) {
+export async function addSubject(subjectKey, siteOID) {
     if (subjectKey.length == 0) return Promise.reject(errors.SUBJECTKEYEMPTY);
     if (subjects.map(subject => subject.key).includes(subjectKey)) return Promise.reject(errors.SUBJECTKEYEXISTENT);
 
     subjectData = clinicaldataTemplates.getSubjectData(subjectKey);
     if (siteOID) subjectData.insertAdjacentElement("afterbegin", clinicaldataTemplates.getSiteRef(siteOID));
 
+    // TODO: Should work differently. First check if subjectKey is not occupied, and then more server interaction
     subject = new Subject(subjectKey, siteOID, new Date());
     subjects.push(subject);
 
-    storeSubject();
+    await storeSubject();
 
     return Promise.resolve();
 }
@@ -136,11 +138,11 @@ export async function loadSubject(subjectKey) {
     }
 }
 
-export function storeSubject() {
+export async function storeSubject() {
     if (!subject) return;
     
     console.log("Store subject ...");
-    ioHelper.storeSubjectData(subjectToFilename(subject), subjectData);
+    await ioHelper.storeSubjectData(subjectToFilename(subject), subjectData);
 }
 
 export function clearSubject() {
@@ -148,19 +150,16 @@ export function clearSubject() {
     subjectData = null;
 }
 
-export function removeSubject() {
+export async function removeSubject() {
     ioHelper.removeSubjectData(subjectToFilename(subject));
     clearSubject();
-    loadSubjects();
+    await loadSubjects();
 }
 
-export function removeClinicaldata() {
+export async function removeClinicaldata() {
     for (let subject of subjects) {
         ioHelper.removeSubjectData(subjectToFilename(subject));
     }
-
-    clearSubject();
-    loadSubjects();
 }
 
 function fileNameToSubject(fileName) {
@@ -258,7 +257,7 @@ export function getAuditRecordFormData(studyEventOID, formOID, date) {
     return formData ? getFormItemDataList(formData) : null;
 }
 
-export function setSubjectInfo(subjectKey, siteOID) {
+export async function setSubjectInfo(subjectKey, siteOID) {
     // Check if if key is set or if there is another subject with the same key
     if (subjectKey.length == 0) return Promise.reject(errors.SUBJECTKEYEMPTY);
     const subjectWithKey = subjects.find(subject => subject.key == subjectKey);
@@ -279,8 +278,8 @@ export function setSubjectInfo(subjectKey, siteOID) {
         if (siteRef) siteRef.remove();
     }
 
-    storeSubject();
-    loadSubjects();
+    await storeSubject();
+    await loadSubjects();
 
     return Promise.resolve();
 }
@@ -294,7 +293,7 @@ export function getDataStatusForForm(studyEventOID, formOID) {
 }
 
 export async function getSubjectsHavingDataForElement(elementOID) {
-    if (subjects.length == 0) loadSubjects();
+    await loadSubjects();
 
     let subjectKeys = [];
     for (const subject of subjects) {

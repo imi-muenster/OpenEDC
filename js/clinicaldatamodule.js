@@ -27,14 +27,14 @@ let cachedFormDataIsAuditRecord = false;
 let deferredFunction = null;
 let surveyCode = null;
 
-export function init() {
+export async function init() {
     currentElementID.subject = null;
 
     createSiteFilterSelect();
     createSortTypeSelect();
     setIOListeners();
 
-    clinicaldataHelper.loadSubjects();
+    await clinicaldataHelper.loadSubjects();
 }
 
 export function show() {
@@ -689,8 +689,8 @@ window.saveSubjectInfo = function() {
         });
 }
 
-window.removeSubject = function() {
-    clinicaldataHelper.removeSubject();
+window.removeSubject = async function() {
+    await clinicaldataHelper.removeSubject();
     currentElementID.subject = null;
     
     loadSubjectKeys();
