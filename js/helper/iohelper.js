@@ -17,6 +17,11 @@ export const serverConnectionStatus = {
     SERVERNOTINITIALIZED: 2
 }
 
+export const loginStatus = {
+    WRONGCREDENTIALS: 0,
+    USERHASINITIALPASSWORD: 1
+}
+
 const $ = query => document.querySelector(query);
 
 const metadataFileName = "metadata";
@@ -297,7 +302,7 @@ export async function loginToServer(username, password) {
     const userResponse = await fetch(localOptions.serverURL + "/api/users/me", {
         headers: { "Authorization" : `Basic ${btoa(username + ":" + hashedPassword)}` }
     });
-    if (!userResponse.ok) return Promise.reject(await userResponse.text());
+    if (!userResponse.ok) return Promise.reject(loginStatus.WRONGCREDENTIALS);
     user = await userResponse.json();
 
     // Get the encryptedDecryptionKey of the user, decrypt it and store it in the decryptionKey variable
@@ -306,6 +311,26 @@ export async function loginToServer(username, password) {
     } catch (error) {
         console.log(error);
     }
+
+    // Test if the user has an initial password
+    if (user.hasInitialPassword) return Promise.reject(loginStatus.USERHASINITIALPASSWORD);
+
+    return Promise.resolve();
+}
+
+export async function setOwnPassword(username, password) {
+    if (!user) return Promise.reject(loginStatus.WRONGCREDENTIALS);
+
+    const hashedPassword = CryptoJS.SHA1(password).toString();
+    const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, password).toString();
+    const credentials = { username, hashedPassword, encryptedDecryptionKey };
+    
+    const userResponse = await fetch(localOptions.serverURL + "/api/users/me", {
+        method: "PUT",
+        headers: getHeaders(true, true),
+        body: JSON.stringify(credentials)
+    });
+    if (!userResponse.ok) return Promise.reject(await userResponse.text());
 
     return Promise.resolve();
 }

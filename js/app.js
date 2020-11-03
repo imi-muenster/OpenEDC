@@ -101,6 +101,7 @@ function showNavbar() {
 
 function showDecryptionKeyModal() {
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
+    $("#login-modal #username-input").parentNode.parentNode.classList.add("is-hidden");
     $("#login-title").textContent = "Data is encrypted";
     $("#login-text").textContent = "Please enter the password that you used for the data encryption.";
     $("#login-incorrect-hint .message-body").textContent = "The password is incorrect. Please try again.";
@@ -119,7 +120,6 @@ function showDecryptionKeyModal() {
 
 function showLoginModal() {
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
-    $("#login-modal #username-input").parentNode.parentNode.classList.remove("is-hidden");
     $("#login-modal #server-url").classList.remove("is-hidden");
     $("#login-title").textContent = "Please login";
     $("#login-text").textContent = "You are connected to an OpenEDC Server. Please login with your credentials.";
@@ -135,9 +135,22 @@ function showLoginModal() {
         clickEvent.preventDefault();
         const username = $("#login-modal #username-input").value;
         const password = $("#login-modal #password-input").value;
-        ioHelper.loginToServer(username, password)
-            .then(loginSuccessful)
-            .catch(loginNotSuccessful);
+        const confirmPassword = $("#login-modal #confirm-password-input").value;
+
+        // TODO: Code refactoring -- not very nice, clean code
+        if (!confirmPassword) {
+            ioHelper.loginToServer(username, password)
+                .then(loginSuccessful)
+                .catch(loginNotSuccessful);
+        } else {
+            if (!password || password != confirmPassword || password.lengt < 8) {
+                ioHelper.showWarning("Password not set", "The password could not be set. Please ensure that you entered the same password with at least 8 characters both times equally.");
+                return;
+            }
+            ioHelper.setOwnPassword(username, password)
+                .then(() => window.location.reload())
+                .catch(error => ioHelper.showWarning("Password not set", error));
+        }
     };
 
     renderLoginModal();
@@ -158,9 +171,18 @@ function loginSuccessful() {
     metadataHelper.loadStoredMetadata().then(() => startApp());
 }
 
-function loginNotSuccessful() {
+function loginNotSuccessful(error) {
     $("#login-modal #password-input").value = "";
-    $("#login-modal #login-incorrect-hint").classList.remove("is-hidden");
+
+    switch (error) {
+        case ioHelper.loginStatus.USERHASINITIALPASSWORD:
+            $("#login-text").textContent = "This is the first time you log in to the OpenEDC Server. Please choose a new secure password.";
+            $("#login-modal #confirm-password-input").parentNode.parentNode.classList.remove("is-hidden");
+            $("#login-modal #username-input").disabled = true;
+            break;
+        default:
+            $("#login-modal #login-incorrect-hint").classList.remove("is-hidden");
+    }
 }
 
 window.newProject = function() {
@@ -297,6 +319,7 @@ window.initializeServer = function(event) {
     const password = $("#owner-password-input").value;
     const confirmPassword = $("#owner-confirm-password-input").value;
 
+    // TODO: Implement this generically and move to ioHelper for other functions as well (e.g., setting a new non-initial password) -- or in the server?!
     if (!username || !password || !confirmPassword) {
         ioHelper.showWarning("Account not created", "Please enter all fields.");
         return;
