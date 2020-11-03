@@ -6,16 +6,20 @@ import * as htmlElements from "./helper/htmlelements.js";
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-export function loadUsers() {
+export async function loadUsers() {
     ioHelper.removeElements($$("#users-options .panel a"));
     ioHelper.safeRemoveElement($("#user-site-select-outer"));
 
     $("#user-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("user-site-select", true, true, [], null));
     $("#user-first-name-input").value = "";
     $("#user-last-name-input").value = "";
+    $("#user-username-input").value = "";
+    $("#user-password-input").value = "";
     $("#user-site-select-inner").disabled = true;
     $("#user-first-name-input").disabled = true;
     $("#user-last-name-input").disabled = true;
+    $("#user-username-input").disabled = true;
+    $("#user-password-input").disabled = true;
     $("#user-save-button").disabled = true;
     $("#user-remove-button").disabled = true;
 
@@ -30,6 +34,12 @@ export function loadUsers() {
         panelBlock.setAttribute("oid", user.getAttribute("OID"));
         panelBlock.onclick = () => loadUser(user.getAttribute("OID"));
         $("#add-user-button").insertAdjacentElement("beforebegin", panelBlock);
+    }
+
+    // Also, if connected to a server, add the user rights
+    if (ioHelper.getServerURL) {
+        const userRights = await ioHelper.getUserRights();
+        console.log(userRights);
     }
 }
 
@@ -57,6 +67,11 @@ function loadUser(userOID) {
     $("#user-last-name-input").disabled = false;
     $("#user-save-button").disabled = false;
     $("#user-remove-button").disabled = false;
+
+    if (ioHelper.getServerURL()) {
+        $("#user-username-input").disabled = false;
+        $("#user-password-input").disabled = false;
+    }
 }
 
 window.addUser = function() {
@@ -70,7 +85,13 @@ window.saveUser = function() {
     const userOID = $("#users-options .panel a.is-active").getAttribute("oid");
     if (!userOID) return;
 
-    admindataHelper.setUserInfo(userOID, $("#user-first-name-input").value, $("#user-last-name-input").value, admindataHelper.getSiteOIDByName($("#user-site-select-inner").value));
+    const firstName = $("#user-first-name-input").value;
+    const lastName = $("#user-last-name-input").value
+    const locationOID = admindataHelper.getSiteOIDByName($("#user-site-select-inner").value);
+    const username = $("#user-username-input").value;
+    const password = $("#user-password-input").value;
+    admindataHelper.setUserInfo(userOID, firstName, lastName, locationOID, username, password, null);
+
     loadUsers();
 }
 

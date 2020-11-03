@@ -335,12 +335,38 @@ export async function setOwnPassword(username, password) {
     return Promise.resolve();
 }
 
+// TODO: Naming -- should I add a new serverhelper.js that handles all server communication?
+export async function setUserOnServer(oid, username, password, rights, site) {
+    if (!localOptions.serverURL) return;
+    
+    let userData = null;
+    if (username && password) {
+        const hashedPassword = CryptoJS.SHA1(password).toString();
+        const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, password).toString();
+        userData = { username, hashedPassword, encryptedDecryptionKey, rights, site };
+    } else {
+        userData = { rights, site };
+    }
+
+    const userResponse = await fetch(localOptions.serverURL + "/api/users/" + oid, {
+        method: "PUT",
+        headers: getHeaders(true, true),
+        body: JSON.stringify(userData)
+    });
+    if (!userResponse.ok) return Promise.reject(await userResponse.text());
+}
+
 function getHeaders(authorization, contentTypeJSON) {
     let headers = {};
     if (authorization) headers["Authorization"] = `Basic ${btoa(user.username + ":" + user.hashedPassword)}`;
     if (contentTypeJSON) headers["Content-Type"] = "application/json";
 
     return headers;
+}
+
+export async function getUserRights() {
+    const rightsResponse = await fetch(localOptions.serverURL + "/api/users/rights");
+    return await rightsResponse.json();
 }
 
 export function removeElements(elements) {
