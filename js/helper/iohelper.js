@@ -356,6 +356,14 @@ export async function setUserOnServer(oid, username, password, rights, site) {
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
 }
 
+export async function getUserOnServer(oid) {
+    const userResponse = await fetch(localOptions.serverURL + "/api/users/" + oid, { headers: getHeaders(true) });
+    if (!userResponse.ok) return Promise.reject();
+
+    const user = await userResponse.json();
+    return Promise.resolve(user);
+}
+
 function getHeaders(authorization, contentTypeJSON) {
     let headers = {};
     if (authorization) headers["Authorization"] = `Basic ${btoa(user.username + ":" + user.hashedPassword)}`;

@@ -42,7 +42,7 @@ export async function loadUsers() {
         const userRights = await ioHelper.getUserRights();
         ioHelper.removeElements($$("#user-rights .checkbox"));
         for (let userRight of Object.values(userRights)) {
-            $("#user-rights").insertAdjacentHTML("beforeend", `<label class="checkbox"><input type="checkbox"> <span>${userRight}</span></label>`);
+            $("#user-rights").insertAdjacentHTML("beforeend", `<label class="checkbox"><input type="checkbox" name="${userRight}"> ${userRight}</label>`);
         }
     }
 }
@@ -75,6 +75,16 @@ function loadUser(userOID) {
     if (ioHelper.getServerURL()) {
         $("#user-username-input").disabled = false;
         $("#user-password-input").disabled = false;
+
+        // Get the user from the server and show its rights -- first, uncheck all rights checkboxes
+        $$(`#user-rights input`).forEach(checkbox => checkbox.checked = false);
+        ioHelper.getUserOnServer(userOID)
+            .then(user => {
+                for (let checkbox of $$(`#user-rights input`)) {
+                    if (user.rights && user.rights.includes(checkbox.name)) checkbox.checked = true;
+                }
+            })
+            .catch(() => console.log("The selected user is currently not synced to the server."));
     }
 }
 
@@ -94,7 +104,9 @@ window.saveUser = function() {
     const locationOID = admindataHelper.getSiteOIDByName($("#user-site-select-inner").value);
     const username = $("#user-username-input").value;
     const password = $("#user-password-input").value;
-    admindataHelper.setUserInfo(userOID, firstName, lastName, locationOID, username, password, null);
+    // It seems that .name alaways works instead of .getAttribute("name") -- could be replaced for other occurrences
+    const rights = Array.from($$("#user-rights input:checked")).map(checkbox => checkbox.name);
+    admindataHelper.setUserInfo(userOID, firstName, lastName, locationOID, username, password, rights);
 
     loadUsers();
 }
