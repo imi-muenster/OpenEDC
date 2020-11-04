@@ -75,16 +75,14 @@ function loadUser(userOID) {
     if (ioHelper.getServerURL()) {
         $("#user-username-input").disabled = false;
         $("#user-password-input").disabled = false;
-
-        // Get the user from the server and show its rights -- first, uncheck all rights checkboxes
         $$(`#user-rights input`).forEach(checkbox => checkbox.checked = false);
         ioHelper.getUserOnServer(userOID)
             .then(user => {
-                for (let checkbox of $$(`#user-rights input`)) {
+                $$(`#user-rights input`).forEach(checkbox => {
                     if (user.rights && user.rights.includes(checkbox.name)) checkbox.checked = true;
-                }
+                });
             })
-            .catch(() => console.log("The selected user is currently not synced to the server."));
+            .catch(() => console.log("The selected user could not be loaded from the server (i.e., offline, no permission, or user not yet synced with the server)."));
     }
 }
 
@@ -115,8 +113,17 @@ window.removeUser = function() {
     const userOID = $("#users-options .panel a.is-active").getAttribute("oid");
     if (!userOID) return;
 
-    admindataHelper.removeUser(userOID);
-    loadUsers();
+    if (ioHelper.getServerURL()) {
+        ioHelper.deleteUserOnServer(userOID)
+            .then(() => {
+                admindataHelper.removeUser(userOID);
+                loadUsers();
+            })
+            .catch(() => ioHelper.showWarning("User not removed", "The user could not be removed. It seems that you are connected to an OpenEDC Server but the user could not be removed from the server. Please check your Internet connection and try again."));
+    } else {
+        admindataHelper.removeUser(userOID);
+        loadUsers();
+    }
 }
 
 export function loadSites() {

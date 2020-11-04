@@ -364,6 +364,15 @@ export async function getUserOnServer(oid) {
     return Promise.resolve(user);
 }
 
+export async function deleteUserOnServer(oid) {
+    await fetch(localOptions.serverURL + "/api/users/" + oid, {
+        method: "DELETE",
+        headers: getHeaders(true)
+    }).catch(() => Promise.reject());
+
+    return Promise.resolve();
+}
+
 function getHeaders(authorization, contentTypeJSON) {
     let headers = {};
     if (authorization) headers["Authorization"] = `Basic ${btoa(user.username + ":" + user.hashedPassword)}`;
