@@ -431,7 +431,7 @@
                             <p>With the following option you can connect to an OpenEDC Server. Please note that you need a username and password that were given to you by the server owner.</p>
                             <div class="field has-addons mt-5 mb-5">
                                 <div class="control is-expanded">
-                                    <input class="input" id="existing-server-url-input" type="text" placeholder="Server URL" value="http://localhost:3000">
+                                    <input class="input" id="existing-server-url-input" type="text" placeholder="Server URL">
                                 </div>
                                 <div class="control">
                                     <a class="button is-link" onclick="connectToExistingServer()">Connect</a>
@@ -484,7 +484,7 @@
                             <p>With this option you can connect to an OpenEDC Server. This lets you create projects with multiple users. This also backups all data for you automatically. All data is end-to-end-encrypted by default.</p>
                             <div class="field has-addons mt-5">
                                 <div class="control is-expanded">
-                                    <input class="input is-small" id="server-url-input" type="text" placeholder="Server URL" value="http://localhost:3000">
+                                    <input class="input is-small" id="server-url-input" type="text" placeholder="Server URL">
                                 </div>
                                 <div class="control">
                                     <a class="button is-link is-small" onclick="connectToEmptyServer()">Connect</a>
@@ -492,9 +492,9 @@
                             </div>
                             <form class="mt-5 is-hidden" id="initialize-server-form">
                                 <strong>A new OpenEDC Server could be found. You can now create an account for the server.</strong>
-                                <input class="input is-small mt-5" id="owner-username-input" type="text" placeholder="Username" value="owner">
-                                <input class="input is-small mt-3" id="owner-password-input" type="text" placeholder="Password" value="test1234">
-                                <input class="input is-small mt-3" id="owner-confirm-password-input" type="text" placeholder="Password (confirm)" value="test1234">
+                                <input class="input is-small mt-5" id="owner-username-input" type="text" placeholder="Username">
+                                <input class="input is-small mt-3" id="owner-password-input" type="text" placeholder="Password">
+                                <input class="input is-small mt-3" id="owner-confirm-password-input" type="text" placeholder="Password (confirm)">
                                 <button class="button is-link is-small mt-5" onclick="initializeServer(event)">Create user</button>
                             </form>
                         </div>

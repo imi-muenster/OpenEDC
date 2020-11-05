@@ -297,8 +297,8 @@ export async function getSubjectsHavingDataForElement(elementOID) {
 
     let subjectKeys = [];
     for (const subject of subjects) {
-        const subjectData = await ioHelper.getSubjectData(localStorage.getItem(subjectToFilename(subject)));
-        if (subjectData.includes(elementOID)) subjectKeys.push(subject.key);
+        const subjectData = await ioHelper.getSubjectData(subjectToFilename(subject));
+        if (new XMLSerializer().serializeToString(subjectData).includes(elementOID)) subjectKeys.push(subject.key);
     }
 
     return subjectKeys;

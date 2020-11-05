@@ -468,7 +468,8 @@ window.saveElement = async function() {
     const newOID = $("#oid-input").value;
     const currentElementOID = getCurrentElementOID();
     if (currentElementOID != newOID) {
-        if (await clinicaldataHelper.getSubjectsHavingDataForElement(currentElementOID) == 0) {
+        const getSubjectsHavingDataForElement = await clinicaldataHelper.getSubjectsHavingDataForElement(currentElementOID);
+        if (getSubjectsHavingDataForElement.length == 0) {
             if (metadataHelper.setElementOID(currentElementOID, newOID, currentElementType)) {
                 setCurrentElementOID(newOID);
             } else {
@@ -1015,7 +1016,8 @@ window.elementDrop = async function(event) {
     let sourceElementRef = null;
     let targetElementRef = null;
 
-    if (sourceParentOID != targetParentOID && await clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID).length > 0) {
+    const subjectsHavingDataForElement = await clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID);
+    if (sourceParentOID != targetParentOID && subjectsHavingDataForElement.length > 0) {
         ioHelper.showWarning("Element not moved", "The element could not be moved since there is clinical data assigned to it. You can try to remove the element to see a list of subjects that contain data for this element.");
         return;
     }

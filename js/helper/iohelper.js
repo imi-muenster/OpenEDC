@@ -200,6 +200,8 @@ function storeOptions() {
 }
 
 export function setServerURL(serverURL) {
+    if (!serverURL.includes("http") && !serverURL.includes("https")) serverURL = "https://" + serverURL;
+    
     localOptions.serverURL = serverURL;
     storeOptions();
 }
@@ -238,6 +240,8 @@ export async function getServerStatus(serverURL) {
 }
 
 export async function initializeServer(serverURL, username, password) {
+    if (!serverURL.includes("http") && !serverURL.includes("https")) serverURL = "https://" + serverURL;
+    
     // Create a random key that is used for data encryption and encrypt it with the password of the user
     const decryptionKey = CryptoJS.lib.WordArray.random(32).toString();
     const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, password).toString();
