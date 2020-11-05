@@ -263,8 +263,8 @@ export async function setSubjectInfo(subjectKey, siteOID) {
     const subjectWithKey = subjects.find(subject => subject.key == subjectKey);
     if (subjectWithKey && subjectWithKey.key != subject.key) return Promise.reject(errors.SUBJECTKEYEXISTENT);
 
-    // Remove currenlty stored subject
-    await ioHelper.removeSubjectData(subjectToFilename(subject));
+    // Store the current file name to remove the old subject after the new one has been stored
+    const previousFileName = subjectToFilename(subject);
 
     // Adjust subject and its clinicaldata
     subject.key = subjectKey;
@@ -277,8 +277,9 @@ export async function setSubjectInfo(subjectKey, siteOID) {
     } else {
         if (siteRef) siteRef.remove();
     }
-
+    
     await storeSubject();
+    await ioHelper.removeSubjectData(previousFileName);
     await loadSubjects();
 
     return Promise.resolve();

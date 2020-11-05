@@ -185,6 +185,7 @@ async function loadSubjectData(subjectKey) {
     ioHelper.removeIsActiveFromElement($("#subject-panel-blocks a.is-active"));
     if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
     $("#subject-info-button").disabled = currentElementID.subject ? false : true;
+    if (ioHelper.getServerURL() && !ioHelper.getLocalUser().rights.includes("Manage subjects")) $("#subject-info-button").disabled = true;
 
     await clinicaldataHelper.loadSubject(currentElementID.subject);
     await reloadTree();

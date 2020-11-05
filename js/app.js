@@ -164,11 +164,31 @@ function renderLoginModal() {
     $("#login-modal").classList.add("is-active");
 }
 
-function loginSuccessful() {
+async function loginSuccessful() {
     $("#login-modal #username-input").value = "";
     $("#login-modal #password-input").value = "";
     $("#login-modal").classList.remove("is-active");
-    metadataHelper.loadStoredMetadata().then(() => startApp());
+
+    await metadataHelper.loadStoredMetadata();
+    await startApp();
+
+    // When connected to a server, adjust UI in accordance with the user rights (i.e., disable buttons for various things)
+    if (!ioHelper.getServerURL()) return;
+    const user = ioHelper.getLocalUser();
+    if (!user.rights.includes("Project options")) {
+        $("#project-modal-button").disabled = true;
+    };
+    if (!user.rights.includes("Edit metadata")) {
+        metadataModule.hide();
+        $("#metadata-toggle-button").disabled = true;
+    };
+    if (!user.rights.includes("Add subject data")) {
+        $("#add-subject-input").disabled = true;
+        $("#add-subject-button").disabled = true;
+    };
+    if (!user.rights.includes("Manage subjects")) {
+        $("#subject-info-button").disabled = true;
+    };
 }
 
 function loginNotSuccessful(error) {

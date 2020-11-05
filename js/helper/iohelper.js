@@ -217,6 +217,10 @@ export function getServerURL() {
     return localOptions.serverURL;
 }
 
+export function getLocalUser() {
+    return user;
+}
+
 export function setSurveyCode(surveyCode) {
     if (parseInt(surveyCode) == surveyCode && surveyCode.length == 4) {
         globalOptions.surveyCode = surveyCode;
