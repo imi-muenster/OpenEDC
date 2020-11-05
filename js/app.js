@@ -421,8 +421,8 @@ window.removeData = function() {
     window.location.reload();
 }
 
-window.removeClinicaldata = function() {
-    clinicaldataHelper.removeClinicaldata();
+window.removeClinicaldata = async function() {
+    await clinicaldataHelper.removeClinicaldata();
     window.location.reload();
 }
 

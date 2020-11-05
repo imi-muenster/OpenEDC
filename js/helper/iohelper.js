@@ -55,7 +55,7 @@ export function init() {
 }
 
 async function getStoredXMLData(fileName) {
-    // TODO: Why is this function sometimes called twice for metadata and admindata?
+    // TODO: Why is this function sometimes called twice for metadata and admindata? -> deactivate login button after pressing it once
     let xmlString = null;
 
     if (localOptions.serverURL) {
@@ -190,8 +190,15 @@ export async function storeSubjectData(fileName, subjectData) {
     await storeXMLData(fileName, subjectData);
 }
 
-export function removeSubjectData(fileName) {
-    localStorage.removeItem(fileName);
+export async function removeSubjectData(fileName) {
+    if (localOptions.serverURL) {
+        await fetch(localOptions.serverURL + "/api/clinicaldata/" + fileName, {
+            method: "DELETE",
+            headers: getHeaders(true)
+        });
+    } else {
+        localStorage.removeItem(fileName);
+    }
 }
 
 function storeOptions() {

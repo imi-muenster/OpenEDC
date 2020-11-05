@@ -151,14 +151,14 @@ export function clearSubject() {
 }
 
 export async function removeSubject() {
-    ioHelper.removeSubjectData(subjectToFilename(subject));
+    await ioHelper.removeSubjectData(subjectToFilename(subject));
     clearSubject();
     await loadSubjects();
 }
 
 export async function removeClinicaldata() {
     for (let subject of subjects) {
-        ioHelper.removeSubjectData(subjectToFilename(subject));
+        await ioHelper.removeSubjectData(subjectToFilename(subject));
     }
 }
 
@@ -264,7 +264,7 @@ export async function setSubjectInfo(subjectKey, siteOID) {
     if (subjectWithKey && subjectWithKey.key != subject.key) return Promise.reject(errors.SUBJECTKEYEXISTENT);
 
     // Remove currenlty stored subject
-    ioHelper.removeSubjectData(subjectToFilename(subject));
+    await ioHelper.removeSubjectData(subjectToFilename(subject));
 
     // Adjust subject and its clinicaldata
     subject.key = subjectKey;
