@@ -73,11 +73,18 @@ function loadUser(userOID) {
     $("#user-remove-button").disabled = false;
 
     if (ioHelper.getServerURL()) {
+        $("#user-username-input").value = "";
+        $("#user-password-input").value = "";
         $("#user-username-input").disabled = false;
         $("#user-password-input").disabled = false;
+        $("#user-password-input").placeholder = "";
         $$(`#user-rights input`).forEach(checkbox => checkbox.checked = false);
         ioHelper.getUserOnServer(userOID)
             .then(user => {
+                if (user.username) {
+                    $("#user-username-input").value = user.username
+                    $("#user-password-input").placeholder = "Reset initial password";
+                }
                 $$(`#user-rights input`).forEach(checkbox => {
                     if (user.rights && user.rights.includes(checkbox.name)) checkbox.checked = true;
                 });
