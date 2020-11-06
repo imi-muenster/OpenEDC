@@ -28,16 +28,20 @@ export async function loadUsers() {
     else $("#no-users-hint").classList.remove("is-hidden");
 
     for (let user of users) {
+        const userOID = user.getAttribute("OID");
         const panelBlock = document.createElement("a");
         panelBlock.className = "panel-block has-no-border-left";
-        panelBlock.textContent = user.querySelector("FirstName").textContent + " " + user.querySelector("LastName").textContent;
-        panelBlock.setAttribute("oid", user.getAttribute("OID"));
-        panelBlock.onclick = () => loadUser(user.getAttribute("OID"));
+        panelBlock.textContent = admindataHelper.getUserFullName(userOID);
+        panelBlock.setAttribute("oid", userOID);
+        panelBlock.onclick = () => loadUser(userOID);
         $("#add-user-button").insertAdjacentElement("beforebegin", panelBlock);
     }
 
-    // Also, if connected to a server, add the user rights
+    // Also, if connected to a server, mark the own user and add the user rights checkboxes
     if (ioHelper.getServerURL()) {
+        const localUserOID = ioHelper.getLocalUser().oid;
+        $(`#users-options [oid="${localUserOID}"]`).textContent += " (you)";
+
         $("#user-rights").classList.remove("is-hidden");
         const userRights = await ioHelper.getUserRights();
         ioHelper.removeElements($$("#user-rights .checkbox"));
@@ -107,11 +111,15 @@ window.saveUser = function() {
     const firstName = $("#user-first-name-input").value;
     const lastName = $("#user-last-name-input").value
     const locationOID = admindataHelper.getSiteOIDByName($("#user-site-select-inner").value);
-    const username = $("#user-username-input").value;
-    const initialPassword = $("#user-password-input").value;
-    // It seems that .name alaways works instead of .getAttribute("name") -- could be replaced for other occurrences
-    const rights = Array.from($$("#user-rights input:checked")).map(checkbox => checkbox.name);
-    admindataHelper.setUserInfo(userOID, firstName, lastName, locationOID, username, initialPassword, rights);
+    admindataHelper.setUserInfo(userOID, firstName, lastName, locationOID);
+    
+    if (ioHelper.getServerURL()) {
+        const username = $("#user-username-input").value;
+        const initialPassword = $("#user-password-input").value;
+        const credentials = new ioHelper.Credentials(username, initialPassword);
+        const rights = Array.from($$("#user-rights input:checked")).map(checkbox => checkbox.name);
+        ioHelper.setUserOnServer(userOID, credentials, rights, locationOID).catch(error => console.log(error));
+    }
 
     loadUsers();
 }
@@ -146,11 +154,12 @@ export function loadSites() {
     else $("#no-sites-hint").classList.remove("is-hidden");
 
     for (let site of sites) {
+        const siteOID = site.getAttribute("OID");
         const panelBlock = document.createElement("a");
         panelBlock.className = "panel-block has-no-border-left";
         panelBlock.textContent = site.getAttribute("Name");
-        panelBlock.setAttribute("oid", site.getAttribute("OID"));
-        panelBlock.onclick = () => loadSite(site.getAttribute("OID"));
+        panelBlock.setAttribute("oid", siteOID);
+        panelBlock.onclick = () => loadSite(siteOID);
         $("#add-site-button").insertAdjacentElement("beforebegin", panelBlock);
     }
 }

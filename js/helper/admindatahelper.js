@@ -15,6 +15,7 @@ let admindata = null;
 
 export function loadEmptyProject(studyOID) {
     admindata = admindataTemplates.getAdminData(studyOID);
+    addUser();
     ioHelper.storeAdmindata(admindata);
 }
 
@@ -22,6 +23,7 @@ export function importAdmindata(odmXMLString) {
     const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
     if (odm.querySelector("AdminData")) {
         admindata = odm.querySelector("AdminData");
+        if (getUsers().length == 0) addUser();
         ioHelper.storeAdmindata(admindata);
     } else {
         loadEmptyProject();
@@ -34,15 +36,27 @@ export function getAdmindata() {
 
 export async function loadStoredAdmindata() {
     admindata = await ioHelper.getAdmindata();
-    if (!admindata) loadEmptyProject();
+}
+
+export function getUsers() {
+    return $$("User");
 }
 
 export function getUser(userOID) {
     return $(`User[OID="${userOID}"]`);
 }
 
-export function getUsers() {
-    return $$("User");
+export function getUserFullName(userOID) {
+    const user = getUser(userOID);
+    return user.querySelector("FirstName").textContent + " " + user.querySelector("LastName").textContent;
+}
+
+export function getCurrentUserOID() {
+    if (ioHelper.getLocalUser()) {
+        return ioHelper.getLocalUser().oid;
+    } else {
+        return getUsers()[0].getAttribute("OID");
+    }
 }
 
 export function addUser() {
@@ -61,7 +75,7 @@ export function addUser() {
     return newUserOID;
 }
 
-export function setUserInfo(userOID, firstName, lastName, locationOID, username, initialPassword, rights) {
+export function setUserInfo(userOID, firstName, lastName, locationOID) {
     let user = getUser(userOID);
     if (!user) return;
 
@@ -75,9 +89,7 @@ export function setUserInfo(userOID, firstName, lastName, locationOID, username,
     } else {
         if (locationRef) locationRef.remove();
     }
-
-    const credentials = new ioHelper.Credentials(username, initialPassword);
-    ioHelper.setUserOnServer(userOID, credentials, rights, locationOID).catch(error => ioHelper.showWarning(error));
+    
     ioHelper.storeAdmindata(admindata);
 }
 

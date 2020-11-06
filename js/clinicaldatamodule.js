@@ -616,7 +616,8 @@ window.showSubjectInfo = function() {
     ioHelper.removeElements($$("#audit-records .notification"));
     for (let auditRecord of clinicaldataHelper.getAuditRecords()) {
         const siteName = admindataHelper.getSiteNameByOID(auditRecord.locationOID);
-        let auditRecordElement = htmlElements.getAuditRecord(clinicaldataHelper.auditRecordTypes.FORMEDITED, auditRecord.studyEventOID, auditRecord.formOID, auditRecord.userOID, siteName, auditRecord.date);
+        const userName = admindataHelper.getUserFullName(auditRecord.userOID);
+        let auditRecordElement = htmlElements.getAuditRecord(clinicaldataHelper.auditRecordTypes.FORMEDITED, auditRecord.studyEventOID, auditRecord.formOID, userName, siteName, auditRecord.date);
         auditRecordElement.querySelector("button").onclick = () => showAuditRecordFormData(auditRecord.studyEventOID, auditRecord.formOID, auditRecord.date);
         $("#audit-records").appendChild(auditRecordElement);
     }

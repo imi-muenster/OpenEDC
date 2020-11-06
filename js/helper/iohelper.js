@@ -258,15 +258,15 @@ export async function getServerStatus(url) {
     }
 }
 
-export async function initializeServer(url, credentials) {
+export async function initializeServer(url, userOID, credentials) {
     // Create a random key that is used for data encryption and encrypt it with the password of the user
     const decryptionKey = CryptoJS.lib.WordArray.random(32).toString();
     const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, credentials.password).toString();
     const userRequest = { username: credentials.username, hashedPassword: credentials.hashedPassword, encryptedDecryptionKey };
 
     // Create the owner user on the server
-    const userResponse = await fetch(url + "/api/users/initialize", {
-            method: "POST",
+    const userResponse = await fetch(url + "/api/users/initialize/" + userOID, {
+            method: "PUT",
             headers: getHeaders(false, true),
             body: JSON.stringify(userRequest)
         });
@@ -349,7 +349,7 @@ export async function setOwnPassword(credentials) {
 // TODO: Naming -- should I add a new serverhelper.js that handles all server communication?
 export async function setUserOnServer(oid, credentials, rights, site) {
     let userRequest = null;
-    if (credentials) {
+    if (credentials.username && credentials.password) {
         const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, credentials.password).toString();
         userRequest = { username: credentials.username, hashedPassword: credentials.hashedPassword, encryptedDecryptionKey, rights, site };
     } else {

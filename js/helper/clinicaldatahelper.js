@@ -1,4 +1,5 @@
 import * as clinicaldataTemplates from "./clinicaldatatemplates.js";
+import * as admindataHelper from "./admindatahelper.js";
 import * as ioHelper from "./iohelper.js";
 
 class Subject {
@@ -193,7 +194,7 @@ export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
     }
 
     if (itemGroupData) formData.appendChild(itemGroupData);
-    formData.appendChild(clinicaldataTemplates.getAuditRecord("LocalUser", subject.siteOID ? subject.siteOID : "", new Date().toISOString()));
+    formData.appendChild(clinicaldataTemplates.getAuditRecord(admindataHelper.getCurrentUserOID(), subject.siteOID ? subject.siteOID : "", new Date().toISOString()));
     studyEventData.appendChild(formData);
     subjectData.appendChild(studyEventData);
 

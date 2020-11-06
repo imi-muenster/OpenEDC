@@ -175,23 +175,25 @@ async function loginSuccessful() {
     await metadataHelper.loadStoredMetadata();
     await startApp();
 
-    // When connected to a server, adjust UI in accordance with the user rights (i.e., disable buttons for various things, select site of user)
+    // When connected to a server, adjust UI in accordance with the user rights (e.g., disable or enable buttons, select site of user)
     if (!ioHelper.getServerURL()) return;
     const user = ioHelper.getLocalUser();
     if (!user.rights.includes("Project options")) {
         $("#project-modal-button").disabled = true;
-    };
+    } else {
+        $("#add-user-button button").disabled = false;
+    }
     if (!user.rights.includes("Edit metadata")) {
         if (getCurrentMode() == appModes.METADATA) metadataModule.hide();
         $("#metadata-toggle-button").disabled = true;
-    };
+    }
     if (!user.rights.includes("Add subject data")) {
         $("#add-subject-input").disabled = true;
         $("#add-subject-button").disabled = true;
-    };
+    }
     if (!user.rights.includes("Manage subjects")) {
         $("#subject-info-button").disabled = true;
-    };
+    }
     if (user.site) {
         const siteName = admindataHelper.getSiteNameByOID(user.site);
         $("#filter-site-select-inner").value = siteName;
@@ -336,7 +338,9 @@ window.initializeServer = function(event) {
     }
 
     // Initialize the server, i.e., set the owner of the server with the entered data and transfer all data
-    ioHelper.initializeServer(serverURL, credentials)
+    // The user account will be linked to the default/first user, which, in the most cases, is the only user since adding users is prohibited without a server connection
+    const userOID = admindataHelper.getCurrentUserOID();
+    ioHelper.initializeServer(serverURL, userOID, credentials)
         .then(serverURL => window.location.replace(serverURL))
         .catch(error => ioHelper.showWarning("Account not created", error));
 }
@@ -426,20 +430,7 @@ window.removeClinicaldata = async function() {
     window.location.reload();
 }
 
-// IO/Event listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
-// TODO: In the entire project, align onclick vs. addEventListener("click"), arrowfunctions, etc.
-// TODO: Also: oninput/onclick in html file vs. in js file
-// TODO: In a loop, there is no need to create a variable with the array first
-// TODO: Sort the .css file
-// TODO: Refactor metadatamodule to remove "[studyEvent]clicked" functions. Set currentElementOID and is-active in the, e.g., loadFormsByStudyEvent as well and also refactor arrowKeyListener etc.
-// TODO: In metadatamodule, rename odm to metadata everywhere
-// TODO: In XSLT processing, remove the de/en differenatiation and translate boolean questions with the languageHelper, also remove xsl-templates when possible
-// TODO: Use let very frequently even it it could be declared as const
-// TODO: Metadata -> MetaData, Clinicaldata -> ClinicalData
-// TODO: In some secure cases the || operator may be used to set default values to reduce code compared to the ternary operator
-// TODO: In templates.js files use only const instead of let
-// TODO: Check if data has changed in clinicaldatamodule.js could be even more generalized
-// TODO: let abc = null; is usually not required, let abc; is sufficient -- replace occurences
+// IO or event listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
 export function setIOListeners() {
     $("body").onresize = ioHelper.setTreeMaxHeight;
     // TODO: This style everywhere or onclick here
@@ -454,3 +445,18 @@ export function setIOListeners() {
 function getCurrentMode() {
     return $("#metadata-section").classList.contains("is-hidden") ? appModes.CLINICALDATA : appModes.METADATA;
 }
+
+// A list of generic todos that are not crucial but can be improved in the future
+// TODO: In the entire project, align onclick vs. addEventListener("click"), arrowfunctions, etc.
+// TODO: Also: oninput/onclick in html file vs. in js file
+// TODO: Sort the .css file
+// TODO: Refactor metadatamodule to remove "[studyEvent]clicked" functions. Set currentElementOID and is-active in the, e.g., loadFormsByStudyEvent as well and also refactor arrowKeyListener etc.
+// TODO: In metadatamodule, rename odm to metadata everywhere
+// TODO: In XSLT processing, remove the de/en differenatiation and translate boolean questions with the languageHelper, also remove xsl-templates when possible
+// TODO: Use let very frequently even it it could be declared as const
+// TODO: Metadata -> MetaData, Clinicaldata -> ClinicalData
+// TODO: In some secure cases the || operator may be used to set default values to reduce code compared to the ternary operator
+// TODO: In templates.js files use only const instead of let
+// TODO: Check if data has changed in clinicaldatamodule.js could be even more generalized
+// TODO: let abc = null; is usually not required, let abc; is sufficient -- replace occurences
+// TODO: It seems that .name alaways works instead of .getAttribute("name") -- could be replaced for other occurrences
