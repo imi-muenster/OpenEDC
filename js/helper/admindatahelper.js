@@ -61,7 +61,7 @@ export function addUser() {
     return newUserOID;
 }
 
-export function setUserInfo(userOID, firstName, lastName, locationOID, username, password, rights) {
+export function setUserInfo(userOID, firstName, lastName, locationOID, username, initialPassword, rights) {
     let user = getUser(userOID);
     if (!user) return;
 
@@ -76,7 +76,7 @@ export function setUserInfo(userOID, firstName, lastName, locationOID, username,
         if (locationRef) locationRef.remove();
     }
 
-    ioHelper.setUserOnServer(userOID, username, password, rights, locationOID).catch(error => ioHelper.showWarning(error));
+    ioHelper.setUserOnServer(userOID, username, initialPassword, rights, locationOID).catch(error => ioHelper.showWarning(error));
     ioHelper.storeAdmindata(admindata);
 }
 

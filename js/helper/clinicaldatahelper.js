@@ -2,10 +2,16 @@ import * as clinicaldataTemplates from "./clinicaldatatemplates.js";
 import * as ioHelper from "./iohelper.js";
 
 class Subject {
+    static fileNameSeparator = "__";
+
     constructor(key, siteOID, createdDate) {
         this.key = key;
         this.siteOID = siteOID;
         this.createdDate = createdDate;
+    }
+
+    get fileName() {
+        return this.key + Subject.fileNameSeparator + (this.siteOID || "") + Subject.fileNameSeparator + this.createdDate.getTime();
     }
 }
 
@@ -63,8 +69,7 @@ export function importClinicaldata(odmXMLString) {
         const siteOID = subjectData.querySelector("SiteRef") ? subjectData.querySelector("SiteRef").getAttribute("LocationOID") : null;
         // TODO: Take the created date from the audit trail
         const subject = new Subject(subjectData.getAttribute("SubjectKey"), siteOID, new Date());
-        const fileName = subjectToFilename(subject);
-        ioHelper.storeSubjectData(fileName, subjectData);
+        ioHelper.storeSubjectData(subject.fileName, subjectData);
     }
 }
 
@@ -77,7 +82,7 @@ export async function getClinicalData(studyOID, metadataVersionOID) {
 
     subjects = sortSubjects(subjects, sortOrderTypes.CREATEDDATE);
     for (let subject of subjects) {
-        clinicalData.appendChild(await ioHelper.getSubjectData(subjectToFilename(subject)));
+        clinicalData.appendChild(await ioHelper.getSubjectData(subject.fileName));
     }
 
     return clinicalData;
@@ -132,7 +137,7 @@ export async function loadSubject(subjectKey) {
     subject = subjects.find(subject => subject.key == subjectKey);
     
     if (subject) {
-        subjectData = await ioHelper.getSubjectData(subjectToFilename(subject))
+        subjectData = await ioHelper.getSubjectData(subject.fileName)
     } else {
         subjectData = null;
     }
@@ -142,7 +147,7 @@ export async function storeSubject() {
     if (!subject) return;
     
     console.log("Store subject ...");
-    await ioHelper.storeSubjectData(subjectToFilename(subject), subjectData);
+    await ioHelper.storeSubjectData(subject.fileName, subjectData);
 }
 
 export function clearSubject() {
@@ -151,28 +156,24 @@ export function clearSubject() {
 }
 
 export async function removeSubject() {
-    await ioHelper.removeSubjectData(subjectToFilename(subject));
+    await ioHelper.removeSubjectData(subject.fileName);
     clearSubject();
     await loadSubjects();
 }
 
 export async function removeClinicaldata() {
     for (let subject of subjects) {
-        await ioHelper.removeSubjectData(subjectToFilename(subject));
+        await ioHelper.removeSubjectData(subject.fileName);
     }
 }
 
 function fileNameToSubject(fileName) {
-    const fileNameParts = fileName.split(ioHelper.fileNameSeparator);
+    const fileNameParts = fileName.split(Subject.fileNameSeparator);
     const key = fileNameParts[0];
     const siteOID = fileNameParts[1] || null;
     const createdDate = fileNameParts[2];
 
     return new Subject(key, siteOID, new Date(parseInt(createdDate)));
-}
-
-function subjectToFilename(subject) {
-    return subject.key + ioHelper.fileNameSeparator + (subject.siteOID || "") + ioHelper.fileNameSeparator + subject.createdDate.getTime();
 }
 
 export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
@@ -264,7 +265,7 @@ export async function setSubjectInfo(subjectKey, siteOID) {
     if (subjectWithKey && subjectWithKey.key != subject.key) return Promise.reject(errors.SUBJECTKEYEXISTENT);
 
     // Store the current file name to remove the old subject after the new one has been stored
-    const previousFileName = subjectToFilename(subject);
+    const previousFileName = subject.fileName;
 
     // Adjust subject and its clinicaldata
     subject.key = subjectKey;
@@ -298,7 +299,7 @@ export async function getSubjectsHavingDataForElement(elementOID) {
 
     let subjectKeys = [];
     for (const subject of subjects) {
-        const subjectData = await ioHelper.getSubjectData(subjectToFilename(subject));
+        const subjectData = await ioHelper.getSubjectData(subject.fileName);
         if (new XMLSerializer().serializeToString(subjectData).includes(elementOID)) subjectKeys.push(subject.key);
     }
 
@@ -310,7 +311,7 @@ export async function getCSVData(csvHeaders) {
 
     subjects = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY);
     for (let subject of subjects) {
-        const subjectData = await ioHelper.getSubjectData(subjectToFilename(subject));
+        const subjectData = await ioHelper.getSubjectData(subject.fileName);
 
         let subjectCSVData = [subject.key];
         let formData = null;

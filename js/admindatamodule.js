@@ -101,10 +101,10 @@ window.saveUser = function() {
     const lastName = $("#user-last-name-input").value
     const locationOID = admindataHelper.getSiteOIDByName($("#user-site-select-inner").value);
     const username = $("#user-username-input").value;
-    const password = $("#user-password-input").value;
+    const initialPassword = $("#user-password-input").value;
     // It seems that .name alaways works instead of .getAttribute("name") -- could be replaced for other occurrences
     const rights = Array.from($$("#user-rights input:checked")).map(checkbox => checkbox.name);
-    admindataHelper.setUserInfo(userOID, firstName, lastName, locationOID, username, password, rights);
+    admindataHelper.setUserInfo(userOID, firstName, lastName, locationOID, username, initialPassword, rights);
 
     loadUsers();
 }

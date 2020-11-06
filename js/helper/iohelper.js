@@ -4,6 +4,28 @@ class LoadXMLException {
     }
 }
 
+export class Credentials {
+    constructor(username, password, confirmPassword) {
+        const errors = {
+            NOTALLFIELDSENTERED: "Please enter all fields.",
+            PASSWORDSNOTEQUAL: "The password and confirmation password are not equal.",
+            PASSWORDPATTERNVIOLATION: "The password must be at least eight characters in length and have a number, lower case and upper case character."
+        }
+
+        // throw errors.NOTALLFIELDSENTERED could be used as well, however, .catch() won't catch these errors if they are in a class constructor and try {} catch (error) {} blocks are not desired
+        if (!username || !password || confirmPassword === "") this.error = errors.NOTALLFIELDSENTERED;
+        else if ((confirmPassword || confirmPassword === "") && password != confirmPassword) this.error = errors.PASSWORDSNOTEQUAL;
+        else if (!new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/).test(password)) this.error = errors.PASSWORDPATTERNVIOLATION;
+
+        this.username = username;
+        this.password = password;
+    }
+
+    get hashedPassword() {
+        return CryptoJS.SHA1(this.password).toString();
+    }
+}
+
 export const loadXMLExceptionCodes = {
     NODATAFOUND: 0,
     DATAENCRYPTED: 1,
@@ -25,8 +47,6 @@ const $ = query => document.querySelector(query);
 
 const metadataFileName = "metadata";
 const admindataFileName = "admindata";
-export const fileNameSeparator = "__";
-
 const globalOptionsFileName = "globaloptions";
 
 let user = null;
@@ -119,7 +139,7 @@ export async function getSubjectFileNames() {
         subjectFileNames = await response.json();
     } else {
         for (let fileName of Object.keys(localStorage)) {
-            if (fileName.split(fileNameSeparator).length > 1) subjectFileNames.push(fileName);
+            if (fileName != metadataFileName && fileName != admindataFileName && fileName != globalOptionsFileName) subjectFileNames.push(fileName);
         }
     }
 
@@ -238,20 +258,17 @@ export async function getServerStatus(url) {
     }
 }
 
-export async function initializeServer(url, username, password) {
+export async function initializeServer(url, credentials) {
     // Create a random key that is used for data encryption and encrypt it with the password of the user
     const decryptionKey = CryptoJS.lib.WordArray.random(32).toString();
-    const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, password).toString();
-
-    // Hash the user password before sending it to the server
-    const hashedPassword = CryptoJS.SHA1(password).toString();
-    const credentials = { username, hashedPassword, encryptedDecryptionKey };
+    const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, credentials.password).toString();
+    const userRequest = { username: credentials.username, hashedPassword: credentials.hashedPassword, encryptedDecryptionKey };
 
     // Create the owner user on the server
     const userResponse = await fetch(url + "/api/users/initialize", {
             method: "POST",
             headers: getHeaders(false, true),
-            body: JSON.stringify(credentials)
+            body: JSON.stringify(userRequest)
         });
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
     user = await userResponse.json();
@@ -294,17 +311,16 @@ export async function initializeServer(url, username, password) {
     return Promise.resolve(url);
 }
 
-export async function loginToServer(username, password) {
-    const hashedPassword = CryptoJS.SHA1(password).toString();
+export async function loginToServer(credentials) {
     const userResponse = await fetch(serverURL + "/api/users/me", {
-        headers: { "Authorization" : `Basic ${btoa(username + ":" + hashedPassword)}` }
+        headers: { "Authorization" : `Basic ${btoa(credentials.username + ":" + credentials.hashedPassword)}` }
     });
     if (!userResponse.ok) return Promise.reject(loginStatus.WRONGCREDENTIALS);
     user = await userResponse.json();
 
     // Get the encryptedDecryptionKey of the user, decrypt it and store it in the decryptionKey variable
     try {
-        decryptionKey = CryptoJS.AES.decrypt(user.encryptedDecryptionKey, password).toString(CryptoJS.enc.Utf8);
+        decryptionKey = CryptoJS.AES.decrypt(user.encryptedDecryptionKey, credentials.password).toString(CryptoJS.enc.Utf8);
     } catch (error) {
         console.log(error);
     }
@@ -315,15 +331,14 @@ export async function loginToServer(username, password) {
     return Promise.resolve();
 }
 
-export async function setOwnPassword(username, password) {
-    const hashedPassword = CryptoJS.SHA1(password).toString();
-    const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, password).toString();
-    const credentials = { username, hashedPassword, encryptedDecryptionKey };
+export async function setOwnPassword(credentials) {
+    const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, credentials.password).toString();
+    const userRequest = { username: credentials.username, hashedPassword: credentials.hashedPassword, encryptedDecryptionKey };
     
     const userResponse = await fetch(serverURL + "/api/users/me", {
         method: "PUT",
         headers: getHeaders(true, true),
-        body: JSON.stringify(credentials)
+        body: JSON.stringify(userRequest)
     });
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
     user = await userResponse.json();
@@ -332,11 +347,11 @@ export async function setOwnPassword(username, password) {
 }
 
 // TODO: Naming -- should I add a new serverhelper.js that handles all server communication?
-export async function setUserOnServer(oid, username, password, rights, site) {
+export async function setUserOnServer(oid, username, initialPassword, rights, site) {
     let userData = null;
-    if (username && password) {
-        const hashedPassword = CryptoJS.SHA1(password).toString();
-        const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, password).toString();
+    if (username && initialPassword) {
+        const hashedPassword = CryptoJS.SHA1(initialPassword).toString();
+        const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, initialPassword).toString();
         userData = { username, hashedPassword, encryptedDecryptionKey, rights, site };
     } else {
         userData = { rights, site };

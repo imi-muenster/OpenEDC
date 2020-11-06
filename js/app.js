@@ -139,16 +139,18 @@ function showLoginModal() {
         const confirmPassword = $("#login-modal #confirm-password-input").value;
 
         // TODO: Code refactoring -- not very nice, clean code
-        if (!confirmPassword) {
-            ioHelper.loginToServer(username, password)
+        if (!$("#login-modal #username-input").disabled) {
+            const credentials = new ioHelper.Credentials(username, password);
+            ioHelper.loginToServer(credentials)
                 .then(loginSuccessful)
                 .catch(loginNotSuccessful);
         } else {
-            if (!password || password != confirmPassword || password.lengt < 8) {
-                ioHelper.showWarning("Password not set", "The password could not be set. Please ensure that you entered the same password with at least 8 characters both times equally.");
+            const credentials = new ioHelper.Credentials(username, password, confirmPassword);
+            if (credentials.error) {
+                ioHelper.showWarning("Password not set", credentials.error);
                 return;
             }
-            ioHelper.setOwnPassword(username, password)
+            ioHelper.setOwnPassword(credentials)
                 .then(loginSuccessful)
                 .catch(error => ioHelper.showWarning("Password not set", error));
         }
@@ -219,7 +221,6 @@ function showUninitializedHint() {
         `);
     $("#connect-to-server-option .title").textContent = "Initialize Server";
     $("#connect-to-server-option .input").value = ioHelper.getBaseURL();
-    $("#connect-to-server-option .input").disabled = true;
     $("#connect-to-server-option .button").textContent = "Initialize";
 }
 
@@ -327,25 +328,15 @@ window.initializeServer = function(event) {
     const username = $("#owner-username-input").value;
     const password = $("#owner-password-input").value;
     const confirmPassword = $("#owner-confirm-password-input").value;
-
-    // TODO: Implement this generically and move to ioHelper for other functions as well (e.g., setting a new non-initial password) -- or in the server?!
-    if (!username || !password || !confirmPassword) {
-        ioHelper.showWarning("Account not created", "Please enter all fields.");
-        return;
-    }
-
-    if (password != confirmPassword) {
-        ioHelper.showWarning("Account not created", "The two password fields are not equal.");
-        return;
-    }
-
-    if (password.length < 8) {
-        ioHelper.showWarning("Account not created", "Please use a password with at least 8 characters.");
+    
+    const credentials = new ioHelper.Credentials(username, password, confirmPassword);
+    if (credentials.error) {
+        ioHelper.showWarning("Account not created", credentials.error);
         return;
     }
 
     // Initialize the server, i.e., set the owner of the server with the entered data and transfer all data
-    ioHelper.initializeServer(serverURL, username, password)
+    ioHelper.initializeServer(serverURL, credentials)
         .then(serverURL => window.location.replace(serverURL))
         .catch(error => ioHelper.showWarning("Account not created", error));
 }
