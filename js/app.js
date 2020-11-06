@@ -216,13 +216,6 @@ window.newProject = function() {
     startApp();
 }
 
-window.toggleOpenProjectButtons = function() {
-    $("#start-buttons").classList.toggle("is-hidden");
-    $("#open-buttons").classList.toggle("is-hidden");
-    $("#introduction-text").classList.remove("is-hidden");
-    $("#connect-to-existing-server").classList.add("is-hidden");
-}
-
 window.uploadODM = async function() {
     let file = $("#odm-upload");
     let content = await ioHelper.getFileContent(file.files[0]);
@@ -297,7 +290,7 @@ window.projectTabClicked = function(event) {
     }
 }
 
-window.connectToEmptyServer = function() {
+window.connectToServer = function() {
     const serverURL = $("#server-url-input").value;
 
     ioHelper.getServerStatus(serverURL)
@@ -309,28 +302,6 @@ window.connectToEmptyServer = function() {
                     break;
                 case ioHelper.serverConnectionStatus.SERVERINITIALIZED:
                     ioHelper.showWarning("Server initialized", "The server has already been initialized.");
-            }
-        })
-        .catch(() => ioHelper.showWarning("Server not found", "There could be no OpenEDC Server found for this URL."));
-}
-
-window.showConnectToExistingServer = function() {
-    $("#introduction-text").classList.add("is-hidden");
-    $("#connect-to-existing-server").classList.remove("is-hidden");
-}
-
-window.connectToExistingServer = function() {
-    const serverURL = $("#existing-server-url-input").value;
-
-    ioHelper.getServerStatus(serverURL)
-        .then(status => {
-            switch (status) {
-                case ioHelper.serverConnectionStatus.SERVERNOTINITIALIZED:
-                    ioHelper.showWarning("Server not initialized", "The server has not been initialized and is empty. You can initialize the server by going back, opening a local project, and then connecting to the server via the Project Options button.");
-                    break;
-                case ioHelper.serverConnectionStatus.SERVERINITIALIZED:
-                    ioHelper.setServerURL(serverURL);
-                    window.location.reload();
             }
         })
         .catch(() => ioHelper.showWarning("Server not found", "There could be no OpenEDC Server found for this URL."));
