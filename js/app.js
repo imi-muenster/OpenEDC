@@ -148,7 +148,7 @@ function showLoginModal() {
                 return;
             }
             ioHelper.setOwnPassword(username, password)
-                .then(() => window.location.reload())
+                .then(loginSuccessful)
                 .catch(error => ioHelper.showWarning("Password not set", error));
         }
     };
@@ -172,14 +172,14 @@ async function loginSuccessful() {
     await metadataHelper.loadStoredMetadata();
     await startApp();
 
-    // When connected to a server, adjust UI in accordance with the user rights (i.e., disable buttons for various things)
+    // When connected to a server, adjust UI in accordance with the user rights (i.e., disable buttons for various things, select site of user)
     if (!ioHelper.getServerURL()) return;
     const user = ioHelper.getLocalUser();
     if (!user.rights.includes("Project options")) {
         $("#project-modal-button").disabled = true;
     };
     if (!user.rights.includes("Edit metadata")) {
-        metadataModule.hide();
+        if (getCurrentMode() == appModes.METADATA) metadataModule.hide();
         $("#metadata-toggle-button").disabled = true;
     };
     if (!user.rights.includes("Add subject data")) {
@@ -189,6 +189,11 @@ async function loginSuccessful() {
     if (!user.rights.includes("Manage subjects")) {
         $("#subject-info-button").disabled = true;
     };
+    if (user.site) {
+        const siteName = admindataHelper.getSiteNameByOID(user.site);
+        $("#filter-site-select-inner").value = siteName;
+        $("#filter-site-select-inner").disabled = true;
+    }
 }
 
 function loginNotSuccessful(error) {

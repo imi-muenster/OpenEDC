@@ -346,6 +346,7 @@ export async function setOwnPassword(username, password) {
         body: JSON.stringify(credentials)
     });
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
+    user = await userResponse.json();
 
     return Promise.resolve();
 }
