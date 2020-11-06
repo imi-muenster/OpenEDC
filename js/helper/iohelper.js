@@ -7,11 +7,10 @@ class LoadXMLException {
 export const loadXMLExceptionCodes = {
     NODATAFOUND: 0,
     DATAENCRYPTED: 1,
-    NOTDECRYPTABLE: 2,
-    NOTLOGGEDIN: 3
+    NOTDECRYPTABLE: 2
 }
 
-export const serverConnectionStatus = {
+export const serverStatus = {
     SERVERNOTFOUND: 0,
     SERVERINITIALIZED: 1,
     SERVERNOTINITIALIZED: 2
@@ -29,38 +28,32 @@ const admindataFileName = "admindata";
 export const fileNameSeparator = "__";
 
 const globalOptionsFileName = "globaloptions";
-const localOptionsFileName = "localoptions";
 
 let user = null;
 let decryptionKey = null;
+let serverURL = null;
 
 // Keeps app options that are equal for all users of the app -- options may have default values assigned
 let globalOptions = {
     surveyCode: "0000"
 };
 
-// Keeps app options for the local user
-let localOptions = {
-    serverURL: null
-};
-
-export function init() {
+export async function init() {
     const globalOptionsString = localStorage.getItem(globalOptionsFileName);
     if (globalOptionsString) globalOptions = JSON.parse(globalOptionsString);
 
-    const localOptionsString = localStorage.getItem(localOptionsFileName);
-    if (localOptionsString) localOptions = JSON.parse(localOptionsString);
-
     setIOListeners();
+
+    // Check if app is served by an OpenEDC Server instance
+    return await getServerStatus(getBaseURL()).catch(() => console.log("No OpenEDC Server found. It seems that this is a standalone OpenEDC App."));
 }
 
 async function getStoredXMLData(fileName) {
     // TODO: Why is this function sometimes called twice for metadata and admindata? -> deactivate login button after pressing it once
     let xmlString = null;
 
-    if (localOptions.serverURL) {
+    if (serverURL) {
         console.log("Load stored xml data from server ...", fileName);
-        if (!user) throw new LoadXMLException(loadXMLExceptionCodes.NOTLOGGEDIN);
         const xmlResponse = await fetch(getApiUrlFromFileName(fileName), { headers: getHeaders(true) });
         if (!xmlResponse.ok) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
         xmlString = await xmlResponse.text();
@@ -94,7 +87,7 @@ async function storeXMLData(fileName, xmlDocument) {
     let xmlString = new XMLSerializer().serializeToString(xmlDocument);
     if (decryptionKey) xmlString = CryptoJS.AES.encrypt(xmlString, decryptionKey).toString();
 
-    if (localOptions.serverURL) {
+    if (serverURL) {
         // TODO: Error handling
         // TODO: Consider that this function is async -- adjust the callers when needed
         await fetch(getApiUrlFromFileName(fileName), {
@@ -108,7 +101,7 @@ async function storeXMLData(fileName, xmlDocument) {
 }
 
 function getApiUrlFromFileName(fileName) {
-    let apiUrl = localOptions.serverURL + "/api/";
+    let apiUrl = serverURL + "/api/";
 
     if (fileName == metadataFileName || fileName == admindataFileName) apiUrl += fileName
     else apiUrl += "clinicaldata/" + fileName;
@@ -119,8 +112,8 @@ function getApiUrlFromFileName(fileName) {
 export async function getSubjectFileNames() {
     let subjectFileNames = [];
 
-    if (localOptions.serverURL) {
-        const response = await fetch(localOptions.serverURL + "/api/clinicaldata", { headers: getHeaders(true) });
+    if (serverURL) {
+        const response = await fetch(serverURL + "/api/clinicaldata", { headers: getHeaders(true) });
         subjectFileNames = await response.json();
     } else {
         for (let fileName of Object.keys(localStorage)) {
@@ -191,8 +184,8 @@ export async function storeSubjectData(fileName, subjectData) {
 }
 
 export async function removeSubjectData(fileName) {
-    if (localOptions.serverURL) {
-        await fetch(localOptions.serverURL + "/api/clinicaldata/" + fileName, {
+    if (serverURL) {
+        await fetch(getApiUrlFromFileName(fileName), {
             method: "DELETE",
             headers: getHeaders(true)
         });
@@ -201,20 +194,12 @@ export async function removeSubjectData(fileName) {
     }
 }
 
-function storeOptions() {
+function storeGlobalOptions() {
     localStorage.setItem(globalOptionsFileName, JSON.stringify(globalOptions));
-    localStorage.setItem(localOptionsFileName, JSON.stringify(localOptions));
-}
-
-export function setServerURL(serverURL) {
-    if (!serverURL.includes("http") && !serverURL.includes("https")) serverURL = "https://" + serverURL;
-    
-    localOptions.serverURL = serverURL;
-    storeOptions();
 }
 
 export function getServerURL() {
-    return localOptions.serverURL;
+    return serverURL;
 }
 
 export function getLocalUser() {
@@ -224,7 +209,7 @@ export function getLocalUser() {
 export function setSurveyCode(surveyCode) {
     if (parseInt(surveyCode) == surveyCode && surveyCode.length == 4) {
         globalOptions.surveyCode = surveyCode;
-        storeOptions();
+        storeGlobalOptions();
         return Promise.resolve();
     } else {
         return Promise.reject();
@@ -235,24 +220,23 @@ export function getSurveyCode() {
     return globalOptions.surveyCode;
 }
 
-export async function getServerStatus(serverURL) {
-    if (!serverURL.includes("http") && !serverURL.includes("https")) serverURL = "https://" + serverURL;
+export async function getServerStatus(url) {
+    if (!url.includes("http") && !url.includes("https")) url = "https://" + url;
     
-    const response = await fetch(serverURL + "/api/status").catch(() => Promise.reject(serverConnectionStatus.SERVERNOTFOUND));
-    const serverStatus = await response.json();
+    const response = await fetch(url + "/api/status").catch(() => Promise.reject(serverStatus.SERVERNOTFOUND));
+    const status = await response.json();
 
-    if (serverStatus.serverVersion && serverStatus.initialized) {
-        return Promise.resolve(serverConnectionStatus.SERVERINITIALIZED);
-    } else if (serverStatus.serverVersion && !serverStatus.initialized) {
-        return Promise.resolve(serverConnectionStatus.SERVERNOTINITIALIZED);
+    if (status.serverVersion && status.initialized) {
+        serverURL = url;
+        return Promise.resolve(serverStatus.SERVERINITIALIZED);
+    } else if (status.serverVersion && !status.initialized) {
+        return Promise.resolve(serverStatus.SERVERNOTINITIALIZED);
     } else {
-        return Promise.reject(serverConnectionStatus.SERVERNOTFOUND);
+        return Promise.reject(serverStatus.SERVERNOTFOUND);
     }
 }
 
-export async function initializeServer(serverURL, username, password) {
-    if (!serverURL.includes("http") && !serverURL.includes("https")) serverURL = "https://" + serverURL;
-    
+export async function initializeServer(url, username, password) {
     // Create a random key that is used for data encryption and encrypt it with the password of the user
     const decryptionKey = CryptoJS.lib.WordArray.random(32).toString();
     const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, password).toString();
@@ -262,7 +246,7 @@ export async function initializeServer(serverURL, username, password) {
     const credentials = { username, hashedPassword, encryptedDecryptionKey };
 
     // Create the owner user on the server
-    const userResponse = await fetch(serverURL + "/api/users/initialize", {
+    const userResponse = await fetch(url + "/api/users/initialize", {
             method: "POST",
             headers: getHeaders(false, true),
             body: JSON.stringify(credentials)
@@ -273,7 +257,7 @@ export async function initializeServer(serverURL, username, password) {
     // Send all existing metadata encrypted to the server
     let metadataString = new XMLSerializer().serializeToString(await getMetadata());
     metadataString = CryptoJS.AES.encrypt(metadataString, decryptionKey).toString();
-    const metadataResponse = await fetch(serverURL + "/api/metadata", {
+    const metadataResponse = await fetch(url + "/api/metadata", {
         method: "PUT",
         headers: getHeaders(true),
         body: metadataString
@@ -283,7 +267,7 @@ export async function initializeServer(serverURL, username, password) {
     // Send all existing metadata encrypted to the server
     let admindataString = new XMLSerializer().serializeToString(await getAdmindata());
     admindataString = CryptoJS.AES.encrypt(admindataString, decryptionKey).toString();
-    const admindataResponse = await fetch(serverURL + "/api/admindata", {
+    const admindataResponse = await fetch(url + "/api/admindata", {
         method: "PUT",
         headers: getHeaders(true),
         body: admindataString
@@ -296,25 +280,21 @@ export async function initializeServer(serverURL, username, password) {
     for (const subjectFileName of subjectFileNames) {
         let subjectDataString = new XMLSerializer().serializeToString(await getSubjectData(subjectFileName));
         subjectDataString = CryptoJS.AES.encrypt(subjectDataString, decryptionKey).toString();
-        const clinicaldataResponse = await fetch(serverURL + "/api/clinicaldata/" + subjectFileName, {
+        const clinicaldataResponse = await fetch(url + "/api/clinicaldata/" + subjectFileName, {
             method: "PUT",
             headers: getHeaders(true),
             body: subjectDataString
         });
         if (!clinicaldataResponse.ok) return Promise.reject(await admindataResponse.text());
     }
-
     localStorage.clear();
-
-    localOptions.serverURL = serverURL;
-    storeOptions();
     
-    return Promise.resolve();
+    return Promise.resolve(url);
 }
 
 export async function loginToServer(username, password) {
     const hashedPassword = CryptoJS.SHA1(password).toString();
-    const userResponse = await fetch(localOptions.serverURL + "/api/users/me", {
+    const userResponse = await fetch(serverURL + "/api/users/me", {
         headers: { "Authorization" : `Basic ${btoa(username + ":" + hashedPassword)}` }
     });
     if (!userResponse.ok) return Promise.reject(loginStatus.WRONGCREDENTIALS);
@@ -334,13 +314,11 @@ export async function loginToServer(username, password) {
 }
 
 export async function setOwnPassword(username, password) {
-    if (!user) return Promise.reject(loginStatus.WRONGCREDENTIALS);
-
     const hashedPassword = CryptoJS.SHA1(password).toString();
     const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, password).toString();
     const credentials = { username, hashedPassword, encryptedDecryptionKey };
     
-    const userResponse = await fetch(localOptions.serverURL + "/api/users/me", {
+    const userResponse = await fetch(serverURL + "/api/users/me", {
         method: "PUT",
         headers: getHeaders(true, true),
         body: JSON.stringify(credentials)
@@ -353,8 +331,6 @@ export async function setOwnPassword(username, password) {
 
 // TODO: Naming -- should I add a new serverhelper.js that handles all server communication?
 export async function setUserOnServer(oid, username, password, rights, site) {
-    if (!localOptions.serverURL) return;
-    
     let userData = null;
     if (username && password) {
         const hashedPassword = CryptoJS.SHA1(password).toString();
@@ -364,7 +340,7 @@ export async function setUserOnServer(oid, username, password, rights, site) {
         userData = { rights, site };
     }
 
-    const userResponse = await fetch(localOptions.serverURL + "/api/users/" + oid, {
+    const userResponse = await fetch(serverURL + "/api/users/" + oid, {
         method: "PUT",
         headers: getHeaders(true, true),
         body: JSON.stringify(userData)
@@ -373,7 +349,7 @@ export async function setUserOnServer(oid, username, password, rights, site) {
 }
 
 export async function getUserOnServer(oid) {
-    const userResponse = await fetch(localOptions.serverURL + "/api/users/" + oid, { headers: getHeaders(true) });
+    const userResponse = await fetch(serverURL + "/api/users/" + oid, { headers: getHeaders(true) });
     if (!userResponse.ok) return Promise.reject();
 
     const user = await userResponse.json();
@@ -381,7 +357,7 @@ export async function getUserOnServer(oid) {
 }
 
 export async function deleteUserOnServer(oid) {
-    await fetch(localOptions.serverURL + "/api/users/" + oid, {
+    await fetch(serverURL + "/api/users/" + oid, {
         method: "DELETE",
         headers: getHeaders(true)
     }).catch(() => Promise.reject());
@@ -398,7 +374,7 @@ function getHeaders(authorization, contentTypeJSON) {
 }
 
 export async function getUserRights() {
-    const rightsResponse = await fetch(localOptions.serverURL + "/api/users/rights");
+    const rightsResponse = await fetch(serverURL + "/api/users/rights");
     return await rightsResponse.json();
 }
 
@@ -486,7 +462,8 @@ export async function getFileContent(file) {
 }
 
 export function getBaseURL() {
-    return window.location.origin + window.location.pathname;
+    const url = window.location.origin + window.location.pathname;
+    return url.slice(-1) == "/" ? url.slice(0, -1) : url;
 }
 
 export function prettifyContent(content) {

@@ -20,8 +20,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.replace(ioHelper.getBaseURL().replace("/index.html", ""));
     }
 
-    // Load locally persisted options (e.g., the server url if a connection to an OpenEDC Server exists)
-    ioHelper.init();
+    // Check if this app might be served from an OpenEDC Server instance and then show the login modal accordingly
+    await ioHelper.init()
+        .then(serverStatus => {
+            if (serverStatus == ioHelper.serverStatus.SERVERINITIALIZED) showLoginModal();
+            else if (serverStatus == ioHelper.serverStatus.SERVERNOTINITIALIZED) showUninitializedHint();
+        });
 
     // Initialize the application
     metadataHelper.loadStoredMetadata()
@@ -29,9 +33,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             startApp();
         })
         .catch(error => {
-            if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND) showStartModal();
-            else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionKeyModal()
-            else if (error.code == ioHelper.loadXMLExceptionCodes.NOTLOGGEDIN) showLoginModal();
+            if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND && !ioHelper.getServerURL()) showStartModal();
+            else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionKeyModal();
         });
 
     // Register serviceworker for offline capabilities
@@ -120,11 +123,9 @@ function showDecryptionKeyModal() {
 
 function showLoginModal() {
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
-    $("#login-modal #server-url").classList.remove("is-hidden");
     $("#login-title").textContent = "Please login";
     $("#login-text").textContent = "You are connected to an OpenEDC Server. Please login with your credentials.";
     $("#login-incorrect-hint .message-body").textContent = "The username or password is incorrect. Please try again.";
-    $("#login-modal #server-url").textContent = "OpenEDC Server: " + ioHelper.getServerURL();
 
     // Adjust the project options modal accordingly
     $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
@@ -208,6 +209,18 @@ function loginNotSuccessful(error) {
         default:
             $("#login-modal #login-incorrect-hint").classList.remove("is-hidden");
     }
+}
+
+function showUninitializedHint() {
+    ioHelper.showWarning("Server uninitialized", `
+            This OpenEDC Server has not yet been initialized.<br><br>
+            You can either go to <a target="_blank" href="https://openedc.org">openedc.org</a> to initialize this server with data that you have already locally captured there, or, alternatively, close this hint, start a new local project here, and initialize the server from here as well.<br><br>
+            In both cases, use the <i>Project Options</i> button in the top right corner of the app and follow the instructions to initialize this server.
+        `);
+    $("#connect-to-server-option .title").textContent = "Initialize Server";
+    $("#connect-to-server-option .input").value = ioHelper.getBaseURL();
+    $("#connect-to-server-option .input").disabled = true;
+    $("#connect-to-server-option .button").textContent = "Initialize";
 }
 
 window.newProject = function() {
@@ -294,13 +307,13 @@ window.connectToServer = function() {
     const serverURL = $("#server-url-input").value;
 
     ioHelper.getServerStatus(serverURL)
-        .then(status => {
-            switch (status) {
-                case ioHelper.serverConnectionStatus.SERVERNOTINITIALIZED:
+        .then(serverStatus => {
+            switch (serverStatus) {
+                case ioHelper.serverStatus.SERVERNOTINITIALIZED:
                     $("#initialize-server-form").classList.remove("is-hidden");
                     $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
                     break;
-                case ioHelper.serverConnectionStatus.SERVERINITIALIZED:
+                case ioHelper.serverStatus.SERVERINITIALIZED:
                     ioHelper.showWarning("Server initialized", "The server has already been initialized.");
             }
         })
@@ -333,7 +346,7 @@ window.initializeServer = function(event) {
 
     // Initialize the server, i.e., set the owner of the server with the entered data and transfer all data
     ioHelper.initializeServer(serverURL, username, password)
-        .then(() => window.location.reload())
+        .then(serverURL => window.location.replace(serverURL))
         .catch(error => ioHelper.showWarning("Account not created", error));
 }
 

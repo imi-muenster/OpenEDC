@@ -30,7 +30,7 @@ export function importMetadata(odmXMLString) {
 }
 
 export async function loadExample() {
-    let exampleResponse = await fetch(ioHelper.getBaseURL() + "odm/example.xml");
+    let exampleResponse = await fetch(ioHelper.getBaseURL() + "/odm/example.xml");
     let exampleODM = await exampleResponse.text();
 
     metadata = new DOMParser().parseFromString(exampleODM, "text/xml");
@@ -38,12 +38,7 @@ export async function loadExample() {
 }
 
 export async function loadStoredMetadata() {
-    try {
-        metadata = await ioHelper.getMetadata();
-        return Promise.resolve()
-    } catch (error) {
-        return Promise.reject(error);
-    }
+    metadata = await ioHelper.getMetadata();
 }
 
 export function storeMetadata() {
@@ -66,7 +61,7 @@ export async function getFormAsHTML(formOID, locale) {
     // TODO: prettifiedODM and xsltStylesheet could be cached to improve performance
     let prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
 
-    let xsltResponse = await fetch(ioHelper.getBaseURL() + "xsl/odmtohtml.xsl");
+    let xsltResponse = await fetch(ioHelper.getBaseURL() + "/xsl/odmtohtml.xsl");
     let xsltStylesheet = await xsltResponse.text();
 
     let xsltProcessor = new XSLTProcessor();
