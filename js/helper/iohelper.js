@@ -45,7 +45,9 @@ export async function init() {
     setIOListeners();
 
     // Check if app is served by an OpenEDC Server instance
-    return await getServerStatus(getBaseURL()).catch(() => console.log("No OpenEDC Server found. It seems that this is a standalone OpenEDC App."));
+    // For development purposes, check for an ?server= query string parameter and use it instead of the current url
+    const devServer = new URLSearchParams(window.location.search).get("server");
+    return await getServerStatus(devServer ? devServer : getBaseURL()).catch(() => console.log("No OpenEDC Server found. It seems that this is a standalone OpenEDC App."));
 }
 
 async function getStoredXMLData(fileName) {
