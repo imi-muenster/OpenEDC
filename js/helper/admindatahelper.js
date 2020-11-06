@@ -76,7 +76,8 @@ export function setUserInfo(userOID, firstName, lastName, locationOID, username,
         if (locationRef) locationRef.remove();
     }
 
-    ioHelper.setUserOnServer(userOID, username, initialPassword, rights, locationOID).catch(error => ioHelper.showWarning(error));
+    const credentials = new ioHelper.Credentials(username, initialPassword);
+    ioHelper.setUserOnServer(userOID, credentials, rights, locationOID).catch(error => ioHelper.showWarning(error));
     ioHelper.storeAdmindata(admindata);
 }
 

@@ -12,7 +12,7 @@ export class Credentials {
             PASSWORDPATTERNVIOLATION: "The password must be at least eight characters in length and have a number, lower case and upper case character."
         }
 
-        // throw errors.NOTALLFIELDSENTERED could be used as well, however, .catch() won't catch these errors if they are in a class constructor and try {} catch (error) {} blocks are not desired
+        // Do not throw error since validation is not desired in all instances (e.g., not when setting a new inital user password)
         if (!username || !password || confirmPassword === "") this.error = errors.NOTALLFIELDSENTERED;
         else if ((confirmPassword || confirmPassword === "") && password != confirmPassword) this.error = errors.PASSWORDSNOTEQUAL;
         else if (!new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/).test(password)) this.error = errors.PASSWORDPATTERNVIOLATION;
@@ -347,20 +347,19 @@ export async function setOwnPassword(credentials) {
 }
 
 // TODO: Naming -- should I add a new serverhelper.js that handles all server communication?
-export async function setUserOnServer(oid, username, initialPassword, rights, site) {
-    let userData = null;
-    if (username && initialPassword) {
-        const hashedPassword = CryptoJS.SHA1(initialPassword).toString();
-        const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, initialPassword).toString();
-        userData = { username, hashedPassword, encryptedDecryptionKey, rights, site };
+export async function setUserOnServer(oid, credentials, rights, site) {
+    let userRequest = null;
+    if (credentials) {
+        const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, credentials.password).toString();
+        userRequest = { username: credentials.username, hashedPassword: credentials.hashedPassword, encryptedDecryptionKey, rights, site };
     } else {
-        userData = { rights, site };
+        userRequest = { rights, site };
     }
 
     const userResponse = await fetch(serverURL + "/api/users/" + oid, {
         method: "PUT",
         headers: getHeaders(true, true),
-        body: JSON.stringify(userData)
+        body: JSON.stringify(userRequest)
     });
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
 }

@@ -439,6 +439,7 @@ window.removeClinicaldata = async function() {
 // TODO: In some secure cases the || operator may be used to set default values to reduce code compared to the ternary operator
 // TODO: In templates.js files use only const instead of let
 // TODO: Check if data has changed in clinicaldatamodule.js could be even more generalized
+// TODO: let abc = null; is usually not required, let abc; is sufficient -- replace occurences
 export function setIOListeners() {
     $("body").onresize = ioHelper.setTreeMaxHeight;
     // TODO: This style everywhere or onclick here
