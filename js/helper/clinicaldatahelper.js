@@ -3,8 +3,6 @@ import * as admindataHelper from "./admindatahelper.js";
 import * as ioHelper from "./iohelper.js";
 
 class Subject {
-    static fileNameSeparator = "__";
-
     constructor(key, siteOID, createdDate) {
         this.key = key;
         this.siteOID = siteOID;
@@ -12,7 +10,7 @@ class Subject {
     }
 
     get fileName() {
-        return this.key + Subject.fileNameSeparator + (this.siteOID || "") + Subject.fileNameSeparator + this.createdDate.getTime();
+        return this.key + fileNameSeparator + (this.siteOID || "") + fileNameSeparator + this.createdDate.getTime();
     }
 }
 
@@ -59,6 +57,8 @@ export const errors = {
     SUBJECTKEYEMPTY: 0,
     SUBJECTKEYEXISTENT: 1
 }
+
+const fileNameSeparator = "__";
 
 let subjects = [];
 let subject = null;
@@ -169,7 +169,7 @@ export async function removeClinicaldata() {
 }
 
 function fileNameToSubject(fileName) {
-    const fileNameParts = fileName.split(Subject.fileNameSeparator);
+    const fileNameParts = fileName.split(fileNameSeparator);
     const key = fileNameParts[0];
     const siteOID = fileNameParts[1] || null;
     const createdDate = fileNameParts[2];
