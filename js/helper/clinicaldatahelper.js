@@ -3,14 +3,15 @@ import * as admindataHelper from "./admindatahelper.js";
 import * as ioHelper from "./iohelper.js";
 
 class Subject {
-    constructor(key, siteOID, createdDate) {
+    constructor(key, siteOID, createdDate, modifiedDate) {
         this.key = key;
         this.siteOID = siteOID;
         this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate ? modifiedDate : createdDate;
     }
 
     get fileName() {
-        return this.key + fileNameSeparator + (this.siteOID || "") + fileNameSeparator + this.createdDate.getTime();
+        return this.key + fileNameSeparator + (this.siteOID || "") + fileNameSeparator + this.createdDate.getTime() + fileNameSeparator + this.modifiedDate.getTime();
     }
 }
 
@@ -124,11 +125,11 @@ export function getSubjectKeys(siteOID, sortOrder) {
 
 function sortSubjects(subjects, sortOrder) {
     switch(sortOrder) {
-        case sortOrderTypes.ALPHANUMERICALLY:
-            subjects.sort((a, b) => a.key > b.key ? 1 : (a.key < b.key ? -1 : 0));
-            break;
         case sortOrderTypes.CREATEDDATE:
             subjects.sort((a, b) => a.createdDate > b.createdDate ? 1 : (a.createdDate < b.createdDate ? -1 : 0));
+            break;
+        case sortOrderTypes.ALPHANUMERICALLY:
+            subjects.sort((a, b) => a.key > b.key ? 1 : (a.key < b.key ? -1 : 0));
     }
 
     return subjects;
@@ -148,7 +149,7 @@ export async function storeSubject() {
     if (!subject) return;
     
     console.log("Store subject ...");
-    await ioHelper.storeSubjectData(subject.fileName, subjectData);
+    subject = await ioHelper.storeSubjectData(subject, subjectData);
 }
 
 export function clearSubject() {
@@ -173,8 +174,9 @@ function fileNameToSubject(fileName) {
     const key = fileNameParts[0];
     const siteOID = fileNameParts[1] || null;
     const createdDate = fileNameParts[2];
+    const modifiedDate = fileNameParts[3];
 
-    return new Subject(key, siteOID, new Date(parseInt(createdDate)));
+    return new Subject(key, siteOID, new Date(parseInt(createdDate)), new Date(parseInt(modifiedDate)));
 }
 
 export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
