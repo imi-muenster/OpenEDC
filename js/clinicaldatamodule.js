@@ -155,12 +155,13 @@ export function loadSubjectKeys() {
 
     const site = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
     const sortOrder = $("#sort-subject-select-inner").value;
-    const subjectKeys = clinicaldataHelper.getSubjectKeys(site, sortOrder)
-    subjectKeys.length > 0 ? $("#no-subjects-hint").classList.add("is-hidden") : $("#no-subjects-hint").classList.remove("is-hidden");
+    const subjects = clinicaldataHelper.getSubjects(site, sortOrder)
+    subjects.length > 0 ? $("#no-subjects-hint").classList.add("is-hidden") : $("#no-subjects-hint").classList.remove("is-hidden");
 
-    for (let subjectKey of subjectKeys) {
-        let panelBlock = htmlElements.getClinicaldataPanelBlock(subjectKey, subjectKey, null, null);
-        panelBlock.onclick = () => loadSubjectData(subjectKey);
+    for (let subject of subjects) {
+        const dataStatus = subject.hasConflicts ? clinicaldataHelper.dataStatusTypes.CONFLICT : null;
+        let panelBlock = htmlElements.getClinicaldataPanelBlock(subject.uniqueKey, subject.key, null, dataStatus);
+        panelBlock.onclick = () => loadSubjectData(subject.uniqueKey);
         $("#subject-panel-blocks").appendChild(panelBlock);
     }
 
@@ -629,8 +630,8 @@ window.showSubjectInfo = function() {
     ioHelper.safeRemoveElement($("#subject-site-select-outer"));
     const currentSiteName = admindataHelper.getSiteNameByOID(clinicaldataHelper.getSubject().siteOID);
     $("#subject-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("subject-site-select", true, true, sites, currentSiteName));
-    $("#subject-modal strong").textContent = currentElementID.subject;
-    $("#subject-modal input").value = currentElementID.subject;
+    $("#subject-modal strong").textContent = clinicaldataHelper.getSubject().key;
+    $("#subject-modal input").value = clinicaldataHelper.getSubject().key;
 
     // Disable change functionality when there are unsaved changes in the form
     $("#subject-modal input").disabled = false;

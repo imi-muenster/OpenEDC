@@ -41,7 +41,7 @@ export function getClinicaldataPanelBlock(elementOID, displayText, fallbackText,
 
     if (dataStatus) {
         let dot = document.createElement("span");
-        dot.className = "panel-icon has-text-link";
+        dot.className = dataStatus == "Conflict" ? "panel-icon has-text-danger" : "panel-icon has-text-link";
         let dotIcon = document.createElement("i");
 
         switch (dataStatus) {
@@ -53,6 +53,9 @@ export function getClinicaldataPanelBlock(elementOID, displayText, fallbackText,
                 break;
             case "Verified":
                 dotIcon.className = "fas fa-check-circle";
+                break;
+            case "Conflict":
+                dotIcon.className = "fas fa-circle";
         }
 
         dot.appendChild(dotIcon);

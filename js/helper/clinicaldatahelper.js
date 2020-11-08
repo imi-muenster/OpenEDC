@@ -8,6 +8,10 @@ class Subject {
         this.siteOID = siteOID;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate ? modifiedDate : createdDate;
+
+        // Used since a subject's key can be ambigous when data conflicts are present (i.e., multiple users edited the same subject at the same)
+        this.uniqueKey = key;
+        this.hasConflicts = false;
     }
 
     get fileName() {
@@ -49,7 +53,8 @@ export const auditRecordTypes = {
 export const dataStatusTypes = {
     EMPTY: "Empty",
     EXISTING: "Existing",
-    VERIFIED: "Verified"
+    VERIFIED: "Verified",
+    CONFLICT: "Conflict"
 };
 
 // TODO: Implement anaologously in other helpers?
@@ -98,6 +103,18 @@ export async function loadSubjects() {
     for (let fileName of subjectFileNames) {
         subjects.push(fileNameToSubject(fileName));
     }
+
+    // Evaluate whether data conflicts are present (i.e., multiple users edited the same subject at the same time)
+    subjects = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY);
+    for (let i = 0; i < subjects.length-1; i++) {
+        if (subjects[i].key == subjects[i+1].key) {
+            subjects[i].hasConflicts = true;
+            subjects[i+1].hasConflicts = true;
+            subjects[i+1].uniqueKey = subjects[i+1].key + fileNameSeparator + i;
+            
+            ioHelper.showWarning("Data conflicts present", "One subject exists multiple times in your data. This can happen when multiple users edited the same subject at the same time or if a user worked offline over an extended period of time.<br><br>The affected subjects are marked with a red dot. Please review the data and remove the subject instance(s) that you do not want to keep. You can look in the audit trail to see which person audited which instance.");
+        }
+    }
 }
 
 export async function addSubject(subjectKey, siteOID) {
@@ -116,11 +133,11 @@ export async function addSubject(subjectKey, siteOID) {
     return Promise.resolve();
 }
 
-export function getSubjectKeys(siteOID, sortOrder) {
+export function getSubjects(siteOID, sortOrder) {
     let filteredSubjects = siteOID ? subjects.filter(subject => subject.siteOID == siteOID) : subjects;
     filteredSubjects = sortOrder ? sortSubjects(filteredSubjects, sortOrder) : filteredSubjects;
 
-    return filteredSubjects.map(subject => subject.key);
+    return filteredSubjects;
 }
 
 function sortSubjects(subjects, sortOrder) {
@@ -136,7 +153,7 @@ function sortSubjects(subjects, sortOrder) {
 }
 
 export async function loadSubject(subjectKey) {
-    subject = subjects.find(subject => subject.key == subjectKey);
+    subject = subjects.find(subject => subject.uniqueKey == subjectKey);
     
     if (subject) {
         subjectData = await ioHelper.getSubjectData(subject.fileName)

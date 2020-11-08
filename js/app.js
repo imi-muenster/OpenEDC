@@ -79,7 +79,7 @@ const startApp = async () => {
     setIOListeners();
 
     // If there is at least one subject stored, automatically open the clinicaldata module
-    clinicaldataHelper.getSubjectKeys().length > 0 ? metadataModule.hide() : metadataModule.show();
+    clinicaldataHelper.getSubjects().length > 0 ? metadataModule.hide() : metadataModule.show();
 }
 
 const setTitles = () => {

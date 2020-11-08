@@ -140,7 +140,7 @@ export function setSiteName(siteOID, name) {
 }
 
 export function removeSite(siteOID) {
-    if (clinicaldataHelper.getSubjectKeys(siteOID).length > 0) return Promise.reject(errors.SITEHASSUBJECTS);
+    if (clinicaldataHelper.getSubjects(siteOID).length > 0) return Promise.reject(errors.SITEHASSUBJECTS);
     if ($(`User LocationRef[LocationOID="${siteOID}"]`)) return Promise.reject(errors.SITEHASUSERS);
 
     const site = getSite(siteOID);
