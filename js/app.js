@@ -308,7 +308,6 @@ window.projectTabClicked = function(event) {
 
 window.connectToServer = function() {
     const serverURL = $("#server-url-input").value;
-
     ioHelper.getServerStatus(serverURL)
         .then(serverStatus => {
             switch (serverStatus) {
@@ -326,12 +325,7 @@ window.connectToServer = function() {
 window.initializeServer = function(event) {
     event.preventDefault();
 
-    const serverURL = $("#server-url-input").value;
-    const username = $("#owner-username-input").value;
-    const password = $("#owner-password-input").value;
-    const confirmPassword = $("#owner-confirm-password-input").value;
-    
-    const credentials = new ioHelper.Credentials(username, password, confirmPassword);
+    const credentials = new ioHelper.Credentials($("#owner-username-input").value, $("#owner-password-input").value, $("#owner-confirm-password-input").value);
     if (credentials.error) {
         ioHelper.showWarning("Account not created", credentials.error);
         return;
@@ -339,6 +333,7 @@ window.initializeServer = function(event) {
 
     // Initialize the server, i.e., set the owner of the server with the entered data and transfer all data
     // The user account will be linked to the default/first user, which, in the most cases, is the only user since adding users is prohibited without a server connection
+    const serverURL = $("#server-url-input").value;
     const userOID = admindataHelper.getCurrentUserOID();
     ioHelper.initializeServer(serverURL, userOID, credentials)
         .then(serverURL => window.location.replace(serverURL))
@@ -351,14 +346,14 @@ window.encryptData = function() {
         return;
     }
 
-    if ($("#encryption-password-input").value != $("#confirm-encryption-password-input").value) {
-        ioHelper.showWarning("Data not encrypted", "The two passwords are not equal.");
+    const credentials = new ioHelper.Credentials(admindataHelper.getCurrentUserOID(), $("#encryption-password-input").value, $("#confirm-encryption-password-input").value);
+    if (credentials.error) {
+        ioHelper.showWarning("Data not encrypted", credentials.error);
         return;
     }
 
-    ioHelper.encryptXMLData($("#encryption-password-input").value)
-        .then(() => window.location.reload())
-        .catch(() => ioHelper.showWarning("Data not encrypted", "The data could not be encrypted. Enter a password with at least 8 characters."));
+    ioHelper.encryptXMLData(credentials.password);
+    window.location.reload();
 }
 
 window.setSurveyCode = function() {

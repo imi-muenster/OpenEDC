@@ -819,6 +819,7 @@ window.removeElement = function() {
     hideRemoveModal();
     resetDetailsPanel();
     reloadTree();
+    metadataHelper.storeMetadata();
 }
 
 window.duplicateReference = function() {

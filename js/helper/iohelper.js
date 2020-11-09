@@ -147,9 +147,6 @@ export async function getSubjectFileNames() {
 }
 
 export function encryptXMLData(key) {
-    // TODO: Move to app.js or add this analogously to initializeServer
-    if (key.length < 8) return Promise.reject();
-
     for (const fileName of Object.keys(localStorage)) {
         if (fileName == globalOptionsFileName) continue;
 
@@ -163,7 +160,6 @@ export function encryptXMLData(key) {
     }
 
     decryptionKey = key;
-    return Promise.resolve();
 }
 
 // TODO: Have a look if this is okay -- only valid for local encryption
