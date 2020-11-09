@@ -325,7 +325,10 @@ window.connectToServer = function() {
 window.initializeServer = function(event) {
     event.preventDefault();
 
-    const credentials = new ioHelper.Credentials($("#owner-username-input").value, $("#owner-password-input").value, $("#owner-confirm-password-input").value);
+    const username = $("#owner-username-input").value;
+    const password = $("#owner-password-input").value;
+    const confirmPassword = $("#owner-confirm-password-input").value;
+    const credentials = new ioHelper.Credentials(username, password, confirmPassword);
     if (credentials.error) {
         ioHelper.showWarning("Account not created", credentials.error);
         return;
@@ -346,7 +349,10 @@ window.encryptData = function() {
         return;
     }
 
-    const credentials = new ioHelper.Credentials(admindataHelper.getCurrentUserOID(), $("#encryption-password-input").value, $("#confirm-encryption-password-input").value);
+    const username = admindataHelper.getCurrentUserOID();
+    const password = $("#encryption-password-input").value;
+    const confirmPassword = $("#confirm-encryption-password-input").value;
+    const credentials = new ioHelper.Credentials(username, password, confirmPassword);
     if (credentials.error) {
         ioHelper.showWarning("Data not encrypted", credentials.error);
         return;

@@ -74,7 +74,7 @@ function loadUser(userOID) {
     $("#user-first-name-input").disabled = false;
     $("#user-last-name-input").disabled = false;
     $("#user-save-button").disabled = false;
-    $("#user-remove-button").disabled = false;
+    if (admindataHelper.getUsers().length > 1) $("#user-remove-button").disabled = false;
 
     if (ioHelper.getServerURL()) {
         $("#user-username-input").value = "";
