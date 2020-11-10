@@ -28,6 +28,7 @@ export function init() {
     currentElementType = null;
 
     createDatatypeMandatorySelect();
+    resetDetailsPanel();
     setIOListeners();
 }
 

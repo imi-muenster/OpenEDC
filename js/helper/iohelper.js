@@ -524,14 +524,13 @@ export function prettifyContent(content) {
 }
 
 export function setTreeMaxHeight() {
-    console.log("Set tree max height ...");
     const offset = 30;
     const minHeight = 350;
     const windowHeight = window.innerHeight;
-    const isMobile = isMobile();
+    const isMobileDevice = isMobile();
 
     for (let treePanelBlock of document.querySelectorAll(".tree-panel-blocks")) {
-        if (isMobile) {
+        if (isMobileDevice) {
             treePanelBlock.style.maxHeight = null;
             continue;
         };

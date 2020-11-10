@@ -145,7 +145,7 @@
             <xsl:when test="$item/@DataType = 'float'">
                 <input class="input" type="text" inputmode="decimal" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
             </xsl:when>
-            <xsl:when test="$item/@DataType = 'text' and $textAsTextarea = 'true'">
+            <xsl:when test="$item/@DataType = 'string' and $textAsTextarea = 'true'">
                 <textarea class="textarea" type="textarea" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"></textarea>
             </xsl:when>
             <xsl:otherwise>
