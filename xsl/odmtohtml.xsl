@@ -2,6 +2,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:odm="http://www.cdisc.org/ns/odm/v1.3">
     <xsl:param name="formOID"/>
     <xsl:param name="locale"/>
+    <xsl:param name="textAsTextarea"/>
     <xsl:template match="/">
         <div id="odm-html-content">
             <xsl:for-each select="//odm:FormDef[@OID=$formOID]/odm:ItemGroupRef">
@@ -143,6 +144,9 @@
             </xsl:when>
             <xsl:when test="$item/@DataType = 'float'">
                 <input class="input" type="text" inputmode="decimal" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
+            </xsl:when>
+            <xsl:when test="$item/@DataType = 'text' and $textAsTextarea = 'true'">
+                <textarea class="textarea" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"></textarea>
             </xsl:when>
             <xsl:otherwise>
                 <input class="input" type="text" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>

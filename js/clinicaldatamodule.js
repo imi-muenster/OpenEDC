@@ -276,7 +276,7 @@ async function loadFormMetadata() {
         $("#clinicaldata-form-title .subtitle").textContent = ioHelper.shortenText(metadataHelper.getStudyName(), 15);
     }
 
-    let form = await metadataHelper.getFormAsHTML(currentElementID.form, locale);
+    let form = await metadataHelper.getFormAsHTML(currentElementID.form, locale, ioHelper.isTextAsTextarea());
     ioHelper.safeRemoveElement($("#odm-html-content"));
     $("#clinicaldata-content").appendChild(form);
 

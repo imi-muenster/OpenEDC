@@ -57,7 +57,7 @@ export function clearMetadata() {
     metadata = null;
 }
 
-export async function getFormAsHTML(formOID, locale) {
+export async function getFormAsHTML(formOID, locale, textAsTextarea) {
     // TODO: prettifiedODM and xsltStylesheet could be cached to improve performance
     let prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
 
@@ -69,6 +69,7 @@ export async function getFormAsHTML(formOID, locale) {
     xsltProcessor.importStylesheet(domParser.parseFromString(xsltStylesheet, "text/xml"));
     xsltProcessor.setParameter(null, "formOID", formOID);
     xsltProcessor.setParameter(null, "locale", locale);
+    xsltProcessor.setParameter(null, "textAsTextarea", textAsTextarea.toString());
     return xsltProcessor.transformToFragment(domParser.parseFromString(prettifiedODM, "text/xml"), document);
 }
 

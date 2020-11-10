@@ -55,7 +55,9 @@ let serverURL = null;
 
 // Keeps app options that are equal for all users of the app -- options may have default values assigned
 let globalOptions = {
-    surveyCode: "0000"
+    surveyCode: "0000",
+    textAsTextarea: false,
+    autoSurveyView: false
 };
 
 export async function init() {
@@ -245,6 +247,24 @@ export function setSurveyCode(surveyCode) {
 
 export function getSurveyCode() {
     return globalOptions.surveyCode;
+}
+
+export function setTextAsTextarea(enable) {
+    globalOptions.textAsTextarea = enable;
+    storeGlobalOptions();
+}
+
+export function isTextAsTextarea() {
+    return globalOptions.textAsTextarea;
+}
+
+export function setAutoSurveyView(enable) {
+    globalOptions.autoSurveyView = enable;
+    storeGlobalOptions();
+}
+
+export function isAutoSurveyView() {
+    return globalOptions.autoSurveyView;
 }
 
 export async function getServerStatus(url) {
