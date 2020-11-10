@@ -176,7 +176,24 @@ async function loginSuccessful() {
     await startApp();
 
     // When connected to a server, adjust UI in accordance with the user rights (e.g., disable or enable buttons, select site of user)
-    if (!ioHelper.getServerURL()) return;
+    if (ioHelper.getServerURL()) adjustUIToUser();
+}
+
+function loginNotSuccessful(error) {
+    $("#login-modal #password-input").value = "";
+
+    switch (error) {
+        case ioHelper.loginStatus.USERHASINITIALPASSWORD:
+            $("#login-text").textContent = "This is the first time you log in to the OpenEDC Server. Please choose a new secure password.";
+            $("#login-modal #confirm-password-input").parentNode.parentNode.classList.remove("is-hidden");
+            $("#login-modal #username-input").disabled = true;
+            break;
+        default:
+            $("#login-modal #login-incorrect-hint").classList.remove("is-hidden");
+    }
+}
+
+function adjustUIToUser() {
     const user = ioHelper.getLocalUser();
     if (!user.rights.includes("Project options")) {
         $("#project-modal-button").disabled = true;
@@ -195,32 +212,15 @@ async function loginSuccessful() {
         $("#subject-info-button").disabled = true;
     }
     if (user.site) {
-        const siteName = admindataHelper.getSiteNameByOID(user.site);
-        $("#filter-site-select-inner").value = siteName;
+        $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(user.site);;
         $("#filter-site-select-inner").disabled = true;
-    }
-}
-
-function loginNotSuccessful(error) {
-    $("#login-modal #password-input").value = "";
-
-    switch (error) {
-        case ioHelper.loginStatus.USERHASINITIALPASSWORD:
-            $("#login-text").textContent = "This is the first time you log in to the OpenEDC Server. Please choose a new secure password.";
-            $("#login-modal #confirm-password-input").parentNode.parentNode.classList.remove("is-hidden");
-            $("#login-modal #username-input").disabled = true;
-            break;
-        default:
-            $("#login-modal #login-incorrect-hint").classList.remove("is-hidden");
+        clinicaldataModule.loadSubjectKeys();
     }
 }
 
 function showUninitializedHint() {
-    ioHelper.showWarning("Server uninitialized", `
-            This OpenEDC Server has not yet been initialized.<br><br>
-            You can either go to <a target="_blank" href="https://openedc.org">openedc.org</a> to initialize this server with data that you have already locally captured there, or, alternatively, close this hint, start a new local project here, and initialize the server from here as well.<br><br>
-            In both cases, use the <i>Project Options</i> button in the top right corner of the app and follow the instructions to initialize this server.
-        `);
+    ioHelper.showWarning("Server uninitialized", `This OpenEDC Server has not yet been initialized.<br><br>You can either go to <a target="_blank" href="https://openedc.org">openedc.org</a> to initialize this server with data that you have already locally captured there, or, alternatively, close this hint, start a new local project here, and initialize the server from here as well.<br><br>In both cases, use the <i>Project Options</i> button in the top right corner of the app and follow the instructions to initialize this server.`);
+
     $("#connect-to-server-option .title").textContent = "Initialize Server";
     $("#connect-to-server-option .input").value = ioHelper.getBaseURL();
     $("#connect-to-server-option .button").textContent = "Initialize";
