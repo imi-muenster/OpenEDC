@@ -59,9 +59,10 @@ function showOrHideConditionalItem(previewOID, hide) {
     }
 }
 
+// TODO: Use switch statement
 function emptyConditionalItem(previewOID) {
     const previewFieldInput = $(`[preview-oid="${previewOID}"]`);
-    if (previewFieldInput.getAttribute("type") == "text" || previewFieldInput.getAttribute("type") == "date") {
+    if (previewFieldInput.getAttribute("type") == "text" || previewFieldInput.getAttribute("type") == "textarea" || previewFieldInput.getAttribute("type") == "date") {
         previewFieldInput.value = "";
         previewFieldInput.dispatchEvent(new Event("input"));
     } else if (previewFieldInput.getAttribute("type") == "select") {

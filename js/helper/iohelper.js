@@ -528,10 +528,10 @@ export function setTreeMaxHeight() {
     const offset = 30;
     const minHeight = 350;
     const windowHeight = window.innerHeight;
-    const windowWidth = window.innerWidth;
+    const isMobile = isMobile();
 
     for (let treePanelBlock of document.querySelectorAll(".tree-panel-blocks")) {
-        if (windowWidth < 1024) {
+        if (isMobile) {
             treePanelBlock.style.maxHeight = null;
             continue;
         };
@@ -546,6 +546,10 @@ export function setTreeMaxHeight() {
 
         treePanelBlock.style.maxHeight = `${remainingSpace}px`;
     }
+}
+
+export function isMobile() {
+    return window.innerWidth < 1024;
 }
 
 function setIOListeners() {

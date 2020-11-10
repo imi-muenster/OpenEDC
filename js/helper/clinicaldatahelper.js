@@ -209,7 +209,7 @@ export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
             if (itemGroupData) formData.appendChild(itemGroupData);
             itemGroupData = clinicaldataTemplates.getItemGroupData(formItemData.itemGroupOID);
         };
-        itemGroupData.appendChild(clinicaldataTemplates.getItemData(formItemData.itemOID, formItemData.value));
+        itemGroupData.appendChild(clinicaldataTemplates.getItemData(formItemData.itemOID, formItemData.value.replaceAll("\n", "&#xA;")));
     }
 
     if (itemGroupData) formData.appendChild(itemGroupData);

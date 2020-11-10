@@ -146,7 +146,7 @@
                 <input class="input" type="text" inputmode="decimal" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
             </xsl:when>
             <xsl:when test="$item/@DataType = 'text' and $textAsTextarea = 'true'">
-                <textarea class="textarea" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"></textarea>
+                <textarea class="textarea" type="textarea" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"></textarea>
             </xsl:when>
             <xsl:otherwise>
                 <input class="input" type="text" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>

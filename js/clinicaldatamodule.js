@@ -230,7 +230,8 @@ async function loadFormsByStudyEvent() {
     ioHelper.removeIsActiveFromElement($("#clinicaldata-study-event-panel-blocks a.is-active"));
     $(`#clinicaldata-study-event-panel-blocks [oid="${currentElementID.studyEvent}"]`).classList.add("is-active");
 
-    for (let formDef of metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent)) {
+    const formDefs = metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent);
+    for (let formDef of formDefs) {
         const formOID = formDef.getAttribute("OID");
         const translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForForm(currentElementID.studyEvent, formOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
@@ -239,8 +240,17 @@ async function loadFormsByStudyEvent() {
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
     }
 
+    // Automatically start the survey view when activated in project options and the current device is a smartphone or tablet
+    if (ioHelper.isAutoSurveyView() && ioHelper.isMobile() && formDefs.length > 0 && !currentElementID.form) currentElementID.form = formDefs[0].getAttribute("OID");
+
     if (currentElementID.form) {
         await loadFormData();
+
+        // (continued) Automatically start the survey view when activated in project options and the current device is a smartphone or tablet
+        if (ioHelper.isAutoSurveyView() && ioHelper.isMobile()) {
+            showSurveyView();
+            showColumnOnMobile();
+        }
     } else {
         ioHelper.safeRemoveElement($("#odm-html-content"));
         $("#clinicaldata-form-data").classList.add("is-hidden");
@@ -309,6 +319,7 @@ function loadFormClinicaldata() {
         }
         switch (inputElement.getAttribute("type")) {
             case "text":
+            case "textarea":
             case "date":
             case "select":
                 inputElement.value = formItemData.value;
@@ -417,6 +428,7 @@ function getFormData() {
         let itemGroupOID = inputElement.getAttribute("preview-group-oid");
         switch (inputElement.getAttribute("type")) {
             case "text":
+            case "textarea":
             case "date":
             case "select":
                 if (value) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
@@ -472,6 +484,7 @@ window.cancelFormOrSurveyEntry = function(closeSurvey) {
         $("#close-clinicaldata-modal").classList.remove("is-active");
         hideSurveyView();
         showCloseSurveyModal();
+        if (ioHelper.isAutoSurveyView() && ioHelper.isMobile()) currentElementID.studyEvent = null;
         skipDataHasChangedCheck = true;
     }
 
