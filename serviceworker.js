@@ -1,4 +1,5 @@
 const staticCacheName = "static-cache-v1";
+const dynamicCacheName = "dynamic-cache";
 
 const staticAssets = [
     "/",
@@ -32,6 +33,7 @@ const staticAssets = [
     "/lib/fontawesome-base.js",
     "/lib/fontawesome-regular.js",
     "/lib/fontawesome-solid.js",
+    "/lib/crypto-js.js",
     "/odm/example.xml",
     "/xsl/odmtohtml.xsl",
     "/favicon.ico",
@@ -42,7 +44,7 @@ const staticAssets = [
 self.addEventListener("install", installEvent => {
     installEvent.waitUntil(
         caches.open(staticCacheName).then(cache => {
-            // cache.addAll(staticAssets);
+            cache.addAll(staticAssets);
         })
     );
 });
@@ -62,8 +64,21 @@ self.addEventListener("activate", activateEvent => {
 // Return static assets
 self.addEventListener("fetch", fetchEvent => {
     fetchEvent.respondWith(
-        caches.match(fetchEvent.request).then(cacheResponse => {
-            return cacheResponse || fetch(fetchEvent.request);
+        caches.match(fetchEvent.request, { staticCacheName }).then(staticCacheResponse => {
+            return staticCacheResponse || fetch(fetchEvent.request)
+                .then(fetchResponse => {
+                    // TODO: For performance reasons, fetched clinical subject data may be put into the staticCache since it wont change as it is versioned
+                    return caches.open(dynamicCacheName).then(cache => {
+                        cache.put(fetchEvent.request.url, fetchResponse.clone());
+                        return fetchResponse;
+                    });
+                })
+                .catch(() => {
+                    console.log("Dynamic resource could not be loaded -- try to search in dynamic cache");
+                    caches.match(fetchEvent.request, { dynamicCacheName }).then(dynamicCacheResponse => {
+                        return dynamicCacheResponse;
+                    })
+                });
         })
     );
 });
