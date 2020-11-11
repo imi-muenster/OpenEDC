@@ -499,6 +499,8 @@ window.showSurveyView = function() {
     $("#close-survey-title").classList.remove("is-hidden");
     $("#close-survey-text").classList.remove("is-hidden");
     $("#survey-view-button").classList.add("is-hidden");
+    $("#survey-options-level").classList.remove("is-hidden");
+    if (ioHelper.isFirefox()) $("#survey-zoom-buttons").classList.add("is-hidden");
     scrollToFormStart();
 }
 
@@ -520,6 +522,8 @@ function hideSurveyView() {
     $("#close-survey-title").classList.add("is-hidden");
     $("#close-survey-text").classList.add("is-hidden");
     $("#survey-view-button").classList.remove("is-hidden");
+    $("#survey-options-level").classList.add("is-hidden");
+    document.body.style.zoom = 1.0;
 }
 
 // Renders and shows the close survey modal with the key numpad for the survey code

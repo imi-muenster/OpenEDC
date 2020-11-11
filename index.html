@@ -260,16 +260,16 @@
                                         <p id="audit-record-most-current-hint" internationalization="audit-record-most-current-hint">This is the most current data or equivalent to the most current data.</p>
                                     </div>
                                 </article>
-                                <nav class="level is-mobile is-hidden">
+                                <nav class="level is-mobile is-hidden" id="survey-options-level">
                                     <div class="level-left">
                                         <div class="level-item">
-                                            <div class="buttons">
-                                                <button class="button is-link is-light">
+                                            <div class="buttons" id="survey-zoom-buttons">
+                                                <button class="button is-link is-light" onclick="decreaseZoom()">
                                                     <span class="icon">
                                                         <i class="fas fa-xs fa-font"></i>
                                                     </span>
                                                 </button>
-                                                <button class="button is-link is-light">
+                                                <button class="button is-link is-light" onclick="increaseZoom()">
                                                     <span class="icon">
                                                         <i class="fas fa-lg fa-font"></i>
                                                     </span>

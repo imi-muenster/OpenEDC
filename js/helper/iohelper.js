@@ -566,6 +566,10 @@ export function isMobile() {
     return window.innerWidth < 1024;
 }
 
+export function isFirefox() {
+    return navigator.userAgent.toLowerCase().includes("firefox");
+}
+
 function setIOListeners() {
     $("#warning-modal button").addEventListener("click", () => $("#warning-modal").classList.remove("is-active"));
 }
