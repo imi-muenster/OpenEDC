@@ -495,8 +495,8 @@
                             <form class="mt-5 is-hidden" id="initialize-server-form">
                                 <strong>A new OpenEDC Server could be found. You can now create an account for the server.</strong>
                                 <input class="input is-small mt-5" id="owner-username-input" type="text" placeholder="Username">
-                                <input class="input is-small mt-3" id="owner-password-input" type="text" placeholder="Password">
-                                <input class="input is-small mt-3" id="owner-confirm-password-input" type="text" placeholder="Password (confirm)">
+                                <input class="input is-small mt-3" id="owner-password-input" type="password" placeholder="Password" autocomplete="new-password">
+                                <input class="input is-small mt-3" id="owner-confirm-password-input" type="password" placeholder="Password (confirm)" autocomplete="new-password">
                                 <button class="button is-link is-small mt-5" onclick="initializeServer(event)">Create user</button>
                             </form>
                         </div>
