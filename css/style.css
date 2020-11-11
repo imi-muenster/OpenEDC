@@ -81,6 +81,10 @@ a.panel-block:hover {
     border-left: 2px #3273dc solid;
 }
 
+.panel-block.has-text-centered p {
+    margin: 0 auto;
+}
+
 .panel-icon {
     pointer-events: none;
 }

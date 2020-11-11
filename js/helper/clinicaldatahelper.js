@@ -76,7 +76,7 @@ export function importClinicaldata(odmXMLString) {
         const siteOID = subjectData.querySelector("SiteRef") ? subjectData.querySelector("SiteRef").getAttribute("LocationOID") : null;
         // TODO: Take the created date from the audit trail
         const subject = new Subject(subjectData.getAttribute("SubjectKey"), siteOID, new Date());
-        ioHelper.storeSubjectData(subject.fileName, subjectData);
+        ioHelper.storeSubjectData(subject, subjectData);
     }
 }
 

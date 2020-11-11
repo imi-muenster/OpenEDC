@@ -451,14 +451,14 @@
                         <br>
                         <p>All data is entirely processed on your local device. No data is ever send to our server. You can optionally connect to your own <a target="_blank" href="#">OpenEDC Server</a> to simply create multi-centric research studies with multiple users.</p>
                         <br>
-                        <p>For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you want to connect to an OpenEDC Server or have an ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an exemplary project and see how it all works.</p>
+                        <p>For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you have an ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an exemplary project and see how it all works.</p>
                         <div class="buttons is-centered mt-5">
                             <button class="button" onclick="newProject()">New Project</button>
                             <div class="file">
                                 <label class="file-label">
                                     <input class="file-input" type="file" name="resume" id="odm-upload" onchange="uploadODM()">
                                     <span class="file-cta">
-                                        <span class="file-label">Open ODM</span>
+                                        <span class="file-label">Open</span>
                                     </span>
                                 </label>
                             </div>
@@ -496,7 +496,7 @@
                             </div>
                             <form class="mt-5 is-hidden" id="initialize-server-form">
                                 <strong>A new OpenEDC Server could be found. You can now create an account for the server.</strong>
-                                <input class="input is-small mt-5" id="owner-username-input" type="text" placeholder="Username">
+                                <input class="input is-small mt-5" id="owner-username-input" type="text" placeholder="Username" autocomplete="username">
                                 <input class="input is-small mt-3" id="owner-password-input" type="password" placeholder="Password" autocomplete="new-password">
                                 <input class="input is-small mt-3" id="owner-confirm-password-input" type="password" placeholder="Password (confirm)" autocomplete="new-password">
                                 <button class="button is-link is-small mt-5" onclick="initializeServer(event)">Create user</button>

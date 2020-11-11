@@ -20,7 +20,7 @@ export function loadEmptyProject() {
 }
 
 export function importMetadata(odmXMLString) {
-    parseMetadata(odmXMLString);
+    metadata = new DOMParser().parseFromString(odmXMLString, "text/xml");
     
     // Remove ClinicalData and AdminData (note: the MetadataHelper stores the "shell" of an ODM-file, e.g., the GlobalVariables, MeasurementUnits, and both the ODM and Study elements)
     $$("ClinicalData").forEach(clinicalData => clinicalData.remove());
