@@ -35,6 +35,9 @@ export async function init() {
     setIOListeners();
 
     await clinicaldataHelper.loadSubjects();
+
+    // Currently, the subjects are reloaded every 10 seconds -- this should be improved in the future by means of server-sent events or a websocket
+    setLoadSubjectsTimer();
 }
 
 export function show() {
@@ -98,26 +101,6 @@ function createSortTypeSelect() {
         loadSubjectKeys();
         inputEvent.target.blur();
     };
-}
-
-function setIOListeners() {
-    $("#metadata-toggle-button").onclick = () => hide();
-    $("#add-subject-input").onkeydown = keyEvent => {
-        if (["/", "#", "<", ">", "\\", "{", "}", "&", "?"].includes(keyEvent.key)) keyEvent.preventDefault();
-        if (keyEvent.code == "Enter") addSubject();
-    };
-    $("#search-subject-input").oninput = inputEvent => filterSubjects(inputEvent.target.value);
-}
-
-function filterSubjects(searchString) {
-    searchString = searchString.toUpperCase();
-    for (let subject of document.querySelectorAll("#subject-panel-blocks a")) {
-        if (subject.textContent.toUpperCase().includes(searchString)) {
-            subject.classList.remove("is-hidden");
-        } else {
-            subject.classList.add("is-hidden");
-        }
-    }
 }
 
 window.addSubject = function() {
@@ -753,4 +736,34 @@ function showColumnOnMobile() {
     } else {
         $("#subjects-column").classList.remove("is-hidden-touch");
     }
+}
+
+function setIOListeners() {
+    $("#metadata-toggle-button").onclick = () => hide();
+    $("#add-subject-input").onkeydown = keyEvent => {
+        if (["/", "#", "<", ">", "\\", "{", "}", "&", "?"].includes(keyEvent.key)) keyEvent.preventDefault();
+        if (keyEvent.code == "Enter") addSubject();
+    };
+    $("#search-subject-input").oninput = inputEvent => filterSubjects(inputEvent.target.value);
+}
+
+function filterSubjects(searchString) {
+    searchString = searchString.toUpperCase();
+    for (let subject of document.querySelectorAll("#subject-panel-blocks a")) {
+        if (subject.textContent.toUpperCase().includes(searchString)) {
+            subject.classList.remove("is-hidden");
+        } else {
+            subject.classList.add("is-hidden");
+        }
+    }
+}
+
+// Currently, the subjects are reloaded every 5 seconds -- this should be improved in the future by means of server-sent events or a websocket
+function setLoadSubjectsTimer() {
+    if (!ioHelper.getServerURL()) return;
+     
+    setInterval(async () => {
+        await clinicaldataHelper.loadSubjects();
+        loadSubjectKeys();
+    }, 5000);
 }

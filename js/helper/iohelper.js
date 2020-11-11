@@ -76,12 +76,10 @@ async function getStoredXMLData(fileName) {
     let xmlString = null;
 
     if (serverURL) {
-        console.log("Load stored xml data from server ...", fileName);
         const xmlResponse = await fetch(getApiUrlFromFileName(fileName), { headers: getHeaders(true) });
         if (!xmlResponse.ok) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
         xmlString = await xmlResponse.text();
     } else {
-        console.log("Load stored xml data locally ...", fileName);
         xmlString = localStorage.getItem(fileName);
         if (!xmlString) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
     }
