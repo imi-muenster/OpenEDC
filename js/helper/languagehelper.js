@@ -92,35 +92,51 @@ export function getCurrentLocale() {
     return currentLocale;
 }
 
-export function createLanguageSelect() {
+export function createLanguageSelects() {
     ioHelper.removeElements($$("#language-dropdown a"));
     ioHelper.removeElements($$("#language-dropdown hr"));
+    ioHelper.removeElements($$("#survey-language-control option"));
 
     if (localesInODM.length > 0) {
         for (let locale of localesInODM) {
-            addLanguageOption(locale);
+            addLanguageOptionNavbar(locale);
+            addLanguageOptionSurvey(locale);
         }
     
-        let divider = document.createElement("hr");
-        divider.className = "navbar-divider";
-        $("#language-dropdown").appendChild(divider);
+        addDividerNavbar();
     }
 
     for (let locale of localesNotInODM) {
-        addLanguageOption(locale);
+        addLanguageOptionNavbar(locale);
     }
 
     $("#current-language").textContent = getLanguageNameByLocale(currentLocale);
+    $("#survey-language-control select").oninput = event => changeLanguage(event.target.value);
 }
 
-function addLanguageOption(locale) {
+function addLanguageOptionNavbar(locale) {
     let option = document.createElement("a");
     option.className = "navbar-item";
     option.textContent = getLanguageNameByLocale(locale);
-    option.setAttribute("locale", locale);
-    option.onclick = clickEvent => changeLanguage(clickEvent.target.getAttribute("locale"));
+    option.onclick = () => changeLanguage(locale);
     
     $("#language-dropdown").appendChild(option);
+}
+
+function addDividerNavbar() {
+    let divider = document.createElement("hr");
+    divider.className = "navbar-divider";
+    $("#language-dropdown").appendChild(divider);
+}
+
+function addLanguageOptionSurvey(locale) {
+    let option = document.createElement("option");
+    const languageName = getLanguageNameByLocale(locale);
+    option.textContent = languageName;
+    option.value = locale;
+    option.setAttribute("internationalization", languageName.toLowerCase());
+    
+    $("#survey-language-control select").appendChild(option);
 }
 
 function changeLanguage(locale) {
@@ -130,5 +146,6 @@ function changeLanguage(locale) {
     currentLocaleSet = true;
     internationalize();
     $("#current-language").textContent = getLanguageNameByLocale(currentLocale);
+    $("#survey-language-control select").value = locale;
     document.dispatchEvent(new CustomEvent("LanguageChanged", { detail: currentLocale }));
 }

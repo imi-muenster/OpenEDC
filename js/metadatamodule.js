@@ -506,7 +506,7 @@ window.saveElement = async function() {
 
     if (!languageHelper.getPresentLanguages().includes(locale)) {
         languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
-        languageHelper.createLanguageSelect();
+        languageHelper.createLanguageSelects();
     }
     
     reloadDetailsPanel();

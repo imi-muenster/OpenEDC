@@ -30,5 +30,7 @@
     "close-survey": "Close survey",
     "close-survey-text": "Do you really want to end the survey?",
     "close-without-saving": "Close without saving",
-    "close-with-saving": "Close with saving"
+    "close-with-saving": "Close with saving",
+    "english": "English",
+    "german": "German"
 }
