@@ -64,7 +64,7 @@ self.addEventListener("activate", activateEvent => {
 // Return static assets
 self.addEventListener("fetch", fetchEvent => {
     fetchEvent.respondWith(
-        caches.match(fetchEvent.request, { staticCacheName }).then(staticCacheResponse => {
+        caches.match(fetchEvent.request, { ignoreVary: true, cacheName: staticCacheName }).then(staticCacheResponse => {
             return staticCacheResponse || fetch(fetchEvent.request)
                 .then(fetchResponse => {
                     // TODO: For performance reasons, fetched clinical subject data may be put into the staticCache since it wont change as it is versioned
@@ -75,7 +75,7 @@ self.addEventListener("fetch", fetchEvent => {
                 })
                 .catch(() => {
                     console.log("Dynamic resource could not be loaded -- try to search in dynamic cache");
-                    caches.match(fetchEvent.request, { dynamicCacheName }).then(dynamicCacheResponse => {
+                    caches.match(fetchEvent.request, { cacheName: dynamicCacheName }).then(dynamicCacheResponse => {
                         return dynamicCacheResponse;
                     })
                 });
