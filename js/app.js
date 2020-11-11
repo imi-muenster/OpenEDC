@@ -73,6 +73,8 @@ const startApp = async () => {
     await clinicaldataModule.init();
     clinicaldataModule.setLanguage(languageHelper.getCurrentLocale());
 
+    ioHelper.loadSettings();
+
     setTitles();
     hideStartModal();
     showNavbar();

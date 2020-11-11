@@ -45,25 +45,24 @@ export const loginStatus = {
 
 const $ = query => document.querySelector(query);
 
-const metadataFileName = "metadata";
-const admindataFileName = "admindata";
-const globalOptionsFileName = "globaloptions";
+const fileNames = {
+    metadata: "metadata",
+    admindata: "admindata",
+    settings: "settings"
+}
 
 let user = null;
 let decryptionKey = null;
 let serverURL = null;
 
 // Keeps app options that are equal for all users of the app -- options may have default values assigned
-let globalOptions = {
+let settings = {
     surveyCode: "0000",
     textAsTextarea: false,
     autoSurveyView: false
 };
 
 export async function init() {
-    const globalOptionsString = localStorage.getItem(globalOptionsFileName);
-    if (globalOptionsString) globalOptions = JSON.parse(globalOptionsString);
-
     setIOListeners();
 
     // Check if app is served by an OpenEDC Server instance
@@ -127,7 +126,7 @@ async function storeXMLData(fileName, xmlDocument) {
 function getApiUrlFromFileName(fileName) {
     let apiUrl = serverURL + "/api/";
 
-    if (fileName == metadataFileName || fileName == admindataFileName) apiUrl += fileName
+    if (Object.values(fileNames).includes(fileName)) apiUrl += fileName;
     else apiUrl += "clinicaldata/" + fileName;
 
     return apiUrl;
@@ -141,7 +140,7 @@ export async function getSubjectFileNames() {
         subjectFileNames = await response.json();
     } else {
         for (let fileName of Object.keys(localStorage)) {
-            if (fileName != metadataFileName && fileName != admindataFileName && fileName != globalOptionsFileName) subjectFileNames.push(fileName);
+            if (!Object.values(fileNames).includes(fileName)) subjectFileNames.push(fileName);
         }
     }
 
@@ -150,7 +149,7 @@ export async function getSubjectFileNames() {
 
 export function encryptXMLData(key) {
     for (const fileName of Object.keys(localStorage)) {
-        if (fileName == globalOptionsFileName) continue;
+        if (fileName == fileNames.settings) continue;
 
         let xmlString = localStorage.getItem(fileName);
         const xmlDocument = new DOMParser().parseFromString(xmlString, "text/xml");
@@ -178,20 +177,20 @@ export function setDecryptionKey(key) {
 }
 
 export async function getMetadata() {
-    return await getStoredXMLData(metadataFileName);
+    return await getStoredXMLData(fileNames.metadata);
 }
 
 export function storeMetadata(metadata) {
-    storeXMLData(metadataFileName, metadata);
+    storeXMLData(fileNames.metadata, metadata);
 }
 
 export async function getAdmindata() {
-    const admindata = await getStoredXMLData(admindataFileName);
+    const admindata = await getStoredXMLData(fileNames.admindata);
     return admindata.documentElement;
 }
 
 export function storeAdmindata(admindata) {
-    storeXMLData(admindataFileName, admindata);
+    storeXMLData(fileNames.admindata, admindata);
 }
 
 export async function getSubjectData(fileName) {
@@ -223,8 +222,26 @@ export async function removeSubjectData(fileName) {
     }
 }
 
-function storeGlobalOptions() {
-    localStorage.setItem(globalOptionsFileName, JSON.stringify(globalOptions));
+export async function loadSettings() {
+    if (serverURL) {
+        const settingsResponse = await fetch(getApiUrlFromFileName(fileNames.settings), { headers: getHeaders(true) });
+        if (settingsResponse.ok && settingsResponse.status != 204) settings = await settingsResponse.json();
+    } else {
+        const settingsString = localStorage.getItem(fileNames.settings);
+        if (settingsString) settings = JSON.parse(settingsString);
+    }
+}
+
+async function storeSettings() {
+    if (serverURL) {
+        await fetch(getApiUrlFromFileName(fileNames.settings), {
+            method: "PUT",
+            headers: getHeaders(true),
+            body: JSON.stringify(settings)
+        });
+    } else {
+        localStorage.setItem(fileNames.settings, JSON.stringify(settings));
+    }
 }
 
 export function getServerURL() {
@@ -237,8 +254,8 @@ export function getLocalUser() {
 
 export function setSurveyCode(surveyCode) {
     if (parseInt(surveyCode) == surveyCode && surveyCode.length == 4) {
-        globalOptions.surveyCode = surveyCode;
-        storeGlobalOptions();
+        settings.surveyCode = surveyCode;
+        storeSettings();
         return Promise.resolve();
     } else {
         return Promise.reject();
@@ -246,25 +263,25 @@ export function setSurveyCode(surveyCode) {
 }
 
 export function getSurveyCode() {
-    return globalOptions.surveyCode;
+    return settings.surveyCode;
 }
 
 export function setTextAsTextarea(enable) {
-    globalOptions.textAsTextarea = enable;
-    storeGlobalOptions();
+    settings.textAsTextarea = enable;
+    storeSettings();
 }
 
 export function isTextAsTextarea() {
-    return globalOptions.textAsTextarea;
+    return settings.textAsTextarea;
 }
 
 export function setAutoSurveyView(enable) {
-    globalOptions.autoSurveyView = enable;
-    storeGlobalOptions();
+    settings.autoSurveyView = enable;
+    storeSettings();
 }
 
 export function isAutoSurveyView() {
-    return globalOptions.autoSurveyView;
+    return settings.autoSurveyView;
 }
 
 export async function getServerStatus(url) {
