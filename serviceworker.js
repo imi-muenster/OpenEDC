@@ -64,21 +64,21 @@ self.addEventListener("activate", activateEvent => {
 // Return static and dynamic assets
 self.addEventListener("fetch", fetchEvent => {
     fetchEvent.respondWith(
-        caches.match(fetchEvent.request, { ignoreVary: true, cacheName: staticCacheName }).then(staticCacheResponse => {
+        caches.match(fetchEvent.request, { cacheName: staticCacheName, ignoreVary: true }).then(async staticCacheResponse => {
+            const requestBody = await fetchEvent.request.clone().text();
             return staticCacheResponse || fetch(fetchEvent.request)
                 .then(async fetchResponse => {
                     const cache = await caches.open(dynamicCacheName);
-                    if (fetchEvent.request.method == "GET" || fetchEvent.request.method == "PUT") {
+                    if (fetchEvent.request.method == "GET") {
                         cache.put(fetchEvent.request.url, fetchResponse.clone());
-                    } else if (fetchEvent.request.method == "DELETE") {
+                    } else if (fetchEvent.request.method == "PUT") {
+                        cache.put(fetchEvent.request.url, new Response(requestBody, { status: fetchResponse.status, statusText: fetchResponse.statusText, headers: fetchResponse.headers }));
+                    }else if (fetchEvent.request.method == "DELETE") {
                         cache.delete(fetchEvent.request.url);
                     }
                     return fetchResponse;
                 })
-                .catch(async () => {
-                    const dynamicCacheResponse = await caches.match(fetchEvent.request, { gnoreVary: true, cacheName: dynamicCacheName });
-                    return dynamicCacheResponse;
-                });
+                .catch(async () => await caches.match(fetchEvent.request, { cacheName: dynamicCacheName, ignoreVary: true }));
         })
     );
 });
