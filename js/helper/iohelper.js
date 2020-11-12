@@ -434,6 +434,38 @@ export async function getUserRights() {
     return await rightsResponse.json();
 }
 
+export async function emptyMessageQueue() {
+    const dynamicCache = await caches.open("dynamic-cache");
+    const dynamicCacheEntries = await dynamicCache.keys();
+    const messageQueue = await caches.open("message-queue");
+    const messageQueueEntries = await messageQueue.keys();
+
+    for (let messageQueueEntry of messageQueueEntries) {
+        const cacheResponse = await messageQueue.match(messageQueueEntry);
+        const requestBody = await cacheResponse.text();
+        await fetch(messageQueueEntry.url, {
+            method: "PUT",
+            headers: getHeaders(true),
+            body: requestBody
+        });
+
+        // When cinical subject data from the message queue was sent to the server, a previous version might still be stored there which needs to be removed
+        // While this works fine, it should be refactored
+        if (!messageQueueEntry.url.includes("clinicaldata")) continue;
+        const lastSlashPosition = messageQueueEntry.url.lastIndexOf("/");
+        const fileName = messageQueueEntry.url.substring(lastSlashPosition + 1);
+        const subjectKey = fileName.split("__")[0];
+        for (let dynamicCacheEntry of dynamicCacheEntries) {
+            if (dynamicCacheEntry.url.includes("/" + subjectKey + "__")) {
+                await fetch(dynamicCacheEntry.url, {
+                    method: "DELETE",
+                    headers: getHeaders(true)
+                });
+            }
+        }
+    }
+}
+
 export function removeElements(elements) {
     for (let element of elements) {
         element.remove();

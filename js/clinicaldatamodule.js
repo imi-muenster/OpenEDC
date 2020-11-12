@@ -767,6 +767,7 @@ function setLoadSubjectsTimer() {
     if (!ioHelper.getServerURL()) return;
      
     setInterval(async () => {
+        await ioHelper.emptyMessageQueue();
         await clinicaldataHelper.loadSubjects();
         loadSubjectKeys();
     }, 5000);

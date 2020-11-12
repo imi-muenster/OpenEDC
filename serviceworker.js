@@ -74,25 +74,27 @@ self.addEventListener("fetch", fetchEvent => {
                         dynamicCache.put(fetchEvent.request.url, fetchResponse.clone());
                     } else if (fetchEvent.request.method == "PUT") {
                         dynamicCache.put(fetchEvent.request.url, new Response(requestBody, { status: fetchResponse.status, statusText: fetchResponse.statusText, headers: fetchResponse.headers }));
-                        editSubjectList(true, fetchEvent.request.url);
+                        updateCachedSubjectList(true, fetchEvent.request.url);
+                        removeFromMessageQueue(fetchEvent.request.url);
                     } else if (fetchEvent.request.method == "DELETE") {
                         dynamicCache.delete(fetchEvent.request.url);
-                        editSubjectList(false, fetchEvent.request.url);
+                        updateCachedSubjectList(false, fetchEvent.request.url);
                     }
                     return fetchResponse;
                 })
                 .catch(async () => {
-                    if (fetchEvent.request.method == "GET") {
-                        return await caches.match(fetchEvent.request, { ignoreVary: true });
+                    const cacheResponse = await caches.match(fetchEvent.request, { ignoreVary: true });
+                    if (fetchEvent.request.method == "GET" || cacheResponse) {
+                        return cacheResponse;
                     } else {
                         const messageQueue = await caches.open(messageQueueName);
                         if (fetchEvent.request.method == "PUT") {
                             messageQueue.put(fetchEvent.request.url, new Response(requestBody));
-                            editSubjectList(true, fetchEvent.request.url);
+                            updateCachedSubjectList(true, fetchEvent.request.url);
                             return new Response("Offline response created from service worker.", { status: 201 });
                         } else if (fetchEvent.request.method == "DELETE") {
                             messageQueue.delete(fetchEvent.request.url);
-                            editSubjectList(false, fetchEvent.request.url);
+                            updateCachedSubjectList(false, fetchEvent.request.url);
                             return new Response("Offline response created from service worker.", { status: 201 });
                         }
                     }
@@ -101,7 +103,7 @@ self.addEventListener("fetch", fetchEvent => {
     );
 });
 
-const editSubjectList = async (add, url) => {
+const updateCachedSubjectList = async (add, url) => {
     if (!url.includes("clinicaldata")) return;
 
     const lastSlashPosition = url.lastIndexOf("/");
@@ -112,12 +114,14 @@ const editSubjectList = async (add, url) => {
     const subjectListResponse = await dynamicCache.match(subjectListURL);
     let subjectList = await subjectListResponse.json();
     
-    // Either add or remove a file name from the list of subjects
-    if (add) {
-        subjectList.push(fileName);
-    } else {
-        subjectList = subjectList.filter(entry => entry != fileName);
-    }
+    // Remove and then maybe add file name to the list of subjects
+    subjectList = subjectList.filter(entry => entry != fileName);
+    if (add) subjectList.push(fileName);
 
     dynamicCache.put(subjectListURL, new Response(JSON.stringify(subjectList), { status: subjectListResponse.status, statusText: subjectListResponse.statusText, headers: subjectListResponse.headers }));
+}
+
+const removeFromMessageQueue = async url => {
+    const messageQueue = await caches.open(messageQueueName);
+    messageQueue.delete(url);
 }
