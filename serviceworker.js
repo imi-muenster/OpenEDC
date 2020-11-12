@@ -54,30 +54,30 @@ self.addEventListener("activate", activateEvent => {
     activateEvent.waitUntil(
         caches.keys().then(keys => {
             return Promise.all(keys
-                .filter(key => key != staticCacheName)
+                .filter(key => key != staticCacheName && key != dynamicCacheName)
                 .map(key => caches.delete(key))
             )
         })
     );
 });
 
-// Return static assets
+// Return static and dynamic assets
 self.addEventListener("fetch", fetchEvent => {
     fetchEvent.respondWith(
         caches.match(fetchEvent.request, { ignoreVary: true, cacheName: staticCacheName }).then(staticCacheResponse => {
             return staticCacheResponse || fetch(fetchEvent.request)
-                .then(fetchResponse => {
-                    // TODO: For performance reasons, fetched clinical subject data may be put into the staticCache since it wont change as it is versioned
-                    return caches.open(dynamicCacheName).then(cache => {
+                .then(async fetchResponse => {
+                    const cache = await caches.open(dynamicCacheName);
+                    if (fetchEvent.request.method == "GET" || fetchEvent.request.method == "PUT") {
                         cache.put(fetchEvent.request.url, fetchResponse.clone());
-                        return fetchResponse;
-                    });
+                    } else if (fetchEvent.request.method == "DELETE") {
+                        cache.delete(fetchEvent.request.url);
+                    }
+                    return fetchResponse;
                 })
-                .catch(() => {
-                    console.log("Dynamic resource could not be loaded -- try to search in dynamic cache");
-                    caches.match(fetchEvent.request, { cacheName: dynamicCacheName }).then(dynamicCacheResponse => {
-                        return dynamicCacheResponse;
-                    })
+                .catch(async () => {
+                    const dynamicCacheResponse = await caches.match(fetchEvent.request, { gnoreVary: true, cacheName: dynamicCacheName });
+                    return dynamicCacheResponse;
                 });
         })
     );
