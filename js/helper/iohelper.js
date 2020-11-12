@@ -68,7 +68,7 @@ export async function init() {
     // Check if app is served by an OpenEDC Server instance
     // For development purposes, check for an ?server= query string parameter and use it instead of the current url
     const devServer = new URLSearchParams(window.location.search).get("server");
-    return await getServerStatus(devServer ? devServer : getBaseURL()).catch(() => console.log("No OpenEDC Server found. It seems that this is a standalone OpenEDC App."));
+    return await getServerStatus(devServer ? devServer : getBaseURL(), true).catch(() => console.log("No OpenEDC Server found. It seems that this is a standalone OpenEDC App."));
 }
 
 async function getStoredXMLData(fileName) {
@@ -282,14 +282,14 @@ export function isAutoSurveyView() {
     return settings.autoSurveyView;
 }
 
-export async function getServerStatus(url) {
+export async function getServerStatus(url, storeServerURL) {
     if (!url.includes("http") && !url.includes("https")) url = "https://" + url;
     
     const response = await fetch(url + "/api/status").catch(() => Promise.reject(serverStatus.SERVERNOTFOUND));
     const status = await response.json();
 
     if (status.serverVersion && status.initialized) {
-        serverURL = url;
+        if (storeServerURL) serverURL = url;
         return Promise.resolve(serverStatus.SERVERINITIALIZED);
     } else if (status.serverVersion && !status.initialized) {
         return Promise.resolve(serverStatus.SERVERNOTINITIALIZED);
@@ -299,6 +299,8 @@ export async function getServerStatus(url) {
 }
 
 export async function initializeServer(url, userOID, credentials) {
+    if (!url.includes("http") && !url.includes("https")) url = "https://" + url;
+    
     // Create a random key that is used for data encryption and encrypt it with the password of the user
     const decryptionKey = CryptoJS.lib.WordArray.random(32).toString();
     const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, credentials.password).toString();
