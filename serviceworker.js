@@ -1,5 +1,6 @@
 const staticCacheName = "static-cache-v1";
 const dynamicCacheName = "dynamic-cache";
+const messageQueueName = "message-queue";
 
 const staticAssets = [
     "/",
@@ -54,7 +55,7 @@ self.addEventListener("activate", activateEvent => {
     activateEvent.waitUntil(
         caches.keys().then(keys => {
             return Promise.all(keys
-                .filter(key => key != staticCacheName && key != dynamicCacheName)
+                .filter(key => key != staticCacheName && key != dynamicCacheName && key != messageQueueName)
                 .map(key => caches.delete(key))
             )
         })
@@ -68,17 +69,55 @@ self.addEventListener("fetch", fetchEvent => {
             const requestBody = await fetchEvent.request.clone().text();
             return staticCacheResponse || fetch(fetchEvent.request)
                 .then(async fetchResponse => {
-                    const cache = await caches.open(dynamicCacheName);
+                    const dynamicCache = await caches.open(dynamicCacheName);
                     if (fetchEvent.request.method == "GET") {
-                        cache.put(fetchEvent.request.url, fetchResponse.clone());
+                        dynamicCache.put(fetchEvent.request.url, fetchResponse.clone());
                     } else if (fetchEvent.request.method == "PUT") {
-                        cache.put(fetchEvent.request.url, new Response(requestBody, { status: fetchResponse.status, statusText: fetchResponse.statusText, headers: fetchResponse.headers }));
-                    }else if (fetchEvent.request.method == "DELETE") {
-                        cache.delete(fetchEvent.request.url);
+                        dynamicCache.put(fetchEvent.request.url, new Response(requestBody, { status: fetchResponse.status, statusText: fetchResponse.statusText, headers: fetchResponse.headers }));
+                        editSubjectList(true, fetchEvent.request.url);
+                    } else if (fetchEvent.request.method == "DELETE") {
+                        dynamicCache.delete(fetchEvent.request.url);
+                        editSubjectList(false, fetchEvent.request.url);
                     }
                     return fetchResponse;
                 })
-                .catch(async () => await caches.match(fetchEvent.request, { cacheName: dynamicCacheName, ignoreVary: true }));
+                .catch(async () => {
+                    if (fetchEvent.request.method == "GET") {
+                        return await caches.match(fetchEvent.request, { ignoreVary: true });
+                    } else {
+                        const messageQueue = await caches.open(messageQueueName);
+                        if (fetchEvent.request.method == "PUT") {
+                            messageQueue.put(fetchEvent.request.url, new Response(requestBody));
+                            editSubjectList(true, fetchEvent.request.url);
+                            return new Response("Offline response created from service worker.", { status: 201 });
+                        } else if (fetchEvent.request.method == "DELETE") {
+                            messageQueue.delete(fetchEvent.request.url);
+                            editSubjectList(false, fetchEvent.request.url);
+                            return new Response("Offline response created from service worker.", { status: 201 });
+                        }
+                    }
+                });
         })
     );
 });
+
+const editSubjectList = async (add, url) => {
+    if (!url.includes("clinicaldata")) return;
+
+    const lastSlashPosition = url.lastIndexOf("/");
+    const subjectListURL = url.substring(0, lastSlashPosition);
+    const fileName = url.substring(lastSlashPosition + 1);
+
+    const dynamicCache = await caches.open(dynamicCacheName);
+    const subjectListResponse = await dynamicCache.match(subjectListURL);
+    let subjectList = await subjectListResponse.json();
+    
+    // Either add or remove a file name from the list of subjects
+    if (add) {
+        subjectList.push(fileName);
+    } else {
+        subjectList = subjectList.filter(entry => entry != fileName);
+    }
+
+    dynamicCache.put(subjectListURL, new Response(JSON.stringify(subjectList), { status: subjectListResponse.status, statusText: subjectListResponse.statusText, headers: subjectListResponse.headers }));
+}
