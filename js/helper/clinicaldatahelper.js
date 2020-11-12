@@ -70,13 +70,13 @@ let subjects = [];
 let subject = null;
 let subjectData = null;
 
-export function importClinicaldata(odmXMLString) {
+export async function importClinicaldata(odmXMLString) {
     const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
     for (let subjectData of odm.querySelectorAll("ClinicalData SubjectData")) {
         const siteOID = subjectData.querySelector("SiteRef") ? subjectData.querySelector("SiteRef").getAttribute("LocationOID") : null;
         // TODO: Take the created date from the audit trail
         const subject = new Subject(subjectData.getAttribute("SubjectKey"), siteOID, new Date());
-        ioHelper.storeSubjectData(subject, subjectData);
+        await ioHelper.storeSubjectData(subject, subjectData);
     }
 }
 
@@ -198,7 +198,7 @@ function fileNameToSubject(fileName) {
     return new Subject(key, siteOID, new Date(parseInt(createdDate)), new Date(parseInt(modifiedDate)));
 }
 
-export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
+export async function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
     // Do not store any data if no subject has been loaded or the formdata to be stored did not change compared to the previous one
     if (!subject || !dataHasChanged(formItemDataList, studyEventOID, formOID)) return;
 
@@ -219,7 +219,7 @@ export function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
     studyEventData.appendChild(formData);
     subjectData.appendChild(studyEventData);
 
-    storeSubject();
+    await storeSubject();
 }
 
 // TODO: Assumes that the data is ordered chronologically -- should be ensured during import

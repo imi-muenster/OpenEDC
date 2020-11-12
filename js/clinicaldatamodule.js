@@ -346,9 +346,9 @@ function showErrors(metadataNotFoundErrors, hiddenFieldWithValueError) {
     if (errorMessage.length > 0) ioHelper.showWarning("Error", errorMessage);
 }
 
-window.loadNextFormData = function() {
+window.loadNextFormData = async function() {
     // This checks whether the saving process could found unanswered mandatory fields. The form data is stored either way
-    if (!saveFormData()) return;
+    if (!await saveFormData()) return;
 
     let nextFormOID = getNextFormOID(currentElementID.form);
     skipDataHasChangedCheck = true;
@@ -359,9 +359,9 @@ window.loadNextFormData = function() {
     }
 }
 
-window.loadPreviousFormData = function() {
+window.loadPreviousFormData = async function() {
     skipMandatoryCheck = true;
-    saveFormData();
+    await saveFormData();
 
     let previousFormOID = getPreviousFormOID(currentElementID.form);
     if (previousFormOID) {
@@ -390,9 +390,9 @@ function scrollToFormStart() {
     document.documentElement.scrollTop = 0;
 }
 
-function saveFormData() {
+async function saveFormData() {
     let formItemDataList = getFormData();
-    clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList);
+    await clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList);
 
     // When mandatory fields were not answered show a warning only once
     if (!skipMandatoryCheck && !checkMandatoryFields(formItemDataList)) {
@@ -449,7 +449,7 @@ export function cacheFormData() {
 window.closeFormData = async function(saveData) {
     if (saveData) {
         skipMandatoryCheck = true;
-        saveFormData();
+        await saveFormData();
     }
 
     if (deferredFunction) {
@@ -768,7 +768,9 @@ function setLoadSubjectsTimer() {
      
     setInterval(async () => {
         await ioHelper.emptyMessageQueue();
-        await clinicaldataHelper.loadSubjects();
-        loadSubjectKeys();
+        if (!clinicaldataHelper.getSubject()) {
+            await clinicaldataHelper.loadSubjects();
+            loadSubjectKeys();
+        }
     }, 5000);
 }
