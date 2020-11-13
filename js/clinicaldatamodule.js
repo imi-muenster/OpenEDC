@@ -163,16 +163,20 @@ async function loadSubjectData(subjectKey) {
 
     // Option to deselect a subject by clicking on the same subject again
     if (subjectKey == currentElementID.subject) subjectKey = null;
-
     currentElementID.subject = subjectKey;
     cachedFormData = null;
+
+    await clinicaldataHelper.loadSubject(currentElementID.subject).catch(() => {
+        currentElementID.subject = null;
+        clinicaldataHelper.clearSubject();
+        ioHelper.showWarning("Subject could not be loaded", "The selected subject could not be loaded. Your are either offline and open the subject for the first time or someone just recently edited the subject.<br><br>Please wait a few seconds and try again.");
+    });
 
     ioHelper.removeIsActiveFromElement($("#subject-panel-blocks a.is-active"));
     if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
     $("#subject-info-button").disabled = currentElementID.subject ? false : true;
     if (ioHelper.getServerURL() && !ioHelper.getLocalUser().rights.includes("Manage subjects")) $("#subject-info-button").disabled = true;
 
-    await clinicaldataHelper.loadSubject(currentElementID.subject);
     await reloadTree();
 }
 

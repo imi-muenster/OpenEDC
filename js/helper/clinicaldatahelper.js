@@ -158,7 +158,7 @@ export async function loadSubject(subjectKey) {
     subject = subjects.find(subject => subject.uniqueKey == subjectKey);
     
     if (subject) {
-        subjectData = await ioHelper.getSubjectData(subject.fileName)
+        subjectData = await ioHelper.getSubjectData(subject.fileName);
     } else {
         subjectData = null;
     }
