@@ -228,6 +228,10 @@ function showUninitializedHint() {
     $("#connect-to-server-option .button").textContent = "Initialize";
 }
 
+window.forgotPassword = function() {
+    ioHelper.showWarning("Forgot password", "All data within OpenEDC is stored and transferred end-to-end encrypted. Therefore, it is currently not possible to automatically reset a forgotten password, unfortunately.<br><br>If you forgot your password, please contact the person that gave you your login credentials. This person is able to reset your password with a new initial password.");
+}
+
 window.newProject = function() {
     metadataHelper.loadEmptyProject();
     admindataHelper.loadEmptyProject(metadataHelper.getStudyOID());
