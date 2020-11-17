@@ -39,9 +39,9 @@ export async function internationalize() {
     let translationResponse = await fetch(ioHelper.getBaseURL() + "/internationalization/" + currentLocale + ".json");
     translations = await translationResponse.json();
 
-    let translatableElements = document.querySelectorAll("[internationalization]");
+    let translatableElements = document.querySelectorAll("[i18n]");
     for (let translatableElement of translatableElements) {
-        let key = translatableElement.getAttribute("internationalization");
+        let key = translatableElement.getAttribute("i18n");
         if (translations[key]) translatableElement.textContent = translations[key];
     }
 }

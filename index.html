@@ -252,12 +252,12 @@
                         <div class="tree-panel-blocks">
                             <div class="is-hidden" id="clinicaldata-form-data">
                                 <article class="message is-danger is-hidden" id="no-subject-selected-hint">
-                                    <div class="message-body" internationalization="no-subject-selected-hint">No subject selected. You can still view and test the form but entered data will not be stored.</div>
+                                    <div class="message-body" i18n="no-subject-selected-hint">No subject selected. You can still view and test the form but entered data will not be stored.</div>
                                 </article>
                                 <article class="message is-link is-hidden" id="audit-record-data-hint">
                                     <div class="message-body">
-                                        <p internationalization="audit-record-data-hint">You are currently viewing data from the audit trail.</p>
-                                        <p id="audit-record-most-current-hint" internationalization="audit-record-most-current-hint">This is the most current data or equivalent to the most current data.</p>
+                                        <p i18n="audit-record-data-hint">You are currently viewing data from the audit trail.</p>
+                                        <p id="audit-record-most-current-hint" i18n="audit-record-most-current-hint">This is the most current data or equivalent to the most current data.</p>
                                     </div>
                                 </article>
                                 <nav class="level">
@@ -272,20 +272,20 @@
                                                 <span class="icon">
                                                     <i class="fas fa-expand"></i>
                                                 </span>
-                                                <span internationalization="survey-view">Survey View</span>
+                                                <span i18n="survey-view">Survey View</span>
                                             </button>
                                         </div>
                                     </div>
                                 </nav>
                                 <hr>
                                 <div id="clinicaldata-content"></div>
-                                <button class="button" id="clinicaldata-close-button" onclick="cancelFormOrSurveyEntry()" internationalization="close">Close</button>
+                                <button class="button" id="clinicaldata-close-button" onclick="cancelFormOrSurveyEntry()" i18n="close">Close</button>
                                 <div class="field has-addons is-pulled-right" id="clinicaldata-navigate-buttons">
                                     <div class="control">
-                                        <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" internationalization="back">Back</button>
+                                        <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" i18n="back">Back</button>
                                     </div>
                                     <div class="control">
-                                        <button class="button is-link" id="clinicaldata-next-button" onclick="loadNextFormData()" internationalization="continue">Continue</button>
+                                        <button class="button is-link" id="clinicaldata-next-button" onclick="loadNextFormData()" i18n="continue">Continue</button>
                                     </div>
                                 </div>
                             </div>
@@ -314,15 +314,15 @@
             <div class="modal-background" onclick="hideCloseClinicalDataModal()"></div>
             <div class="modal-content is-medium">
                 <div class="box has-text-centered">
-                    <h2 class="subtitle" id="close-form-title" internationalization="close-form">Close form</h2>
-                    <h2 class="subtitle is-hidden" id="close-survey-title" internationalization="close-survey">Close survey</h2>
-                    <p id="close-form-text" internationalization="close-form-text">It seems that you just edited or entered new data. Do you really want to close the current form?</p>
-                    <p class="is-hidden" id="close-survey-text" internationalization="close-survey-text">It seems that you just edited or entered new data. Do you really want to close the current form?</p>
+                    <h2 class="subtitle" id="close-form-title" i18n="close-form">Close form</h2>
+                    <h2 class="subtitle is-hidden" id="close-survey-title" i18n="close-survey">Close survey</h2>
+                    <p id="close-form-text" i18n="close-form-text">It seems that you just edited or entered new data. Do you really want to close the current form?</p>
+                    <p class="is-hidden" id="close-survey-text" i18n="close-survey-text">It seems that you just edited or entered new data. Do you really want to close the current form?</p>
                     <br>
                     <div class="buttons is-centered">
-                        <button class="button is-small" onclick="closeFormData()" internationalization="close-without-saving">Close without saving</button>
-                        <button class="button is-small" onclick="closeFormData(true)" internationalization="close-with-saving">Close with saving</button>
-                        <button class="button is-link is-small" onclick="hideCloseClinicalDataModal()" internationalization="continue">Continue</button>
+                        <button class="button is-small" onclick="closeFormData()" i18n="close-without-saving">Close without saving</button>
+                        <button class="button is-small" onclick="closeFormData(true)" i18n="close-with-saving">Close with saving</button>
+                        <button class="button is-link is-small" onclick="hideCloseClinicalDataModal()" i18n="continue">Continue</button>
                     </div>
                 </div>
             </div>
@@ -681,16 +681,16 @@
             <div class="modal-background"></div>
             <div class="modal-content is-large">
                 <div class="box has-text-centered">
-                    <h2 class="subtitle" internationalization="survey-finished">Survey finished</h2>
-                    <p internationalization="survey-finished-text">Thank you for taking the survey.</p>
-                    <p class="mb-5" internationalization="survey-finished-code-text">Please enter the survey code to close this window.</p>
+                    <h2 class="subtitle" i18n="survey-finished">Survey finished</h2>
+                    <p i18n="survey-finished-text">Thank you for taking the survey.</p>
+                    <p class="mb-5" i18n="survey-finished-code-text">Please enter the survey code to close this window.</p>
                     <div class="numpad has-text-centered">
                         <hr>
                         <div class="status mb-5"></div>
                         <div class="buttons is-centered"></div>
                     </div>
-                    <p class="has-text-danger mt-5 is-hidden" id="wrong-survey-code-hint" internationalization="wrong-survey-code-hint">Wrong code entered. Please try again.</p>
-                    <p class="has-text-danger is-hidden" id="default-survey-code-hint" internationalization="default-survey-code-hint">Default: 0000.</p>
+                    <p class="has-text-danger mt-5 is-hidden" id="wrong-survey-code-hint" i18n="wrong-survey-code-hint">Wrong code entered. Please try again.</p>
+                    <p class="has-text-danger is-hidden" id="default-survey-code-hint" i18n="default-survey-code-hint">Default: 0000.</p>
                 </div>
             </div>
         </div>
