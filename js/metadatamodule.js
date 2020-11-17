@@ -61,7 +61,6 @@ function createPanelBlock(elementOID, elementType, displayText, fallbackText, co
     let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue);
 
     panelBlock.ondragstart = dragStart;
-    panelBlock.ondragend = dragEnd;
     panelBlock.ondragenter = dragEnter;
 
     return panelBlock;
@@ -871,10 +870,6 @@ function dragStart(event) {
     }
 }
 
-function dragEnd() {
-    elementTypeOnDrag = null;
-}
-
 window.allowDrop = function(event) {
     if (elementTypeOnDrag == event.target.getAttribute("element-type")) {
         event.preventDefault();
@@ -1062,6 +1057,7 @@ window.elementDrop = async function(event) {
         }
     }
 
+    elementTypeOnDrag = null;
     reloadTree();
     metadataHelper.storeMetadata();
 }
