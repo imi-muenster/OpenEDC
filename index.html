@@ -67,6 +67,10 @@
         </nav>
 
         <section class="section is-hidden" id="metadata-section">
+            <div class="notification is-link is-light is-hidden-desktop">
+                <h1 class="title is-4">Metadata on mobile</h1>
+                <p>You are currently using a small device while editing the metadata (i.e., the forms). While this is absolutely fine and doable, we still suggest switching to a device with a larger screen to benefit from a much more simplified editing experience.</p>
+            </div>
             <div class="columns is-desktop is-centered" id="details-panel">
                 <div class="column is-one-fifth-desktop">
                     <div class="field">
@@ -110,7 +114,7 @@
                     </div>
                 </div>
                 <div class="column is-hidden-desktop">
-                    <div class="buttons">
+                    <div class="buttons are-small">
                         <button class="button is-link" id="save-button-mobile" onclick="saveElement()" disabled>Save Changes</button>
                         <button class="button is-danger" id="remove-button-mobile" onclick="showRemoveModal()" disabled>Remove</button>
                         <button class="button" id="duplicate-button-mobile" onclick="showDuplicateModal()" disabled>Duplicate</button>
@@ -128,8 +132,7 @@
                 <div class="column">
                     <nav class="panel is-link">
                         <p class="panel-heading has-text-centered" element-type="studyevent" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Events</p>
-                        <div class="tree-panel-blocks" id="study-event-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
-                        </div>
+                        <div class="tree-panel-blocks" id="study-event-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                         <div class="panel-block has-light-border-top" id="study-events-add-button">
                             <button class="button is-link is-light is-fullwidth" onclick="addStudyEvent()">Add</button>
                         </div>
@@ -138,8 +141,7 @@
                 <div class="column">
                     <nav class="panel is-link">
                         <p class="panel-heading has-text-centered" element-type="form" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Forms</p>
-                        <div class="tree-panel-blocks" id="form-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
-                        </div>
+                        <div class="tree-panel-blocks" id="form-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                         <div class="panel-block has-light-border-top" id="forms-add-button">
                             <button class="button is-link is-light is-fullwidth" onclick="addForm()" disabled>Add</button>
                         </div>
@@ -148,8 +150,7 @@
                 <div class="column">
                     <nav class="panel is-link">
                         <p class="panel-heading has-text-centered" element-type="itemgroup" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Groups</p>
-                        <div class="tree-panel-blocks" id="item-group-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
-                        </div>
+                        <div class="tree-panel-blocks" id="item-group-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                         <div class="panel-block has-light-border-top" id="item-groups-add-button">
                             <button class="button is-link is-light is-fullwidth" onclick="addItemGroup()" disabled>Add</button>
                         </div>
@@ -158,8 +159,7 @@
                 <div class="column">
                     <nav class="panel is-link">
                         <p class="panel-heading has-text-centered" element-type="item" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Items</p>
-                        <div class="tree-panel-blocks" id="item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
-                        </div>
+                        <div class="tree-panel-blocks" id="item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                         <div class="panel-block has-light-border-top" id="items-add-button">
                             <button class="button is-link is-light is-fullwidth" onclick="addItem()" disabled>Add</button>
                         </div>
@@ -168,8 +168,7 @@
                 <div class="column">
                     <nav class="panel is-link">
                         <p class="panel-heading has-text-centered" element-type="codelistitem" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Choices</p>
-                        <div class="tree-panel-blocks" id="code-list-item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
-                        </div>
+                        <div class="tree-panel-blocks" id="code-list-item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                         <div class="panel-block has-light-border-top" id="code-list-items-add-button">
                             <button class="button is-link is-light is-fullwidth" onclick="addCodeListItem()" disabled>Add</button>
                         </div>
@@ -515,11 +514,11 @@
                         <div class="notification is-link is-light">
                             <h1 class="title is-4">Miscellaneous Options</h1>
                             <p>In the following, different miscellaneous options are listed that you can activate by clicking on it. If you are connect to a server, the options are valid for all users.</p>
-                            <label class="checkbox is-size-7 mt-5">
+                            <label class="checkbox mt-5">
                                 <input type="checkbox" id="text-as-textarea-checkbox" oninput="miscOptionClicked(event)">
                                 Render items with the datatype <i>string</i> as multi-line textareas instead of one-line inputs.
                             </label>
-                            <label class="checkbox is-size-7 mt-1">
+                            <label class="checkbox mt-1">
                                 <input type="checkbox" id="auto-survey-view-checkbox" oninput="miscOptionClicked(event)">
                                 Automatically open the survey view on mobile devices when clicking on a study event.
                             </label>

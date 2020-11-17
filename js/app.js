@@ -466,16 +466,6 @@ function getCurrentMode() {
 }
 
 // A list of generic todos that are not crucial but can be improved in the future
-// TODO: In the entire project, align onclick vs. addEventListener("click"), arrowfunctions, etc.
-// TODO: Also: oninput/onclick in html file vs. in js file
-// TODO: Sort the .css file
-// TODO: Refactor metadatamodule to remove "[studyEvent]clicked" functions. Set currentElementOID and is-active in the, e.g., loadFormsByStudyEvent as well and also refactor arrowKeyListener etc.
-// TODO: In metadatamodule, rename odm to metadata everywhere
-// TODO: In XSLT processing, remove the de/en differenatiation and translate boolean questions with the languageHelper, also remove xsl-templates when possible
-// TODO: Use let very frequently even it it could be declared as const
-// TODO: Metadata -> MetaData, Clinicaldata -> ClinicalData
-// TODO: In some secure cases the || operator may be used to set default values to reduce code compared to the ternary operator
-// TODO: In templates.js files use only const instead of let
-// TODO: Check if data has changed in clinicaldatamodule.js could be even more generalized
-// TODO: let abc = null; is usually not required, let abc; is sufficient -- replace occurences
-// TODO: It seems that .name alaways works instead of .getAttribute("name") -- could be replaced for other occurrences
+// In XSLT processing, remove the de/en differenatiation and translate boolean questions with the languageHelper, also remove xsl-templates when possible
+// Let is used very frequently even it it could be declared as const
+// It seems that .name alaways works instead of .getAttribute("name") -- could be replaced for all occurrences
