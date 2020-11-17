@@ -95,23 +95,14 @@ export function getCurrentLocale() {
 export function createLanguageSelects() {
     ioHelper.removeElements($$("#language-dropdown a"));
     ioHelper.removeElements($$("#language-dropdown hr"));
-    ioHelper.removeElements($$("#survey-language-control option"));
 
     if (localesInODM.length > 0) {
-        for (let locale of localesInODM) {
-            addLanguageOptionNavbar(locale);
-            addLanguageOptionSurvey(locale);
-        }
-    
+        localesInODM.forEach(locale => addLanguageOptionNavbar(locale));
         addDividerNavbar();
     }
-
-    for (let locale of localesNotInODM) {
-        addLanguageOptionNavbar(locale);
-    }
+    localesNotInODM.forEach(locale => addLanguageOptionNavbar(locale));
 
     $("#current-language").textContent = getLanguageNameByLocale(currentLocale);
-    $("#survey-language-control select").oninput = event => changeLanguage(event.target.value);
 }
 
 function addLanguageOptionNavbar(locale) {
@@ -119,7 +110,6 @@ function addLanguageOptionNavbar(locale) {
     option.className = "navbar-item";
     option.textContent = getLanguageNameByLocale(locale);
     option.onclick = () => changeLanguage(locale);
-    
     $("#language-dropdown").appendChild(option);
 }
 
@@ -129,16 +119,6 @@ function addDividerNavbar() {
     $("#language-dropdown").appendChild(divider);
 }
 
-function addLanguageOptionSurvey(locale) {
-    let option = document.createElement("option");
-    const languageName = getLanguageNameByLocale(locale);
-    option.textContent = languageName;
-    option.value = locale;
-    option.setAttribute("internationalization", languageName.toLowerCase());
-    
-    $("#survey-language-control select").appendChild(option);
-}
-
 function changeLanguage(locale) {
     if (!Object.values(locales).includes(locale)) return;
 
@@ -146,6 +126,5 @@ function changeLanguage(locale) {
     currentLocaleSet = true;
     internationalize();
     $("#current-language").textContent = getLanguageNameByLocale(currentLocale);
-    $("#survey-language-control select").value = locale;
     document.dispatchEvent(new CustomEvent("LanguageChanged", { detail: currentLocale }));
 }

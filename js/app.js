@@ -449,14 +449,6 @@ window.removeClinicaldata = async function() {
     window.location.reload();
 }
 
-window.increaseZoom = function() {
-    document.body.style.zoom = document.body.style.zoom ? parseFloat(document.body.style.zoom) + 0.1 : 1.1;
-}
-
-window.decreaseZoom = function() {
-    document.body.style.zoom = document.body.style.zoom ? parseFloat(document.body.style.zoom) - 0.1 : 0.9;
-}
-
 // IO or event listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
 export function setIOListeners() {
     $("body").onresize = ioHelper.setTreeMaxHeight;
