@@ -28,7 +28,8 @@ export class FormItemData {
 }
 
 export class AuditRecord {
-    constructor(studyEventOID, formOID, userOID, locationOID, date) {
+    constructor(type, studyEventOID, formOID, userOID, locationOID, date) {
+        this.type = type;
         this.studyEventOID = studyEventOID;
         this.formOID = formOID;
         this.userOID = userOID;
@@ -37,17 +38,17 @@ export class AuditRecord {
     }
 }
 
+const auditRecordTypes = {
+    SUBJECTCREATED: "Subject Created",
+    FORMEDITED: "Form Edited"
+};
+
 const $ = query => subjectData.querySelector(query);
 const $$ = query => subjectData.querySelectorAll(query);
 
 export const sortOrderTypes = {
     CREATEDDATE: "Creation Date",
     ALPHANUMERICALLY: "Alphanumerical"
-};
-
-export const auditRecordTypes = {
-    CREATED: "Subject Created",
-    FORMEDITED: "Form Edited"
 };
 
 export const dataStatusTypes = {
@@ -74,8 +75,8 @@ export async function importClinicaldata(odmXMLString) {
     const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
     for (let subjectData of odm.querySelectorAll("ClinicalData SubjectData")) {
         const siteOID = subjectData.querySelector("SiteRef") ? subjectData.querySelector("SiteRef").getAttribute("LocationOID") : null;
-        // TODO: Take the created date from the audit trail
-        const subject = new Subject(subjectData.getAttribute("SubjectKey"), siteOID, new Date());
+        const creationDate = subjectData.querySelector("AuditRecord DateTimeStamp") ? new Date(subjectData.querySelector("AuditRecord DateTimeStamp").textContent) : new Date();
+        const subject = new Subject(subjectData.getAttribute("SubjectKey"), siteOID, creationDate);
         await ioHelper.storeSubjectData(subject, subjectData);
     }
 }
@@ -126,12 +127,13 @@ export async function addSubject(subjectKey, siteOID) {
     subjectData = clinicaldataTemplates.getSubjectData(subjectKey);
     if (siteOID) subjectData.insertAdjacentElement("afterbegin", clinicaldataTemplates.getSiteRef(siteOID));
 
-    // TODO: Should work differently. First check if subjectKey is not occupied, and then more server interaction
-    subject = new Subject(subjectKey, siteOID, new Date());
+    const creationDate = new Date();
+    subjectData.appendChild(clinicaldataTemplates.getAuditRecord(admindataHelper.getCurrentUserOID(), siteOID ? siteOID : "", creationDate.toISOString()));
+
+    subject = new Subject(subjectKey, siteOID, creationDate);
     subjects.push(subject);
 
     await storeSubject();
-
     return Promise.resolve();
 }
 
@@ -253,6 +255,7 @@ export function dataHasChanged(formItemDataList, studyEventOID, formOID) {
 
 export function getAuditRecords() {
     let auditRecords = [];
+
     for (let studyEventData of $$("StudyEventData")) {
         let studyEventOID = studyEventData.getAttribute("StudyEventOID");
         for (let formData of studyEventData.querySelectorAll("FormData")) {
@@ -260,6 +263,7 @@ export function getAuditRecords() {
             let auditRecord = formData.querySelector("AuditRecord")
             if (!auditRecord) continue;
             auditRecords.push(new AuditRecord(
+                auditRecordTypes.FORMEDITED,
                 studyEventOID,
                 formOID,
                 auditRecord.querySelector("UserRef").getAttribute("UserOID"),
@@ -268,9 +272,19 @@ export function getAuditRecords() {
             ));
         }
     }
-    auditRecords.sort((a, b) => a.date < b.date ? 1 : (a.date > b.date ? -1 : 0));
 
-    return auditRecords;
+    if ($("AuditRecord")) {
+        auditRecords.push(new AuditRecord(
+            auditRecordTypes.SUBJECTCREATED,
+            null,
+            null,
+            $("AuditRecord UserRef").getAttribute("UserOID"),
+            $("AuditRecord LocationRef").getAttribute("LocationOID"),
+            new Date($("AuditRecord DateTimeStamp").textContent)
+        ));
+    }
+
+    return auditRecords.sort((a, b) => a.date < b.date ? 1 : (a.date > b.date ? -1 : 0));
 }
 
 export function getAuditRecordFormData(studyEventOID, formOID, date) {

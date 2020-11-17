@@ -245,7 +245,7 @@ window.uploadODM = async function() {
     if (content) {
         metadataHelper.importMetadata(content);
         admindataHelper.importAdmindata(content);
-        clinicaldataHelper.importClinicaldata(content);
+        await clinicaldataHelper.importClinicaldata(content);
         startApp();
     }
 }
