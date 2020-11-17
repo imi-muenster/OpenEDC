@@ -7,7 +7,6 @@
     "survey-finished-text": "Thank you for taking the survey.",
     "survey-finished-code-text": "Please enter the survey code to close this window.",
     "wrong-survey-code-hint": "Wrong code entered. Please try again.",
-    "default-survey-code-hint": "Default: 0000.",
     "back": "Back",
     "continue": "Continue",
     "finish": "Finish",

@@ -471,7 +471,7 @@ window.cancelFormOrSurveyEntry = function(closeSurvey) {
     } else if (surveyViewIsActive()) {
         $("#close-clinicaldata-modal").classList.remove("is-active");
         hideSurveyView();
-        showCloseSurveyModal();
+        if (ioHelper.getSurveyCode()) showCloseSurveyModal();
         if (ioHelper.isAutoSurveyView() && ioHelper.isMobile()) currentElementID.studyEvent = null;
         skipDataHasChangedCheck = true;
     }
@@ -576,13 +576,11 @@ function surveyCodeButtonPressed(value) {
     }
 
     $("#wrong-survey-code-hint").classList.add("is-hidden");
-    $("#default-survey-code-hint").classList.add("is-hidden");
     if (surveyCode.length == 4) {
         if (surveyCode == ioHelper.getSurveyCode()) {
             $("#survey-code-modal").classList.remove("is-active");
         } else {
             $("#wrong-survey-code-hint").classList.remove("is-hidden");
-            if (ioHelper.getSurveyCode() == "0000") $("#default-survey-code-hint").classList.remove("is-hidden");
             surveyCode = "";
             $$(".numpad .status .filled-dot").forEach(dot => {
                 dot.remove();

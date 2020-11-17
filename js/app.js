@@ -259,7 +259,7 @@ window.loadExample = async function() {
 window.showProjectModal = function() {
     metadataModule.removeArrowKeyListener();
     $("#project-modal").classList.add("is-active");
-    if (ioHelper.getSurveyCode() != "0000") $("#survey-code-input").value = ioHelper.getSurveyCode();
+    $("#survey-code-input").value = ioHelper.getSurveyCode();
     $("#text-as-textarea-checkbox").checked = ioHelper.isTextAsTextarea();
     $("#auto-survey-view-checkbox").checked = ioHelper.isAutoSurveyView();
     // TODO: Maybe something like metadataModule.loadStudyNameAndDescription(); for consistency?

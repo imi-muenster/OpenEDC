@@ -55,9 +55,9 @@ let user = null;
 let decryptionKey = null;
 let serverURL = null;
 
-// Keeps app options that are equal for all users of the app -- options may have default values assigned
+// Keeps app options that are equal for all users of the app
 let settings = {
-    surveyCode: "0000",
+    surveyCode: null,
     textAsTextarea: false,
     autoSurveyView: false
 };
@@ -251,7 +251,7 @@ export function getLocalUser() {
 }
 
 export function setSurveyCode(surveyCode) {
-    if (parseInt(surveyCode) == surveyCode && surveyCode.length == 4) {
+    if (surveyCode.length == 0 || (parseInt(surveyCode) == surveyCode && surveyCode.length == 4)) {
         settings.surveyCode = surveyCode;
         storeSettings();
         return Promise.resolve();
