@@ -793,28 +793,25 @@ window.removeElement = function() {
         case metadataHelper.elementTypes.STUDYEVENT:
             metadataHelper.removeStudyEventRef(currentElementID.studyEvent);
             currentElementID.studyEvent = null;
-            hideForms(true);
             break;
         case metadataHelper.elementTypes.FORM:
             metadataHelper.removeFormRef(currentElementID.studyEvent, currentElementID.form);
             currentElementID.form = null;
-            hideItemGroups(true);
             break;
         case metadataHelper.elementTypes.ITEMGROUP:
             metadataHelper.removeItemGroupRef(currentElementID.form, currentElementID.itemGroup);
             currentElementID.itemGroup = null;
-            hideItems(true);
             break;
         case metadataHelper.elementTypes.ITEM:
             metadataHelper.removeItemRef(currentElementID.itemGroup, currentElementID.item);
             currentElementID.item = null;
-            hideCodeListItems(true);
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             metadataHelper.deleteCodeListItem(currentElementID.codeList, currentElementID.codeListItem);
             currentElementID.codeList = null;
             currentElementID.codeListItem = null;
     }
+    currentElementType = null;
 
     hideRemoveModal();
     resetDetailsPanel();
