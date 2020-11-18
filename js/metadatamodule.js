@@ -664,44 +664,36 @@ export function setArrowKeyListener() {
 }
 
 function arrowKeyListener(event) {
-    let target = null;
+    if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "KeyA", "KeyR", "Tab"].includes(event.code)) return;
+    event.preventDefault();
 
+    let target = null;
     if (event.code == "ArrowUp") {
-        event.preventDefault();
-        let currentElement = $(`[oid="${getCurrentElementOID()}"]`);
-        if (currentElement) target = currentElement.previousSibling;
+        if (currentElementType) target = $(`[oid="${getCurrentElementOID()}"]`).previousSibling;
         if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) target = $(`[coded-value="${currentElementID.codeListItem}"]`).previousSibling;
     } else if (event.code == "ArrowDown") {
-        event.preventDefault();
-        let currentElement = $(`[oid="${getCurrentElementOID()}"]`);
-        if (currentElement) target = currentElement.nextSibling;
+        if (currentElementType) target = $(`[oid="${getCurrentElementOID()}"]`).nextSibling;
         if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) target = $(`[coded-value="${currentElementID.codeListItem}"]`).nextSibling;
     } else if (event.code == "ArrowLeft") {
-        event.preventDefault();
         if (currentElementType != metadataHelper.elementTypes.STUDYEVENT) {
             target = $(`[oid="${getParentOID(currentElementType)}"]`);
             setCurrentElementOID(null);
             currentElementType = getParentElementType(currentElementType);
         }
     } else if (event.code == "ArrowRight") {
-        event.preventDefault();
         if (currentElementType != metadataHelper.elementTypes.CODELISTITEM && getCurrentElementFirstChild()) {
             target = getCurrentElementFirstChild();
             currentElementType = getChildElementType(currentElementType);
         }
     } else if (event.code == "KeyA") {
-        event.preventDefault();
         addCurrentElementType();
     } else if (event.code == "KeyR") {
-        event.preventDefault();
         removeElement();
     } else if (event.code == "Tab") {
-        event.preventDefault();
         $("#oid-input").focus();
     }
 
-    if (currentElementType == null && (event.code == "ArrowDown" || event.code == "ArrowRight")) {
-        event.preventDefault();
+    if (!currentElementType && (event.code == "ArrowDown" || event.code == "ArrowRight")) {
         target = $(`a[element-type="studyevent"]`);
         currentElementType = metadataHelper.elementTypes.STUDYEVENT;        
     }
@@ -793,6 +785,7 @@ window.removeElement = function() {
         case metadataHelper.elementTypes.STUDYEVENT:
             metadataHelper.removeStudyEventRef(currentElementID.studyEvent);
             currentElementID.studyEvent = null;
+            hideForms(true);
             break;
         case metadataHelper.elementTypes.FORM:
             metadataHelper.removeFormRef(currentElementID.studyEvent, currentElementID.form);
