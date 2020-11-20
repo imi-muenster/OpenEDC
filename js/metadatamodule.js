@@ -117,6 +117,14 @@ function createMeasurementUnitSelect() {
     }
 }
 
+function hideStudyEvents(hideTree) {
+    ioHelper.removeElements($$("#study-event-panel-blocks a"));
+    if (hideTree) {
+        currentElementID.studyEvent = null;
+        hideForms(true);
+    }
+}
+
 function hideForms(hideTree) {
     ioHelper.removeElements($$("#form-panel-blocks a"));
     $("#forms-add-button button").disabled = true;
@@ -153,9 +161,10 @@ function hideCodeListItems(hideTree) {
     }
 }
 
-export function loadStudyEvents() {
+export function loadStudyEvents(hideTree) {
+    hideStudyEvents(hideTree);
+
     let studyEventDefs = metadataHelper.getStudyEvents();
-    ioHelper.removeElements($$("#study-event-panel-blocks a"));
     for (let studyEventDef of studyEventDefs) {
         let translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         let panelBlock = createPanelBlock(studyEventDef.getAttribute("OID"), metadataHelper.elementTypes.STUDYEVENT, translatedText, studyEventDef.getAttribute("Name"));
@@ -272,7 +281,7 @@ function codeListItemClicked(event) {
 }
 
 function reloadStudyEvents() {
-    loadStudyEvents();
+    loadStudyEvents(currentElementID.studyEvent == null);
     if (currentElementID.studyEvent) $(`[oid="${currentElementID.studyEvent}"]`).classList.add("is-active");
 }
 
@@ -785,7 +794,6 @@ window.removeElement = function() {
         case metadataHelper.elementTypes.STUDYEVENT:
             metadataHelper.removeStudyEventRef(currentElementID.studyEvent);
             currentElementID.studyEvent = null;
-            hideForms(true);
             break;
         case metadataHelper.elementTypes.FORM:
             metadataHelper.removeFormRef(currentElementID.studyEvent, currentElementID.form);
