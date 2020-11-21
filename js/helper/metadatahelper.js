@@ -14,9 +14,9 @@ export const elementTypes = {
 
 let metadata = null;
 
-export function loadEmptyProject() {
+export async function loadEmptyProject() {
     metadata = metadataTemplates.getODMTemplate();
-    storeMetadata();
+    await storeMetadata();
 }
 
 export function importMetadata(odmXMLString) {
@@ -41,8 +41,8 @@ export async function loadStoredMetadata() {
     metadata = await ioHelper.getMetadata();
 }
 
-export function storeMetadata() {
-    ioHelper.storeMetadata(metadata);
+export async function storeMetadata() {
+    await ioHelper.storeMetadata(metadata);
 }
 
 export function getSerializedMetadata() {
@@ -51,10 +51,6 @@ export function getSerializedMetadata() {
 
 export function getMetadata() {
     return metadata;
-}
-
-export function clearMetadata() {
-    metadata = null;
 }
 
 export async function getFormAsHTML(formOID, locale, textAsTextarea) {

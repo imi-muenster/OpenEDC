@@ -178,8 +178,8 @@ export async function getMetadata() {
     return await getStoredXMLData(fileNames.metadata);
 }
 
-export function storeMetadata(metadata) {
-    storeXMLData(fileNames.metadata, metadata);
+export async function storeMetadata(metadata) {
+    await storeXMLData(fileNames.metadata, metadata);
 }
 
 export async function getAdmindata() {

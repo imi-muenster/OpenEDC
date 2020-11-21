@@ -442,10 +442,14 @@ window.downloadCSV = async function() {
     ioHelper.download(metadataHelper.getStudyName()+"_clinicaldata.csv", csvString);
 }
 
-window.removeData = function() {
-    metadataHelper.clearMetadata();
-    clinicaldataHelper.clearSubject();
-    localStorage.clear();
+window.removeAllData = async function() {
+    if (ioHelper.getServerURL()) {
+        await clinicaldataHelper.removeClinicaldata();
+        await metadataHelper.loadEmptyProject();
+    } else {
+        localStorage.clear();
+    }
+
     window.location.reload();
 }
 
