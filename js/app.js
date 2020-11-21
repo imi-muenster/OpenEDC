@@ -78,6 +78,7 @@ const startApp = async () => {
     setTitles();
     hideStartModal();
     showNavbar();
+    showCloseExampleButton();
     setIOListeners();
 
     // If there is at least one subject stored, automatically open the clinicaldata module
@@ -121,6 +122,10 @@ function showDecryptionKeyModal() {
     };
 
     renderLoginModal();
+}
+
+function showCloseExampleButton() {
+    if (metadataHelper.getStudyName() == "Exemplary Project") $("#close-example-button").classList.remove("is-hidden"); 
 }
 
 function showLoginModal() {
