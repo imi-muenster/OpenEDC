@@ -453,8 +453,8 @@
                         <div class="notification is-link is-light" id="connect-to-server-option">
                             <h1 class="title is-4">Connect to Server</h1>
                             <p class="mb-5 is-hidden" id="server-connected-hint"><strong>You are connected to an OpenEDC Server.</strong></p>
-                            <p class="mb-5">With this option you can connect to an OpenEDC Server. This lets you create projects with multiple users. This also backups all data for you automatically. All data is end-to-end encrypted by default.</p>
-                            <div class="field has-addons">
+                            <p>With this option you can connect to an OpenEDC Server. This lets you create projects with multiple users. All currently existing data is synced to the server. Current and future data will be end-to-end encrypted by default.</p>
+                            <div class="field has-addons mt-5">
                                 <div class="control is-expanded">
                                     <input class="input is-small" id="server-url-input" type="text" placeholder="Server URL">
                                 </div>
@@ -463,7 +463,7 @@
                                 </div>
                             </div>
                             <form class="is-hidden" id="initialize-server-form">
-                                <p class="mb-5"><strong>A new OpenEDC Server could be found. You can now create an account for the server.</strong></p>
+                                <p class="mt-5 mb-5"><strong>A new OpenEDC Server could be found. You can now create an account for the server.</strong></p>
                                 <input class="input is-small mb-3" id="owner-username-input" type="text" placeholder="Username" autocomplete="username">
                                 <input class="input is-small mb-3" id="owner-password-input" type="password" placeholder="Password" autocomplete="new-password">
                                 <input class="input is-small mb-5" id="owner-confirm-password-input" type="password" placeholder="Password (confirm)" autocomplete="new-password">
@@ -473,11 +473,11 @@
                         <div class="notification is-link is-light">
                             <h1 class="title is-4">Encrypt Data</h1>
                             <p class="mb-5 is-hidden" id="data-encrypted-hint"><strong>Data is encrypted.</strong></p>
-                            <p class="mb-5">With this option you can fully encrypt all locally stored data. All currently stored and future data will then be encrypted. When you open the app again, you need to enter the password to decrypt the data.</p>
-                            <p class="mb-5" id="data-encryption-warning"><strong>Warning: If you forget the password, all data will be permanently lost.</strong></p>
+                            <p>With this option you can fully encrypt all locally stored data. All currently stored and future data will then be encrypted. When you open the app again, you need to enter the password to decrypt the data.</p>
+                            <p class="mt-5" id="data-encryption-warning"><strong>Warning: If you forget the password, all data will be permanently lost.</strong></p>
                             <form>
-                                <input class="is-hidden mb-5" autocomplete="username">
-                                <div class="field has-addons">
+                                <input class="is-hidden" autocomplete="username">
+                                <div class="field has-addons mt-5">
                                     <div class="control is-expanded">
                                         <input class="input is-small" id="encryption-password-input" type="password" placeholder="Encryption password" autocomplete="new-password">
                                     </div>
@@ -498,7 +498,7 @@
                         <div class="notification is-link is-light">
                             <h1 class="title is-4">Survey Code</h1>
                             <p class="mb-5">This option lets you set a four-digit numerical code that needs to be entered after a local survey (started with the <i>SurveyView</i> button) is finished or canceled. This prevents study participants from seeing foreign data.</p>
-                            <div class="field has-addons">
+                            <div class="field has-addons mb-3">
                                 <div class="control is-expanded">
                                     <input class="input is-small" id="survey-code-input" type="text" placeholder="Survey code">
                                 </div>

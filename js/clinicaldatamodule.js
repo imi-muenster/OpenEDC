@@ -229,16 +229,14 @@ async function loadFormsByStudyEvent() {
     }
 
     // Automatically start the survey view when activated in project options and the current device is a smartphone or tablet
-    if (ioHelper.isAutoSurveyView() && ioHelper.isMobile() && formDefs.length > 0 && !currentElementID.form) currentElementID.form = formDefs[0].getAttribute("OID");
+    if (ioHelper.isAutoSurveyView() && ioHelper.isMobile() && formDefs.length > 0 && !currentElementID.form) {
+        currentElementID.form = formDefs[0].getAttribute("OID");
+        showSurveyView();
+        showColumnOnMobile();
+    }
 
     if (currentElementID.form) {
         await loadFormData();
-
-        // (continued) Automatically start the survey view when activated in project options and the current device is a smartphone or tablet
-        if (ioHelper.isAutoSurveyView() && ioHelper.isMobile()) {
-            showSurveyView();
-            showColumnOnMobile();
-        }
     } else {
         ioHelper.safeRemoveElement($("#odm-html-content"));
         $("#clinicaldata-form-data").classList.add("is-hidden");
