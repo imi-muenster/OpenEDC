@@ -79,6 +79,7 @@ const startApp = async () => {
     hideStartModal();
     showNavbar();
     showCloseExampleButton();
+    adjustUIToUser();
     setIOListeners();
 
     // If there is at least one subject stored, automatically open the clinicaldata module
@@ -181,9 +182,6 @@ async function loginSuccessful() {
 
     await metadataHelper.loadStoredMetadata();
     await startApp();
-
-    // When connected to a server, adjust UI in accordance with the user rights (e.g., disable or enable buttons, select site of user)
-    if (ioHelper.getServerURL()) adjustUIToUser();
 }
 
 function loginNotSuccessful(error) {
@@ -201,27 +199,32 @@ function loginNotSuccessful(error) {
 }
 
 function adjustUIToUser() {
-    const user = ioHelper.getLocalUser();
-    if (!user.rights.includes("Project options")) {
-        $("#project-modal-button").disabled = true;
+    if (ioHelper.getServerURL()) {
+        const user = ioHelper.getLocalUser();
+        if (!user.rights.includes("Project options")) {
+            $("#project-modal-button").disabled = true;
+        } else {
+            $("#add-user-button button").disabled = false;
+        }
+        if (!user.rights.includes("Edit metadata")) {
+            if (getCurrentMode() == appModes.METADATA) metadataModule.hide();
+            $("#metadata-toggle-button").disabled = true;
+        }
+        if (!user.rights.includes("Add subject data")) {
+            $("#add-subject-input").disabled = true;
+            $("#add-subject-button").disabled = true;
+        }
+        if (!user.rights.includes("Manage subjects")) {
+            $("#subject-info-button").disabled = true;
+        }
+        if (user.site) {
+            $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(user.site);
+            $("#filter-site-select-inner").disabled = true;
+        }
     } else {
-        $("#add-user-button button").disabled = false;
-    }
-    if (!user.rights.includes("Edit metadata")) {
-        if (getCurrentMode() == appModes.METADATA) metadataModule.hide();
-        $("#metadata-toggle-button").disabled = true;
-    }
-    if (!user.rights.includes("Add subject data")) {
-        $("#add-subject-input").disabled = true;
-        $("#add-subject-button").disabled = true;
-    }
-    if (!user.rights.includes("Manage subjects")) {
-        $("#subject-info-button").disabled = true;
-    }
-    if (user.site) {
-        $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(user.site);;
-        $("#filter-site-select-inner").disabled = true;
-        clinicaldataModule.loadSubjectKeys();
+        const user = admindataHelper.getUser(admindataHelper.getCurrentUserOID());
+        const locationRef = user.querySelector("LocationRef");
+        if (locationRef) $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(locationRef.getAttribute("LocationOID"));
     }
 }
 

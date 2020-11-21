@@ -70,7 +70,6 @@ function loadUser(userOID) {
     // Fill other inputs and adjust enable status
     $("#user-first-name-input").value = user.querySelector("FirstName").textContent;
     $("#user-last-name-input").value = user.querySelector("LastName").textContent;
-    $("#user-site-select-inner").disabled = false;
     $("#user-first-name-input").disabled = false;
     $("#user-last-name-input").disabled = false;
     $("#user-save-button").disabled = false;
