@@ -1004,28 +1004,34 @@ function setCurrentElementOID(elementOID) {
 }
 
 window.elementDrop = async function(event) {
-    let sourceElementOID = event.dataTransfer.getData("sourceElementOID");
-    let targetElementOID = event.target.getAttribute("oid");
-    let sourceParentOID = event.dataTransfer.getData("sourceParentOID");
-    let targetParentOID = getParentOID(elementTypeOnDrag);
+    const sourceElementOID = event.dataTransfer.getData("sourceElementOID");
+    const sourceCodedValue = event.dataTransfer.getData("sourceCodedValue");
+    const sourceParentOID = event.dataTransfer.getData("sourceParentOID");
+    const targetElementOID = event.target.getAttribute("oid");
+    const targetCodedValue = event.target.getAttribute("coded-value")
+    const targetParentOID = getParentOID(elementTypeOnDrag);
+
     let sourceElementRef = null;
     let targetElementRef = null;
 
-    const subjectsHavingDataForElement = await clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID);
-    if (sourceParentOID != targetParentOID && subjectsHavingDataForElement.length > 0) {
-        ioHelper.showWarning("Element not moved", "The element could not be moved since there is clinical data assigned to it. You can try to remove the element to see a list of subjects that contain data for this element.");
-        return;
+    if (sourceParentOID != targetParentOID) {
+        // Extra if-statement for performance reasons (do not load all subjects when sourceParentOID and targetParentOID are equal)
+        const subjectsHavingDataForElement = await clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID);
+        if (subjectsHavingDataForElement.length > 0) {
+            ioHelper.showWarning("Element not moved", "The element could not be moved since there is clinical data assigned to it. You can try to remove the element to see a list of subjects that contain data for this element.");
+            return;
+        }
     }
 
     if (elementTypeOnDrag == metadataHelper.elementTypes.CODELISTITEM) {
-        sourceElementRef = metadataHelper.getCodeListItem(sourceElementOID, event.dataTransfer.getData("sourceCodedValue"));
+        sourceElementRef = metadataHelper.getCodeListItem(sourceElementOID, sourceCodedValue);
     } else {
         sourceElementRef = metadataHelper.getElementRefByOID(sourceElementOID, elementTypeOnDrag, sourceParentOID);
     }
 
     if (targetElementOID) {
         if (elementTypeOnDrag == metadataHelper.elementTypes.CODELISTITEM) {
-            targetElementRef = metadataHelper.getCodeListItem(targetElementOID, event.target.getAttribute("coded-value"));
+            targetElementRef = metadataHelper.getCodeListItem(targetElementOID, targetCodedValue);
         } else {
             targetElementRef = metadataHelper.getElementRefByOID(targetElementOID, elementTypeOnDrag, targetParentOID);
         }
