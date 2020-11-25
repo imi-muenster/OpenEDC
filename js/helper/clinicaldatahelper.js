@@ -204,6 +204,9 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
     // Do not store any data if no subject has been loaded or the formdata to be stored did not change compared to the previous one
     if (!subject || !dataHasChanged(formItemDataList, studyEventOID, formOID)) return;
 
+    // Do not store data if connected to server and user has no rights to store data
+    if (ioHelper.getServerURL() && !ioHelper.getLocalUser().rights.includes("Add subject data")) return;
+
     let studyEventData = $(`StudyEventData[StudyEventOID="${studyEventOID}"]`) || clinicaldataTemplates.getStudyEventData(studyEventOID);
     let formData = clinicaldataTemplates.getFormData(formOID);
 
@@ -213,7 +216,7 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
             if (itemGroupData) formData.appendChild(itemGroupData);
             itemGroupData = clinicaldataTemplates.getItemGroupData(formItemData.itemGroupOID);
         };
-        itemGroupData.appendChild(clinicaldataTemplates.getItemData(formItemData.itemOID, formItemData.value.replaceAll("\n", "&#xA;")));
+        itemGroupData.appendChild(clinicaldataTemplates.getItemData(formItemData.itemOID, formItemData.value.replaceAll("\n", "&#10;")));
     }
 
     if (itemGroupData) formData.appendChild(itemGroupData);
