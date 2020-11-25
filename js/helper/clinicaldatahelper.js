@@ -128,7 +128,7 @@ export async function addSubject(subjectKey, siteOID) {
     if (siteOID) subjectData.insertAdjacentElement("afterbegin", clinicaldataTemplates.getSiteRef(siteOID));
 
     const creationDate = new Date();
-    subjectData.appendChild(clinicaldataTemplates.getAuditRecord(admindataHelper.getCurrentUserOID(), siteOID ? siteOID : "", creationDate.toISOString()));
+    subjectData.appendChild(clinicaldataTemplates.getAuditRecord(admindataHelper.getCurrentUserOID(), siteOID, creationDate.toISOString()));
 
     subject = new Subject(subjectKey, siteOID, creationDate);
     subjects.push(subject);
@@ -207,8 +207,8 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
     // Do not store data if connected to server and user has no rights to store data
     if (ioHelper.getServerURL() && !ioHelper.getLocalUser().rights.includes("Add subject data")) return;
 
-    let studyEventData = $(`StudyEventData[StudyEventOID="${studyEventOID}"]`) || clinicaldataTemplates.getStudyEventData(studyEventOID);
     let formData = clinicaldataTemplates.getFormData(formOID);
+    formData.appendChild(clinicaldataTemplates.getAuditRecord(admindataHelper.getCurrentUserOID(), subject.siteOID, new Date().toISOString()));
 
     let itemGroupData = null;
     for (let formItemData of formItemDataList) {
@@ -218,9 +218,9 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
         };
         itemGroupData.appendChild(clinicaldataTemplates.getItemData(formItemData.itemOID, formItemData.value.replaceAll("\n", "&#10;")));
     }
-
     if (itemGroupData) formData.appendChild(itemGroupData);
-    formData.appendChild(clinicaldataTemplates.getAuditRecord(admindataHelper.getCurrentUserOID(), subject.siteOID ? subject.siteOID : "", new Date().toISOString()));
+
+    let studyEventData = $(`StudyEventData[StudyEventOID="${studyEventOID}"]`) || clinicaldataTemplates.getStudyEventData(studyEventOID);
     studyEventData.appendChild(formData);
     subjectData.appendChild(studyEventData);
 

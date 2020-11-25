@@ -421,11 +421,11 @@ window.downloadODM = async function() {
     metadataHelper.setFileOID(metadataHelper.getStudyName());
     let odm = new DOMParser().parseFromString(metadataHelper.getSerializedMetadata(), "text/xml");
 
-    let clinicaldata = await clinicaldataHelper.getClinicalData(metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID());
-    if (clinicaldata) odm.querySelector("ODM").appendChild(clinicaldata);
-
     let admindata = admindataHelper.getAdmindata();
     if (admindata) odm.querySelector("ODM").appendChild(admindata);
+
+    let clinicaldata = await clinicaldataHelper.getClinicalData(metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID());
+    if (clinicaldata) odm.querySelector("ODM").appendChild(clinicaldata);
 
     ioHelper.download(metadataHelper.getStudyName()+".xml", new XMLSerializer().serializeToString(odm));
 }
