@@ -8,7 +8,7 @@ export function process(itemsWithRangeChecks) {
     // First, handle data types (e.g., integer and float)
     for (let input of $$("#clinicaldata-content [inputmode='numeric'], #clinicaldata-content [inputmode='decimal'], #clinicaldata-content [type='date']")) {
         input.addEventListener("focusout", event => {
-            let type = input.getAttribute("inputmode") ? input.getAttribute("inputmode") : input.getAttribute("type");
+            let type = input.getAttribute("inputmode") || input.getAttribute("type");
             switch (type) {
                 case "numeric":
                     if (input.value && !isInt(input.value)) {

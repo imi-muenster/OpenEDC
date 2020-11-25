@@ -7,7 +7,7 @@ class Subject {
         this.key = key;
         this.siteOID = siteOID;
         this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate ? modifiedDate : createdDate;
+        this.modifiedDate = modifiedDate || createdDate;
 
         // Used since a subject's key can be ambigous when data conflicts are present (i.e., multiple users edited the same subject at the same)
         this.uniqueKey = key;

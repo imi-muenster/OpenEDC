@@ -295,7 +295,7 @@ function loadFormClinicaldata() {
     let metadataNotFoundErrors = [];
     let hiddenFieldWithValueError = false;
 
-    let formItemDataList = cachedFormData ? cachedFormData : clinicaldataHelper.getSubjectFormData(currentElementID.studyEvent, currentElementID.form);
+    let formItemDataList = cachedFormData || clinicaldataHelper.getSubjectFormData(currentElementID.studyEvent, currentElementID.form);
     for (let formItemData of formItemDataList) {
         let fieldElement = $(`#clinicaldata-content [preview-field-oid="${formItemData.itemOID}"][preview-field-group-oid="${formItemData.itemGroupOID}"]`);
         let inputElement = $(`#clinicaldata-content [preview-oid="${formItemData.itemOID}"][preview-group-oid="${formItemData.itemGroupOID}"]`);
