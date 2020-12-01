@@ -1,4 +1,4 @@
-const staticCacheName = "static-cache-v4";
+const staticCacheName = "static-cache-v5";
 const dynamicCacheName = "dynamic-cache";
 const messageQueueName = "message-queue";
 
@@ -31,9 +31,7 @@ const staticAssets = [
     "/js/helper/languagehelper.js",
     "/js/helper/validationhelper.js",
     "/lib/bulma.css",
-    "/lib/fontawesome-base.js",
-    "/lib/fontawesome-regular.js",
-    "/lib/fontawesome-solid.js",
+    "/lib/fontawesome.js",
     "/lib/crypto-js.js",
     "/odm/example.xml",
     "/xsl/odmtohtml.xsl",
