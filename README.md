@@ -1,24 +1,23 @@
 # OpenEDC
-A free and open-source electronic data capture (EDC) system that lets you create and conduct secure clinical research studies based on the [CDISC ODM-XML](https://www.cdisc.org/standards/data-exchange/odm) format.
+
+[OpenEDC](https://openedc.org/) is a free and open-source electronic data capture (EDC) system that lets you create and conduct secure clinical research studies based on the [CDISC ODM-XML](https://www.cdisc.org/standards/data-exchange/odm) format.
 
 OpenEDC is a cross-platform, web-based application that can also be installed as a standalone app and works offline. The application itself is client-based. All data is exclusively processed on the local device it is running on. For security reasons, all data can be AES encrypted on the device as well.
 
-An instance of the [OpenEDC Server](https://TODO) can be hosted optionally to create a project with multiple users and sites. Forms that were already designed or data that was already captured with the openly available app can be synced with the server. When connected to a server, all data is end-to-end encrypted by default. Moreover, the application will still work offline and syncs all data back to the server automatically when an Internet connection could be re-established.
+An instance of the [OpenEDC Server](https://TODO) can be hosted optionally to create a project with multiple users and sites. Forms that were already designed or data that was already captured with [openedc.org](https://openedc.org/) can be synced with the server. When connected to a server, all data is end-to-end encrypted by default. Moreover, the application will still work offline and syncs all data back to the server automatically when an Internet connection could be re-established.
 
 The application consists of three main modules. One for designing the metadata (i.e., the forms), one for capturing data (including real-time validity checks), and one for administrative settings when connected to an OpenEDC Server (i.e., managing users and sites).
 
-OpenEDC is openly available [here](https://TODO).
-
 <div align="center">
-    <img src="https://static.uni-muenster.de/lsregister/libreEDC_1.png" width="700">
+    <img src="https://static.uni-muenster.de/odm/OpenEDC_1.png" width="700">
 </div>
 
 <div align="center">
-    <img src="https://static.uni-muenster.de/lsregister/libreEDC_2.png" width="700">
+    <img src="https://static.uni-muenster.de/odm/OpenEDC_2.png" width="700">
 </div>
 
 <div align="center">
-    <img src="https://static.uni-muenster.de/lsregister/libreEDC_3.png" width="300">
+    <img src="https://static.uni-muenster.de/odm/OpenEDC_3.png" width="300">
 </div>
 
 ## Getting Started
