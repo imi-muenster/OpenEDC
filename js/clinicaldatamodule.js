@@ -517,8 +517,11 @@ function hideSurveyView() {
 }
 
 function showCloseClinicaldataModal() {
-    // If not yet existent in DOM, create the modal
-    if (!$("#close-clinicaldata-modal")) document.body.appendChild(document.createElement("close-clinicaldata-modal"));
+    // If not yet existent in DOM, create and translate the modal
+    if (!$("#close-clinicaldata-modal")) {
+        document.body.appendChild(document.createElement("close-clinicaldata-modal"));
+        languageHelper.internationalize();
+    }
 
     if (surveyViewIsActive()) {
         $("#close-form-title").classList.add("is-hidden");
@@ -541,8 +544,11 @@ function hideCloseClinicaldataModal() {
 
 // Renders and shows the close survey modal with the key numpad for the survey code
 function showCloseSurveyModal() {
-    // If not yet existent in DOM, create the modal
-    if (!$("#survey-code-modal")) document.body.appendChild(document.createElement("survey-code-modal"));
+    // If not yet existent in DOM, create and translate the modal
+    if (!$("#survey-code-modal")) {
+        document.body.appendChild(document.createElement("survey-code-modal"));
+        languageHelper.internationalize();
+    }
 
     // Create buttons for numpad if they dont exist
     if (!$(".numpad .buttons").hasChildNodes()) {
