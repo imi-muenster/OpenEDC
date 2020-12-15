@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             startApp();
         })
         .catch(error => {
-            if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND && !ioHelper.getServerURL()) showStartModal();
+            if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND && !ioHelper.hasServerURL()) showStartModal();
             else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionKeyModal();
         });
 
@@ -107,6 +107,9 @@ function showNavbar() {
 }
 
 function showDecryptionKeyModal() {
+    // If not yet existent in DOM, create the modal
+    if (!$("#login-modal")) document.body.appendChild(document.createElement("login-modal"));
+
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
     $("#login-modal #username-input").parentNode.parentNode.classList.add("is-hidden");
     $("#login-title").textContent = "Data is encrypted";
@@ -118,11 +121,11 @@ function showDecryptionKeyModal() {
         clickEvent.preventDefault();
         const decryptionKey = $("#login-modal #password-input").value;
         ioHelper.setDecryptionKey(decryptionKey)
-            .then(loginSuccessful)
-            .catch(loginNotSuccessful);
+            .then(() => loginSuccessful())
+            .catch(error => loginNotSuccessful(error));
     };
 
-    renderLoginModal();
+    $("#login-modal").classList.add("is-active");
 }
 
 function showCloseExampleButton() {
@@ -130,16 +133,15 @@ function showCloseExampleButton() {
 }
 
 function showLoginModal() {
+    // If not yet existent in DOM, create the modal
+    if (!$("#login-modal")) document.body.appendChild(document.createElement("login-modal"));
+
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
     $("#login-title").textContent = "Please login";
     $("#login-text").textContent = "You are connected to an OpenEDC Server. Please login with your credentials.";
     $("#login-incorrect-hint .message-body").textContent = "The username or password is incorrect. Please try again.";
 
-    // Adjust the project options modal accordingly
-    $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
-    $("#server-connected-hint").classList.remove("is-hidden");
-
-    // Set the click handler when clicking on the Open button
+    // Set the click handler when clicking on the open button
     $("#login-modal #open-button").onclick = clickEvent => {
         clickEvent.preventDefault();
         const username = $("#login-modal #username-input").value;
@@ -150,8 +152,8 @@ function showLoginModal() {
         if (!$("#login-modal #username-input").disabled) {
             const credentials = new ioHelper.Credentials(username, password);
             ioHelper.loginToServer(credentials)
-                .then(loginSuccessful)
-                .catch(loginNotSuccessful);
+                .then(() => loginSuccessful())
+                .catch(error => loginNotSuccessful(error));
         } else {
             const credentials = new ioHelper.Credentials(username, password, confirmPassword);
             if (credentials.error) {
@@ -164,21 +166,11 @@ function showLoginModal() {
         }
     };
 
-    renderLoginModal();
-}
-
-function renderLoginModal() {
-    $("#project-modal #encryption-password-input").parentNode.parentNode.classList.add("is-hidden");
-    $("#project-modal #data-encryption-warning").classList.add("is-hidden");
-    $("#project-modal #data-encrypted-hint").classList.remove("is-hidden");
-
     $("#login-modal").classList.add("is-active");
 }
 
 async function loginSuccessful() {
-    $("#login-modal #username-input").value = "";
-    $("#login-modal #password-input").value = "";
-    $("#login-modal").classList.remove("is-active");
+    $("#login-modal").remove();
 
     await metadataHelper.loadStoredMetadata();
     await startApp();
@@ -199,12 +191,10 @@ function loginNotSuccessful(error) {
 }
 
 function adjustUIToUser() {
-    if (ioHelper.getServerURL()) {
+    if (ioHelper.hasServerURL()) {
         const user = ioHelper.getLocalUser();
         if (!user.rights.includes("Project options")) {
             $("#project-modal-button").disabled = true;
-        } else {
-            $("#add-user-button button").disabled = false;
         }
         if (!user.rights.includes("Edit metadata")) {
             if (getCurrentMode() == appModes.METADATA) metadataModule.hide();
@@ -265,12 +255,24 @@ window.loadExample = async function() {
 }
 
 window.showProjectModal = function() {
+    // If not yet existent in DOM, create the modal
+    if (!$("#project-modal")) document.body.appendChild(document.createElement("project-modal"));
+
     metadataModule.removeArrowKeyListener();
-    $("#project-modal").classList.add("is-active");
+
+    if (ioHelper.hasDecryptionKey()) {
+        $("#project-modal #encryption-password-input").parentNode.parentNode.classList.add("is-hidden");
+        $("#project-modal #data-encryption-warning").classList.add("is-hidden");
+        $("#project-modal #data-encrypted-hint").classList.remove("is-hidden");
+    }
+    if (ioHelper.hasServerURL()) {
+        $("#project-modal #server-url-input").parentNode.parentNode.classList.add("is-hidden");
+        $("#project-modal #server-connected-hint").classList.remove("is-hidden");
+    }
+
     $("#survey-code-input").value = ioHelper.getSurveyCode();
     $("#text-as-textarea-checkbox").checked = ioHelper.isTextAsTextarea();
     $("#auto-survey-view-checkbox").checked = ioHelper.isAutoSurveyView();
-    // TODO: Maybe something like metadataModule.loadStudyNameAndDescription(); for consistency?
     $("#study-name-input").value = metadataHelper.getStudyName();
     $("#study-description-textarea").value = metadataHelper.getStudyDescription();
     $("#protocol-name-input").value = metadataHelper.getStudyName();
@@ -278,6 +280,8 @@ window.showProjectModal = function() {
     admindataModule.loadSites();
 
     ioHelper.hideMenu();
+
+    $("#project-modal").classList.add("is-active");
 }
 
 window.hideProjectModal = function() {
@@ -405,6 +409,9 @@ window.saveStudyNameDescription = function() {
 }
 
 window.showAboutModal = function() {
+    // If not yet existent in DOM, create the modal
+    if (!$("#about-modal")) document.body.appendChild(document.createElement("about-modal"));
+
     metadataModule.removeArrowKeyListener();
     $("#about-modal").classList.add("is-active");
 
@@ -446,7 +453,7 @@ window.downloadCSV = async function() {
 }
 
 window.removeAllData = async function() {
-    if (ioHelper.getServerURL()) {
+    if (ioHelper.hasServerURL()) {
         await clinicaldataHelper.removeClinicaldata();
         await metadataHelper.loadEmptyProject();
     } else {

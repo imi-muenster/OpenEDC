@@ -63,8 +63,6 @@ let settings = {
 };
 
 export async function init() {
-    setIOListeners();
-
     // Check if app is served by an OpenEDC Server instance
     // For development purposes, check for an ?server= query string parameter and use it instead of the current url
     const devServer = new URLSearchParams(window.location.search).get("server");
@@ -242,8 +240,12 @@ async function storeSettings() {
     }
 }
 
-export function getServerURL() {
-    return serverURL;
+export function hasDecryptionKey() {
+    return decryptionKey ? true : false;
+}
+
+export function hasServerURL() {
+    return serverURL ? true : false;
 }
 
 export function getLocalUser() {
@@ -488,10 +490,12 @@ export function hideMenu() {
     $("#language-dropdown").classList.add("is-hidden-touch");
 }
 
-export function showWarning(title, message) {
-    $("#warning-modal h2").textContent = title;
-    $("#warning-modal p").innerHTML = message;
-    $("#warning-modal").classList.add("is-active");
+export function showWarning(title, text) {
+    // If not yet existent in DOM, create the modal
+    if (!$("#warning-modal")) document.body.appendChild(document.createElement("warning-modal"));
+
+    $("#warning-modal #warning-title").textContent = title;
+    $("#warning-modal #warning-text").innerHTML = text;
 }
 
 export function download(filename, content) {
@@ -598,8 +602,4 @@ export function setTreeMaxHeight() {
 
 export function isMobile() {
     return window.innerWidth < 1024;
-}
-
-function setIOListeners() {
-    $("#warning-modal button").addEventListener("click", () => $("#warning-modal").classList.remove("is-active"));
 }

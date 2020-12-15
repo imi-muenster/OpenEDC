@@ -38,7 +38,9 @@ export async function loadUsers() {
     }
 
     // Also, if connected to a server, mark the own user and add the user rights checkboxes
-    if (ioHelper.getServerURL()) {
+    if (ioHelper.hasServerURL()) {
+        $("#add-user-button button").disabled = false;
+
         const localUserOID = ioHelper.getLocalUser().oid;
         $(`#users-options [oid="${localUserOID}"]`).textContent += " (you)";
 
@@ -75,7 +77,7 @@ function loadUser(userOID) {
     $("#user-save-button").disabled = false;
     if (admindataHelper.getUsers().length > 1) $("#user-remove-button").disabled = false;
 
-    if (ioHelper.getServerURL()) {
+    if (ioHelper.hasServerURL()) {
         $("#user-username-input").value = "";
         $("#user-password-input").value = "";
         $("#user-username-input").disabled = false;
@@ -112,7 +114,7 @@ window.saveUser = function() {
     const locationOID = admindataHelper.getSiteOIDByName($("#user-site-select-inner").value);
     admindataHelper.setUserInfo(userOID, firstName, lastName, locationOID);
     
-    if (ioHelper.getServerURL()) {
+    if (ioHelper.hasServerURL()) {
         const username = $("#user-username-input").value;
         const initialPassword = $("#user-password-input").value;
         const credentials = new ioHelper.Credentials(username, initialPassword);
@@ -127,7 +129,7 @@ window.removeUser = function() {
     const userOID = $("#users-options .panel a.is-active").getAttribute("oid");
     if (!userOID) return;
 
-    if (ioHelper.getServerURL()) {
+    if (ioHelper.hasServerURL()) {
         ioHelper.deleteUserOnServer(userOID)
             .then(() => {
                 admindataHelper.removeUser(userOID);

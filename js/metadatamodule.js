@@ -1067,6 +1067,9 @@ window.elementDrop = async function(event) {
 }
 
 window.showRemoveModal = async function() {
+    // If not yet existent in DOM, create the modal
+    if (!$("#remove-modal")) document.body.appendChild(document.createElement("remove-modal"));
+
     const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID());
     if (subjectKeys.length > 0) {
         $("#remove-modal .notification strong").textContent = subjectKeys.join(", ");
@@ -1090,6 +1093,9 @@ window.hideRemoveModal = function() {
 }
 
 window.showDuplicateModal = function() {
+    // If not yet existent in DOM, create the modal
+    if (!$("#duplicate-modal")) document.body.appendChild(document.createElement("duplicate-modal"));
+
     removeArrowKeyListener();
     $("#duplicate-modal").classList.add("is-active");
 }
@@ -1100,6 +1106,9 @@ window.hideDuplicateModal = function() {
 }
 
 window.showMoreModal = function() {
+    // If not yet existent in DOM, create the modal
+    if (!$("#more-modal")) document.body.appendChild(document.createElement("more-modal"));
+
     removeArrowKeyListener();
     $("#more-modal").classList.add("is-active");
     createConditionSelect();

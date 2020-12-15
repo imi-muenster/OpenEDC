@@ -251,17 +251,19 @@ class SurveyCodeModal extends HTMLElement {
 class WarningModal extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
-            <div class="modal" id="warning-modal">
+            <div class="modal is-active" id="warning-modal">
                 <div class="modal-background"></div>
                 <div class="modal-content is-medium">
                     <div class="box has-text-centered">
-                        <h2 class="subtitle"></h2>
-                        <p class="mb-5"></p>
+                        <h2 class="subtitle" id="warning-title"></h2>
+                        <p class="mb-5" id="warning-text"></p>
                         <button class="button is-small is-link">Okay</button>
                     </div>
                 </div>
             </div>
         `;
+
+        this.querySelector("button").addEventListener("click", () => this.remove());
     }
 }
 

@@ -55,7 +55,7 @@ export function hide() {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => hide();
-        $("#close-clinicaldata-modal").classList.add("is-active");
+        showCloseClinicaldataModal();
         return;
     }
 
@@ -83,7 +83,7 @@ export function createSiteFilterSelect() {
         if (dataHasChanged()) {
             skipDataHasChangedCheck = true;
             deferredFunction = () => loadTree(currentElementID.studyEvent, null);
-            $("#close-clinicaldata-modal").classList.add("is-active");
+            showCloseClinicaldataModal();
             clickEvent.target.blur();
         }
     };
@@ -108,7 +108,7 @@ window.addSubject = function() {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => addSubject();
-        $("#close-clinicaldata-modal").classList.add("is-active");
+        showCloseClinicaldataModal();
         return;
     }
 
@@ -157,7 +157,7 @@ async function loadSubjectData(subjectKey) {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = async () => await loadSubjectData(subjectKey);
-        $("#close-clinicaldata-modal").classList.add("is-active");
+        showCloseClinicaldataModal();
         return;
     }
 
@@ -175,7 +175,7 @@ async function loadSubjectData(subjectKey) {
     ioHelper.removeIsActiveFromElement($("#subject-panel-blocks a.is-active"));
     if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
     $("#subject-info-button").disabled = currentElementID.subject ? false : true;
-    if (ioHelper.getServerURL() && !ioHelper.getLocalUser().rights.includes("Manage subjects")) $("#subject-info-button").disabled = true;
+    if (ioHelper.hasServerURL() && !ioHelper.getLocalUser().rights.includes("Manage subjects")) $("#subject-info-button").disabled = true;
 
     await reloadTree();
 }
@@ -191,7 +191,7 @@ async function loadTree(studyEventOID, formOID) {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => loadTree(studyEventOID, formOID);
-        $("#close-clinicaldata-modal").classList.add("is-active");
+        showCloseClinicaldataModal();
         return;
     }
 
@@ -464,10 +464,10 @@ window.closeFormData = async function(saveData) {
 
 window.cancelFormOrSurveyEntry = function(closeSurvey) {
     if (surveyViewIsActive() && !closeSurvey) {
-        $("#close-clinicaldata-modal").classList.add("is-active");
+        showCloseClinicaldataModal();
         return;
     } else if (surveyViewIsActive()) {
-        $("#close-clinicaldata-modal").classList.remove("is-active");
+        hideCloseClinicaldataModal();
         hideSurveyView();
         if (ioHelper.getSurveyCode()) showCloseSurveyModal();
         if (ioHelper.isAutoSurveyView() && ioHelper.isMobile()) currentElementID.studyEvent = null;
@@ -480,7 +480,7 @@ window.cancelFormOrSurveyEntry = function(closeSurvey) {
 window.hideCloseClinicalDataModal = function() {
     skipDataHasChangedCheck = false;
     deferredFunction = null;
-    $("#close-clinicaldata-modal").classList.remove("is-active");
+    hideCloseClinicaldataModal();
 }
 
 window.showSurveyView = function() {
@@ -524,8 +524,22 @@ function hideSurveyView() {
     $("#survey-view-button").classList.remove("is-hidden");
 }
 
+function showCloseClinicaldataModal() {
+    // If not yet existent in DOM, create the modal
+    if (!$("#close-clinicaldata-modal")) document.body.appendChild(document.createElement("close-clinicaldata-modal"));
+
+    $("#close-clinicaldata-modal").classList.add("is-active");
+}
+
+function hideCloseClinicaldataModal() {
+    $("#close-clinicaldata-modal").classList.remove("is-active");
+}
+
 // Renders and shows the close survey modal with the key numpad for the survey code
 function showCloseSurveyModal() {
+    // If not yet existent in DOM, create the modal
+    if (!$("#survey-code-modal")) document.body.appendChild(document.createElement("survey-code-modal"));
+
     // Create buttons for numpad if they dont exist
     if (!$(".numpad .buttons").hasChildNodes()) {
         for (let i = 1; i <= 12; i++) {
@@ -610,6 +624,9 @@ function dataHasChanged() {
 }
 
 window.showSubjectInfo = function() {
+    // If not yet existent in DOM, create the modal
+    if (!$("#subject-modal")) document.body.appendChild(document.createElement("subject-modal"));
+
     // Create audit record entries
     ioHelper.removeElements($$("#audit-records .notification"));
     for (let auditRecord of clinicaldataHelper.getAuditRecords()) {
@@ -759,7 +776,7 @@ function filterSubjects(searchString) {
 
 // Currently, the subjects are reloaded every 5 seconds -- this should be improved in the future by means of server-sent events or a websocket
 function setLoadSubjectsTimer() {
-    if (!ioHelper.getServerURL()) return;
+    if (!ioHelper.hasServerURL()) return;
      
     setInterval(async () => {
         await ioHelper.emptyMessageQueue();

@@ -205,7 +205,7 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
     if (!subject || !dataHasChanged(formItemDataList, studyEventOID, formOID)) return;
 
     // Do not store data if connected to server and user has no rights to store data
-    if (ioHelper.getServerURL() && !ioHelper.getLocalUser().rights.includes("Add subject data")) return;
+    if (ioHelper.hasServerURL() && !ioHelper.getLocalUser().rights.includes("Add subject data")) return;
 
     let formData = clinicaldataTemplates.getFormData(formOID);
     formData.appendChild(clinicaldataTemplates.getAuditRecord(admindataHelper.getCurrentUserOID(), subject.siteOID, new Date().toISOString()));
