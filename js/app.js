@@ -75,6 +75,7 @@ const startApp = async () => {
 
     ioHelper.loadSettings();
 
+    // Last UI adjustments
     setTitles();
     hideStartModal();
     showNavbar();
@@ -84,6 +85,9 @@ const startApp = async () => {
 
     // If there is at least one subject stored, automatically open the clinicaldata module
     clinicaldataHelper.getSubjects().length > 0 ? metadataModule.hide() : metadataModule.show();
+
+    // After the app has been rendered, add the remaining modals to the DOM
+    addModals();
 }
 
 const setTitles = () => {
@@ -107,9 +111,6 @@ function showNavbar() {
 }
 
 function showDecryptionKeyModal() {
-    // If not yet existent in DOM, create the modal
-    if (!$("#login-modal")) document.body.appendChild(document.createElement("login-modal"));
-
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
     $("#login-modal #username-input").parentNode.parentNode.classList.add("is-hidden");
     $("#login-title").textContent = "Data is encrypted";
@@ -133,9 +134,6 @@ function showCloseExampleButton() {
 }
 
 function showLoginModal() {
-    // If not yet existent in DOM, create the modal
-    if (!$("#login-modal")) document.body.appendChild(document.createElement("login-modal"));
-
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
     $("#login-title").textContent = "Please login";
     $("#login-text").textContent = "You are connected to an OpenEDC Server. Please login with your credentials.";
@@ -255,9 +253,6 @@ window.loadExample = async function() {
 }
 
 window.showProjectModal = function() {
-    // If not yet existent in DOM, create the modal
-    if (!$("#project-modal")) document.body.appendChild(document.createElement("project-modal"));
-
     metadataModule.removeArrowKeyListener();
 
     if (ioHelper.hasDecryptionKey()) {
@@ -409,9 +404,6 @@ window.saveStudyNameDescription = function() {
 }
 
 window.showAboutModal = function() {
-    // If not yet existent in DOM, create the modal
-    if (!$("#about-modal")) document.body.appendChild(document.createElement("about-modal"));
-
     metadataModule.removeArrowKeyListener();
     $("#about-modal").classList.add("is-active");
 
@@ -478,6 +470,15 @@ export function setIOListeners() {
         $("#language-dropdown").classList.add("is-hidden-touch");
     });
     $("#current-language").addEventListener("click", () => $("#language-dropdown").classList.toggle("is-hidden-touch"));
+}
+
+function addModals() {
+    const modalNames = ["project", "more", "about", "remove", "close-clinicaldata", "duplicate", "subject", "survey-code", "warning"];
+    for (let modalName of modalNames) {
+        document.body.appendChild(document.createElement(modalName + "-modal"));
+    }
+
+    languageHelper.internationalize();
 }
 
 function getCurrentMode() {

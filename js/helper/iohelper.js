@@ -491,11 +491,10 @@ export function hideMenu() {
 }
 
 export function showWarning(title, text) {
-    // If not yet existent in DOM, create the modal
-    if (!$("#warning-modal")) document.body.appendChild(document.createElement("warning-modal"));
-
     $("#warning-modal #warning-title").textContent = title;
     $("#warning-modal #warning-text").innerHTML = text;
+    
+    $("#warning-modal").classList.add("is-active");
 }
 
 export function download(filename, content) {
