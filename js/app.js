@@ -155,12 +155,12 @@ function showLoginModal() {
         } else {
             const credentials = new ioHelper.Credentials(username, password, confirmPassword);
             if (credentials.error) {
-                ioHelper.showWarning("Password not set", credentials.error);
+                ioHelper.showMessage("Password not set", credentials.error);
                 return;
             }
             ioHelper.setOwnPassword(credentials)
                 .then(loginSuccessful)
-                .catch(error => ioHelper.showWarning("Password not set", error));
+                .catch(error => ioHelper.showMessage("Password not set", error));
         }
     };
 
@@ -217,7 +217,7 @@ function adjustUIToUser() {
 }
 
 function showUninitializedHint() {
-    ioHelper.showWarning("Server uninitialized", `This OpenEDC Server has not yet been initialized.<br><br>You can either go to <a target="_blank" href="https://openedc.org">openedc.org</a> to initialize this server with data that you have already locally captured there, or, alternatively, close this hint, start a new local project here, and initialize the server from here as well.<br><br>In both cases, use the <i>Project Options</i> button in the top right corner of the app and follow the instructions to initialize this server.`);
+    ioHelper.showMessage("Server uninitialized", `This OpenEDC Server has not yet been initialized.<br><br>You can either go to <a target="_blank" href="https://openedc.org">openedc.org</a> to initialize this server with data that you have already locally captured there, or, alternatively, close this hint, start a new local project here, and initialize the server from here as well.<br><br>In both cases, use the <i>Project Options</i> button in the top right corner of the app and follow the instructions to initialize this server.`);
 
     $("#connect-to-server-option .title").textContent = "Initialize Server";
     $("#connect-to-server-option .input").value = ioHelper.getBaseURL();
@@ -225,7 +225,7 @@ function showUninitializedHint() {
 }
 
 window.forgotPassword = function() {
-    ioHelper.showWarning("Forgot password", "All data within OpenEDC is stored and transferred end-to-end encrypted. Therefore, it is currently not possible to automatically reset a forgotten password, unfortunately.<br><br>If you forgot your password, please contact the person that gave you your login credentials. This person is able to reset your password with a new initial password.");
+    ioHelper.showMessage("Forgot password", "All data within OpenEDC is stored and transferred end-to-end encrypted. Therefore, it is currently not possible to automatically reset a forgotten password, unfortunately.<br><br>If you forgot your password, please contact the person that gave you your login credentials. This person is able to reset your password with a new initial password.");
 }
 
 window.newProject = function() {
@@ -331,10 +331,10 @@ window.connectToServer = function() {
                     $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
                     break;
                 case ioHelper.serverStatus.SERVERINITIALIZED:
-                    ioHelper.showWarning("Server initialized", "The server has already been initialized.");
+                    ioHelper.showMessage("Server initialized", "The server has already been initialized.");
             }
         })
-        .catch(() => ioHelper.showWarning("Server not found", "There could be no OpenEDC Server found for this URL."));
+        .catch(() => ioHelper.showMessage("Server not found", "There could be no OpenEDC Server found for this URL."));
 }
 
 window.initializeServer = function(event) {
@@ -345,7 +345,7 @@ window.initializeServer = function(event) {
     const confirmPassword = $("#owner-confirm-password-input").value;
     const credentials = new ioHelper.Credentials(username, password, confirmPassword);
     if (credentials.error) {
-        ioHelper.showWarning("Account not created", credentials.error);
+        ioHelper.showMessage("Account not created", credentials.error);
         return;
     }
 
@@ -355,7 +355,7 @@ window.initializeServer = function(event) {
     const userOID = admindataHelper.getCurrentUserOID();
     ioHelper.initializeServer(serverURL, userOID, credentials)
         .then(serverURL => window.location.replace(serverURL))
-        .catch(error => ioHelper.showWarning("Account not created", error));
+        .catch(error => ioHelper.showMessage("Account not created", error));
 }
 
 window.encryptData = function() {
@@ -369,7 +369,7 @@ window.encryptData = function() {
     const confirmPassword = $("#confirm-encryption-password-input").value;
     const credentials = new ioHelper.Credentials(username, password, confirmPassword);
     if (credentials.error) {
-        ioHelper.showWarning("Data not encrypted", credentials.error);
+        ioHelper.showMessage("Data not encrypted", credentials.error);
         return;
     }
 
@@ -380,7 +380,7 @@ window.encryptData = function() {
 window.setSurveyCode = function() {
     ioHelper.setSurveyCode($("#survey-code-input").value)
         .then(() => hideProjectModal())
-        .catch(() => ioHelper.showWarning("Survey code not set", "The survey code could not be set. Enter a 4-digit numerical code."));
+        .catch(() => ioHelper.showMessage("Survey code not set", "The survey code could not be set. Enter a 4-digit numerical code."));
 }
 
 window.miscOptionClicked = function(event) {
@@ -473,7 +473,7 @@ export function setIOListeners() {
 }
 
 function addModals() {
-    const modalNames = ["project", "more", "about", "remove", "close-clinicaldata", "duplicate", "subject", "survey-code", "warning"];
+    const modalNames = ["project", "more", "about", "remove", "close-clinicaldata", "duplicate", "subject", "survey-code"];
     for (let modalName of modalNames) {
         document.body.appendChild(document.createElement(modalName + "-modal"));
     }

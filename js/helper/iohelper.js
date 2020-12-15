@@ -490,11 +490,13 @@ export function hideMenu() {
     $("#language-dropdown").classList.add("is-hidden-touch");
 }
 
-export function showWarning(title, text) {
-    $("#warning-modal #warning-title").textContent = title;
-    $("#warning-modal #warning-text").innerHTML = text;
+export function showMessage(title, text) {
+    if (!$("message-modal")) document.body.appendChild(document.createElement("message-modal"));
+
+    $("#message-modal #message-title").textContent = title;
+    $("#message-modal #message-text").innerHTML = text;
     
-    $("#warning-modal").classList.add("is-active");
+    $("#message-modal").classList.add("is-active");
 }
 
 export function download(filename, content) {

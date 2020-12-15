@@ -482,10 +482,10 @@ window.saveElement = async function() {
             if (metadataHelper.setElementOID(currentElementOID, newOID, currentElementType)) {
                 setCurrentElementOID(newOID);
             } else {
-                ioHelper.showWarning("OID not changed", "The entered OID is already in use.");
+                ioHelper.showMessage("OID not changed", "The entered OID is already in use.");
             }
         } else {
-            ioHelper.showWarning("OID not changed", "The OID could not be changed since there is clinical data assigned to this element. You can try to remove the element to see a list of subjects that contain data for this element.");
+            ioHelper.showMessage("OID not changed", "The OID could not be changed since there is clinical data assigned to this element. You can try to remove the element to see a list of subjects that contain data for this element.");
         }
     }
 
@@ -1018,7 +1018,7 @@ window.elementDrop = async function(event) {
         // Extra if-statement for performance reasons (do not load all subjects when sourceParentOID and targetParentOID are equal)
         const subjectsHavingDataForElement = await clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID);
         if (subjectsHavingDataForElement.length > 0) {
-            ioHelper.showWarning("Element not moved", "The element could not be moved since there is clinical data assigned to it. You can try to remove the element to see a list of subjects that contain data for this element.");
+            ioHelper.showMessage("Element not moved", "The element could not be moved since there is clinical data assigned to it. You can try to remove the element to see a list of subjects that contain data for this element.");
             return;
         }
     }

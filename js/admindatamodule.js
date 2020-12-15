@@ -135,7 +135,7 @@ window.removeUser = function() {
                 admindataHelper.removeUser(userOID);
                 loadUsers();
             })
-            .catch(() => ioHelper.showWarning("User not removed", "The user could not be removed. It seems that you are connected to an OpenEDC Server but the user could not be removed from the server. Please check your Internet connection and try again."));
+            .catch(() => ioHelper.showMessage("User not removed", "The user could not be removed. It seems that you are connected to an OpenEDC Server but the user could not be removed from the server. Please check your Internet connection and try again."));
     } else {
         admindataHelper.removeUser(userOID);
         loadUsers();
@@ -210,10 +210,10 @@ window.removeSite = function() {
         .catch(error => {
             switch (error) {
                 case admindataHelper.errors.SITEHASSUBJECTS:
-                    ioHelper.showWarning("Site not removed", "The site could not be removed since there is at least one subject assigned to it.");
+                    ioHelper.showMessage("Site not removed", "The site could not be removed since there is at least one subject assigned to it.");
                     break;
                 case admindataHelper.errors.SITEHASUSERS:
-                    ioHelper.showWarning("Site not removed", "The site could not be removed since there is at least one user assigned to it.");
+                    ioHelper.showMessage("Site not removed", "The site could not be removed since there is at least one user assigned to it.");
             }
         });
 }

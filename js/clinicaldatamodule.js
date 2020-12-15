@@ -126,10 +126,10 @@ window.addSubject = function() {
         .catch(error => {
             switch (error) {
                 case clinicaldataHelper.errors.SUBJECTKEYEMPTY:
-                    ioHelper.showWarning("Enter subject key", "Please enter a key for the subject first.");
+                    ioHelper.showMessage("Enter subject key", "Please enter a key for the subject first.");
                     break;
                 case clinicaldataHelper.errors.SUBJECTKEYEXISTENT:
-                    ioHelper.showWarning("Subject key existent", "The entered subject key already exists. Please enter another one.");
+                    ioHelper.showMessage("Subject key existent", "The entered subject key already exists. Please enter another one.");
             }
         });
 }
@@ -169,7 +169,7 @@ async function loadSubjectData(subjectKey) {
     await clinicaldataHelper.loadSubject(currentElementID.subject).catch(() => {
         currentElementID.subject = null;
         clinicaldataHelper.clearSubject();
-        ioHelper.showWarning("Subject could not be loaded", "The selected subject could not be loaded. Your are either offline and open the subject for the first time or someone just recently edited the subject.<br><br>Please wait a few seconds and try again.");
+        ioHelper.showMessage("Subject could not be loaded", "The selected subject could not be loaded. Your are either offline and open the subject for the first time or someone just recently edited the subject.<br><br>Please wait a few seconds and try again.");
     });
 
     ioHelper.removeIsActiveFromElement($("#subject-panel-blocks a.is-active"));
@@ -345,7 +345,7 @@ function showErrors(metadataNotFoundErrors, hiddenFieldWithValueError) {
         errorMessage += "Based on the conditions, one or multiple items in the clinical data should be hidden but have values assigned to them. These fields were highlighted and can be reviewed and removed by you.";
     }
 
-    if (errorMessage.length > 0) ioHelper.showWarning("Error", errorMessage);
+    if (errorMessage.length > 0) ioHelper.showMessage("Error", errorMessage);
 }
 
 window.loadNextFormData = async function() {
@@ -431,7 +431,7 @@ function checkMandatoryFields(formItemDataList) {
     let mandatoryFieldsAnswered = true;
     for (let mandatoryField of $$(".preview-field[mandatory='Yes']:not(.is-hidden)")) {
         if (!formItemDataList.find(formItemData => formItemData.itemGroupOID == mandatoryField.getAttribute("preview-field-group-oid") && formItemData.itemOID == mandatoryField.getAttribute("preview-field-oid"))) {
-            if (mandatoryFieldsAnswered) ioHelper.showWarning(languageHelper.getTranslation("note"), languageHelper.getTranslation("unanswered-mandatory-questions-warning"));
+            if (mandatoryFieldsAnswered) ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("unanswered-mandatory-questions-warning"));
             mandatoryField.classList.add("is-highlighted");
             mandatoryFieldsAnswered = false;
         }
@@ -690,10 +690,10 @@ window.saveSubjectInfo = function() {
         .catch(error => {
             switch (error) {
                 case clinicaldataHelper.errors.SUBJECTKEYEMPTY:
-                    ioHelper.showWarning("Enter subject key", "Please enter a key for the subject first.");
+                    ioHelper.showMessage("Enter subject key", "Please enter a key for the subject first.");
                     break;
                 case clinicaldataHelper.errors.SUBJECTKEYEXISTENT:
-                    ioHelper.showWarning("Subject key existent", "The entered subject key already exists. Please enter another one.");
+                    ioHelper.showMessage("Subject key existent", "The entered subject key already exists. Please enter another one.");
             }
             showSubjectInfo();
         });
