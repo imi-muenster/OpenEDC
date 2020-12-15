@@ -496,10 +496,6 @@ window.showSurveyView = function() {
     $("#clinicaldata-column .tree-panel-blocks").classList.add("is-survey-view");
     $("#clinicaldata-section").classList.add("p-3");
     $("#clinicaldata-form-title").classList.add("is-centered");
-    $("#close-form-title").classList.add("is-hidden");
-    $("#close-form-text").classList.add("is-hidden");
-    $("#close-survey-title").classList.remove("is-hidden");
-    $("#close-survey-text").classList.remove("is-hidden");
     $("#survey-view-button").classList.add("is-hidden");
     scrollToFormStart();
 }
@@ -517,16 +513,24 @@ function hideSurveyView() {
     $("#clinicaldata-column .tree-panel-blocks").classList.remove("is-survey-view");
     $("#clinicaldata-section").classList.remove("p-3");
     $("#clinicaldata-form-title").classList.remove("is-centered");
-    $("#close-form-title").classList.remove("is-hidden");
-    $("#close-form-text").classList.remove("is-hidden");
-    $("#close-survey-title").classList.add("is-hidden");
-    $("#close-survey-text").classList.add("is-hidden");
     $("#survey-view-button").classList.remove("is-hidden");
 }
 
 function showCloseClinicaldataModal() {
     // If not yet existent in DOM, create the modal
     if (!$("#close-clinicaldata-modal")) document.body.appendChild(document.createElement("close-clinicaldata-modal"));
+
+    if (surveyViewIsActive()) {
+        $("#close-form-title").classList.add("is-hidden");
+        $("#close-form-text").classList.add("is-hidden");
+        $("#close-survey-title").classList.remove("is-hidden");
+        $("#close-survey-text").classList.remove("is-hidden");
+    } else {
+        $("#close-form-title").classList.remove("is-hidden");
+        $("#close-form-text").classList.remove("is-hidden");
+        $("#close-survey-title").classList.add("is-hidden");
+        $("#close-survey-text").classList.add("is-hidden");
+    }
 
     $("#close-clinicaldata-modal").classList.add("is-active");
 }
