@@ -493,13 +493,10 @@ export function hideMenu() {
 }
 
 export function showMessage(title, text) {
-    if (!$("message-modal")) document.body.appendChild(document.createElement("message-modal"));
-
-    $("#message-modal #message-title").textContent = title;
-    $("#message-modal #message-text").innerHTML = text;
-    $("#message-modal button").textContent = languageHelper.getTranslation("okay");
+    const messageModal = document.createElement("message-modal");
+    messageModal.setTexts(title, text, languageHelper.getTranslation("okay"));
     
-    $("#message-modal").classList.add("is-active");
+    if (!$("message-modal")) document.body.appendChild(messageModal);
 }
 
 export function download(filename, content) {

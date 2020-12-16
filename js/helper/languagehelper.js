@@ -115,12 +115,12 @@ function addDividerNavbar() {
     $("#language-dropdown").appendChild(divider);
 }
 
-function changeLanguage(locale) {
+async function changeLanguage(locale) {
     if (!Object.values(locales).includes(locale)) return;
 
     currentLocale = locale;
     currentLocaleSet = true;
-    internationalize();
+    await internationalize();
     $("#current-language").textContent = getLanguageNameByLocale(currentLocale);
     document.dispatchEvent(new CustomEvent("LanguageChanged", { detail: currentLocale }));
 }

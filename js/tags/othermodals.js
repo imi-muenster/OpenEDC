@@ -246,16 +246,22 @@ class SurveyCodeModal extends HTMLElement {
     }
 }
 
-class WarningModal extends HTMLElement {
+class MessageModal extends HTMLElement {
+    setTexts(title, text, button) {
+        this.title = title;
+        this.text = text;
+        this.button = button;
+    }
+
     connectedCallback() {
         this.innerHTML = `
-            <div class="modal" id="message-modal">
+            <div class="modal is-active" id="message-modal">
                 <div class="modal-background"></div>
                 <div class="modal-content is-medium">
                     <div class="box has-text-centered">
-                        <h2 class="subtitle" id="message-title"></h2>
-                        <p class="mb-5" id="message-text"></p>
-                        <button class="button is-small is-link"></button>
+                        <h2 class="subtitle">${this.title}</h2>
+                        <p class="mb-5">${this.text}</p>
+                        <button class="button is-small is-link">${this.button}</button>
                     </div>
                 </div>
             </div>
@@ -273,4 +279,4 @@ window.customElements.define("close-clinicaldata-modal", CloseClinicaldataModal)
 window.customElements.define("duplicate-modal", DuplicateModal);
 window.customElements.define("subject-modal", SubjectModal);
 window.customElements.define("survey-code-modal", SurveyCodeModal);
-window.customElements.define("message-modal", WarningModal);
+window.customElements.define("message-modal", MessageModal);
