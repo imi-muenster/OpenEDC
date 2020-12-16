@@ -1,3 +1,5 @@
+import * as languageHelper from "./languagehelper.js";
+
 class LoadXMLException {
     constructor(code) {
         this.code = code;
@@ -495,6 +497,7 @@ export function showMessage(title, text) {
 
     $("#message-modal #message-title").textContent = title;
     $("#message-modal #message-text").innerHTML = text;
+    $("#message-modal button").textContent = languageHelper.getTranslation("okay");
     
     $("#message-modal").classList.add("is-active");
 }

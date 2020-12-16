@@ -12,6 +12,7 @@
     "finish": "Finish",
     "close": "Close",
     "note": "Note",
+    "okay": "Okay",
     "whole-number-warning": "Please enter a whole number.",
     "number-warning": "Please enter a number.",
     "date-warning": "Please enter a date (format: yyyy-mm-dd) or use the date picker.",

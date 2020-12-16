@@ -255,7 +255,7 @@ class WarningModal extends HTMLElement {
                     <div class="box has-text-centered">
                         <h2 class="subtitle" id="message-title"></h2>
                         <p class="mb-5" id="message-text"></p>
-                        <button class="button is-small is-link">Okay</button>
+                        <button class="button is-small is-link"></button>
                     </div>
                 </div>
             </div>
