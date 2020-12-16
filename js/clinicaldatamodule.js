@@ -518,15 +518,11 @@ function hideSurveyView() {
 
 function showCloseClinicaldataModal() {
     if (surveyViewIsActive()) {
-        $("#close-form-title").classList.add("is-hidden");
-        $("#close-form-text").classList.add("is-hidden");
-        $("#close-survey-title").classList.remove("is-hidden");
-        $("#close-survey-text").classList.remove("is-hidden");
+        $("#close-data-title").textContent = languageHelper.getTranslation("close-survey");
+        $("#close-data-text").textContent = languageHelper.getTranslation("close-survey-text");
     } else {
-        $("#close-form-title").classList.remove("is-hidden");
-        $("#close-form-text").classList.remove("is-hidden");
-        $("#close-survey-title").classList.add("is-hidden");
-        $("#close-survey-text").classList.add("is-hidden");
+        $("#close-data-title").textContent = languageHelper.getTranslation("close-form");
+        $("#close-data-text").textContent = languageHelper.getTranslation("close-form-text");
     }
 
     $("#close-clinicaldata-modal").classList.add("is-active");

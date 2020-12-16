@@ -108,7 +108,7 @@ class ClinicaldataSection extends HTMLElement {
                                             <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" i18n="back">Back</button>
                                         </div>
                                         <div class="control">
-                                            <button class="button is-link" id="clinicaldata-next-button" onclick="loadNextFormData()" i18n="continue">Continue</button>
+                                            <button class="button is-link" id="clinicaldata-next-button" onclick="loadNextFormData()">Continue</button>
                                         </div>
                                     </div>
                                 </div>

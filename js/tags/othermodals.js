@@ -148,10 +148,8 @@ class CloseClinicaldataModal extends HTMLElement {
                 <div class="modal-background" onclick="hideCloseClinicalDataModal()"></div>
                 <div class="modal-content is-medium">
                     <div class="box has-text-centered">
-                        <h2 class="subtitle" id="close-form-title" i18n="close-form">Close form</h2>
-                        <h2 class="subtitle" id="close-survey-title" i18n="close-survey">Close survey</h2>
-                        <p class="mb-5" id="close-form-text" i18n="close-form-text">It seems that you just edited or entered new data. Do you really want to close the current form?</p>
-                        <p class="mb-5" id="close-survey-text" i18n="close-survey-text">Do you really want to end the survey?</p>
+                        <h2 class="subtitle" id="close-data-title"></h2>
+                        <p class="mb-5" id="close-data-text"></p>
                         <div class="buttons is-centered">
                             <button class="button is-small" onclick="closeFormData()" i18n="close-without-saving">Close without saving</button>
                             <button class="button is-small" onclick="closeFormData(true)" i18n="close-with-saving">Close with saving</button>

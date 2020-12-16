@@ -579,7 +579,7 @@ export function prettifyContent(content) {
 
 export function setTreeMaxHeight() {
     const offset = 30;
-    const minHeight = 350;
+    const minHeight = 300;
     const windowHeight = window.innerHeight;
     const isMobileDevice = isMobile();
 

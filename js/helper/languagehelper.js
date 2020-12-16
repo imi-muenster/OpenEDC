@@ -24,30 +24,26 @@ let currentLocaleSet = false;
 let localesInODM = [];
 let localesNotInODM = [];
 
-let translations = null;
+let translations = {};
+let defaultTranslations = {};
 
-export function init() {
-    currentLocale = defaultLocale;
-    currentLocaleSet = false;
-    localesInODM = [];
-    localesNotInODM = [];
-    translations = null;
+export async function init() {
+    defaultTranslations = await loadTranslations(defaultLocale);
     populateNonPresentLanguages();
 }
 
 export async function internationalize() {
-    let translationResponse = await fetch(ioHelper.getBaseURL() + "/internationalization/" + currentLocale + ".json");
-    translations = await translationResponse.json();
-
-    let translatableElements = document.querySelectorAll("[i18n]");
-    for (let translatableElement of translatableElements) {
-        let key = translatableElement.getAttribute("i18n");
-        if (translations[key]) translatableElement.textContent = translations[key];
-    }
+    translations = await loadTranslations(currentLocale);
+    document.querySelectorAll("[i18n]").forEach(element => element.textContent = getTranslation(element.getAttribute("i18n")));
 }
 
 export function getTranslation(key) {
-    return translations[key];
+    return translations[key] || defaultTranslations[key];
+}
+
+async function loadTranslations(locale) {
+    const response = await fetch(ioHelper.getBaseURL() + "/internationalization/" + locale + ".json");
+    return await response.json();
 }
 
 export function populatePresentLanguages(odm) {
