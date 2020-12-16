@@ -88,7 +88,7 @@ export function getCurrentLocale() {
     return currentLocale;
 }
 
-export function createLanguageSelects() {
+export function createLanguageSelect() {
     ioHelper.removeElements($$("#language-dropdown a"));
     ioHelper.removeElements($$("#language-dropdown hr"));
 

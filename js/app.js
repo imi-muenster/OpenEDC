@@ -62,13 +62,13 @@ document.addEventListener("LanguageChanged", languageEvent => {
 const startApp = async () => {
     await languageHelper.init();
     languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
-    languageHelper.createLanguageSelects();
+    languageHelper.createLanguageSelect();
     languageHelper.internationalize();
     
     metadataModule.init();
     metadataModule.setLanguage(languageHelper.getCurrentLocale());
 
-    await admindataHelper.loadStoredAdmindata();
+    await admindataModule.init();
 
     await clinicaldataModule.init();
     clinicaldataModule.setLanguage(languageHelper.getCurrentLocale());
@@ -86,8 +86,8 @@ const startApp = async () => {
     // If there is at least one subject stored, automatically open the clinicaldata module
     clinicaldataHelper.getSubjects().length > 0 ? metadataModule.hide() : metadataModule.show();
 
-    // After the app has been rendered, add the remaining modals to the DOM
-    addModals();
+    // For performance purposes, add the remaining modals to the DOM only after the main app has been rendered
+    addModalsToDOM();
 }
 
 const setTitles = () => {
@@ -472,7 +472,7 @@ export function setIOListeners() {
     $("#current-language").addEventListener("click", () => $("#language-dropdown").classList.toggle("is-hidden-touch"));
 }
 
-function addModals() {
+function addModalsToDOM() {
     const modalNames = ["project", "more", "about", "remove", "close-clinicaldata", "duplicate", "subject", "survey-code"];
     for (let modalName of modalNames) {
         document.body.appendChild(document.createElement(modalName + "-modal"));

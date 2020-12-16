@@ -514,7 +514,7 @@ window.saveElement = async function() {
 
     if (!languageHelper.getPresentLanguages().includes(locale)) {
         languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
-        languageHelper.createLanguageSelects();
+        languageHelper.createLanguageSelect();
     }
     
     reloadDetailsPanel();
