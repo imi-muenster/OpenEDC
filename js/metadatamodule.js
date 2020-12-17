@@ -491,6 +491,7 @@ window.saveElement = async function() {
 
     switch (currentElementType) {
         case metadataHelper.elementTypes.STUDYEVENT:
+            showFirstEventEditedHelp();
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
             metadataHelper.setElementName(getCurrentElementOID(), $("#name-input").value);
@@ -736,7 +737,7 @@ function scrollParentToChild(child) {
     }
 }
 
-window.addStudyEvent = function() {
+window.addStudyEvent = function(event) {
     currentElementID.studyEvent = metadataHelper.createStudyEvent();
     currentElementType = metadataHelper.elementTypes.STUDYEVENT;
     reloadStudyEvents();
@@ -744,9 +745,15 @@ window.addStudyEvent = function() {
     loadFormsByStudyEvent(currentElementID.studyEvent, true);
     scrollParentToChild($(`[OID="${currentElementID.studyEvent}"]`));
     metadataHelper.storeMetadata();
+    event.target.blur();
+
+    // Show the first study event help message
+    if (metadataHelper.getStudyEvents().length == 1) {
+        setTimeout(() => ioHelper.showMessage(languageHelper.getTranslation("first-event"), languageHelper.getTranslation("first-event-text")), 2000);
+    }
 }
 
-window.addForm = function() {
+window.addForm = function(event) {
     currentElementID.form = metadataHelper.createForm(currentElementID.studyEvent);
     currentElementType = metadataHelper.elementTypes.FORM;
     reloadForms();
@@ -754,9 +761,10 @@ window.addForm = function() {
     loadItemGroupsByForm(currentElementID.form, true);
     scrollParentToChild($(`[OID="${currentElementID.form}"]`));
     metadataHelper.storeMetadata();
+    event.target.blur();
 }
 
-window.addItemGroup = function() {
+window.addItemGroup = function(event) {
     currentElementID.itemGroup = metadataHelper.createItemGroup(currentElementID.form);
     currentElementType = metadataHelper.elementTypes.ITEMGROUP;
     reloadItemGroups();
@@ -764,9 +772,10 @@ window.addItemGroup = function() {
     loadItemsByItemGroup(currentElementID.itemGroup, true);
     scrollParentToChild($(`[OID="${currentElementID.itemGroup}"]`));
     metadataHelper.storeMetadata();
+    event.target.blur();
 }
 
-window.addItem = function() {
+window.addItem = function(event) {
     currentElementID.item = metadataHelper.createItem(currentElementID.itemGroup);
     currentElementType = metadataHelper.elementTypes.ITEM;
     reloadItems();
@@ -774,9 +783,10 @@ window.addItem = function() {
     loadCodeListItemsByItem(currentElementID.item, true);
     scrollParentToChild($(`[OID="${currentElementID.item}"]`));
     metadataHelper.storeMetadata();
+    event.target.blur();
 }
 
-window.addCodeListItem = function() {
+window.addCodeListItem = function(event) {
     let codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
     if (codeListOID) {
         currentElementID.codeListItem = metadataHelper.addCodeListItem(codeListOID);
@@ -787,6 +797,7 @@ window.addCodeListItem = function() {
         scrollParentToChild($(`[coded-value="${currentElementID.codeListItem}"]`));
     }
     metadataHelper.storeMetadata();
+    event.target.blur();
 }
 
 window.removeElement = function() {
@@ -1176,5 +1187,14 @@ window.moreTabClicked = function(event) {
             $("#element-description").classList.add("is-hidden");
             $("#measurement-units").classList.remove("is-hidden");
             $("#conditions").classList.add("is-hidden");
+    }
+}
+
+function showFirstEventEditedHelp() {
+    const element = metadataHelper.getElementDefByOID(getCurrentElementOID());
+    const translatedText = element.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
+    if (!translatedText && $("#question-textarea").value && metadataHelper.getStudyEvents().length == 1) {
+        // Show the first event edited help message
+        setTimeout(() => ioHelper.showMessage(languageHelper.getTranslation("first-event-edited"), languageHelper.getTranslation("first-event-edited-text")), 2000);
     }
 }

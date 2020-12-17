@@ -69,7 +69,7 @@ class MetadataSection extends HTMLElement {
                             <p class="panel-heading has-text-centered" element-type="studyevent" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Events</p>
                             <div class="tree-panel-blocks" id="study-event-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                             <div class="panel-block has-light-border-top" id="study-events-add-button">
-                                <button class="button is-link is-light is-fullwidth" onclick="addStudyEvent()">Add</button>
+                                <button class="button is-link is-light is-fullwidth" onclick="addStudyEvent(event)">Add</button>
                             </div>
                         </nav>
                     </div>
@@ -78,7 +78,7 @@ class MetadataSection extends HTMLElement {
                             <p class="panel-heading has-text-centered" element-type="form" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Forms</p>
                             <div class="tree-panel-blocks" id="form-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                             <div class="panel-block has-light-border-top" id="forms-add-button">
-                                <button class="button is-link is-light is-fullwidth" onclick="addForm()" disabled>Add</button>
+                                <button class="button is-link is-light is-fullwidth" onclick="addForm(event)" disabled>Add</button>
                             </div>
                         </nav>
                     </div>
@@ -87,7 +87,7 @@ class MetadataSection extends HTMLElement {
                             <p class="panel-heading has-text-centered" element-type="itemgroup" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Groups</p>
                             <div class="tree-panel-blocks" id="item-group-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                             <div class="panel-block has-light-border-top" id="item-groups-add-button">
-                                <button class="button is-link is-light is-fullwidth" onclick="addItemGroup()" disabled>Add</button>
+                                <button class="button is-link is-light is-fullwidth" onclick="addItemGroup(event)" disabled>Add</button>
                             </div>
                         </nav>
                     </div>
@@ -96,7 +96,7 @@ class MetadataSection extends HTMLElement {
                             <p class="panel-heading has-text-centered" element-type="item" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Items</p>
                             <div class="tree-panel-blocks" id="item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                             <div class="panel-block has-light-border-top" id="items-add-button">
-                                <button class="button is-link is-light is-fullwidth" onclick="addItem()" disabled>Add</button>
+                                <button class="button is-link is-light is-fullwidth" onclick="addItem(event)" disabled>Add</button>
                             </div>
                         </nav>
                     </div>
@@ -105,7 +105,7 @@ class MetadataSection extends HTMLElement {
                             <p class="panel-heading has-text-centered" element-type="codelistitem" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Choices</p>
                             <div class="tree-panel-blocks" id="code-list-item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                             <div class="panel-block has-light-border-top" id="code-list-items-add-button">
-                                <button class="button is-link is-light is-fullwidth" onclick="addCodeListItem()" disabled>Add</button>
+                                <button class="button is-link is-light is-fullwidth" onclick="addCodeListItem(event)" disabled>Add</button>
                             </div>
                         </nav>
                     </div>

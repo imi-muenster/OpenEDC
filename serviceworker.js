@@ -1,4 +1,4 @@
-const staticCacheName = "static-cache-v5";
+const staticCacheName = "static-cache-v1";
 const dynamicCacheName = "dynamic-cache";
 const messageQueueName = "message-queue";
 
@@ -6,6 +6,8 @@ const staticAssets = [
     "/",
     "/css/style.css",
     "/internationalization/en.json",
+    "/internationalization/es.json",
+    "/internationalization/de.json",
     "/js/app.js",
     "/js/metadatamodule.js",
     "/js/admindatamodule.js",

@@ -247,10 +247,10 @@ class SurveyCodeModal extends HTMLElement {
 }
 
 class MessageModal extends HTMLElement {
-    setTexts(title, text, button) {
-        this.title = title;
-        this.text = text;
-        this.button = button;
+    setTexts(messageTitle, messageText, buttonCaption) {
+        this.messageTitle = messageTitle;
+        this.messageText = messageText;
+        this.buttonCaption = buttonCaption;
     }
 
     connectedCallback() {
@@ -259,9 +259,9 @@ class MessageModal extends HTMLElement {
                 <div class="modal-background"></div>
                 <div class="modal-content is-medium">
                     <div class="box has-text-centered">
-                        <h2 class="subtitle">${this.title}</h2>
-                        <p class="mb-5">${this.text}</p>
-                        <button class="button is-small is-link">${this.button}</button>
+                        <h2 class="subtitle">${this.messageTitle}</h2>
+                        <p class="mb-5">${this.messageText}</p>
+                        <button class="button is-small is-link">${this.buttonCaption}</button>
                     </div>
                 </div>
             </div>

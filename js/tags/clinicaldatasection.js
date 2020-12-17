@@ -58,15 +58,13 @@ class ClinicaldataSection extends HTMLElement {
                     <div class="column is-hidden-touch" id="clinicaldata-study-events-column">
                         <nav class="panel is-link">
                             <p class="panel-heading has-text-centered">Events</p>
-                            <div class="tree-panel-blocks" id="clinicaldata-study-event-panel-blocks">
-                            </div>
+                            <div class="tree-panel-blocks" id="clinicaldata-study-event-panel-blocks"></div>
                         </nav>
                     </div>
                     <div class="column is-hidden-touch" id="clinicaldata-forms-column">
                         <nav class="panel is-link">
                             <p class="panel-heading has-text-centered">Forms</p>
-                            <div class="tree-panel-blocks" id="clinicaldata-form-panel-blocks">
-                            </div>
+                            <div class="tree-panel-blocks" id="clinicaldata-form-panel-blocks"></div>
                         </nav>
                     </div>
                     <div class="column is-two-fifths-desktop is-hidden-touch" id="clinicaldata-column">

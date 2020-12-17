@@ -232,6 +232,9 @@ window.newProject = function() {
     metadataHelper.loadEmptyProject();
     admindataHelper.loadEmptyProject(metadataHelper.getStudyOID());
     startApp();
+
+    // Show the new project help message
+    setTimeout(() => ioHelper.showMessage(languageHelper.getTranslation("new-project"), languageHelper.getTranslation("new-project-text")), 2000);
 }
 
 window.uploadODM = async function() {
