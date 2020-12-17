@@ -463,13 +463,17 @@ window.removeClinicaldata = async function() {
 // IO or event listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
 export function setIOListeners() {
     $("body").onresize = ioHelper.setTreeMaxHeight;
-    // TODO: This style everywhere or onclick here
     $(".navbar-burger").addEventListener("click", () => {
         $(".navbar-menu").classList.toggle("is-active");
         $(".navbar-burger").classList.toggle("is-active");
         $("#language-dropdown").classList.add("is-hidden-touch");
     });
-    $("#current-language").addEventListener("click", () => $("#language-dropdown").classList.toggle("is-hidden-touch"));
+    $("#current-language").addEventListener("click", () => {
+        $("#language-navbar-item").classList.toggle("is-active");
+        $("#language-dropdown").classList.toggle("is-hidden-touch");
+    });
+    $("#language-navbar-item").addEventListener("mouseenter", () => $("#language-navbar-item").classList.add("is-active"));
+    $("#language-navbar-item").addEventListener("mouseleave", () => $("#language-navbar-item").classList.remove("is-active"));
 }
 
 function addModalsToDOM() {

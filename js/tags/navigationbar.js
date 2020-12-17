@@ -20,7 +20,7 @@ class NavigationBar extends HTMLElement {
                 </div>
                 <div class="navbar-menu">
                     <div class="navbar-start">
-                        <div class="navbar-item has-dropdown is-hoverable">
+                        <div class="navbar-item has-dropdown" id="language-navbar-item">
                             <a class="navbar-link" id="current-language"></a>
                             <div class="navbar-dropdown is-hidden-touch" id="language-dropdown"></div>
                         </div>

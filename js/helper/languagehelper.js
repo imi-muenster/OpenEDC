@@ -29,11 +29,12 @@ let defaultTranslations = {};
 
 export async function init() {
     defaultTranslations = await loadTranslations(defaultLocale);
-    populateNonPresentLanguages();
 }
 
 export async function internationalize() {
-    translations = await loadTranslations(currentLocale);
+    if (currentLocale == defaultLocale) translations = defaultTranslations;
+    else translations = await loadTranslations(currentLocale);
+    
     document.querySelectorAll("[i18n]").forEach(element => element.textContent = getTranslation(element.getAttribute("i18n")));
 }
 

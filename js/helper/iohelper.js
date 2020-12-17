@@ -489,6 +489,7 @@ export function removeIsActiveFromElement(element) {
 export function hideMenu() {
     $(".navbar-menu").classList.remove("is-active");
     $(".navbar-burger").classList.remove("is-active");
+    $("#language-navbar-item").classList.remove("is-active");
     $("#language-dropdown").classList.add("is-hidden-touch");
 }
 
