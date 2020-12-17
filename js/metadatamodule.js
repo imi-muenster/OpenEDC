@@ -360,7 +360,7 @@ function fillDetailsPanel(elementOID, elementType) {
             $("#element-long-label").textContent = "Question";
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             translatedText = element.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
-            $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(elementOID) ? "codelist (" + element.getAttribute("DataType") + ")" : element.getAttribute("DataType");
+            $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(elementOID) ? "choices (" + element.getAttribute("DataType") + ")" : element.getAttribute("DataType");
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             $("#mandatory-select-inner").disabled = true;
@@ -620,7 +620,7 @@ function saveMeasurementUnits() {
 }
 
 function handleItemDataType(itemOID, dataType) {
-    let dataTypeIsCodelist = dataType.startsWith("codelist");
+    let dataTypeIsCodelist = dataType.startsWith("choices");
     let codeListType = dataTypeIsCodelist ? dataType.match(/\((.*)\)/)[1] : null;
 
     let codeListRef = metadataHelper.getElementDefByOID(itemOID).querySelector("CodeListRef");

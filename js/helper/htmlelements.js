@@ -1,5 +1,5 @@
 const rangeCheckComparators = ["--", "LT", "LE", "GT", "GE", "EQ", "NE"];
-const dataTypes = ["text", "string", "date", "boolean", "integer", "float", "codelist (text)", "codelist (integer)", "codelist (float)"];
+const dataTypes = ["text", "string", "date", "boolean", "integer", "float", "choices (text)", "choices (integer)", "choices (float)"];
 const mandatory = ["No", "Yes"];
 
 export function getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue) {
