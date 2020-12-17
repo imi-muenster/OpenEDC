@@ -749,7 +749,7 @@ window.addStudyEvent = function(event) {
 
     // Show the first study event help message
     if (metadataHelper.getStudyEvents().length == 1) {
-        setTimeout(() => ioHelper.showMessage(languageHelper.getTranslation("first-event"), languageHelper.getTranslation("first-event-text")), 2000);
+        setTimeout(() => ioHelper.showMessage(languageHelper.getTranslation("first-event"), languageHelper.getTranslation("first-event-text")), 1000);
     }
 }
 
@@ -1195,6 +1195,6 @@ function showFirstEventEditedHelp() {
     const translatedText = element.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
     if (!translatedText && $("#question-textarea").value && metadataHelper.getStudyEvents().length == 1) {
         // Show the first event edited help message
-        setTimeout(() => ioHelper.showMessage(languageHelper.getTranslation("first-event-edited"), languageHelper.getTranslation("first-event-edited-text")), 2000);
+        setTimeout(() => ioHelper.showMessage(languageHelper.getTranslation("first-event-edited"), languageHelper.getTranslation("first-event-edited-text")), 1000);
     }
 }
