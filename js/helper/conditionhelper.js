@@ -22,7 +22,7 @@ export function process(itemsWithCondition) {
                 respondToInputChange(event, conditionalItem, operator, target);
             });
         } else if (previewFieldInput.getAttribute("type") == "radio") {
-            const radioItems = $$(`[preview-oid="${determinant}"]`)
+            const radioItems = $$(`[preview-oid="${determinant}"]`);
             for (const radioItem of radioItems) {
                 radioItem.addEventListener("input", function(event) {
                     respondToInputChange(event, conditionalItem, operator, target);
@@ -59,7 +59,6 @@ function showOrHideConditionalItem(previewOID, hide) {
     }
 }
 
-// TODO: Use switch statement
 function emptyConditionalItem(previewOID) {
     const previewFieldInput = $(`[preview-oid="${previewOID}"]`);
     if (previewFieldInput.getAttribute("type") == "text" || previewFieldInput.getAttribute("type") == "textarea" || previewFieldInput.getAttribute("type") == "date") {
@@ -70,12 +69,12 @@ function emptyConditionalItem(previewOID) {
         previewFieldInput.dispatchEvent(new Event("input"));
     } else if (previewFieldInput.getAttribute("type") == "radio") {
         const radioItems = $$(`[preview-oid="${previewOID}"]`);
-        let radioItem = null;
+        let radioItem;
         for (radioItem of radioItems) {
             radioItem.checked = false;
         }
         const event = new Event("input");
-        Object.defineProperty(event, "target", {value: "", enumerable: true});
+        Object.defineProperty(event, "target", { value: "", enumerable: true });
         radioItem.dispatchEvent(event);
     }
 }

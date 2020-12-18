@@ -272,19 +272,43 @@ async function loadFormMetadata() {
         $("#clinicaldata-form-title .subtitle").textContent = ioHelper.shortenText(metadataHelper.getStudyName(), 15);
     }
 
+    // Add the form skeleton
     let form = await metadataHelper.getFormAsHTML(currentElementID.form, locale, ioHelper.isTextAsTextarea());
     ioHelper.safeRemoveElement($("#odm-html-content"));
     $("#clinicaldata-content").appendChild(form);
 
-    conditionHelper.process(metadataHelper.getItemOIDSWithConditionByForm(currentElementID.form));
-    validationHelper.process(metadataHelper.getItemOIDSWithRangeChecksByForm(currentElementID.form));
+    // Add dynamic form logic async (conditional items, field validation, uncheck of radio buttons)
+    addDynamicFormLogic();
 
-    !getPreviousFormOID(currentElementID.form) ? $("#clinicaldata-previous-button").disabled = true : $("#clinicaldata-previous-button").disabled = false;
+    // Adjust the form navigation buttons
+    $("#clinicaldata-previous-button").disabled = getPreviousFormOID(currentElementID.form) ? false : true;
     if (!getNextFormOID(currentElementID.form)) {
         $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("finish");
     } else {
         $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("continue");
     }
+}
+
+async function addDynamicFormLogic() {
+    // First, add real-time logic to process conditional items
+    conditionHelper.process(metadataHelper.getItemOIDSWithConditionByForm(currentElementID.form));
+
+    // Second, add real-time logic to validate fields by data type and/or allowed ranges
+    validationHelper.process(metadataHelper.getItemOIDSWithRangeChecksByForm(currentElementID.form));
+    
+    // Third, allow the user to uncheck an already checked group of radio items
+    document.querySelectorAll("input[type='radio']").forEach(radioItem => {
+        radioItem.addEventListener("mouseup", mouseEvent => {
+            if (mouseEvent.target.checked) {
+                setTimeout(() => {
+                    mouseEvent.target.checked = false;
+                    const inputEvent = new Event("input");
+                    Object.defineProperty(inputEvent, "target", { value: "", enumerable: true });
+                    radioItem.dispatchEvent(inputEvent);
+                }, 100);
+            }
+        });
+    });
 }
 
 function loadFormClinicaldata() {
