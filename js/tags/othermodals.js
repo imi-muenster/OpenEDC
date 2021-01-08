@@ -83,6 +83,14 @@ class LoginModal extends HTMLElement {
 
 class AboutModal extends HTMLElement {
     connectedCallback() {
+        const name = "Leonard Greulich";
+        const phone = "+49 (251) 83-54730";
+        const mail = "leonard.greulich@uni-muenster.de";
+        const address_1 = "Institute for Medical Informatics";
+        const address_2 = "Director: Prof. Dr. Martin Dugas";
+        const address_3 = "Albert-Schweitzer-Campus 1, A11";
+        const address_4 = "48149 Münster, Germany";
+
         this.innerHTML = `
             <div class="modal" id="about-modal">
                 <div class="modal-background" onclick="hideAboutModal()"></div>
@@ -96,13 +104,13 @@ class AboutModal extends HTMLElement {
                             <p class="mb-5">All data is entirely processed offline on your local device. You can optionally connect to your own <a target="_blank" href="#">OpenEDC Server</a> to create multi-centric research studies with multiple users and sites.</p>
                             <p class="mb-5">This EDC system is currently in a beta, but yet stable state. For any questions, bug reports, or feature requests, please contact:</p>
                             <div class="notification">
-                                <p>Leonard Greulich</p>
-                                <p>+49 (251) 83-54730</p>
-                                <p class="mb-5"><a href="mailto:leonard.greulich@ukmuenster.de">leonard.greulich@uni-muenster.de</a></p>
-                                <p><strong>Institute for Medical Informatics</strong></p>
-                                <p>Director: Prof. Dr. Martin Dugas</p>
-                                <p>Albert-Schweitzer-Campus 1, A11</p>
-                                <p>48149 Münster, Germany</p>
+                                <p>${name}</p>
+                                <p>${phone}</p>
+                                <p class="mb-5"><a href="mailto:${mail}">${mail}</a></p>
+                                <p><strong>${address_1}</strong></p>
+                                <p>${address_2}</p>
+                                <p>${address_3}</p>
+                                <p>${address_4}</p>
                             </div>
                             <a class="button is-rounded is-small is-link mb-5" target="_blank" href="https://medical-data-models.org/imprint?lang=en#data-privacy">
                                 <span class="icon">
