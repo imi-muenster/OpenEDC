@@ -357,7 +357,7 @@ function fillDetailsPanel(elementOID, elementType) {
             break;
         case metadataHelper.elementTypes.ITEM:
             $("#datatype-select-inner").disabled = false;
-            $("#element-long-label").textContent = "Question";
+            $("#element-long-label").textContent = "Translated Question";
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             translatedText = element.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
             $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(elementOID) ? "choices (" + element.getAttribute("DataType") + ")" : element.getAttribute("DataType");
@@ -470,7 +470,7 @@ function resetDetailsPanel() {
     $("#references-tag").classList.add("is-hidden");
     $("#element-oid-label").textContent = "OID";
     $("#element-short-label").textContent = "Name";
-    $("#element-long-label").textContent = "Description";
+    $("#element-long-label").textContent = "Translated Description";
 }
 
 window.saveElement = async function() {

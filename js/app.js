@@ -218,10 +218,6 @@ function adjustUIToUser() {
 
 function showUninitializedHint() {
     ioHelper.showMessage("Server uninitialized", `This OpenEDC Server has not yet been initialized.<br><br>You can either go to <a target="_blank" href="https://openedc.org">openedc.org</a> to initialize this server with data that you have already locally captured there, or, alternatively, close this hint, start a new local project here, and initialize the server from here as well.<br><br>In both cases, use the <i>Project Options</i> button in the top right corner of the app and follow the instructions to initialize this server.`);
-
-    $("#connect-to-server-option .title").textContent = "Initialize Server";
-    $("#connect-to-server-option .input").value = ioHelper.getBaseURL();
-    $("#connect-to-server-option .button").textContent = "Initialize";
 }
 
 window.forgotPassword = function() {

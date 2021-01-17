@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" FileType="Snapshot" FileOID="Exemplary Project" CreationDateTime="2020-09-28T11:59:30+02:00" ODMVersion="1.3.2">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" FileType="Snapshot" FileOID="Exemplary Project" CreationDateTime="2021-01-17T15:11:00.731Z" ODMVersion="1.3.2">
     <Study OID="S.1">
         <GlobalVariables>
             <StudyName>Exemplary Project</StudyName>
@@ -23,6 +23,12 @@
                 <Symbol>
                     <TranslatedText xml:lang="en">weeks</TranslatedText>
                     <TranslatedText xml:lang="de">Wochen</TranslatedText>
+                </Symbol>
+            </MeasurementUnit>
+            <MeasurementUnit OID="MM.4" Name="years">
+                <Symbol>
+                    <TranslatedText xml:lang="en">years</TranslatedText>
+                    <TranslatedText xml:lang="de">Jahre</TranslatedText>
                 </Symbol>
             </MeasurementUnit>
         </BasicDefinitions>
@@ -76,7 +82,6 @@
                     <TranslatedText xml:lang="en">Subsequent data</TranslatedText>
                     <TranslatedText xml:lang="de">Folgedaten</TranslatedText>
                 </Description>
-                <ItemGroupRef xmlns="http://www.cdisc.org/ns/odm/v1.3" ItemGroupOID="IG.1" Mandatory="No"/>
                 <ItemGroupRef ItemGroupOID="IG.5" Mandatory="No"/>
             </FormDef>
             <FormDef OID="F.4" Name="Quality of life" Repeating="No">
@@ -105,6 +110,7 @@
                 <ItemRef ItemOID="I.4" Mandatory="No"/>
                 <ItemRef ItemOID="Pregnant" Mandatory="No" CollectionExceptionConditionOID="C.2"/>
                 <ItemRef ItemOID="I.7" Mandatory="No" CollectionExceptionConditionOID="C.5"/>
+                <ItemRef ItemOID="I.18" Mandatory="No"/>
             </ItemGroupDef>
             <ItemGroupDef OID="IG.2" Name="DemographicItems" Repeating="No">
                 <Description>
@@ -146,7 +152,7 @@
             </ItemGroupDef>
             <ItemGroupDef OID="IG.6" Name="QOLPastYearItems" Repeating="No">
                 <Description>
-                    <TranslatedText xml:lang="en">During the course of the past year</TranslatedText>
+                    <TranslatedText xml:lang="en">During the course of the past year ...</TranslatedText>
                     <TranslatedText xml:lang="de">Im Verlauf des letzten Jahres</TranslatedText>
                 </Description>
                 <ItemRef ItemOID="I.13" Mandatory="No"/>
@@ -155,7 +161,7 @@
             </ItemGroupDef>
             <ItemGroupDef OID="IG.7" Name="QOLPastWeekItems" Repeating="No">
                 <Description>
-                    <TranslatedText xml:lang="en">In the past week</TranslatedText>
+                    <TranslatedText xml:lang="en">In the past week ...</TranslatedText>
                     <TranslatedText xml:lang="de">In der letzten Woche</TranslatedText>
                 </Description>
                 <ItemRef ItemOID="I.13" Mandatory="No"/>
@@ -181,6 +187,7 @@
                     <TranslatedText xml:lang="en">What is your age?</TranslatedText>
                     <TranslatedText xml:lang="de">Wie alt sind Sie?</TranslatedText>
                 </Question>
+                <MeasurementUnitRef MeasurementUnitOID="MM.4"/>
                 <RangeCheck Comparator="GE" SoftHard="Hard">
                     <CheckValue>18</CheckValue>
                 </RangeCheck>
@@ -206,13 +213,6 @@
                     <TranslatedText xml:lang="en">What is your height?</TranslatedText>
                     <TranslatedText xml:lang="de">Wie groß sind Sie?</TranslatedText>
                 </Question>
-                <MeasurementUnitRef MeasurementUnitOID="MM.2"/>
-                <RangeCheck Comparator="GE" SoftHard="Hard">
-                    <CheckValue>1</CheckValue>
-                </RangeCheck>
-                <RangeCheck Comparator="LE" SoftHard="Hard">
-                    <CheckValue>3</CheckValue>
-                </RangeCheck>
             </ItemDef>
             <ItemDef OID="CountryOfBirth" Name="CountryOfBirth" DataType="text">
                 <Question>
@@ -354,6 +354,13 @@
                     <TranslatedText xml:lang="de">Dies ist ein Beispielelement</TranslatedText>
                     <TranslatedText xml:lang="en">This is an examplary item</TranslatedText>
                 </Question>
+            </ItemDef>
+            <ItemDef OID="I.18" Name="MaritalStatus" DataType="text">
+                <Question>
+                    <TranslatedText xml:lang="en">What is your marital status?</TranslatedText>
+                    <TranslatedText xml:lang="de">Was ist Ihr Familienstand?</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.9"/>
             </ItemDef>
             <CodeList OID="CL.1" Name="CL.1" DataType="text">
                 <CodeListItem CodedValue="Female">
@@ -548,6 +555,26 @@
                     <Decode>
                         <TranslatedText xml:lang="en">Rarely</TranslatedText>
                         <TranslatedText xml:lang="de">Selten</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+            </CodeList>
+            <CodeList OID="CL.9" Name="CL.9" DataType="text">
+                <CodeListItem CodedValue="1">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Married</TranslatedText>
+                        <TranslatedText xml:lang="de">Verheiratet</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="2">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Engaged</TranslatedText>
+                        <TranslatedText xml:lang="de">Verlobt</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="3">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Single</TranslatedText>
+                        <TranslatedText xml:lang="de">Ledig</TranslatedText>
                     </Decode>
                 </CodeListItem>
             </CodeList>

@@ -23,7 +23,7 @@ class MetadataSection extends HTMLElement {
                     </div>
                     <div class="column is-one-fifth-desktop">
                         <div class="field">
-                            <label class="label" id="element-long-label">Description</label>
+                            <label class="label" id="element-long-label">Translated Description</label>
                             <textarea class="textarea" id="question-textarea" disabled></textarea>
                         </div>
                         <div class="tags has-addons is-centered is-hidden" id="references-tag">
