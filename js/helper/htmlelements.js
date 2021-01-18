@@ -1,4 +1,10 @@
-const rangeCheckComparators = ["--", "LT", "LE", "GT", "GE", "EQ", "NE"];
+//
+// TODO: This file should be refactored. ODM attributes should be moved to another file and range checks combined to one object ...
+// ... Moreover, the code is quite redundant for some functions and creating a select should be refactored across the app as well
+//
+
+const rangeCheckComparators = ["", "LT", "LE", "GT", "GE", "EQ", "NE"];
+const rangeCheckComparatorsDisplay = ["", "<", "<=", ">", ">=", "=", "!="];
 const dataTypes = ["text", "string", "date", "boolean", "integer", "float", "choices (text)", "choices (integer)", "choices (float)"];
 const mandatory = ["No", "Yes"];
 
@@ -8,14 +14,12 @@ export function getMetadataPanelBlock(elementOID, elementType, displayText, fall
     panelBlock.setAttribute("draggable", true);
     panelBlock.setAttribute("oid", elementOID);
     panelBlock.setAttribute("element-type", elementType);
+    if (codedValue) panelBlock.setAttribute("coded-value", codedValue);
 
-    if (codedValue) {
-        panelBlock.setAttribute("coded-value", codedValue);
-    }
     if (typeof displayText === "object" && displayText) {
-        panelBlock.appendChild(document.createTextNode(displayText.textContent));
+        panelBlock.textContent = displayText.textContent;
     } else if (displayText) {
-        panelBlock.appendChild(document.createTextNode(displayText));
+        panelBlock.textContent = displayText;
     } else {
         let dot = document.createElement("span");
         dot.className = "panel-icon has-text-link";
@@ -201,7 +205,7 @@ export function getRangeCheckInputElement(selectedComparator, checkValue) {
     let field = document.createElement("div");
     field.className = "field range-check-input is-grouped";
 
-    let select =  getSelect("range-check-comparator", false, false, rangeCheckComparators, selectedComparator);
+    let select =  getSelect("range-check-comparator", false, false, rangeCheckComparators, selectedComparator, rangeCheckComparatorsDisplay);
     field.appendChild(select);
     
     field.insertAdjacentHTML("beforeend", "&nbsp;&nbsp;");
@@ -219,7 +223,7 @@ export function getEmptyRangeCheckInputElement() {
     let field = document.createElement("div");
     field.className = "field range-check-input empty-range-check-field is-grouped";
 
-    let select = getSelect("range-check-comparator", false, false, rangeCheckComparators, "");
+    let select = getSelect("range-check-comparator", false, false, rangeCheckComparators, "", rangeCheckComparatorsDisplay);
     field.appendChild(select);
     
     field.insertAdjacentHTML("beforeend", "&nbsp;&nbsp;");
@@ -241,7 +245,7 @@ export function getMandatorySelect() {
     return getSelect("mandatory-select", true, true, mandatory);
 }
 
-export function getSelect(name, isUnique, isFullwidth, values, selectedValue) {
+export function getSelect(name, isUnique, isFullwidth, values, selectedValue, displayTexts) {
     let select = document.createElement("div");
     if (isUnique) {
         select.id = `${name}-outer`;
@@ -265,12 +269,11 @@ export function getSelect(name, isUnique, isFullwidth, values, selectedValue) {
         innerSelect.className = `${name}-inner`;
     }
 
-    for (let value of values) {
+    for (let i = 0; i < values.length; i++) {
         let option = document.createElement("option");
-        option.appendChild(document.createTextNode(value));
-        if (value == selectedValue) {
-            option.selected = true;
-        }
+        option.value = values[i];
+        option.textContent = displayTexts ? displayTexts[i] : values[i];
+        if (values[i] == selectedValue) option.selected = true;
         innerSelect.appendChild(option);
     }
 

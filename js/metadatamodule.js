@@ -561,7 +561,7 @@ function saveRangeChecks() {
     for (let rangeCheckInput of rangeCheckInputs) {
         let comparator = rangeCheckInput.querySelector(".range-check-comparator-inner").value;
         let checkValue = rangeCheckInput.querySelector(".range-check-value").value.replace(",", ".");
-        if (comparator != "--" && checkValue == parseFloat(checkValue)) {
+        if (comparator && checkValue == parseFloat(checkValue)) {
             metadataHelper.setItemRangeCheck(currentElementID.item, comparator, checkValue);
         }
     }
