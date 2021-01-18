@@ -98,11 +98,10 @@ class AboutModal extends HTMLElement {
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <h1 class="title">About OpenEDC</h1>
-                            <h2 class="subtitle">Simple and secure data collection</h2>
+                            <h2 class="subtitle"></h2>
                             <hr>
                             <p class="mb-5">This free and <a target="_blank" href="#">open-source</a> electronic data capture (EDC) system lets you create and conduct secure medical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format.</p>
                             <p class="mb-5">All data is entirely processed offline on your local device. You can optionally connect to your own <a target="_blank" href="#">OpenEDC Server</a> to create multi-centric research studies with multiple users and sites.</p>
-                            <p class="mb-5">This EDC system is currently in a beta, but yet stable state. For any questions, bug reports, or feature requests, please contact:</p>
                             <div class="notification">
                                 <p>${name}</p>
                                 <p>${phone}</p>

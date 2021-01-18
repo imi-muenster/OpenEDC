@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" FileType="Snapshot" FileOID="Exemplary Project" CreationDateTime="2021-01-17T15:11:00.731Z" ODMVersion="1.3.2">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" FileType="Snapshot" FileOID="Exemplary Project" CreationDateTime="2021-01-17T15:24:38.283Z" ODMVersion="1.3.2">
     <Study OID="S.1">
         <GlobalVariables>
             <StudyName>Exemplary Project</StudyName>
@@ -110,7 +110,6 @@
                 <ItemRef ItemOID="I.4" Mandatory="No"/>
                 <ItemRef ItemOID="Pregnant" Mandatory="No" CollectionExceptionConditionOID="C.2"/>
                 <ItemRef ItemOID="I.7" Mandatory="No" CollectionExceptionConditionOID="C.5"/>
-                <ItemRef ItemOID="I.18" Mandatory="No"/>
             </ItemGroupDef>
             <ItemGroupDef OID="IG.2" Name="DemographicItems" Repeating="No">
                 <Description>
@@ -355,13 +354,6 @@
                     <TranslatedText xml:lang="en">This is an examplary item</TranslatedText>
                 </Question>
             </ItemDef>
-            <ItemDef OID="I.18" Name="MaritalStatus" DataType="text">
-                <Question>
-                    <TranslatedText xml:lang="en">What is your marital status?</TranslatedText>
-                    <TranslatedText xml:lang="de">Was ist Ihr Familienstand?</TranslatedText>
-                </Question>
-                <CodeListRef CodeListOID="CL.9"/>
-            </ItemDef>
             <CodeList OID="CL.1" Name="CL.1" DataType="text">
                 <CodeListItem CodedValue="Female">
                     <Decode>
@@ -555,26 +547,6 @@
                     <Decode>
                         <TranslatedText xml:lang="en">Rarely</TranslatedText>
                         <TranslatedText xml:lang="de">Selten</TranslatedText>
-                    </Decode>
-                </CodeListItem>
-            </CodeList>
-            <CodeList OID="CL.9" Name="CL.9" DataType="text">
-                <CodeListItem CodedValue="1">
-                    <Decode>
-                        <TranslatedText xml:lang="en">Married</TranslatedText>
-                        <TranslatedText xml:lang="de">Verheiratet</TranslatedText>
-                    </Decode>
-                </CodeListItem>
-                <CodeListItem CodedValue="2">
-                    <Decode>
-                        <TranslatedText xml:lang="en">Engaged</TranslatedText>
-                        <TranslatedText xml:lang="de">Verlobt</TranslatedText>
-                    </Decode>
-                </CodeListItem>
-                <CodeListItem CodedValue="3">
-                    <Decode>
-                        <TranslatedText xml:lang="en">Single</TranslatedText>
-                        <TranslatedText xml:lang="de">Ledig</TranslatedText>
                     </Decode>
                 </CodeListItem>
             </CodeList>

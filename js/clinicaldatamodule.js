@@ -298,17 +298,19 @@ async function addDynamicFormLogic() {
     
     // Third, allow the user to uncheck an already checked group of radio items
     document.querySelectorAll("input[type='radio']").forEach(radioItem => {
-        radioItem.addEventListener("mouseup", mouseEvent => {
-            if (mouseEvent.target.checked) {
-                setTimeout(() => {
-                    mouseEvent.target.checked = false;
-                    const inputEvent = new Event("input");
-                    Object.defineProperty(inputEvent, "target", { value: "", enumerable: true });
-                    radioItem.dispatchEvent(inputEvent);
-                }, 100);
-            }
-        });
+        radioItem.addEventListener("mouseup", mouseEvent => uncheckRadioitem(mouseEvent.target));
     });
+}
+
+function uncheckRadioitem(radioItem) {
+    if (radioItem.checked) {
+        setTimeout(() => {
+            radioItem.checked = false;
+            const inputEvent = new Event("input");
+            Object.defineProperty(inputEvent, "target", { value: "", enumerable: true });
+            radioItem.dispatchEvent(inputEvent);
+        }, 100);
+    }
 }
 
 function loadFormClinicaldata() {

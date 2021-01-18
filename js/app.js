@@ -7,12 +7,14 @@ import * as admindataHelper from "./helper/admindatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 
-const $ = query => document.querySelector(query);
+const appVersion = "1.0.0";
 
 const appModes = {
     METADATA: "METADATA",
     CLINICALDATA: "CLINICALDATA"
 };
+
+const $ = query => document.querySelector(query);
 
 document.addEventListener("DOMContentLoaded", async () => {
     // If index.html is requested, redirect to the base url
@@ -404,6 +406,7 @@ window.saveStudyNameDescription = function() {
 
 window.showAboutModal = function() {
     metadataModule.removeArrowKeyListener();
+    $("#about-modal h2").textContent = "Version " + appVersion;
     $("#about-modal").classList.add("is-active");
 
     ioHelper.hideMenu();
