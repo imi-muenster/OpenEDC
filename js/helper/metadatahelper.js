@@ -192,7 +192,7 @@ export function getElementDefByOID(elementOID) {
 }
 
 export function getAliasesByElement(elementOID, codeListItemCodedValue) {
-    if (codeListItemCodedValue == null) {
+    if (!codeListItemCodedValue) {
         return $$(`[OID="${elementOID}"] Alias`);
     } else {
         return $$(`[OID="${elementOID}"] CodeListItem[CodedValue="${codeListItemCodedValue}"] Alias`);
@@ -357,9 +357,9 @@ export function setElementDescription(elementOID, description, locale) {
     } else if (translatedText && !description) {
         translatedText.remove();
         if ($$(`[OID="${elementOID}"] Description TranslatedText`).length == 0) $(`[OID="${elementOID}"] Description`).remove();
-    } else if (translatedText == null && description) {
+    } else if (!translatedText && description) {
         let elementDescription = $(`[OID="${elementOID}"] Description`);
-        if (elementDescription == null) $(`[OID="${elementOID}"]`).insertAdjacentElement("afterbegin", metadataTemplates.getDescription());
+        if (!elementDescription) $(`[OID="${elementOID}"]`).insertAdjacentElement("afterbegin", metadataTemplates.getDescription());
         $(`[OID="${elementOID}"] Description`).appendChild(metadataTemplates.getTranslatedText(description, locale));
     }
 }
@@ -375,7 +375,7 @@ export function setItemQuestion(itemOID, question, locale) {
         }
     } else if (translatedText == null && question) {
         let itemQuestion = $(`ItemDef[OID="${itemOID}"] Question`);
-        if (itemQuestion == null) {
+        if (!itemQuestion) {
             $(`[OID="${itemOID}"]`).insertAdjacentElement("afterbegin", metadataTemplates.getQuestion());
         }
         $(`ItemDef[OID="${itemOID}"] Question`).appendChild(metadataTemplates.getTranslatedText(question, locale));
@@ -432,9 +432,9 @@ export function setCodeListItemDecodedText(codeListOID, codedValue, decodedText,
         if ($$(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"] Decode TranslatedText`).length == 0) {
             $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"] Decode`).remove();
         }
-    } else if (translatedText == null && decodedText) {
+    } else if (!translatedText && decodedText) {
         let codeListItemDecode = $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"] Decode`);
-        if (codeListItemDecode == null) {
+        if (!codeListItemDecode) {
             $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"]`).insertAdjacentElement("afterbegin", metadataTemplates.getDecode());
         }
         $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"] Decode`).appendChild(metadataTemplates.getTranslatedText(decodedText, locale));
@@ -442,7 +442,7 @@ export function setCodeListItemDecodedText(codeListOID, codedValue, decodedText,
 }
 
 export function setElementAlias(elementOID, codeListItemCodedValue, context, name) {
-    if (codeListItemCodedValue == null) {
+    if (!codeListItemCodedValue) {
         $(`[OID="${elementOID}"]`).appendChild(metadataTemplates.getAlias(context, name));
     } else {
         $(`[OID="${elementOID}"] CodeListItem[CodedValue="${codeListItemCodedValue}"]`).appendChild(metadataTemplates.getAlias(context, name));
@@ -451,10 +451,10 @@ export function setElementAlias(elementOID, codeListItemCodedValue, context, nam
 
 export function setItemRangeCheck(itemOID, comparator, checkValue) {
     let insertPosition = getLastElement($$(`[OID="${itemOID}"] RangeCheck`));
-    if (insertPosition == null) {
+    if (!insertPosition) {
         insertPosition = $(`[OID="${itemOID}"] MeasurementUnitRef`);
     }
-    if (insertPosition == null) {
+    if (!insertPosition) {
         insertPosition = $(`[OID="${itemOID}"] Question`);
     }
 
@@ -700,7 +700,7 @@ export function safeDeleteStudyEvent(studyEventOID) {
     // Get all Forms within the StudyEvent and safe-delete them
     let formOIDs = Array.from($$(`StudyEventDef[OID="${studyEventOID}"] FormRef`)).map(item => item.getAttribute("FormOID"));
     // Search for other references of the StudyEvent and delete the Def only if there is no one left
-    if ($(`StudyEventRef[StudyEventOID="${studyEventOID}"]`) == null) {
+    if (!$(`StudyEventRef[StudyEventOID="${studyEventOID}"]`)) {
         let studyEventDef = $(`StudyEventDef[OID="${studyEventOID}"]`);
         if (studyEventDef) studyEventDef.remove();
     }
@@ -713,7 +713,7 @@ export function safeDeleteForm(formOID) {
     // Get all ItemGroups within the Form and safe-delete them
     let itemGroupOIDs = Array.from($$(`FormDef[OID="${formOID}"] ItemGroupRef`)).map(item => item.getAttribute("ItemGroupOID"));
     // Search for other references of the Form and delete the Def only if there is no one left
-    if ($(`FormRef[FormOID="${formOID}"]`) == null) {
+    if (!$(`FormRef[FormOID="${formOID}"]`)) {
         let formDef = $(`FormDef[OID="${formOID}"]`);
         if (formDef) formDef.remove();
     }
@@ -726,7 +726,7 @@ export function safeDeleteItemGroup(itemGroupOID) {
     // Get all Items within the ItemGroup and safe-delete them
     let itemOIDs = Array.from($$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)).map(item => item.getAttribute("ItemOID"));
     // Search for other references of the ItemGroup and delete the Def only if there is no one left
-    if ($(`ItemGroupRef[ItemGroupOID="${itemGroupOID}"]`) == null) {
+    if (!$(`ItemGroupRef[ItemGroupOID="${itemGroupOID}"]`)) {
         let itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`)
         if (itemGroupDef) itemGroupDef.remove();
     }
@@ -739,7 +739,7 @@ export function safeDeleteItem(itemOID) {
     // Get the CodeList within the Item and remove it
     let codeListRef = $(`ItemDef[OID="${itemOID}"] CodeListRef`);
     // Search for other references of the Item and delete the Def only if there is no one left
-    if ($(`ItemRef[ItemOID="${itemOID}"]`) == null) {
+    if (!$(`ItemRef[ItemOID="${itemOID}"]`)) {
         let itemDef = $(`ItemDef[OID="${itemOID}"]`);
         if (itemDef) itemDef.remove();
     }
@@ -748,7 +748,7 @@ export function safeDeleteItem(itemOID) {
 
 export function safeDeleteCodeList(codeListOID) {
     // Search for other references of the CodeList and delete the Def only if there is no one left
-    if ($(`CodeListRef[CodeListOID="${codeListOID}"]`) == null) {
+    if (!$(`CodeListRef[CodeListOID="${codeListOID}"]`)) {
         let codeList = $(`CodeList[OID="${codeListOID}"]`);
         if (codeList) codeList.remove();
     }
@@ -760,7 +760,7 @@ export function deleteCodeListItem(codeListOID, codedValue) {
 
 export function deleteAliasesOfElement(elementOID, codeListItemCodedValue) {
     let aliases = [];
-    if (codeListItemCodedValue == null) {
+    if (!codeListItemCodedValue) {
         aliases = $$(`[OID="${elementOID}"] Alias`);
     } else {
         aliases = $$(`[OID="${elementOID}"] CodeListItem[CodedValue="${codeListItemCodedValue}"] Alias`);

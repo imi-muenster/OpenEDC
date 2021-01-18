@@ -590,7 +590,7 @@ function saveConditions() {
         let name = conditionInput.querySelector(".condition-name").value;
         let formalExpression = conditionInput.querySelector(".condition-formex").value;
         if (name && formalExpression) {
-            if (oid == null) {
+            if (!oid) {
                 metadataHelper.createCondition(name, formalExpression, locale);
             } else {
                 metadataHelper.setElementName(oid, name);
@@ -608,7 +608,7 @@ function saveMeasurementUnits() {
         let name = measurementUnitInput.querySelector(".measurement-unit-name").value;
         let symbol = measurementUnitInput.querySelector(".measurement-unit-symbol").value;
         if (name && symbol) {
-            if (oid == null) {
+            if (!oid) {
                 metadataHelper.createMeasurementUnit(name, symbol, locale);
             } else {
                 metadataHelper.setElementName(oid, name);
