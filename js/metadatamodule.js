@@ -24,6 +24,8 @@ let elementTypeOnDrag = null;
 let locale = null;
 
 export function init() {
+    metadataHelper.init();
+    
     currentElementID.studyEvent = null;
     currentElementType = null;
 

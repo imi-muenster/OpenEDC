@@ -12,7 +12,13 @@ export const elementTypes = {
     CODELISTITEM: "codelistitem"
 }
 
-let metadata = null;
+let xsltStylesheet;
+let metadata;
+
+export async function init() {
+    let xsltResponse = await fetch(ioHelper.getBaseURL() + "/xsl/odmtohtml.xsl");
+    xsltStylesheet = await xsltResponse.text();
+}
 
 export async function loadEmptyProject() {
     metadata = metadataTemplates.getODMTemplate();
@@ -54,18 +60,15 @@ export function getMetadata() {
 }
 
 export async function getFormAsHTML(formOID, locale, textAsTextarea) {
-    // TODO: prettifiedODM and xsltStylesheet could be cached to improve performance
     let prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
-
-    let xsltResponse = await fetch(ioHelper.getBaseURL() + "/xsl/odmtohtml.xsl");
-    let xsltStylesheet = await xsltResponse.text();
-
     let xsltProcessor = new XSLTProcessor();
     let domParser = new DOMParser();
+
     xsltProcessor.importStylesheet(domParser.parseFromString(xsltStylesheet, "text/xml"));
     xsltProcessor.setParameter(null, "formOID", formOID);
     xsltProcessor.setParameter(null, "locale", locale);
     xsltProcessor.setParameter(null, "textAsTextarea", textAsTextarea.toString());
+
     return xsltProcessor.transformToFragment(domParser.parseFromString(prettifiedODM, "text/xml"), document);
 }
 
