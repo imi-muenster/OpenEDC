@@ -136,7 +136,7 @@ class RemoveModal extends HTMLElement {
                     <div class="box has-text-centered">
                         <h2 class="subtitle">Please confirm</h2>
                         <div class="notification is-danger is-hidden">You cannot currently remove this element since there is clinical data assigned to it for the following subjects: <strong></strong>.</div>
-                        <p class="mb-5">The reference to the element will be removed. The element definition will be removed as well if there was no other reference to it.</p>
+                        <p class="mb-5">The reference to the element will be removed. The element definition will be removed as well if there is no other reference to it.</p>
                         <div class="buttons is-centered">
                             <button class="button is-danger is-small" onclick="removeElement()">Remove</button>
                             <button class="button is-small" onclick="hideRemoveModal()">Cancel</button>

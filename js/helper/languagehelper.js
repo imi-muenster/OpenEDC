@@ -39,7 +39,7 @@ export async function internationalize() {
 }
 
 export function getTranslation(key) {
-    return translations[key] || defaultTranslations[key];
+    return translations[key] || defaultTranslations[key] || key;
 }
 
 async function loadTranslations(locale) {

@@ -40,12 +40,7 @@ class MetadataSection extends HTMLElement {
                         </div>
                         <div class="buttons is-pulled-right is-hidden-touch">
                             <button class="button" id="duplicate-button" onclick="showDuplicateModal()" disabled>Duplicate</button>
-                            <button class="button" id="more-button" onclick="showMoreModal()" disabled>
-                                <span class="icon is-small">
-                                    <i class="fas fa-wrench"></i>
-                                </span>
-                                <span>More</span>
-                            </button>
+                            <button class="button" id="more-button" onclick="showMoreModal()" disabled>More</button>
                         </div>
                     </div>
                     <div class="column is-hidden-desktop">
@@ -53,12 +48,7 @@ class MetadataSection extends HTMLElement {
                             <button class="button is-link" id="save-button-mobile" onclick="saveElement()" disabled>Save Changes</button>
                             <button class="button is-danger" id="remove-button-mobile" onclick="showRemoveModal()" disabled>Remove</button>
                             <button class="button" id="duplicate-button-mobile" onclick="showDuplicateModal()" disabled>Duplicate</button>
-                            <button class="button" id="more-button-mobile" onclick="showMoreModal()" disabled>
-                                <span class="icon is-small">
-                                    <i class="fas fa-wrench"></i>
-                                </span>
-                                <span>More</span>
-                            </button>
+                            <button class="button" id="more-button-mobile" onclick="showMoreModal()" disabled>More</button>
                         </div>
                     </div>
                 </div>
