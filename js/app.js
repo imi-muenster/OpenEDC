@@ -7,7 +7,7 @@ import * as admindataHelper from "./helper/admindatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 
-const appVersion = "1.0.0";
+const appVersion = "0.1.0";
 
 const appModes = {
     METADATA: "METADATA",
