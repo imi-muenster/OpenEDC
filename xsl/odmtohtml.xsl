@@ -139,6 +139,12 @@
             <xsl:when test="$item/@DataType = 'date'">
                 <input class="input" type="date" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
             </xsl:when>
+            <xsl:when test="$item/@DataType = 'time'">
+                <input class="input" type="time" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
+            </xsl:when>
+            <xsl:when test="$item/@DataType = 'datetime'">
+                <input class="input" type="datetime-local" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
+            </xsl:when>
             <xsl:when test="$item/@DataType = 'integer'">
                 <input class="input" type="text" inputmode="numeric" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
             </xsl:when>

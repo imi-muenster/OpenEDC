@@ -16,6 +16,8 @@
     "whole-number-warning": "Please enter a whole number.",
     "number-warning": "Please enter a number.",
     "date-warning": "Please enter a date (format: yyyy-mm-dd) or use the date picker.",
+    "time-warning": "Please enter a time (format: hh:mm) or use the time picker.",
+    "datetime-warning": "Please enter a datetime (format: yyyy-mm-dd[T]hh:mm) or use the datetime picker.",
     "value-must-be": "The value must be",
     "LT": "lower than",
     "LE": "lower than or equal to",

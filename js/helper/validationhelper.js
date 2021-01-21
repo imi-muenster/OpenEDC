@@ -6,7 +6,7 @@ const $$ = query => document.querySelectorAll(query);
 
 export function process(itemsWithRangeChecks) {
     // First, handle data types (e.g., integer and float)
-    for (let input of $$("#clinicaldata-content [inputmode='numeric'], #clinicaldata-content [inputmode='decimal'], #clinicaldata-content [type='date']")) {
+    for (let input of $$("#clinicaldata-content [inputmode='numeric'], #clinicaldata-content [inputmode='decimal'], #clinicaldata-content [type='date'], #clinicaldata-content [type='time'], #clinicaldata-content [type='datetime-local']")) {
         input.addEventListener("focusout", event => {
             let type = input.getAttribute("inputmode") || input.getAttribute("type");
             switch (type) {
@@ -29,6 +29,17 @@ export function process(itemsWithRangeChecks) {
                         event.target.focus();
                     }
                     break;
+                case "time":
+                    if (input.value && !isTime(input.value)) {
+                        ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("time-warning"));
+                        event.target.focus();
+                    }
+                    break;
+                case "datetime-local":
+                    if (input.value && !isDate(input.value)) {
+                        ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("datetime-warning"));
+                        event.target.focus();
+                    }
             }
         });
     }
@@ -72,6 +83,10 @@ function isDecimal(value) {
 
 function isDate(value) {
     return !isNaN(Date.parse(value));
+}
+
+function isTime(value) {
+    return new RegExp(/^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/).test(value);
 }
 
 function rangeCheckValue(value) {

@@ -16,6 +16,8 @@
     "whole-number-warning": "Bitte geben Sie eine ganze Zahl ein.",
     "number-warning": "Bitte geben Sie eine Zahl ein.",
     "date-warning": "Bitte geben Sie ein Datum ein (Format: jjjj-mm-tt) oder nutzen Sie Datumsauswahl.",
+    "time-warning": "Bitte geben Sie eine Zeit ein (Format: ss:mm) oder nutzen Sie die Zeitauswahl.",
+    "datetime-warning": "Bitte geben Sie ein Datum und Zeit ein (Format: jjjj-mm-tt[T]ss:mm) oder nutzen Sie die Datumsauswahl.",
     "value-must-be": "Der Wert muss",
     "LT": "kleiner als",
     "LE": "kleiner oder gleich",
