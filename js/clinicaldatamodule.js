@@ -267,9 +267,9 @@ async function loadFormMetadata() {
 
     let translatedText = metadataHelper.getElementDefByOID(currentElementID.form).querySelector(`Description TranslatedText[*|lang="${locale}"]`);
     if (translatedText) {
-        $("#clinicaldata-form-title .subtitle").textContent = ioHelper.shortenText(translatedText.textContent, 15);
+        $("#clinicaldata-form-title .subtitle").textContent = translatedText.textContent;
     } else {
-        $("#clinicaldata-form-title .subtitle").textContent = ioHelper.shortenText(metadataHelper.getStudyName(), 15);
+        $("#clinicaldata-form-title .subtitle").textContent = metadataHelper.getStudyName();
     }
 
     // Add the form skeleton

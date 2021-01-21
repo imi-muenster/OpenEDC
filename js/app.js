@@ -93,7 +93,7 @@ const startApp = async () => {
 }
 
 const setTitles = () => {
-    const studyName =  ioHelper.shortenText(metadataHelper.getStudyName(), 20);
+    const studyName =  ioHelper.shortenText(metadataHelper.getStudyName(), 25);
     $("#study-title").textContent = studyName;
     $("head title").textContent = "OpenEDC – " + studyName;
 }
