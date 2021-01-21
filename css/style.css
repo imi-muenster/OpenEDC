@@ -29,12 +29,7 @@ a.panel-block {
     padding-bottom: 14px;
 }
 
-#clinicaldata-form-title {
-    flex-shrink: 1;
-    margin-right: 20px;
-}
-
-#clinicaldata-form-title .level-item {
+#clinicaldata-form-title, #clinicaldata-form-title .level-item {
     flex-shrink: 1;
 }
 
