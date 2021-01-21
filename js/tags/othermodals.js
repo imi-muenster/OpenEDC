@@ -14,10 +14,10 @@ class StartModal extends HTMLElement {
                             <p class="mb-5">For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you have an ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an exemplary project and see how it all works.</p>
                             <div class="buttons is-centered">
                                 <button class="button" onclick="newProject()">New Project</button>
-                                <div class="file">
+                                <div class="file" id="odm-upload">
                                     <label class="file-label">
-                                        <input class="file-input" type="file" name="resume" id="odm-upload" onchange="uploadODM()">
-                                        <span class="file-cta">
+                                        <input class="file-input" type="file" name="resume" onchange="uploadODM()">
+                                        <span class="file-cta button">
                                             <span class="file-label">Open</span>
                                         </span>
                                     </label>

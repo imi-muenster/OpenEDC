@@ -236,7 +236,7 @@ window.newProject = function() {
 }
 
 window.uploadODM = async function() {
-    let file = $("#odm-upload");
+    let file = $("#odm-upload .file-input");
     let content = await ioHelper.getFileContent(file.files[0]);
 
     if (content) {
@@ -244,6 +244,19 @@ window.uploadODM = async function() {
         admindataHelper.importAdmindata(content);
         await clinicaldataHelper.importClinicaldata(content);
         startApp();
+    }
+}
+
+window.uploadODMToServer = async function() {
+    let file = $("#odm-upload-to-server .file-input");
+    let content = await ioHelper.getFileContent(file.files[0]);
+
+    await clinicaldataHelper.removeClinicaldata();
+
+    if (content) {
+        metadataHelper.importMetadata(content);
+        await clinicaldataHelper.importClinicaldata(content);
+        window.location.reload();
     }
 }
 
@@ -264,6 +277,7 @@ window.showProjectModal = function() {
     if (ioHelper.hasServerURL()) {
         $("#project-modal #server-url-input").parentNode.parentNode.classList.add("is-hidden");
         $("#project-modal #server-connected-hint").classList.remove("is-hidden");
+        $("#odm-upload-to-server").classList.remove("is-hidden");
     }
 
     $("#survey-code-input").value = ioHelper.getSurveyCode();

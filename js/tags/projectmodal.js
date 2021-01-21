@@ -99,6 +99,14 @@ class ProjectModal extends HTMLElement {
                                 <div class="buttons">
                                     <button class="button is-danger is-small" onclick="removeAllData()">Remove data (complete)</button>
                                     <button class="button is-danger is-small" onclick="removeClinicaldata()">Remove data (only clinicaldata)</button>
+                                    <div class="file is-hidden" id="odm-upload-to-server">
+                                        <label class="file-label">
+                                            <input class="file-input" type="file" name="resume" onchange="uploadODMToServer()">
+                                            <span class="file-cta button is-danger is-small">
+                                                <span class="file-label">Upload ODM (removes all current data)</span>
+                                            </span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -168,20 +168,20 @@ a.panel-block:hover {
     color: hsl(0, 0%, 21%);
 }
 
-.file {
-    margin-bottom: 0.5rem;
-    margin-left: 0.25rem;
-    margin-right: 0.25rem;
-}
-
 .file-cta {
     background-color: #fff;
     color: #363636;
 }
 
-.file-cta:hover {
+.file-label:hover .file-cta {
     background-color: #fff !important;
     border-color: #b5b5b5;
+}
+
+.file-label:hover .file-cta.is-danger {
+    background-color: #f03a5f !important;
+    border-color: transparent;
+    color: #fff;
 }
 
 .is-survey-view {
