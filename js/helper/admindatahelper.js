@@ -52,8 +52,8 @@ export function getUserFullName(userOID) {
 }
 
 export function getCurrentUserOID() {
-    if (ioHelper.getLocalUser()) {
-        return ioHelper.getLocalUser().oid;
+    if (ioHelper.getLoggedInUser()) {
+        return ioHelper.getLoggedInUser().oid;
     } else {
         return getUsers()[0].getAttribute("OID");
     }

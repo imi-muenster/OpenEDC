@@ -250,7 +250,7 @@ export function hasServerURL() {
     return serverURL ? true : false;
 }
 
-export function getLocalUser() {
+export function getLoggedInUser() {
     return user;
 }
 

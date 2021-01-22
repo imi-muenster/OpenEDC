@@ -191,7 +191,7 @@ function loginNotSuccessful(error) {
 
 function adjustUIToUser() {
     if (ioHelper.hasServerURL()) {
-        const user = ioHelper.getLocalUser();
+        const user = ioHelper.getLoggedInUser();
         if (!user.rights.includes("Project options")) {
             $("#project-modal-button").disabled = true;
         }

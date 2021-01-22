@@ -163,7 +163,12 @@ async function loadSubjectData(subjectKey) {
     }
 
     // Option to deselect a subject by clicking on the same subject again
-    if (subjectKey == currentElementID.subject) subjectKey = null;
+    // If the currently logged in user has no metadata edit rights, then disable the form preview as well
+    if (subjectKey == currentElementID.subject) {
+        subjectKey = null;
+        if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes("Edit metadata")) currentElementID.form = null;
+    }
+
     currentElementID.subject = subjectKey;
     cachedFormData = null;
 
@@ -176,7 +181,7 @@ async function loadSubjectData(subjectKey) {
     ioHelper.removeIsActiveFromElement($("#subject-panel-blocks a.is-active"));
     if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
     $("#subject-info-button").disabled = currentElementID.subject ? false : true;
-    if (ioHelper.hasServerURL() && !ioHelper.getLocalUser().rights.includes("Manage subjects")) $("#subject-info-button").disabled = true;
+    if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes("Manage subjects")) $("#subject-info-button").disabled = true;
 
     await reloadTree();
 }
@@ -245,6 +250,13 @@ async function loadFormsByStudyEvent() {
 }
 
 async function loadFormData() {
+    // If connected to the server and the user has no metadata edit rights then disable the form preview functionality
+    // TODO: Create an enum with all rights in the ioHelper
+    if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes("Edit metadata") && !currentElementID.subject) {
+        ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("no-subject-selected-warning"));
+        return;
+    }
+
     ioHelper.removeIsActiveFromElement($("#clinicaldata-form-panel-blocks a.is-active"));
     $(`#clinicaldata-form-panel-blocks [oid="${currentElementID.form}"]`).classList.add("is-active");
 
@@ -316,6 +328,7 @@ function uncheckRadioitem(radioItem) {
 
 function loadFormClinicaldata() {
     if (!currentElementID.studyEvent || !currentElementID.form) return;
+    // TODO: Should be moved to loadFormData(). Then, the line above should include !currentElementID.subject
     currentElementID.subject ? $("#no-subject-selected-hint").classList.add("is-hidden") : $("#no-subject-selected-hint").classList.remove("is-hidden");
 
     // Two types of errors that can occur during the data loading process

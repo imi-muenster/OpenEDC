@@ -113,7 +113,7 @@ export async function loadSubjects() {
             subjects[i+1].uniqueKey = subjects[i+1].key + fileNameSeparator + i;
             
             // Show a warning that data conflicts exist when the user has manage subjects right and the warning has not shown before
-            if (ioHelper.getLocalUser().rights.includes("Manage subjects") && !document.querySelector(".panel-icon.has-text-danger")) {
+            if (ioHelper.getLoggedInUser().rights.includes("Manage subjects") && !document.querySelector(".panel-icon.has-text-danger")) {
                 ioHelper.showMessage("Data conflicts present", "One subject exists multiple times in your data. This can happen when multiple users edited the same subject at the same time or if a user worked offline over an extended period of time.<br><br>The affected subjects are marked with a red dot. Please review the data and remove the subject instance(s) that you do not want to keep. You can look in the audit trail to see which person audited which instance.");
             }
         }
@@ -205,7 +205,7 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
     if (!subject || !dataHasChanged(formItemDataList, studyEventOID, formOID)) return;
 
     // Do not store data if connected to server and user has no rights to store data
-    if (ioHelper.hasServerURL() && !ioHelper.getLocalUser().rights.includes("Add subject data")) return;
+    if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes("Add subject data")) return;
 
     let formData = clinicaldataTemplates.getFormData(formOID);
     formData.appendChild(clinicaldataTemplates.getAuditRecord(admindataHelper.getCurrentUserOID(), subject.siteOID, new Date().toISOString()));

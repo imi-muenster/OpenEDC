@@ -1,5 +1,6 @@
 {
     "no-subject-selected-hint": "No subject selected. You can still view and test the form but entered data will not be stored. You can select a subject by clicking on it in the left column.",
+    "no-subject-selected-warning": "No subject selected. Please select a subject in the left column first.",
     "audit-record-data-hint": "You are currently viewing data from the audit trail.",
     "audit-record-most-current-hint": "This is the most current data or equivalent to the most current data.",
     "survey-view": "Survey View",

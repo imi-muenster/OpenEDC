@@ -46,7 +46,7 @@ export async function loadUsers() {
     if (ioHelper.hasServerURL()) {
         $("#add-user-button button").disabled = false;
 
-        const localUserOID = ioHelper.getLocalUser().oid;
+        const localUserOID = ioHelper.getLoggedInUser().oid;
         $(`#users-options [oid="${localUserOID}"]`).textContent += " (you)";
 
         $("#user-rights").classList.remove("is-hidden");
