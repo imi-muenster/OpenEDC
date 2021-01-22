@@ -774,7 +774,7 @@ function showColumnOnMobile() {
 function setIOListeners() {
     $("#metadata-toggle-button").onclick = () => hide();
     $("#add-subject-input").onkeydown = keyEvent => {
-        if (["/", "#", "<", ">", "\\", "{", "}", "&", "?"].includes(keyEvent.key)) keyEvent.preventDefault();
+        if (["/", "#", "<", ">", "\\", "{", "}", "&", "?", "ä", "ö", "ü"].includes(keyEvent.key)) keyEvent.preventDefault();
         if (keyEvent.code == "Enter") addSubject();
     };
     $("#search-subject-input").oninput = inputEvent => filterSubjects(inputEvent.target.value);
@@ -796,6 +796,8 @@ function setLoadSubjectsTimer() {
     if (!ioHelper.hasServerURL()) return;
      
     setInterval(async () => {
+        if ($("#clinicaldata-section").classList.contains("is-hidden")) return;
+        
         await ioHelper.emptyMessageQueue();
         if (!clinicaldataHelper.getSubject()) {
             await clinicaldataHelper.loadSubjects();

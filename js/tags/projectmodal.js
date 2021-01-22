@@ -61,7 +61,7 @@ class ProjectModal extends HTMLElement {
                             </div>
                             <div class="notification is-link is-light">
                                 <h1 class="title is-4">Survey Code</h1>
-                                <p class="mb-5">This option lets you set a four-digit numerical code that needs to be entered after a local survey (started with the <i>SurveyView</i> button) is finished or canceled. This prevents study participants from seeing foreign data.</p>
+                                <p class="mb-5">This option lets you set a four-digit numerical code that needs to be entered after a local survey (started with the <i>Survey View</i> button) is finished or canceled. This prevents study participants from seeing foreign data.</p>
                                 <div class="field has-addons mb-3">
                                     <div class="control is-expanded">
                                         <input class="input is-small" id="survey-code-input" type="text" placeholder="Survey code">
