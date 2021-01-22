@@ -42,6 +42,7 @@ export function show() {
     $("#metadata-section").classList.remove("is-hidden");
     $("#metadata-toggle-button").classList.add("is-hidden");
 
+    languageHelper.createLanguageSelect(true);
     ioHelper.setTreeMaxHeight();
 }
 
@@ -517,7 +518,7 @@ window.saveElement = async function() {
 
     if (!languageHelper.getPresentLanguages().includes(locale)) {
         languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
-        languageHelper.createLanguageSelect();
+        languageHelper.createLanguageSelect(true);
     }
     
     reloadDetailsPanel();

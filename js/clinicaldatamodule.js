@@ -47,6 +47,7 @@ export function show() {
     $("#clinicaldata-section").classList.remove("is-hidden");
     $("#clinicaldata-toggle-button").classList.add("is-hidden");
 
+    languageHelper.createLanguageSelect();
     ioHelper.setTreeMaxHeight();
 }
 

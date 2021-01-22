@@ -64,7 +64,6 @@ document.addEventListener("LanguageChanged", languageEvent => {
 const startApp = async () => {
     await languageHelper.init();
     languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
-    languageHelper.createLanguageSelect();
     languageHelper.internationalize();
     
     metadataModule.init();

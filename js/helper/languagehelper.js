@@ -89,15 +89,15 @@ export function getCurrentLocale() {
     return currentLocale;
 }
 
-export function createLanguageSelect() {
+export function createLanguageSelect(includeUnavailable) {
     ioHelper.removeElements($$("#language-dropdown a"));
     ioHelper.removeElements($$("#language-dropdown hr"));
 
     if (localesInODM.length > 0) {
         localesInODM.forEach(locale => addLanguageOptionNavbar(locale));
-        addDividerNavbar();
+        if (includeUnavailable) addDividerNavbar();
     }
-    localesNotInODM.forEach(locale => addLanguageOptionNavbar(locale));
+    if (includeUnavailable) localesNotInODM.forEach(locale => addLanguageOptionNavbar(locale));
 
     $("#current-language").textContent = getLanguageNameByLocale(currentLocale);
 }
