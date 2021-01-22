@@ -1,11 +1,14 @@
 //
-// TODO: This file should be refactored. ODM attributes should be moved to another file and range checks combined to one object ...
-// ... Moreover, the code is quite redundant for some functions and creating a select should be refactored across the app as well
+//
+// TODO: This file should be refactored. ODM attributes should be moved to another file and range checks as well as data types combined to one object.
+// Moreover, the code is quite redundant for some functions and creating a select should be refactored across the app as well.
+//
 //
 
 const rangeCheckComparators = ["", "LT", "LE", "GT", "GE", "EQ", "NE"];
 const rangeCheckComparatorsDisplay = ["", "<", "<=", ">", ">=", "=", "!="];
-const dataTypes = ["text", "string", "date", "time", "datetime", "boolean", "integer", "float", "choices (text)", "choices (integer)", "choices (float)"];
+const dataTypes = ["text", "string", "date", "time", "datetime", "boolean", "integer", "float", "codelist (text)", "codelist (integer)", "codelist (float)"];
+const dataTypesDisplay = ["Text", "String", "Date", "Time", "Datetime", "Boolean", "Whole number", "Decimal number", "Choices (Text)", "Choices (Integer)", "Choices (Float)"];
 const mandatory = ["No", "Yes"];
 
 export function getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue) {
@@ -238,7 +241,7 @@ export function getEmptyRangeCheckInputElement() {
 }
 
 export function getDataTypeSelect() {
-    return getSelect("datatype-select", true, true, dataTypes);
+    return getSelect("datatype-select", true, true, dataTypes, null, dataTypesDisplay);
 }
 
 export function getMandatorySelect() {
