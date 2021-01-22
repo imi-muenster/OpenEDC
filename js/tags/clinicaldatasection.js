@@ -73,12 +73,12 @@ class ClinicaldataSection extends HTMLElement {
                             <div class="tree-panel-blocks">
                                 <div class="is-hidden" id="clinicaldata-form-data">
                                     <article class="message is-danger is-hidden" id="no-subject-selected-hint">
-                                        <div class="message-body" i18n="no-subject-selected-hint">No subject selected. You can still view and test the form but entered data will not be stored.</div>
+                                        <div class="message-body" i18n="no-subject-selected-hint"></div>
                                     </article>
                                     <article class="message is-link is-hidden" id="audit-record-data-hint">
                                         <div class="message-body">
-                                            <p i18n="audit-record-data-hint">You are currently viewing data from the audit trail.</p>
-                                            <p id="audit-record-most-current-hint" i18n="audit-record-most-current-hint">This is the most current data or equivalent to the most current data.</p>
+                                            <p i18n="audit-record-data-hint"></p>
+                                            <p id="audit-record-most-current-hint" i18n="audit-record-most-current-hint"></p>
                                         </div>
                                     </article>
                                     <nav class="level">
@@ -93,17 +93,17 @@ class ClinicaldataSection extends HTMLElement {
                                                     <span class="icon">
                                                         <i class="fas fa-expand"></i>
                                                     </span>
-                                                    <span i18n="survey-view">Survey View</span>
+                                                    <span i18n="survey-view"></span>
                                                 </button>
                                             </div>
                                         </div>
                                     </nav>
                                     <hr>
                                     <div id="clinicaldata-content"></div>
-                                    <button class="button" id="clinicaldata-close-button" onclick="cancelFormOrSurveyEntry()" i18n="close">Close</button>
+                                    <button class="button" id="clinicaldata-close-button" onclick="cancelFormOrSurveyEntry()" i18n="close"></button>
                                     <div class="field has-addons is-pulled-right" id="clinicaldata-navigate-buttons">
                                         <div class="control">
-                                            <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" i18n="back">Back</button>
+                                            <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" i18n="back"></button>
                                         </div>
                                         <div class="control">
                                             <button class="button is-link" id="clinicaldata-next-button" onclick="loadNextFormData()">Continue</button>

@@ -158,9 +158,9 @@ class CloseClinicaldataModal extends HTMLElement {
                         <h2 class="subtitle" id="close-data-title"></h2>
                         <p class="mb-5" id="close-data-text"></p>
                         <div class="buttons is-centered">
-                            <button class="button is-small" onclick="closeFormData()" i18n="close-without-saving">Close without saving</button>
-                            <button class="button is-small" onclick="closeFormData(true)" i18n="close-with-saving">Close with saving</button>
-                            <button class="button is-link is-small" onclick="hideCloseClinicalDataModal()" i18n="continue">Continue</button>
+                            <button class="button is-small" onclick="closeFormData()" i18n="close-without-saving"></button>
+                            <button class="button is-small" onclick="closeFormData(true)" i18n="close-with-saving"></button>
+                            <button class="button is-link is-small" onclick="hideCloseClinicalDataModal()" i18n="continue"></button>
                         </div>
                     </div>
                 </div>
@@ -237,15 +237,15 @@ class SurveyCodeModal extends HTMLElement {
                 <div class="modal-background"></div>
                 <div class="modal-content is-large">
                     <div class="box has-text-centered">
-                        <h2 class="subtitle" i18n="survey-finished">Survey finished</h2>
-                        <p i18n="survey-finished-text">Thank you for taking the survey.</p>
-                        <p class="mb-5" i18n="survey-finished-code-text">Please enter the survey code to close this window.</p>
+                        <h2 class="subtitle" i18n="survey-finished"></h2>
+                        <p i18n="survey-finished-text"></p>
+                        <p class="mb-5" i18n="survey-finished-code-text"></p>
                         <div class="numpad has-text-centered mb-5">
                             <hr>
                             <div class="status mb-5"></div>
                             <div class="buttons is-centered"></div>
                         </div>
-                        <p class="has-text-danger is-hidden" id="wrong-survey-code-hint" i18n="wrong-survey-code-hint">Wrong code entered. Please try again.</p>
+                        <p class="has-text-danger is-hidden" id="wrong-survey-code-hint" i18n="wrong-survey-code-hint"></p>
                     </div>
                 </div>
             </div>
