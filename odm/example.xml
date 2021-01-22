@@ -348,7 +348,7 @@
                     <TranslatedText xml:lang="de">Wann haben Sie die Schule absolviert?</TranslatedText>
                 </Question>
             </ItemDef>
-            <ItemDef OID="I.17" Name="Example" DataType="text">
+            <ItemDef OID="I.17" Name="Example" DataType="string">
                 <Question>
                     <TranslatedText xml:lang="de">Dies ist ein Beispielelement</TranslatedText>
                     <TranslatedText xml:lang="en">This is an examplary item</TranslatedText>
