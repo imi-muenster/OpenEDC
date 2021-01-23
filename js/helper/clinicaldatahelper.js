@@ -235,7 +235,7 @@ function escapeXML(value) {
             case ">": return "&#62;";
             case "'": return "&#39;";
             case '"': return "&#34;";
-            case "\n": return "&#10;";
+            case "\n": return "\\n";
         }
     });
 }

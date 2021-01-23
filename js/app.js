@@ -222,7 +222,11 @@ function showUninitializedHint() {
 }
 
 window.forgotPassword = function() {
-    ioHelper.showMessage("Forgot password", "All data within OpenEDC is stored and transferred end-to-end encrypted. Therefore, it is currently not possible to automatically reset a forgotten password, unfortunately.<br><br>If you forgot your password, please contact the person that gave you your login credentials. This person is able to reset your password with a new initial password.");
+    if (ioHelper.hasServerURL()) {
+        ioHelper.showMessage("Forgot password", "All data within OpenEDC is stored and transferred end-to-end encrypted. Therefore, it is currently not possible to automatically reset a forgotten password, unfortunately.<br><br>If you forgot your password, please contact the person that gave you your login credentials. This person is able to reset your password with a new initial password.");
+    } else {
+        ioHelper.showMessage("Forgot password", "You encrypted all data within OpenEDC. Therefore, the data cannot be opened without your password.<br><br>If you forgot your password, you have to remove all data to use OpenEDC again, unfortunately.");
+    }
 }
 
 window.newProject = function() {

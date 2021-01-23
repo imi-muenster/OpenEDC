@@ -345,11 +345,13 @@ function loadFormClinicaldata() {
         }
         switch (inputElement.getAttribute("type")) {
             case "text":
-            case "textarea":
             case "date":
             case "select":
                 inputElement.value = formItemData.value;
                 if (!fieldElement.classList.contains("is-hidden")) inputElement.dispatchEvent(new Event("input"));
+                break;
+            case "textarea":
+                inputElement.value = formItemData.value.replaceAll("\\n", "\n");
                 break;
             case "radio":
                 inputElement = $(`#clinicaldata-content [preview-oid="${formItemData.itemOID}"][preview-group-oid="${formItemData.itemGroupOID}"][value="${formItemData.value}"]`);
