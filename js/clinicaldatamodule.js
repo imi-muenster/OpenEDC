@@ -456,11 +456,12 @@ function getFormData() {
         let itemGroupOID = inputElement.getAttribute("preview-group-oid");
         switch (inputElement.getAttribute("type")) {
             case "text":
-            case "textarea":
             case "date":
             case "select":
                 if (value) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
                 break;
+            case "textarea":
+                if (value) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value.replaceAll("\n", "\\n")));
             case "radio":
                 if (inputElement.checked) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
         }

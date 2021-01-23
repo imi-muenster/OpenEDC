@@ -228,14 +228,13 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
 }
 
 function escapeXML(value) {
-    return value.replace(/[&<>'"\n]/g, function(character) {
+    return value.replace(/[&<>'"]/g, function(character) {
         switch(character) {
             case "&": return "&#38;";
             case "<": return "&#60;";
             case ">": return "&#62;";
             case "'": return "&#39;";
             case '"': return "&#34;";
-            case "\n": return "\\n";
         }
     });
 }
