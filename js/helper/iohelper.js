@@ -504,7 +504,7 @@ export function download(filename, content) {
     let prettifiedContent = prettifyContent(content);
 
     let element = document.createElement("a");
-    element.setAttribute("href", "data:text/xml;charset=utf-8," + encodeURIComponent(prettifiedContent));
+    element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(prettifiedContent));
     element.setAttribute("download", filename);
 
     element.style.display = "none";

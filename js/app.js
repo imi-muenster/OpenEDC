@@ -288,7 +288,7 @@ window.showProjectModal = function() {
     $("#auto-survey-view-checkbox").checked = ioHelper.isAutoSurveyView();
     $("#study-name-input").value = metadataHelper.getStudyName();
     $("#study-description-textarea").value = metadataHelper.getStudyDescription();
-    $("#protocol-name-input").value = metadataHelper.getStudyName();
+    $("#protocol-name-input").value = metadataHelper.getProtocolName();
     admindataModule.loadUsers();
     admindataModule.loadSites();
 
