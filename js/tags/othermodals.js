@@ -74,7 +74,7 @@ class LoginModal extends HTMLElement {
                             </form>
                             <div class="buttons is-centered mt-3">
                                 <button class="button is-text is-small" onclick="showForgotPasswordModal()">Forgot password?</button>
-                                <button class="button is-text is-small is-hidden" id="remove-data-button" onclick="showRemoveAllDataModal()">Remove data?</button>
+                                <button class="button is-text is-small is-hidden" id="remove-data-button" onclick="showRemoveDataModal()">Remove data?</button>
                             </div>
                         </div>
                     </div>

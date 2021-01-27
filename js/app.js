@@ -422,13 +422,22 @@ window.saveStudyNameDescription = function() {
     metadataModule.setArrowKeyListener();
 }
 
-window.showRemoveAllDataModal = function() {
-    ioHelper.showMessage(
-        "Remove data",
-        "Do you really want to remove all data? This cannot be undone.",
-        { "Remove": () => removeAllData() },
-        ioHelper.callbackTypes.DANGER
-    );
+window.showRemoveDataModal = function(complete) {
+    if (complete) {
+        ioHelper.showMessage(
+            "Remove all data",
+            "Do you really want to remove all data? This cannot be undone.",
+            { "Remove": () => removeAllData() },
+            ioHelper.callbackTypes.DANGER
+        );
+    } else {
+        ioHelper.showMessage(
+            "Remove clinical data",
+            "Do you really want to remove all clinical data? This cannot be undone.",
+            { "Remove": () => removeClinicaldata() },
+            ioHelper.callbackTypes.DANGER
+        );
+    }
 }
 
 window.showAboutModal = function() {
