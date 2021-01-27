@@ -113,7 +113,8 @@ function showNavbar() {
 
 function showDecryptionKeyModal() {
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
-    $("#login-modal #username-input").parentNode.parentNode.classList.add("is-hidden");
+    $("#login-username-input").parentNode.parentNode.classList.add("is-hidden");
+    $("#remove-data-button").classList.remove("is-hidden");
     $("#login-title").textContent = "Data is encrypted";
     $("#login-text").textContent = "Please enter the password that you used for the data encryption.";
     $("#login-incorrect-hint .message-body").textContent = "The password is incorrect. Please try again.";
@@ -121,7 +122,7 @@ function showDecryptionKeyModal() {
     // Set the click handler when clicking on the Open button
     $("#login-modal #open-button").onclick = clickEvent => {
         clickEvent.preventDefault();
-        const decryptionKey = $("#login-modal #password-input").value;
+        const decryptionKey = $("#login-password-input").value;
         ioHelper.setDecryptionKey(decryptionKey)
             .then(() => loginSuccessful())
             .catch(error => loginNotSuccessful(error));
@@ -143,12 +144,12 @@ function showLoginModal() {
     // Set the click handler when clicking on the open button
     $("#login-modal #open-button").onclick = clickEvent => {
         clickEvent.preventDefault();
-        const username = $("#login-modal #username-input").value;
-        const password = $("#login-modal #password-input").value;
-        const confirmPassword = $("#login-modal #confirm-password-input").value;
+        const username = $("#login-username-input").value;
+        const password = $("#login-password-input").value;
+        const confirmPassword = $("#login-confirm-password-input").value;
 
         // TODO: Code refactoring -- not very nice, clean code
-        if (!$("#login-modal #username-input").disabled) {
+        if (!$("#login-username-input").disabled) {
             const credentials = new ioHelper.Credentials(username, password);
             ioHelper.loginToServer(credentials)
                 .then(() => loginSuccessful())
@@ -176,16 +177,16 @@ async function loginSuccessful() {
 }
 
 function loginNotSuccessful(error) {
-    $("#login-modal #password-input").value = "";
+    $("#login-password-input").value = "";
 
     switch (error) {
         case ioHelper.loginStatus.USERHASINITIALPASSWORD:
             $("#login-text").textContent = "This is the first time you log in to the OpenEDC Server. Please choose a new secure password.";
-            $("#login-modal #confirm-password-input").parentNode.parentNode.classList.remove("is-hidden");
-            $("#login-modal #username-input").disabled = true;
+            $("#login-confirm-password-input").parentNode.parentNode.classList.remove("is-hidden");
+            $("#login-username-input").disabled = true;
             break;
         default:
-            $("#login-modal #login-incorrect-hint").classList.remove("is-hidden");
+            $("#login-incorrect-hint").classList.remove("is-hidden");
     }
 }
 
@@ -221,11 +222,11 @@ function showUninitializedHint() {
     ioHelper.showMessage("Server uninitialized", `This OpenEDC Server has not yet been initialized.<br><br>You can either go to <a target="_blank" href="https://openedc.org">openedc.org</a> to initialize this server with data that you have already locally captured there, or, alternatively, close this hint, start a new local project here, and initialize the server from here as well.<br><br>In both cases, use the <i>Project Options</i> button in the top right corner of the app and follow the instructions to initialize this server.`);
 }
 
-window.forgotPassword = function() {
+window.showForgotPasswordModal = function() {
     if (ioHelper.hasServerURL()) {
         ioHelper.showMessage("Forgot password", "All data within OpenEDC is stored and transferred end-to-end encrypted. Therefore, it is currently not possible to automatically reset a forgotten password, unfortunately.<br><br>If you forgot your password, please contact the person that gave you your login credentials. This person is able to reset your password with a new initial password.");
     } else {
-        ioHelper.showMessage("Forgot password", "You encrypted all data within OpenEDC. Therefore, the data cannot be opened without your password.<br><br>If you forgot your password, you have to remove all data to use OpenEDC again, unfortunately.");
+        ioHelper.showMessage("Forgot password", "You encrypted all data within OpenEDC. Therefore, the stored data cannot be viewed or edited without your password.<br><br>If you forgot your password, you have to remove all data to use OpenEDC again, unfortunately.");
     }
 }
 
@@ -419,6 +420,15 @@ window.saveStudyNameDescription = function() {
     hideProjectModal();
     setTitles();
     metadataModule.setArrowKeyListener();
+}
+
+window.showRemoveAllDataModal = function() {
+    ioHelper.showMessage(
+        "Remove data",
+        "Do you really want to remove all data? This cannot be undone.",
+        { "Remove": () => removeAllData() },
+        ioHelper.callbackTypes.DANGER
+    );
 }
 
 window.showAboutModal = function() {

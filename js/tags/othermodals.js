@@ -48,7 +48,7 @@ class LoginModal extends HTMLElement {
                             <form>
                                 <div class="field">
                                     <div class="control has-icons-left">
-                                        <input class="input" id="username-input" type="text" autocomplete="username" placeholder="Username">
+                                        <input class="input" id="login-username-input" type="text" autocomplete="username" placeholder="Username">
                                         <span class="icon is-small is-left">
                                             <i class="fas fa-user"></i>
                                         </span>
@@ -56,7 +56,7 @@ class LoginModal extends HTMLElement {
                                 </div>
                                 <div class="field">
                                     <div class="control has-icons-left">
-                                        <input class="input" id="password-input" type="password" autocomplete="current-password" placeholder="Password">
+                                        <input class="input" id="login-password-input" type="password" autocomplete="current-password" placeholder="Password">
                                         <span class="icon is-small is-left">
                                             <i class="fas fa-lock"></i>
                                         </span>
@@ -64,7 +64,7 @@ class LoginModal extends HTMLElement {
                                 </div>
                                 <div class="field is-hidden">
                                     <div class="control has-icons-left">
-                                        <input class="input" id="confirm-password-input" type="password" autocomplete="current-password" placeholder="Password (confirm)">
+                                        <input class="input" id="login-confirm-password-input" type="password" autocomplete="current-password" placeholder="Password (confirm)">
                                         <span class="icon is-small is-left">
                                             <i class="fas fa-lock"></i>
                                         </span>
@@ -72,7 +72,10 @@ class LoginModal extends HTMLElement {
                                 </div>
                                 <button class="button is-link mt-3" id="open-button" type="submit">Open</button>
                             </form>
-                            <button class="button is-text is-small mt-3" onclick="forgotPassword()">Forgot password?</button>
+                            <div class="buttons is-centered mt-3">
+                                <button class="button is-text is-small" onclick="showForgotPasswordModal()">Forgot password?</button>
+                                <button class="button is-text is-small is-hidden" id="remove-data-button" onclick="showRemoveAllDataModal()">Remove data?</button>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -97,7 +97,7 @@ class ProjectModal extends HTMLElement {
                                 <p class="mb-5">The following option lets you remove all stored data and thereby reset the current project.</p>
                                 <p class="mb-5"><strong>Warning: This cannot be undone.</strong></p>
                                 <div class="buttons">
-                                    <button class="button is-danger is-small" onclick="removeAllData()">Remove data (complete)</button>
+                                    <button class="button is-danger is-small" onclick="showRemoveAllDataModal()">Remove data (complete)</button>
                                     <button class="button is-danger is-small" onclick="removeClinicaldata()">Remove data (only clinicaldata)</button>
                                     <div class="file is-hidden" id="odm-upload-to-server">
                                         <label class="file-label">
