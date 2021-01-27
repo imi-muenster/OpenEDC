@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.3
+
+- Option to remove locally stored and encrypted data if password is lost
+- Improved drag and drop of elements into empty parent elements
+- Solved problem where Safari on iOS or macOS would not store line breaks within multiline text areas
+- Fixed problem where Firefox would download .csv files with .xml file extension
+
 ## 0.1.2
 
 - Hide unavailable languages in clinical data module
