@@ -803,7 +803,7 @@ window.addCodeListItem = function(event) {
     event.target.blur();
 }
 
-window.removeElement = function() {
+function removeElement() {
     switch (currentElementType) {
         case metadataHelper.elementTypes.STUDYEVENT:
             metadataHelper.removeStudyEventRef(currentElementID.studyEvent);
@@ -828,13 +828,12 @@ window.removeElement = function() {
     }
     currentElementType = null;
 
-    hideRemoveModal();
     resetDetailsPanel();
     reloadTree();
     metadataHelper.storeMetadata();
 }
 
-window.duplicateReference = function() {
+function duplicateReference() {
     if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) {
         let newItemOID = metadataHelper.createItem(currentElementID.itemGroup);
         metadataHelper.addCodeListRef(newItemOID, currentElementID.codeList);
@@ -843,12 +842,11 @@ window.duplicateReference = function() {
         elementRef.parentNode.insertBefore(elementRef.cloneNode(), elementRef.nextSibling);
     }
 
-    hideDuplicateModal();
     reloadTree();
     reloadDetailsPanel();
 }
 
-window.shallowOrDeepCopy = function(deepCopy) {
+function copyElement(deepCopy) {
     switch (currentElementType) {
         case metadataHelper.elementTypes.STUDYEVENT:
             metadataHelper.copyStudyEvent(currentElementID.studyEvent, deepCopy);
@@ -868,7 +866,6 @@ window.shallowOrDeepCopy = function(deepCopy) {
             metadataHelper.addCodeListRef(newItemOID, newCodeListOID);
     }
 
-    hideDuplicateModal();
     reloadTree();
     reloadDetailsPanel();
 }
@@ -1083,34 +1080,27 @@ window.elementDrop = async function(event) {
 window.showRemoveModal = async function() {
     const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID());
     if (subjectKeys.length > 0) {
-        $("#remove-modal .notification strong").textContent = subjectKeys.join(", ");
-        $("#remove-modal .notification").classList.remove("is-hidden");
-        $("#remove-modal p").classList.add("is-hidden");
-        $("#remove-modal button").disabled = true;
+        ioHelper.showMessage("Cannot be removed", "You cannot currently remove this element since it has clinical data assigned for the following subjects:<br><br><strong>" + subjectKeys.join(", ") + "</strong>");
     } else {
-        $("#remove-modal .notification strong").textContent = "";
-        $("#remove-modal .notification").classList.add("is-hidden");
-        $("#remove-modal p").classList.remove("is-hidden");
-        $("#remove-modal button").disabled = false;
+        ioHelper.showMessage(
+            "Please confirm",
+            "The reference to the element will be removed. The element definition will be removed as well if there is no other reference to it.",
+            { "Remove": () => removeElement() },
+            ioHelper.callbackTypes.DANGER
+        );
     }
-
-    removeArrowKeyListener();
-    $("#remove-modal").classList.add("is-active");
-}
-
-window.hideRemoveModal = function() {
-    $("#remove-modal").classList.remove("is-active");
-    setArrowKeyListener();
 }
 
 window.showDuplicateModal = function() {
-    removeArrowKeyListener();
-    $("#duplicate-modal").classList.add("is-active");
-}
-
-window.hideDuplicateModal = function() {
-    $("#duplicate-modal").classList.remove("is-active");
-    setArrowKeyListener();
+    ioHelper.showMessage(
+        "Mode of duplication",
+        "It possible to either duplicate the reference to the elements definition, to create a new shallow copy with the same children references, or to recursively deep copy the element and all its descendants.<br><br>Hint: If you create a reference, the original element and its descendants are updated if you make changes in the new element. A shallow or deep copy lets you make changes that do not affect the original element (shallow) and its descendants (deep). In a shallow copy you can still rearrange, remove, or add direct children references without affecting the original element.",
+        {
+            "Reference": () => duplicateReference(),
+            "Shallow copy": () => copyElement(false),
+            "Deep copy": () => copyElement(true)
+        }
+    );
 }
 
 window.showMoreModal = function() {

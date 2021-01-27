@@ -45,6 +45,11 @@ export const loginStatus = {
     USERHASINITIALPASSWORD: 1
 }
 
+export const callbackTypes = {
+    DEFAULT: 0,
+    DANGER: 1
+}
+
 const $ = query => document.querySelector(query);
 
 const fileNames = {
@@ -493,9 +498,13 @@ export function hideMenu() {
     $("#language-dropdown").classList.add("is-hidden-touch");
 }
 
-export function showMessage(title, text) {
+export function showMessage(title, message, callbacks, callbackType) {
     const messageModal = document.createElement("message-modal");
-    messageModal.setTexts(title, text, languageHelper.getTranslation("okay"));
+    messageModal.setTitle(title);
+    messageModal.setMessage(message);
+    messageModal.setCallbacks(callbacks);
+    messageModal.setCallbackType(callbackType == callbackTypes.DANGER ? "is-danger" : "is-link");
+    messageModal.setCloseText(callbacks ? "Close" : "Okay");
     
     if (!$("message-modal")) document.body.appendChild(messageModal);
 }

@@ -127,27 +127,7 @@ class AboutModal extends HTMLElement {
     }
 }
 
-class RemoveModal extends HTMLElement {
-    connectedCallback() {
-        this.innerHTML = `
-            <div class="modal" id="remove-modal">
-                <div class="modal-background" onclick="hideRemoveModal()"></div>
-                <div class="modal-content is-medium">
-                    <div class="box has-text-centered">
-                        <h2 class="subtitle">Please confirm</h2>
-                        <div class="notification is-danger is-hidden">You cannot currently remove this element since there is clinical data assigned to it for the following subjects: <strong></strong>.</div>
-                        <p class="mb-5">The reference to the element will be removed. The element definition will be removed as well if there is no other reference to it.</p>
-                        <div class="buttons is-centered">
-                            <button class="button is-danger is-small" onclick="removeElement()">Remove</button>
-                            <button class="button is-small" onclick="hideRemoveModal()">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-}
-
+// TODO: This could be removed and replaced by the MessageModal in the future
 class CloseClinicaldataModal extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
@@ -161,29 +141,6 @@ class CloseClinicaldataModal extends HTMLElement {
                             <button class="button is-small" onclick="closeFormData()" i18n="close-without-saving"></button>
                             <button class="button is-small" onclick="closeFormData(true)" i18n="close-with-saving"></button>
                             <button class="button is-link is-small" onclick="hideCloseClinicalDataModal()" i18n="continue"></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-}
-
-class DuplicateModal extends HTMLElement {
-    connectedCallback() {
-        this.innerHTML = `
-            <div class="modal" id="duplicate-modal">
-                <div class="modal-background" onclick="hideDuplicateModal()"></div>
-                <div class="modal-content is-medium">
-                    <div class="box has-text-centered">
-                        <h2 class="subtitle">Mode of duplication</h2>
-                        <p class="mb-5">It possible to either duplicate the reference to the elements definition, to create a new shallow copy with the same children references, or to recursively deep copy the element and all its descendants.</p>
-                        <p class="mb-5"><strong>Hint:</strong> If you create a reference, the original element and its descendants are updated if you make changes in the new element. A shallow or deep copy lets you make changes that do not affect the original element (shallow) and its descendants (deep). In a shallow copy you can still rearrange, remove, or add direct children references without affecting the original element.</p>
-                        <div class="buttons is-centered">
-                            <button class="button is-small is-link" onclick="duplicateReference()">Reference</button>
-                            <button class="button is-small is-link" onclick="shallowOrDeepCopy(false)">Shallow copy</button>
-                            <button class="button is-small is-link" onclick="shallowOrDeepCopy(true)">Deep copy</button>
-                            <button class="button is-small" onclick="hideDuplicateModal()">Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -254,11 +211,11 @@ class SurveyCodeModal extends HTMLElement {
 }
 
 class MessageModal extends HTMLElement {
-    setTexts(messageTitle, messageText, buttonCaption) {
-        this.messageTitle = messageTitle;
-        this.messageText = messageText;
-        this.buttonCaption = buttonCaption;
-    }
+    setTitle(title) { this.title = title; }
+    setMessage(message) { this.message = message; }
+    setCallbacks(callbacks) { this.callbacks = callbacks; }
+    setCallbackType(callbackType) { this.callbackType = callbackType; }
+    setCloseText(closeText) { this.closeText = closeText; }
 
     connectedCallback() {
         this.innerHTML = `
@@ -266,24 +223,44 @@ class MessageModal extends HTMLElement {
                 <div class="modal-background"></div>
                 <div class="modal-content is-medium">
                     <div class="box has-text-centered">
-                        <h2 class="subtitle">${this.messageTitle}</h2>
-                        <p class="mb-5">${this.messageText}</p>
-                        <button class="button is-small is-link">${this.buttonCaption}</button>
+                        <h2 class="subtitle">${this.title}</h2>
+                        <p class="mb-5">${this.message}</p>
+                        <div class="buttons is-centered"></div>
                     </div>
                 </div>
             </div>
         `;
 
-        this.querySelector("button").addEventListener("click", () => this.remove());
+        // Add buttons for callbacks
+        if (this.callbacks) {
+            for (const [text, callback] of Object.entries(this.callbacks)) {
+                let button = document.createElement("button");
+                button.classList = `button is-small ${this.callbackType}`;
+                button.textContent = text;
+                button.onclick = () => {
+                    callback();
+                    this.remove();
+                };
+                this.querySelector(".buttons").insertAdjacentElement("beforeend", button);
+            }
+        }
+        
+        // Add close button
+        let button = document.createElement("button");
+        button.classList = this.callbacks ? "button is-small" : "button is-small is-link";
+        button.textContent = this.closeText;
+        button.onclick = () => this.remove();
+        this.querySelector(".buttons").insertAdjacentElement("beforeend", button);
+
+        // Add event handler for clicking on the modal background
+        this.querySelector(".modal-background").onclick = () => this.remove();
     }
 }
 
 window.customElements.define("start-modal", StartModal);
 window.customElements.define("login-modal", LoginModal);
 window.customElements.define("about-modal", AboutModal);
-window.customElements.define("remove-modal", RemoveModal);
 window.customElements.define("close-clinicaldata-modal", CloseClinicaldataModal);
-window.customElements.define("duplicate-modal", DuplicateModal);
 window.customElements.define("subject-modal", SubjectModal);
 window.customElements.define("survey-code-modal", SurveyCodeModal);
 window.customElements.define("message-modal", MessageModal);

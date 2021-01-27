@@ -496,7 +496,7 @@ export function setIOListeners() {
 }
 
 function addModalsToDOM() {
-    const modalNames = ["project", "more", "about", "remove", "close-clinicaldata", "duplicate", "subject", "survey-code"];
+    const modalNames = ["project", "more", "about", "close-clinicaldata", "subject", "survey-code"];
     for (let modalName of modalNames) {
         document.body.appendChild(document.createElement(modalName + "-modal"));
     }
