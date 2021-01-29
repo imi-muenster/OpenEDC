@@ -144,8 +144,7 @@ export function loadSubjectKeys() {
     subjects.length > 0 ? $("#no-subjects-hint").classList.add("is-hidden") : $("#no-subjects-hint").classList.remove("is-hidden");
 
     for (let subject of subjects) {
-        const dataStatus = subject.hasConflicts ? clinicaldataHelper.dataStatusTypes.CONFLICT : null;
-        let panelBlock = htmlElements.getClinicaldataPanelBlock(subject.uniqueKey, subject.key, null, dataStatus);
+        let panelBlock = htmlElements.getClinicaldataPanelBlock(subject.uniqueKey, subject.key, null, subject.status);
         panelBlock.onclick = () => loadSubjectData(subject.uniqueKey);
         $("#subject-panel-blocks").appendChild(panelBlock);
     }
@@ -437,6 +436,7 @@ function scrollToFormStart() {
 async function saveFormData() {
     let formItemDataList = getFormData();
     await clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList);
+    loadSubjectKeys();
 
     // When mandatory fields were not answered show a warning only once
     if (!skipMandatoryCheck && !checkMandatoryFields(formItemDataList)) {

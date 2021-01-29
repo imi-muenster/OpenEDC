@@ -202,16 +202,7 @@ export async function getSubjectData(fileName) {
 }
 
 export async function storeSubjectData(subject, subjectData) {
-    const previousFileName = subject.fileName;
-
-    subject.modifiedDate = new Date();
     await storeXMLData(subject.fileName, subjectData);
-
-    // This mechanism helps to prevent possible data loss when multiple users edit the same subject data at the same time (especially important for the offline mode)
-    // If the previousFileName cannot be removed, the system keeps multiple current versions of the subject data and the user is notified that conflicting data exists
-    if (previousFileName != subject.fileName) removeSubjectData(previousFileName);
-
-    return subject;
 }
 
 export async function removeSubjectData(fileName) {

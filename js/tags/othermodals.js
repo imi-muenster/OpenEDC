@@ -9,8 +9,8 @@ class StartModal extends HTMLElement {
                             <h1 class="title">OpenEDC – Start</h1>
                             <h2 class="subtitle">Please choose a starting point</h2>
                             <hr>
-                            <p class="mb-5">This free and <a target="_blank" href="#">open-source</a> electronic data capture (EDC) system lets you create and conduct secure medical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format.</p>
-                            <p class="mb-5">All data is entirely processed offline on your local device. You can optionally connect to your own <a target="_blank" href="#">OpenEDC Server</a> to create multi-centric research studies with multiple users and sites.</p>
+                            <p class="mb-5">This free and <a target="_blank" href="https://github.com/imi-muenster/OpenEDC">open-source</a> electronic data capture (EDC) system lets you create and conduct secure medical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format.</p>
+                            <p class="mb-5">All data is entirely processed offline on your local device. You can optionally connect to your own <a target="_blank" href="https://github.com/imi-muenster/OpenEDC-Server">OpenEDC Server</a> to create multi-centric research studies with multiple users and sites.</p>
                             <p class="mb-5">For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you have an ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an exemplary project and see how it all works.</p>
                             <div class="buttons is-centered">
                                 <button class="button" onclick="newProject()">New Project</button>
@@ -93,6 +93,7 @@ class AboutModal extends HTMLElement {
         const address_2 = "Director: Prof. Dr. Martin Dugas";
         const address_3 = "Albert-Schweitzer-Campus 1, A11";
         const address_4 = "48149 Münster, Germany";
+        const dataProtectionPolicy = "https://medical-data-models.org/imprint?lang=en#data-privacy";
 
         this.innerHTML = `
             <div class="modal" id="about-modal">
@@ -103,8 +104,8 @@ class AboutModal extends HTMLElement {
                             <h1 class="title">About OpenEDC</h1>
                             <h2 class="subtitle"></h2>
                             <hr>
-                            <p class="mb-5">This free and <a target="_blank" href="#">open-source</a> electronic data capture (EDC) system lets you create and conduct secure medical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format.</p>
-                            <p class="mb-5">All data is entirely processed offline on your local device. You can optionally connect to your own <a target="_blank" href="#">OpenEDC Server</a> to create multi-centric research studies with multiple users and sites.</p>
+                            <p class="mb-5">This free and <a target="_blank" href="https://github.com/imi-muenster/OpenEDC">open-source</a> electronic data capture (EDC) system lets you create and conduct secure medical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format.</p>
+                            <p class="mb-5">All data is entirely processed offline on your local device. You can optionally connect to your own <a target="_blank" href="https://github.com/imi-muenster/OpenEDC-Server">OpenEDC Server</a> to create multi-centric research studies with multiple users and sites.</p>
                             <div class="notification">
                                 <p>${name}</p>
                                 <p>${phone}</p>
@@ -114,7 +115,7 @@ class AboutModal extends HTMLElement {
                                 <p>${address_3}</p>
                                 <p>${address_4}</p>
                             </div>
-                            <a class="button is-rounded is-small is-link mb-5" target="_blank" href="https://medical-data-models.org/imprint?lang=en#data-privacy">
+                            <a class="button is-rounded is-small is-link mb-5" target="_blank" href="${dataProtectionPolicy}">
                                 <span class="icon">
                                     <i class="fas fa-arrow-right"></i>
                                 </span>

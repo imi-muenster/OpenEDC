@@ -3,19 +3,20 @@ import * as admindataHelper from "./admindatahelper.js";
 import * as ioHelper from "./iohelper.js";
 
 class Subject {
-    constructor(key, siteOID, createdDate, modifiedDate) {
+    constructor(key, siteOID, createdDate, modifiedDate, status) {
         this.key = key;
         this.siteOID = siteOID;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate || createdDate;
+        this.status = status;
 
         // Used since a subject's key can be ambigous when data conflicts are present (i.e., multiple users edited the same subject at the same)
         this.uniqueKey = key;
-        this.hasConflicts = false;
     }
 
     get fileName() {
-        return this.key + fileNameSeparator + (this.siteOID || "") + fileNameSeparator + this.createdDate.getTime() + fileNameSeparator + this.modifiedDate.getTime();
+        // The status is only attached if present since it has been introduced in 0.1.4 and should not break previously captured data without status
+        return this.key + fileNameSeparator + (this.siteOID || "") + fileNameSeparator + this.createdDate.getTime() + fileNameSeparator + this.modifiedDate.getTime() + (this.status ? fileNameSeparator + this.status : "");
     }
 }
 
@@ -52,17 +53,17 @@ export const sortOrderTypes = {
 };
 
 export const dataStatusTypes = {
-    EMPTY: "Empty",
-    EXISTING: "Existing",
-    VERIFIED: "Verified",
-    CONFLICT: "Conflict"
+    EMPTY: 1,
+    EXISTING: 2,
+    VERIFIED: 3,
+    CONFLICT: 4
 };
 
 // TODO: Implement anaologously in other helpers?
 // TODO: Could implement other enums with ints as well if there is no string representation needed
 export const errors = {
-    SUBJECTKEYEMPTY: 0,
-    SUBJECTKEYEXISTENT: 1
+    SUBJECTKEYEMPTY: 1,
+    SUBJECTKEYEXISTENT: 2
 }
 
 const fileNameSeparator = "__";
@@ -73,10 +74,10 @@ let subjectData = null;
 
 export async function importClinicaldata(odmXMLString) {
     const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
-    for (let subjectData of odm.querySelectorAll("ClinicalData SubjectData")) {
-        const siteOID = subjectData.querySelector("SiteRef") ? subjectData.querySelector("SiteRef").getAttribute("LocationOID") : null;
-        const creationDate = subjectData.querySelector("AuditRecord DateTimeStamp") ? new Date(subjectData.querySelector("AuditRecord DateTimeStamp").textContent) : new Date();
-        const subject = new Subject(subjectData.getAttribute("SubjectKey"), siteOID, creationDate);
+    for (subjectData of odm.querySelectorAll("ClinicalData SubjectData")) {
+        const siteOID = $("SiteRef") ? $("SiteRef").getAttribute("LocationOID") : null;
+        const creationDate = $("AuditRecord DateTimeStamp") ? new Date($("AuditRecord DateTimeStamp").textContent) : new Date();
+        const subject = new Subject(subjectData.getAttribute("SubjectKey"), siteOID, creationDate, null, getDataStatus());
         await ioHelper.storeSubjectData(subject, subjectData);
     }
 }
@@ -108,8 +109,8 @@ export async function loadSubjects() {
     subjects = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY);
     for (let i = 0; i < subjects.length-1; i++) {
         if (subjects[i].key == subjects[i+1].key) {
-            subjects[i].hasConflicts = true;
-            subjects[i+1].hasConflicts = true;
+            subjects[i].status = dataStatusTypes.CONFLICT;
+            subjects[i+1].status = dataStatusTypes.CONFLICT;
             subjects[i+1].uniqueKey = subjects[i+1].key + fileNameSeparator + i;
             
             // Show a warning that data conflicts exist when the user has manage subjects right and the warning has not shown before
@@ -130,7 +131,7 @@ export async function addSubject(subjectKey, siteOID) {
     const creationDate = new Date();
     subjectData.appendChild(clinicaldataTemplates.getAuditRecord(admindataHelper.getCurrentUserOID(), siteOID, creationDate.toISOString()));
 
-    subject = new Subject(subjectKey, siteOID, creationDate);
+    subject = new Subject(subjectKey, siteOID, creationDate, null, dataStatusTypes.EMPTY);
     subjects.push(subject);
 
     await storeSubject();
@@ -168,9 +169,17 @@ export async function loadSubject(subjectKey) {
 
 export async function storeSubject() {
     if (!subject) return;
-    
     console.log("Store subject ...");
-    subject = await ioHelper.storeSubjectData(subject, subjectData);
+
+    const previousFileName = subject.fileName;
+
+    subject.status = getDataStatus();
+    subject.modifiedDate = new Date();
+    await ioHelper.storeSubjectData(subject, subjectData);
+
+    // This mechanism helps to prevent possible data loss when multiple users edit the same subject data at the same time (especially important for the offline mode)
+    // If the previousFileName cannot be removed, the system keeps multiple current versions of the subject data and the user is notified that conflicting data exists
+    if (previousFileName != subject.fileName) ioHelper.removeSubjectData(previousFileName);
 }
 
 export function clearSubject() {
@@ -196,8 +205,9 @@ function fileNameToSubject(fileName) {
     const siteOID = fileNameParts[1] || null;
     const createdDate = fileNameParts[2];
     const modifiedDate = fileNameParts[3];
+    const status = parseInt(fileNameParts[4]) || null;
 
-    return new Subject(key, siteOID, new Date(parseInt(createdDate)), new Date(parseInt(modifiedDate)));
+    return new Subject(key, siteOID, new Date(parseInt(createdDate)), new Date(parseInt(modifiedDate)), status);
 }
 
 export async function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
@@ -335,6 +345,10 @@ export async function setSubjectInfo(subjectKey, siteOID) {
     await loadSubjects();
 
     return Promise.resolve();
+}
+
+export function getDataStatus() {
+    return $("StudyEventData") ? dataStatusTypes.EXISTING : dataStatusTypes.EMPTY;
 }
 
 export function getDataStatusForStudyEvent(studyEventOID) {

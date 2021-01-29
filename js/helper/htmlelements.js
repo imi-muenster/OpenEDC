@@ -48,20 +48,20 @@ export function getClinicaldataPanelBlock(elementOID, displayText, fallbackText,
 
     if (dataStatus) {
         let dot = document.createElement("span");
-        dot.className = dataStatus == "Conflict" ? "panel-icon has-text-danger" : "panel-icon has-text-link";
+        dot.className = dataStatus == 4 ? "panel-icon has-text-danger" : "panel-icon has-text-link";
         let dotIcon = document.createElement("i");
 
         switch (dataStatus) {
-            case "Empty":
+            case 1:
                 dotIcon.className = "far fa-circle";
                 break;
-            case "Existing":
+            case 2:
                 dotIcon.className = "fas fa-circle";
                 break;
-            case "Verified":
+            case 3:
                 dotIcon.className = "fas fa-check-circle";
                 break;
-            case "Conflict":
+            case 4:
                 dotIcon.className = "fas fa-circle";
         }
 
