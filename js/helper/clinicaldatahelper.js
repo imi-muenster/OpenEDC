@@ -1,4 +1,5 @@
 import * as clinicaldataTemplates from "./clinicaldatatemplates.js";
+import * as metadataHelper from "./metadatahelper.js";
 import * as admindataHelper from "./admindatahelper.js";
 import * as ioHelper from "./iohelper.js";
 
@@ -54,9 +55,10 @@ export const sortOrderTypes = {
 
 export const dataStatusTypes = {
     EMPTY: 1,
-    EXISTING: 2,
-    VERIFIED: 3,
-    CONFLICT: 4
+    INCOMPLETE: 2,
+    COMPLETE: 3,
+    VERIFIED: 4,
+    CONFLICT: 5
 };
 
 // TODO: Implement anaologously in other helpers?
@@ -348,15 +350,27 @@ export async function setSubjectInfo(subjectKey, siteOID) {
 }
 
 export function getDataStatus() {
-    return $("StudyEventData") ? dataStatusTypes.EXISTING : dataStatusTypes.EMPTY;
+    const dataStates = metadataHelper.getStudyEventOIDs().map(studyEventOID => getDataStatusForStudyEvent(studyEventOID));
+
+    if (dataStates.every(item => item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
+    if (dataStates.every(item => item == dataStatusTypes.INCOMPLETE)) return dataStatusTypes.INCOMPLETE;
+    if (dataStates.some(item => item == dataStatusTypes.COMPLETE)) return dataStatusTypes.INCOMPLETE;
+    if (dataStates.some(item => item == dataStatusTypes.INCOMPLETE)) return dataStatusTypes.INCOMPLETE;
+    
+    return dataStatusTypes.EMPTY;
 }
 
 export function getDataStatusForStudyEvent(studyEventOID) {
-    return $(`StudyEventData[StudyEventOID="${studyEventOID}"]`) ? dataStatusTypes.EXISTING : dataStatusTypes.EMPTY;
+    const dataStates = metadataHelper.getFormOIDsByStudyEvent(studyEventOID).map(formOID => getDataStatusForForm(studyEventOID, formOID));
+
+    if (dataStates.every(item => item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
+    if (dataStates.some(item => item == dataStatusTypes.COMPLETE)) return dataStatusTypes.INCOMPLETE;
+    
+    return dataStatusTypes.EMPTY;
 }
 
 export function getDataStatusForForm(studyEventOID, formOID) {
-    return $(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`) ? dataStatusTypes.EXISTING : dataStatusTypes.EMPTY;
+    return $(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`) ? dataStatusTypes.COMPLETE : dataStatusTypes.EMPTY;
 }
 
 export async function getSubjectsHavingDataForElement(elementOID) {

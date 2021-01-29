@@ -112,6 +112,11 @@ export function setCreationDateTimeNow() {
     $("ODM").setAttribute("CreationDateTime", new Date().toISOString());
 }
 
+// TODO: This could be used within getStudyEvents()
+export function getStudyEventOIDs() {
+    return Array.from($$("Protocol StudyEventRef")).map(studyEventRef => studyEventRef.getAttribute("StudyEventOID"));
+}
+
 export function getStudyEvents() {
     let studyEventDefs = [];
     for (let studyEventRef of $$("Protocol StudyEventRef")) {
@@ -121,6 +126,11 @@ export function getStudyEvents() {
     }
 
     return studyEventDefs;
+}
+
+// TODO: The same is used in safeDeleteStudyEvent() and could be replaced by this function call. It could also be used within getFormsByStudyEvent()
+export function getFormOIDsByStudyEvent(studyEventOID) {
+    return Array.from($$(`StudyEventDef[OID="${studyEventOID}"] FormRef`)).map(formRef => formRef.getAttribute("FormOID"));
 }
 
 export function getFormsByStudyEvent(studyEventOID) {
