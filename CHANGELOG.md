@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.4
+
+- New status icon for subjects to quickly see if and how much data has already been collected
+- More granular status icon for study events to see whether the event has been completed without the need to open it
+- Improved formatting of CSV export to support values with quotes and commas
+
 ## 0.1.3
 
 - Option to remove locally stored and encrypted data if password is lost
