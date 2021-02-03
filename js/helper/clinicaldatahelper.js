@@ -415,7 +415,7 @@ export async function getCSVData(csvHeaders) {
             }
 
             const itemData = formData.querySelector(`ItemGroupData[ItemGroupOID="${itemGroupOID}"] ItemData[ItemOID="${itemOID}"]`);
-            const value = itemData ? itemData.getAttribute("Value").replaceAll("'", '"').replaceAll('"', '""') : "";
+            const value = itemData ? itemData.getAttribute("Value").replace(/'/g, '"').replace(/"/g, '""') : "";
             subjectCSVData.push(value.includes(",") || value.includes('"') ? '"' + value + '"' : value);
         }
 

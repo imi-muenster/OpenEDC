@@ -350,7 +350,7 @@ function loadFormClinicaldata() {
                 if (!fieldElement.classList.contains("is-hidden")) inputElement.dispatchEvent(new Event("input"));
                 break;
             case "textarea":
-                inputElement.value = formItemData.value.replaceAll("\\n", "\n");
+                inputElement.value = formItemData.value.replace(/\\n/g, "\n");
                 break;
             case "radio":
                 inputElement = $(`#clinicaldata-content [preview-oid="${formItemData.itemOID}"][preview-group-oid="${formItemData.itemGroupOID}"][value="${formItemData.value}"]`);
@@ -461,7 +461,7 @@ function getFormData() {
                 if (value) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
                 break;
             case "textarea":
-                if (value) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value.replaceAll("\n", "\\n")));
+                if (value) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value.replace(/\n/g, "\\n")));
             case "radio":
                 if (inputElement.checked) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
         }

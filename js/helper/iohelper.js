@@ -530,7 +530,7 @@ export function getCSVString(csvHeaders, csvData) {
         // Add the actual header
         for (let j = 0; j < csvHeaders.length; j++) {
             // += is the most efficient way for string concatenation in javascript
-            if (j == 0 || csvHeaders[j][i] != csvHeaders[j-1][i]) csvString += csvHeaders[j][i].replaceAll(",", "");
+            if (j == 0 || csvHeaders[j][i] != csvHeaders[j-1][i]) csvString += csvHeaders[j][i].replace(/,/g, "");
             if (j < csvHeaders.length-1) csvString += ",";
         }
         csvString += "\n";
