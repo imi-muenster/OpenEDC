@@ -27,7 +27,7 @@ export function getMetadataPanelBlock(elementOID, elementType, displayText, fall
         let dot = document.createElement("span");
         dot.className = "panel-icon has-text-link";
         let dotIcon = document.createElement("i");
-        dotIcon.className = "fas fa-exclamation";
+        dotIcon.className = "fas fa-question";
         dot.appendChild(dotIcon);
         panelBlock.appendChild(dot);
         panelBlock.title = "Element not translated.";
