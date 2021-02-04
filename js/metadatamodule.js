@@ -413,15 +413,11 @@ function fillRangeChecks() {
 
 function fillElementDescription() {
     $("#element-description-textarea").value = null;
-    $("#element-description-textarea").disabled = false;
-    if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) {
-        $("#element-description-textarea").disabled = true;
-    } else if (currentElementType == metadataHelper.elementTypes.ITEM) {
+    $("#element-description-textarea").disabled = true;
+    if (currentElementType == metadataHelper.elementTypes.ITEM) {
         let element = metadataHelper.getElementDefByOID(currentElementID.item);
         let translatedText = element.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         if (translatedText) $("#element-description-textarea").value = translatedText.textContent;
-    } else {
-        $("#element-description-textarea").value = $("#question-textarea").value;
     }
 }
 
@@ -534,11 +530,9 @@ window.saveMoreModal = function() {
         saveCondition();
         saveMeasurementUnit();
         saveRangeChecks();
+        saveDescription();
     }
-    if (currentElementType != metadataHelper.elementTypes.CODELISTITEM) {
-        saveElementDescription();
-        reloadDetailsPanel();
-    }
+
     saveAliases();
     saveConditions();
     saveMeasurementUnits();
@@ -582,7 +576,7 @@ function saveAliases() {
     }
 }
 
-function saveElementDescription() {
+function saveDescription() {
     metadataHelper.setElementDescription(getCurrentElementOID(), $("#element-description-textarea").value, locale);
 }
 
