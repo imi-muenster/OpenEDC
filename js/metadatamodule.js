@@ -418,6 +418,7 @@ function fillElementDescription() {
         let element = metadataHelper.getElementDefByOID(currentElementID.item);
         let translatedText = element.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         if (translatedText) $("#element-description-textarea").value = translatedText.textContent;
+        $("#element-description-textarea").disabled = false;
     }
 }
 

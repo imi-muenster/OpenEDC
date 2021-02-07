@@ -35,7 +35,7 @@
     "close-without-saving": "Close without saving",
     "close-with-saving": "Close with saving",
     "new-project-title": "You created your new project!",
-    "new-project-text": "Start by adding your first event with a click on the <i>Add</i> button below the <i>Events</i> title.<br><br>Events refer to points in time or incidents during your study for which you want to collect data. This could be, for example, <i>Baseline</i> and <i>Follow-up</i> or <i>Patient-reported data</i> and <i>Routine data</i>. You can name your events as you like.",
+    "new-project-text": "Start by adding your first event with a click on the <i>Add</i> button below the <i>Events</i> title.<br><br>Events refer to points in time or incidents during your study for which you want to collect data. This could be, for example, <i>Baseline</i> and <i>Follow-up</i> or <i>Patient-reported data</i> and <i>Routine data</i>. It is perfectly fine if your study consists of only one event.",
     "first-event-title": "You added your first event",
     "first-event-text": "Before you give your event a description, please make sure that the right language for your project is selected at the top.<br><br>You can change the language at any time to add new translations to your project. This lets you create a multilingual study.<br><br>Please note that this mainly changes the language of the forms but only small parts of the user interface. After ensuring that the right language is selected, add a description to your event to proceed with this tutorial.",
     "first-event-edited-title": "You added your first event description",
