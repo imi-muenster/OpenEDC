@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.5
+
+- A form is now automatically marked as incomplete when at least one mandatory item was not answered
+- An ODM Annotation and Flag element is now added to FormData elements which can be used to mark forms as validated/finalized in the future
+- Cross-browser compatibility improvements
+
 ## 0.1.4
 
 - New status icon for subjects to quickly see if and how much data has already been collected
