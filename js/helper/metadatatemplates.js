@@ -71,7 +71,7 @@ export let getStudyEventDef = (oid, name) => template(`
 
 export let getODMTemplate = () => {
     let template = `<?xml version="1.0" encoding="UTF-8"?>
-                        <ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" FileType="Snapshot" FileOID="" CreationDateTime="" ODMVersion="1.3.2">
+                        <ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" FileType="Snapshot" FileOID="" CreationDateTime="" ODMVersion="1.3.2" SourceSystem="OpenEDC">
                             <Study OID="S.1">
                                 <GlobalVariables>
                                     <StudyName>New Project</StudyName>

@@ -212,7 +212,7 @@ function fileNameToSubject(fileName) {
     return new Subject(key, siteOID, new Date(parseInt(createdDate)), new Date(parseInt(modifiedDate)), status);
 }
 
-export async function storeSubjectFormData(studyEventOID, formOID, formItemDataList) {
+export async function storeSubjectFormData(studyEventOID, formOID, formItemDataList, dataStatus) {
     // Do not store any data if no subject has been loaded or the formdata to be stored did not change compared to the previous one
     if (!subject || !dataHasChanged(formItemDataList, studyEventOID, formOID)) return;
 
@@ -221,6 +221,7 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
 
     let formData = clinicaldataTemplates.getFormData(formOID);
     formData.appendChild(clinicaldataTemplates.getAuditRecord(admindataHelper.getCurrentUserOID(), subject.siteOID, new Date().toISOString()));
+    formData.appendChild(clinicaldataTemplates.getFlag(dataStatus, metadataHelper.dataStatusCodeListOID));
 
     let itemGroupData = null;
     for (let formItemData of formItemDataList) {

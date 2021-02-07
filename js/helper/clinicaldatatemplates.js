@@ -42,3 +42,12 @@ export const getAuditRecord = (userOID, locationOID, dateTimeStamp) => template(
 export const getSiteRef = locationOID => template(`
     <SiteRef LocationOID="${locationOID}"/>
 `);
+
+// SeqNum always set to 1 since there will be only one flag for a parent entity (i.e., a form)
+export const getFlag = (flagValue, codeListOID) => template(`
+    <Annotation SeqNum="1">
+        <Flag>
+            <FlagValue CodeListOID="${codeListOID}">${flagValue}</FlagValue>
+        </Flag>
+    </Annotation>
+`);

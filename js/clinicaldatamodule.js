@@ -49,6 +49,7 @@ export function show() {
 
     languageHelper.createLanguageSelect();
     ioHelper.setTreeMaxHeight();
+    metadataHelper.addDataStatusCodeList(clinicaldataHelper.dataStatusTypes);
 }
 
 export function hide() {
@@ -436,8 +437,9 @@ function scrollToFormStart() {
 async function saveFormData() {
     const formItemDataList = getFormData();
     const mandatoryFieldsAnswered = checkMandatoryFields(formItemDataList);
+    const dataStatus = mandatoryFieldsAnswered ? clinicaldataHelper.dataStatusTypes.COMPLETE : clinicaldataHelper.dataStatusTypes.INCOMPLETE;
     
-    await clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList, mandatoryFieldsAnswered);
+    await clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList, dataStatus);
     loadSubjectKeys();
 
     // When mandatory fields were not answered show a warning only once

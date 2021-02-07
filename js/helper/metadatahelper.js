@@ -12,6 +12,8 @@ export const elementTypes = {
     CODELISTITEM: "codelistitem"
 }
 
+export const dataStatusCodeListOID = "Internal.DataStatus";
+
 let xsltStylesheet;
 let metadata;
 
@@ -70,6 +72,23 @@ export async function getFormAsHTML(formOID, locale, textAsTextarea) {
     xsltProcessor.setParameter(null, "textAsTextarea", textAsTextarea.toString());
 
     return xsltProcessor.transformToFragment(domParser.parseFromString(prettifiedODM, "text/xml"), document);
+}
+
+export function addDataStatusCodeList(statusTypes) {
+    // Only if not yet present
+    if ($(`CodeList[OID="${dataStatusCodeListOID}"]`)) return;
+
+    // Find insert position
+    let insertPosition = getLastElement($$("CodeList"));
+    if (!insertPosition) insertPosition = getLastElement($$("ItemDef"));
+    if (!insertPosition) return;
+
+    // Create form status code list
+    insertPosition.insertAdjacentElement("afterend", metadataTemplates.getCodeListDef(dataStatusCodeListOID));
+    for (const [key, value] of Object.entries(statusTypes)) {
+        addCodeListItem(dataStatusCodeListOID, value);
+        setCodeListItemDecodedText(dataStatusCodeListOID, value, key, "en");
+    }
 }
 
 export function getStudyName() {
@@ -667,8 +686,8 @@ export function createMeasurementUnit(name, symbol, locale) {
     $("BasicDefinitions").appendChild(metadataTemplates.getMeasurementUnitDef(newMeasurementUnitOID, name, symbol, locale));
 }
 
-export function addCodeListItem(codeListOID) {
-    let codedValue = generateUniqueCodedValue(codeListOID);
+export function addCodeListItem(codeListOID, codedValue) {
+    if (!codedValue) codedValue = generateUniqueCodedValue(codeListOID);
     let codeList = getElementDefByOID(codeListOID);
     
     codeList.appendChild(metadataTemplates.getCodeListItem(codedValue));
