@@ -253,10 +253,14 @@ function escapeXML(value) {
 }
 
 // TODO: Assumes that the data is ordered chronologically -- should be ensured during import
+function getCurrentFormData(studyEventOID, formOID) {
+    return getLastElement($$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`));
+}
+
 export function getSubjectFormData(studyEventOID, formOID) {
     if (!subject) return [];
 
-    let formData = getLastElement($$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`));
+    const formData = getCurrentFormData(studyEventOID, formOID);
     if (!formData) return [];
 
     return getFormItemDataList(formData);
@@ -354,7 +358,6 @@ export function getDataStatus() {
     const dataStates = metadataHelper.getStudyEventOIDs().map(studyEventOID => getDataStatusForStudyEvent(studyEventOID));
 
     if (dataStates.every(item => item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
-    if (dataStates.every(item => item == dataStatusTypes.INCOMPLETE)) return dataStatusTypes.INCOMPLETE;
     if (dataStates.some(item => item == dataStatusTypes.COMPLETE)) return dataStatusTypes.INCOMPLETE;
     if (dataStates.some(item => item == dataStatusTypes.INCOMPLETE)) return dataStatusTypes.INCOMPLETE;
     
@@ -366,12 +369,21 @@ export function getDataStatusForStudyEvent(studyEventOID) {
 
     if (dataStates.every(item => item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
     if (dataStates.some(item => item == dataStatusTypes.COMPLETE)) return dataStatusTypes.INCOMPLETE;
+    if (dataStates.some(item => item == dataStatusTypes.INCOMPLETE)) return dataStatusTypes.INCOMPLETE;
     
     return dataStatusTypes.EMPTY;
 }
 
 export function getDataStatusForForm(studyEventOID, formOID) {
-    return $(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`) ? dataStatusTypes.COMPLETE : dataStatusTypes.EMPTY;
+    const formData = getCurrentFormData(studyEventOID, formOID);
+    if (!formData) return dataStatusTypes.EMPTY;
+
+    // Return complete even if there is no flag to support versions before 0.1.5 and impoted data from other systems without a flag
+    const flag = formData.querySelector("Flag");
+    if (!flag) return dataStatusTypes.COMPLETE;
+
+    const flagValue = flag.querySelector("FlagValue");
+    return flagValue ? parseInt(flagValue.textContent) : dataStatusTypes.COMPLETE;
 }
 
 export async function getSubjectsHavingDataForElement(elementOID) {

@@ -401,6 +401,8 @@ window.loadNextFormData = async function() {
     } else {
         closeFormData();
     }
+
+    loadSubjectKeys();
 }
 
 window.loadPreviousFormData = async function() {
@@ -412,6 +414,8 @@ window.loadPreviousFormData = async function() {
         skipDataHasChangedCheck = true;
         loadTree(currentElementID.studyEvent, previousFormOID);
     }
+
+    loadSubjectKeys();
 }
 
 function getNextFormOID(previousFormOID) {
@@ -437,10 +441,14 @@ function scrollToFormStart() {
 async function saveFormData() {
     const formItemDataList = getFormData();
     const mandatoryFieldsAnswered = checkMandatoryFields(formItemDataList);
-    const dataStatus = mandatoryFieldsAnswered ? clinicaldataHelper.dataStatusTypes.COMPLETE : clinicaldataHelper.dataStatusTypes.INCOMPLETE;
+
+    // Determine data status
+    let dataStatus = clinicaldataHelper.dataStatusTypes.COMPLETE;
+    if (!mandatoryFieldsAnswered) dataStatus = clinicaldataHelper.dataStatusTypes.INCOMPLETE;
+    if (formItemDataList.length == 0) dataStatus = clinicaldataHelper.dataStatusTypes.EMPTY;
     
+    // Store data
     await clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList, dataStatus);
-    loadSubjectKeys();
 
     // When mandatory fields were not answered show a warning only once
     if (!skipMandatoryCheck && !mandatoryFieldsAnswered) {
