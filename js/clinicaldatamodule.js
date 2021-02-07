@@ -434,12 +434,15 @@ function scrollToFormStart() {
 }
 
 async function saveFormData() {
-    let formItemDataList = getFormData();
-    await clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList);
+    const formItemDataList = getFormData();
+    const mandatoryFieldsAnswered = checkMandatoryFields(formItemDataList);
+    
+    await clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList, mandatoryFieldsAnswered);
     loadSubjectKeys();
 
     // When mandatory fields were not answered show a warning only once
-    if (!skipMandatoryCheck && !checkMandatoryFields(formItemDataList)) {
+    if (!skipMandatoryCheck && !mandatoryFieldsAnswered) {
+        ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("unanswered-mandatory-questions-warning"));
         skipMandatoryCheck = true;
         return false;
     } else {
@@ -474,7 +477,6 @@ function checkMandatoryFields(formItemDataList) {
     let mandatoryFieldsAnswered = true;
     for (let mandatoryField of $$(".preview-field[mandatory='Yes']:not(.is-hidden)")) {
         if (!formItemDataList.find(formItemData => formItemData.itemGroupOID == mandatoryField.getAttribute("preview-field-group-oid") && formItemData.itemOID == mandatoryField.getAttribute("preview-field-oid"))) {
-            if (mandatoryFieldsAnswered) ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("unanswered-mandatory-questions-warning"));
             mandatoryField.classList.add("is-highlighted");
             mandatoryFieldsAnswered = false;
         }
