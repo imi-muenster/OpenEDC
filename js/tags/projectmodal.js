@@ -18,7 +18,7 @@ class ProjectModal extends HTMLElement {
                                 <h1 class="title is-4">Connect to Server</h1>
                                 <p class="mb-5 is-hidden" id="server-connected-hint"><strong>You are connected to an OpenEDC Server.</strong></p>
                                 <p>With this option you can connect to an OpenEDC Server. This lets you create projects with multiple users. All currently existing data is synced to the server. Current and future data will be end-to-end encrypted by default.</p>
-                                <div class="field has-addons mt-5">
+                                <div class="field has-addons mt-5 mb-0">
                                     <div class="control is-expanded">
                                         <input class="input is-small" id="server-url-input" type="text" placeholder="Server URL">
                                     </div>
@@ -41,7 +41,7 @@ class ProjectModal extends HTMLElement {
                                 <p class="mt-5" id="data-encryption-warning"><strong>Warning: If you forget the password, all data will be permanently lost.</strong></p>
                                 <form>
                                     <input class="is-hidden" autocomplete="username">
-                                    <div class="field has-addons mt-5">
+                                    <div class="field has-addons mt-5 mb-0">
                                         <div class="control is-expanded">
                                             <input class="input is-small" id="encryption-password-input" type="password" placeholder="Encryption password" autocomplete="new-password">
                                         </div>
@@ -49,7 +49,7 @@ class ProjectModal extends HTMLElement {
                                             <a class="button is-link is-small" onclick="encryptData()">Encrypt</a>
                                         </div>
                                     </div>
-                                    <div class="field has-addons is-hidden">
+                                    <div class="field has-addons mt-3 is-hidden">
                                         <div class="control is-expanded">
                                             <input class="input is-small" id="confirm-encryption-password-input" type="password" placeholder="Confirm encryption password" autocomplete="new-password">
                                         </div>
@@ -62,7 +62,7 @@ class ProjectModal extends HTMLElement {
                             <div class="notification is-link is-light">
                                 <h1 class="title is-4">Survey Code</h1>
                                 <p class="mb-5">This option lets you set a four-digit numerical code that needs to be entered after a local survey (started with the <i>Survey View</i> button) is finished or canceled. This prevents study participants from seeing foreign data.</p>
-                                <div class="field has-addons mb-3">
+                                <div class="field has-addons">
                                     <div class="control is-expanded">
                                         <input class="input is-small" id="survey-code-input" type="text" placeholder="Survey code">
                                     </div>

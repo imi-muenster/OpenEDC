@@ -454,8 +454,8 @@ window.hideAboutModal = function() {
 }
 
 window.downloadODM = async function() {
-    metadataHelper.setCreationDateTimeNow();
-    metadataHelper.setFileOID(metadataHelper.getStudyName());
+    metadataHelper.prepareDownload();
+    metadataHelper.addDataStatusCodeList(clinicaldataHelper.dataStatusTypes);
     let odm = new DOMParser().parseFromString(metadataHelper.getSerializedMetadata(), "text/xml");
 
     let admindata = admindataHelper.getAdmindata();
@@ -465,12 +465,13 @@ window.downloadODM = async function() {
     if (clinicaldata) odm.querySelector("ODM").appendChild(clinicaldata);
 
     ioHelper.download(metadataHelper.getStudyName()+".xml", new XMLSerializer().serializeToString(odm));
+
+    // The data status is only meaningful in combination with clinical data and is therefore removed from the metadata after download
+    metadataHelper.removeDataStatusCodeList();
 }
 
 window.downloadODMMetadata = function() {
-    metadataHelper.setCreationDateTimeNow();
-    metadataHelper.setFileOID(metadataHelper.getStudyName());
-
+    metadataHelper.prepareDownload();
     ioHelper.download(metadataHelper.getStudyName()+"_metadata.xml", metadataHelper.getSerializedMetadata());
 }
 

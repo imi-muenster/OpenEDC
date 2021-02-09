@@ -75,9 +75,6 @@ export async function getFormAsHTML(formOID, locale, textAsTextarea) {
 }
 
 export function addDataStatusCodeList(statusTypes) {
-    // Only if not yet present
-    if ($(`CodeList[OID="${dataStatusCodeListOID}"]`)) return;
-
     // Find insert position
     let insertPosition = getLastElement($$("CodeList"));
     if (!insertPosition) insertPosition = getLastElement($$("ItemDef"));
@@ -89,6 +86,10 @@ export function addDataStatusCodeList(statusTypes) {
         addCodeListItem(dataStatusCodeListOID, value);
         setCodeListItemDecodedText(dataStatusCodeListOID, value, key, "en");
     }
+}
+
+export function removeDataStatusCodeList() {
+   if ($(`CodeList[OID="${dataStatusCodeListOID}"]`)) $(`CodeList[OID="${dataStatusCodeListOID}"]`).remove();
 }
 
 export function getStudyName() {
@@ -123,11 +124,9 @@ export function getMetaDataVersionOID() {
     return $("MetaDataVersion").getAttribute("OID");
 }
 
-export function setFileOID(fileOID) {
-    $("ODM").setAttribute("FileOID", fileOID);
-}
-
-export function setCreationDateTimeNow() {
+export function prepareDownload() {
+    removeDataStatusCodeList();
+    $("ODM").setAttribute("FileOID", getStudyName());
     $("ODM").setAttribute("CreationDateTime", new Date().toISOString());
 }
 

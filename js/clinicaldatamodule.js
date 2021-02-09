@@ -49,7 +49,6 @@ export function show() {
 
     languageHelper.createLanguageSelect();
     ioHelper.setTreeMaxHeight();
-    metadataHelper.addDataStatusCodeList(clinicaldataHelper.dataStatusTypes);
 }
 
 export function hide() {
