@@ -12,7 +12,7 @@ export const elementTypes = {
     CODELISTITEM: "codelistitem"
 }
 
-export const dataStatusCodeListOID = "Internal.DataStatus";
+export const dataStatusCodeListOID = "OpenEDC.DataStatus";
 
 let xsltStylesheet;
 let metadata;
@@ -30,9 +30,12 @@ export async function loadEmptyProject() {
 export function importMetadata(odmXMLString) {
     metadata = new DOMParser().parseFromString(odmXMLString, "text/xml");
     
-    // Remove ClinicalData and AdminData (note: the MetadataHelper stores the "shell" of an ODM-file, e.g., the GlobalVariables, MeasurementUnits, and both the ODM and Study elements)
+    // Remove ClinicalData and AdminData (the metadata helper stores the "shell" of an ODM-file, e.g., the GlobalVariables, MeasurementUnits, and both the ODM and Study elements)
     $$("ClinicalData").forEach(clinicalData => clinicalData.remove());
     $$("AdminData").forEach(adminData => adminData.remove());
+
+    // Remove OpenEDC data status code list if present (used to interpret the flag of clinical data entries; will be created on download again)
+    if ($(`CodeList[OID="${dataStatusCodeListOID}"]`)) $(`CodeList[OID="${dataStatusCodeListOID}"]`).remove();
     
     storeMetadata();
 }
@@ -74,22 +77,17 @@ export async function getFormAsHTML(formOID, locale, textAsTextarea) {
     return xsltProcessor.transformToFragment(domParser.parseFromString(prettifiedODM, "text/xml"), document);
 }
 
-export function addDataStatusCodeList(statusTypes) {
-    // Find insert position
-    let insertPosition = getLastElement($$("CodeList"));
-    if (!insertPosition) insertPosition = getLastElement($$("ItemDef"));
-    if (!insertPosition) return;
-
-    // Create form status code list
-    insertPosition.insertAdjacentElement("afterend", metadataTemplates.getCodeListDef(dataStatusCodeListOID));
+export function getDataStatusCodeList(statusTypes) {
+    let dataStatusCodeList = metadataTemplates.getCodeListDef(dataStatusCodeListOID);
     for (const [key, value] of Object.entries(statusTypes)) {
-        addCodeListItem(dataStatusCodeListOID, value);
-        setCodeListItemDecodedText(dataStatusCodeListOID, value, key, "en");
+        let codeListItem = metadataTemplates.getCodeListItem(value);
+        let decode = metadataTemplates.getDecode();
+        decode.appendChild(metadataTemplates.getTranslatedText(key, "en"));
+        codeListItem.appendChild(decode);
+        dataStatusCodeList.appendChild(codeListItem);
     }
-}
 
-export function removeDataStatusCodeList() {
-   if ($(`CodeList[OID="${dataStatusCodeListOID}"]`)) $(`CodeList[OID="${dataStatusCodeListOID}"]`).remove();
+    return dataStatusCodeList;
 }
 
 export function getStudyName() {
@@ -125,7 +123,6 @@ export function getMetaDataVersionOID() {
 }
 
 export function prepareDownload() {
-    removeDataStatusCodeList();
     $("ODM").setAttribute("FileOID", getStudyName());
     $("ODM").setAttribute("CreationDateTime", new Date().toISOString());
 }
@@ -685,8 +682,8 @@ export function createMeasurementUnit(name, symbol, locale) {
     $("BasicDefinitions").appendChild(metadataTemplates.getMeasurementUnitDef(newMeasurementUnitOID, name, symbol, locale));
 }
 
-export function addCodeListItem(codeListOID, codedValue) {
-    if (!codedValue) codedValue = generateUniqueCodedValue(codeListOID);
+export function addCodeListItem(codeListOID) {
+    let codedValue = generateUniqueCodedValue(codeListOID);
     let codeList = getElementDefByOID(codeListOID);
     
     codeList.appendChild(metadataTemplates.getCodeListItem(codedValue));

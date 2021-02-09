@@ -455,8 +455,10 @@ window.hideAboutModal = function() {
 
 window.downloadODM = async function() {
     metadataHelper.prepareDownload();
-    metadataHelper.addDataStatusCodeList(clinicaldataHelper.dataStatusTypes);
     let odm = new DOMParser().parseFromString(metadataHelper.getSerializedMetadata(), "text/xml");
+
+    let dataStatusCodeList = metadataHelper.getDataStatusCodeList(clinicaldataHelper.dataStatusTypes);
+    if (dataStatusCodeList) odm.querySelector("MetaDataVersion").appendChild(dataStatusCodeList);
 
     let admindata = admindataHelper.getAdmindata();
     if (admindata) odm.querySelector("ODM").appendChild(admindata);
@@ -465,9 +467,6 @@ window.downloadODM = async function() {
     if (clinicaldata) odm.querySelector("ODM").appendChild(clinicaldata);
 
     ioHelper.download(metadataHelper.getStudyName()+".xml", new XMLSerializer().serializeToString(odm));
-
-    // The data status is only meaningful in combination with clinical data and is therefore removed from the metadata after download
-    metadataHelper.removeDataStatusCodeList();
 }
 
 window.downloadODMMetadata = function() {
