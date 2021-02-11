@@ -254,7 +254,7 @@ function escapeXML(value) {
 
 // TODO: Assumes that the data is ordered chronologically -- should be ensured during import
 function getCurrentFormData(studyEventOID, formOID) {
-    return getLastElement($$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`));
+    return ioHelper.getLastElement($$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`));
 }
 
 export function getSubjectFormData(studyEventOID, formOID) {
@@ -417,7 +417,7 @@ export async function getCSVData(csvHeaders) {
 
             // Ensures that the form data is not loaded for every item again
             if (!currentStudyEventOID || !currentFormOID || currentStudyEventOID != studyEventOID || currentFormOID != formOID) {
-                formData = getLastElement(subjectData.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`));
+                formData = ioHelper.getLastElement(subjectData.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`));
                 currentStudyEventOID = studyEventOID;
                 currentFormOID = formOID;
             }
@@ -436,13 +436,4 @@ export async function getCSVData(csvHeaders) {
     }
 
     return csvData;
-}
-
-// TODO: Move to ioHelper? Also present in metadatahelper and admindatahelper
-function getLastElement(elements) {
-    if (elements.length >= 1) {
-        return elements[elements.length - 1];
-    } else {
-        return null;
-    }
 }

@@ -12,6 +12,16 @@ export const elementTypes = {
     CODELISTITEM: "codelistitem"
 }
 
+const elementDefinitonNames = {
+    STUDYEVENT: "StudyEventDef",
+    FORM: "FormDef",
+    ITEMGROUP: "ItemGroupDef",
+    ITEM: "ItemDef",
+    CODELIST: "CodeList",
+    MEASUREMENTUNIT: "MeasurementUnit",
+    CONDITION: "ConditionDef"
+}
+
 export const dataStatusCodeListOID = "OpenEDC.DataStatus";
 
 let xsltStylesheet;
@@ -478,7 +488,7 @@ export function setElementAlias(elementOID, codeListItemCodedValue, context, nam
 }
 
 export function setItemRangeCheck(itemOID, comparator, checkValue) {
-    let insertPosition = getLastElement($$(`[OID="${itemOID}"] RangeCheck`));
+    let insertPosition = ioHelper.getLastElement($$(`[OID="${itemOID}"] RangeCheck`));
     if (!insertPosition) {
         insertPosition = $(`[OID="${itemOID}"] MeasurementUnitRef`);
     }
@@ -535,17 +545,10 @@ function generateUniqueCodedValue(codeListOID) {
 }
 
 export function createStudyEvent() {
-    let newStudyEventOID = generateUniqueOID("SE.");
-
+    const newStudyEventOID = generateUniqueOID("SE.");
     insertStudyEventRef(metadataTemplates.getStudyEventRef(newStudyEventOID));
-
-    let insertPositionDef = getLastElement($$("StudyEventDef"));
-    if (insertPositionDef) {
-        insertPositionDef.insertAdjacentElement("afterend", metadataTemplates.getStudyEventDef(newStudyEventOID));
-    } else {
-        $("MetaDataVersion").appendChild(metadataTemplates.getStudyEventDef(newStudyEventOID));
-    }
-
+    insertElementDef(elementDefinitonNames.STUDYEVENT, metadataTemplates.getStudyEventDef(newStudyEventOID));
+    
     return newStudyEventOID;
 }
 
@@ -553,23 +556,25 @@ export function insertStudyEventRef(studyEventRef) {
     $("Protocol").appendChild(studyEventRef);
 }
 
-export function createForm(studyEventOID) {
-    let newFormOID = generateUniqueOID("F.");
-
-    insertFormRef(metadataTemplates.getFormRef(newFormOID), studyEventOID);
-
-    let insertPositionDef = getLastElement($$(`FormDef`));
+function insertElementDef(definitionName, studyEventDef) {
+    const insertPositionDef = ioHelper.getLastElement($$(definitionName));
     if (insertPositionDef) {
-        insertPositionDef.insertAdjacentElement("afterend", metadataTemplates.getFormDef(newFormOID));
+        insertPositionDef.insertAdjacentElement("afterend", studyEventDef);
     } else {
-        $("MetaDataVersion").appendChild(metadataTemplates.getFormDef(newFormOID));
+        $("MetaDataVersion").appendChild(studyEventDef);
     }
+}
+
+export function createForm(studyEventOID) {
+    const newFormOID = generateUniqueOID("F.");
+    insertFormRef(metadataTemplates.getFormRef(newFormOID), studyEventOID);
+    insertElementDef(elementDefinitonNames.FORM, metadataTemplates.getFormDef(newFormOID));
 
     return newFormOID;
 }
 
 export function insertFormRef(formRef, studyEventOID) {
-    let insertPositionRef = getLastElement($$(`[OID="${studyEventOID}"] FormRef`));
+    let insertPositionRef = ioHelper.getLastElement($$(`[OID="${studyEventOID}"] FormRef`));
     if (insertPositionRef) {
         insertPositionRef.insertAdjacentElement("afterend", formRef);
     } else {
@@ -583,22 +588,15 @@ export function insertFormRef(formRef, studyEventOID) {
 }
 
 export function createItemGroup(formOID) {
-    let newItemGroupOID = generateUniqueOID("IG.");
-
+    const newItemGroupOID = generateUniqueOID("IG.");
     insertItemGroupRef(metadataTemplates.getItemGroupRef(newItemGroupOID), formOID);
-
-    let insertPositionDef = getLastElement($$(`ItemGroupDef`));
-    if (insertPositionDef) {
-        insertPositionDef.insertAdjacentElement("afterend", metadataTemplates.getItemGroupDef(newItemGroupOID));
-    } else {
-        $("MetaDataVersion").appendChild(metadataTemplates.getItemGroupDef(newItemGroupOID));
-    }
+    insertElementDef(elementDefinitonNames.ITEMGROUP, metadataTemplates.getItemGroupDef(newItemGroupOID));
 
     return newItemGroupOID;
 }
 
 export function insertItemGroupRef(itemGroupRef, formOID) {
-    let insertPositionRef = getLastElement($$(`[OID="${formOID}"] ItemGroupRef`));
+    let insertPositionRef = ioHelper.getLastElement($$(`[OID="${formOID}"] ItemGroupRef`));
     if (insertPositionRef) {
         insertPositionRef.insertAdjacentElement("afterend", itemGroupRef);
     } else {
@@ -612,22 +610,15 @@ export function insertItemGroupRef(itemGroupRef, formOID) {
 }
 
 export function createItem(itemGroupOID) {
-    let newItemOID = generateUniqueOID("I.");
-
+    const newItemOID = generateUniqueOID("I.");
     insertItemRef(metadataTemplates.getItemRef(newItemOID), itemGroupOID);
-
-    let insertPositionDef = getLastElement($$(`ItemDef`));
-    if (insertPositionDef) {
-        insertPositionDef.insertAdjacentElement("afterend", metadataTemplates.getItemDef(newItemOID));
-    } else {
-        $("MetaDataVersion").appendChild(metadataTemplates.getItemDef(newItemOID));
-    }
+    insertElementDef(elementDefinitonNames.ITEM, metadataTemplates.getItemDef(newItemOID));
 
     return newItemOID;
 }
 
 export function insertItemRef(itemRef, itemGroupOID) {
-    let insertPositionRef = getLastElement($$(`[OID="${itemGroupOID}"] ItemRef`));
+    let insertPositionRef = ioHelper.getLastElement($$(`[OID="${itemGroupOID}"] ItemRef`));
     if (insertPositionRef) {
         insertPositionRef.insertAdjacentElement("afterend", itemRef);
     } else {
@@ -641,20 +632,15 @@ export function insertItemRef(itemRef, itemGroupOID) {
 }
 
 export function createCodeList(itemOID) {
-    let newCodeListOID = generateUniqueOID("CL.");
-
+    const newCodeListOID = generateUniqueOID("CL.");
     insertCodeListRef(metadataTemplates.getCodeListRef(newCodeListOID), itemOID);
+    insertElementDef(elementDefinitonNames.CODELIST, metadataTemplates.getCodeListDef(newCodeListOID));
 
-    let insertPositionDef = getLastElement($$(`CodeList`));
-    if (insertPositionDef) {
-        insertPositionDef.insertAdjacentElement("afterend", metadataTemplates.getCodeListDef(newCodeListOID));
-    } else {
-        $("MetaDataVersion").appendChild(metadataTemplates.getCodeListDef(newCodeListOID));
-    }
+    return newCodeListOID;
 }
 
 export function insertCodeListRef(codeListRef, itemOID) {
-    let insertPositionRef = getLastElement($$(`[OID="${itemOID}"] Question`));
+    let insertPositionRef = ioHelper.getLastElement($$(`[OID="${itemOID}"] Question`));
     if (insertPositionRef) {
         insertPositionRef.insertAdjacentElement("afterend", codeListRef);
     } else {
@@ -663,16 +649,22 @@ export function insertCodeListRef(codeListRef, itemOID) {
 }
 
 export function createCondition(name, formalExpression, locale) {
-    let newConditionOID = generateUniqueOID("C.");
-
-    $("MetaDataVersion").appendChild(metadataTemplates.getConditionDef(newConditionOID, name, formalExpression, locale));
+    const newConditionOID = generateUniqueOID("C.");
+    insertElementDef(elementDefinitonNames.CONDITION, metadataTemplates.getConditionDef(newConditionOID, name, formalExpression, locale));
+    
+    return newConditionOID;
 }
 
 export function createMeasurementUnit(name, symbol, locale) {
-    let newMeasurementUnitOID = generateUniqueOID("MM.");
+    const newMeasurementUnitOID = generateUniqueOID("MM.");
+    insertMeasurementUnit(metadataTemplates.getMeasurementUnitDef(newMeasurementUnitOID, name, symbol, locale));
 
+    return newMeasurementUnitOID;
+}
+
+function insertMeasurementUnit(measurementUnit) {
     if (!$("BasicDefinitions")) $("GlobalVariables").insertAdjacentElement("afterend", metadataTemplates.getBasicDefintions());
-    $("BasicDefinitions").appendChild(metadataTemplates.getMeasurementUnitDef(newMeasurementUnitOID, name, symbol, locale));
+    $("BasicDefinitions").appendChild(measurementUnit);
 }
 
 export function addCodeListItem(codeListOID) {
@@ -967,24 +959,14 @@ function mergeMetadata(odmXMLString) {
     let odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
 
     // Merge the new model into the old one
-    // TODO: This could be improved by appending SEs just after previous SEs and so on -- helper functions would be helpful for this which could be also used from other functions above
-    if (!$("BasicDefinitions")) $("GlobalVariables").insertAdjacentElement("afterend", metadataTemplates.getBasicDefintions());
-    odm.querySelectorAll("MeasurementUnit").forEach(measurementUnit => $("BasicDefinitions").appendChild(measurementUnit));
-    odm.querySelectorAll("StudyEventRef").forEach(studyEventRef => $("Protocol").appendChild(studyEventRef));
-    odm.querySelectorAll("StudyEventDef").forEach(studyEventDef => $("MetaDataVersion").appendChild(studyEventDef));
-    odm.querySelectorAll("FormDef").forEach(formDef => $("MetaDataVersion").appendChild(formDef));
-    odm.querySelectorAll("ItemGroupDef").forEach(itemGroupDef => $("MetaDataVersion").appendChild(itemGroupDef));
-    odm.querySelectorAll("ItemDef").forEach(itemDef => $("MetaDataVersion").appendChild(itemDef));
-    odm.querySelectorAll("CodeList").forEach(codeList => $("MetaDataVersion").appendChild(codeList));
-    odm.querySelectorAll("ConditionDef").forEach(conditionDef => $("MetaDataVersion").appendChild(conditionDef));
+    odm.querySelectorAll("MeasurementUnit").forEach(measurementUnit => insertMeasurementUnit(measurementUnit));
+    odm.querySelectorAll("StudyEventRef").forEach(studyEventRef => insertStudyEventRef(studyEventRef));
+    odm.querySelectorAll("StudyEventDef").forEach(studyEventDef => insertElementDef(elementDefinitonNames.STUDYEVENT, studyEventDef));
+    odm.querySelectorAll("FormDef").forEach(formDef => insertElementDef(elementDefinitonNames.FORM, formDef));
+    odm.querySelectorAll("ItemGroupDef").forEach(itemGroupDef => insertElementDef(elementDefinitonNames.ITEMGROUP, itemGroupDef));
+    odm.querySelectorAll("ItemDef").forEach(itemDef => insertElementDef(elementDefinitonNames.ITEM, itemDef));
+    odm.querySelectorAll("CodeList").forEach(codeList => insertElementDef(elementDefinitonNames.CODELIST, codeList));
+    odm.querySelectorAll("ConditionDef").forEach(conditionDef => insertElementDef(elementDefinitonNames.CONDITION, conditionDef));
 
     storeMetadata();
-}
-
-function getLastElement(elements) {
-    if (elements.length >= 1) {
-        return elements[elements.length - 1];
-    } else {
-        return null;
-    }
 }

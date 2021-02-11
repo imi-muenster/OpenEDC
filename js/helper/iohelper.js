@@ -602,6 +602,15 @@ export function setTreeMaxHeight() {
     }
 }
 
+// TODO: Create a prototype function lastElement()
+export function getLastElement(elements) {
+    if (elements.length >= 1) {
+        return elements[elements.length - 1];
+    } else {
+        return null;
+    }
+}
+
 export function isMobile() {
     return window.innerWidth < 1024;
 }

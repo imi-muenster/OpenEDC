@@ -462,7 +462,8 @@ window.downloadODM = async function() {
     let odm = new DOMParser().parseFromString(metadataHelper.getSerializedMetadata(), "text/xml");
 
     let dataStatusCodeList = metadataHelper.getDataStatusCodeList(clinicaldataHelper.dataStatusTypes);
-    if (dataStatusCodeList) odm.querySelector("MetaDataVersion").appendChild(dataStatusCodeList);
+    const insertPosition = ioHelper.getLastElement(odm.querySelectorAll("ItemDef"));
+    if (insertPosition) insertPosition.insertAdjacentElement("afterend", dataStatusCodeList);
 
     let admindata = admindataHelper.getAdmindata();
     if (admindata) odm.querySelector("ODM").appendChild(admindata);

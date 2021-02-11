@@ -63,7 +63,7 @@ export function addUser() {
     const newUserOID = generateUniqueOID("U.");
     const newUser = admindataTemplates.getUser(newUserOID);
     
-    const lastUser = getLastElement(getUsers());
+    const lastUser = ioHelper.getLastElement(getUsers());
     if (lastUser) {
         lastUser.insertAdjacentElement("afterend", newUser);
     } else {
@@ -121,7 +121,7 @@ export function addSite() {
     const newSiteOID = generateUniqueOID("L.");
     const newSite = admindataTemplates.getSite(newSiteOID, metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID(), new Date().toISOString().split("T")[0]);
     
-    const lastSite = getLastElement(getSites());
+    const lastSite = ioHelper.getLastElement(getSites());
     if (lastSite) {
         lastSite.insertAdjacentElement("afterend", newSite);
     } else {
@@ -157,12 +157,4 @@ function generateUniqueOID(oidPrefix) {
     }
 
     return oidPrefix+count;
-}
-
-function getLastElement(elements) {
-    if (elements.length >= 1) {
-        return elements[elements.length - 1];
-    } else {
-        return null;
-    }
 }
