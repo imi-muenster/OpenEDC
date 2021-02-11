@@ -6,6 +6,7 @@ import * as admindataModule from "./admindatamodule.js";
 import * as admindataHelper from "./helper/admindatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
+import * as repositoryHelper from "./helper/repositoryhelper.js";
 
 const appVersion = "0.1.5";
 
@@ -38,6 +39,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND && !ioHelper.hasServerURL()) showStartModal();
             else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionKeyModal();
         });
+
+    // Handle URL search / query parameters (e.g., for metadata repository integration)
+    handleURLSearchParameters();
 
     // Register serviceworker for offline capabilities
     if ("serviceWorker" in window.navigator) {
@@ -521,6 +525,16 @@ function addModalsToDOM() {
     }
 
     languageHelper.internationalize();
+}
+
+async function handleURLSearchParameters() {
+    // Get models from metadata repositories
+    let models = [];
+    for (const [key, value] of new URLSearchParams(window.location.search)) {
+        if (repositoryHelper.getParameterNames().includes(key)) await repositoryHelper.getModel(key, value)
+            .catch(error => ioHelper.showMessage("Error", `Could not load model from external repository. The error was ${error}.`))
+            .then(model => models.push(model));
+    }
 }
 
 function getCurrentMode() {
