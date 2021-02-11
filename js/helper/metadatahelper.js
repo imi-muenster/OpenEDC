@@ -522,18 +522,14 @@ export function setItemMeasurementUnit(itemOID, measurementUnitName) {
 
 function generateUniqueOID(oidPrefix) {
     let count = 1;
-    while ($(`[OID="${oidPrefix+count}"]`)) {
-        count += 1;
-    }
+    while (getElementDefByOID(oidPrefix + count)) count += 1;
 
-    return oidPrefix+count;
+    return oidPrefix + count;
 }
 
 function generateUniqueCodedValue(codeListOID) {
     let count = 1;
-    while ($(`[OID="${codeListOID}"] CodeListItem[CodedValue="${count}"]`)) {
-        count += 1;
-    }
+    while ($(`[OID="${codeListOID}"] CodeListItem[CodedValue="${count}"]`)) count += 1;
 
     return count;
 }
@@ -675,10 +671,7 @@ export function createCondition(name, formalExpression, locale) {
 export function createMeasurementUnit(name, symbol, locale) {
     let newMeasurementUnitOID = generateUniqueOID("MM.");
 
-    if (!$("BasicDefinitions")) {
-        $("GlobalVariables").insertAdjacentElement("afterend", metadataTemplates.getBasicDefintions());
-    }
-
+    if (!$("BasicDefinitions")) $("GlobalVariables").insertAdjacentElement("afterend", metadataTemplates.getBasicDefintions());
     $("BasicDefinitions").appendChild(metadataTemplates.getMeasurementUnitDef(newMeasurementUnitOID, name, symbol, locale));
 }
 
@@ -955,6 +948,37 @@ export function getCSVHeaders() {
     }
 
     return headers;
+}
+
+function mergeMetadata(odmXMLString) {
+    // Create a register of all OIDs that need to be replaced with a new unique OID
+    let replaceOIDs = {};
+    odmXMLString.match(/(?<= OID\=\")(.*?)(?=\")/g).forEach(oid => {
+        if (getElementDefByOID(oid) || Object.values(replaceOIDs).includes(oid)) {
+            const oidPrefix = oid.split(".")[0] + ".";
+            let count = 1;
+            while (getElementDefByOID(oidPrefix + count) || Object.values(replaceOIDs).includes(oidPrefix + count)) count += 1;
+            replaceOIDs[oid] = oidPrefix + count;
+        }
+    });
+
+    // Replace all OIDs that needs to be replaced
+    Object.keys(replaceOIDs).reverse().forEach(oldOID => odmXMLString = odmXMLString.replace(new RegExp(`OID="${oldOID}"`, "g"), `OID="${replaceOIDs[oldOID]}"`));
+    let odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
+
+    // Merge the new model into the old one
+    // TODO: This could be improved by appending SEs just after previous SEs and so on -- helper functions would be helpful for this which could be also used from other functions above
+    if (!$("BasicDefinitions")) $("GlobalVariables").insertAdjacentElement("afterend", metadataTemplates.getBasicDefintions());
+    odm.querySelectorAll("MeasurementUnit").forEach(measurementUnit => $("BasicDefinitions").appendChild(measurementUnit));
+    odm.querySelectorAll("StudyEventRef").forEach(studyEventRef => $("Protocol").appendChild(studyEventRef));
+    odm.querySelectorAll("StudyEventDef").forEach(studyEventDef => $("MetaDataVersion").appendChild(studyEventDef));
+    odm.querySelectorAll("FormDef").forEach(formDef => $("MetaDataVersion").appendChild(formDef));
+    odm.querySelectorAll("ItemGroupDef").forEach(itemGroupDef => $("MetaDataVersion").appendChild(itemGroupDef));
+    odm.querySelectorAll("ItemDef").forEach(itemDef => $("MetaDataVersion").appendChild(itemDef));
+    odm.querySelectorAll("CodeList").forEach(codeList => $("MetaDataVersion").appendChild(codeList));
+    odm.querySelectorAll("ConditionDef").forEach(conditionDef => $("MetaDataVersion").appendChild(conditionDef));
+
+    storeMetadata();
 }
 
 function getLastElement(elements) {

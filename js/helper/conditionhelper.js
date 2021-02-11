@@ -9,7 +9,7 @@ export function process(itemsWithCondition) {
         const formalExpressionParts = itemWithCondition.formalExpression.split(" ");
         const determinant = formalExpressionParts[0];
         const operator = formalExpressionParts[1];
-        const target = formalExpressionParts[2].replace(/['"]+/g, "");
+        const target = formalExpressionParts[2].replace(/['"]/g, "");
 
         if (operator == "!=") {
             $(`[preview-field-oid="${conditionalItem}"]`).classList.add("is-hidden");
