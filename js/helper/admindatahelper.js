@@ -1,6 +1,6 @@
 import * as metadataHelper from "./metadatahelper.js";
 import * as clinicaldataHelper from "./clinicaldatahelper.js";
-import * as admindataTemplates from "./admindatatemplates.js";
+import * as admindataTemplates from "../odmtemplates/admindatatemplates.js";
 import * as ioHelper from "./iohelper.js";
 
 const $ = query => admindata.querySelector(query);

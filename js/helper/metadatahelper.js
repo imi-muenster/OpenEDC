@@ -1,4 +1,4 @@
-import * as metadataTemplates from "./metadatatemplates.js";
+import * as metadataTemplates from "../odmtemplates/metadatatemplates.js";
 import * as ioHelper from "./iohelper.js";
 
 const $ = query => metadata.querySelector(query);

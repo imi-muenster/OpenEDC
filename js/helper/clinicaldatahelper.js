@@ -1,4 +1,4 @@
-import * as clinicaldataTemplates from "./clinicaldatatemplates.js";
+import * as clinicaldataTemplates from "../odmtemplates/clinicaldatatemplates.js";
 import * as metadataHelper from "./metadatahelper.js";
 import * as admindataHelper from "./admindatahelper.js";
 import * as ioHelper from "./iohelper.js";
