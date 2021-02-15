@@ -945,7 +945,11 @@ export function getCSVHeaders() {
 function mergeMetadata(odmXMLString) {
     // Create a register of all OIDs that need to be replaced with a new unique OID
     let replaceOIDs = {};
-    odmXMLString.match(/(?<= OID\=\")(.*?)(?=\")/g).forEach(oid => {
+
+    // RegExp to get all OIDs does not work as Safari currently does not support lookbehind (odmXMLString.match(/(?<= OID\=\")(.*?)(?=\")/g).forEach ... )
+    const odmCandidate = new DOMParser().parseFromString(odmXMLString, "text/xml");
+    odmCandidate.querySelectorAll("[OID]").forEach(element => {
+        const oid = element.getAttribute("OID");
         if (getElementDefByOID(oid) || Object.values(replaceOIDs).includes(oid)) {
             const oidPrefix = oid.split(".")[0] + ".";
             let count = 1;

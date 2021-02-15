@@ -227,7 +227,7 @@ async function loadTree(studyEventOID, formOID) {
     }
 
     showColumnOnMobile();
-    if (!currentElementID.studyEvent && !currentElementID.form) backOnMobile();
+    if (!currentElementID.studyEvent && !currentElementID.form && metadataHelper.getStudyEvents().length == 1) backOnMobile();
     if (currentElementID.studyEvent) await loadFormsByStudyEvent();
 }
 
@@ -790,6 +790,8 @@ window.backOnMobile = function() {
 }
 
 function showColumnOnMobile() {
+    if (!ioHelper.isMobile()) return;
+    
     // Hide or show navbar back button
     if (currentElementID.subject || currentElementID.form || (currentElementID.studyEvent && metadataHelper.getStudyEvents().length > 1)) {
         $("#study-title").parentNode.classList.add("is-hidden-touch");
