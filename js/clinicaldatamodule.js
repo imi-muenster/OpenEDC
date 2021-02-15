@@ -41,6 +41,14 @@ export async function init() {
 }
 
 export function show() {
+    // Hide the study event column if there is only one event
+    if (metadataHelper.getStudyEvents().length == 1) {
+        $("#clinicaldata-study-events-column").classList.add("is-hidden");
+        currentElementID.studyEvent = metadataHelper.getStudyEvents()[0].getAttribute("OID");
+    } else {
+        $("#clinicaldata-study-events-column").classList.remove("is-hidden");
+    }
+
     loadSubjectKeys();
     reloadTree();
 
@@ -168,6 +176,9 @@ async function loadSubjectData(subjectKey) {
         if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes("Edit metadata")) currentElementID.form = null;
     }
 
+    // Automatically select the first study event if there is only one (present here as well mainly because of mobile auto survey view function)
+    if (!currentElementID.studyEvent && metadataHelper.getStudyEvents().length == 1) currentElementID.studyEvent = metadataHelper.getStudyEvents()[0].getAttribute("OID");
+
     currentElementID.subject = subjectKey;
     cachedFormData = null;
 
@@ -216,6 +227,7 @@ async function loadTree(studyEventOID, formOID) {
     }
 
     showColumnOnMobile();
+    if (!currentElementID.studyEvent && !currentElementID.form) backOnMobile();
     if (currentElementID.studyEvent) await loadFormsByStudyEvent();
 }
 
@@ -234,7 +246,7 @@ async function loadFormsByStudyEvent() {
     }
 
     // Automatically start the survey view when activated in project options and the current device is a smartphone or tablet
-    if (ioHelper.isAutoSurveyView() && ioHelper.isMobile() && formDefs.length > 0 && !currentElementID.form) {
+    if (ioHelper.isAutoSurveyView() && ioHelper.isMobile() && currentElementID.subject && formDefs.length > 0 && !currentElementID.form) {
         currentElementID.form = formDefs[0].getAttribute("OID");
         showSurveyView();
         showColumnOnMobile();
@@ -506,6 +518,7 @@ window.closeFormData = async function(saveData) {
     if (saveData) {
         skipMandatoryCheck = true;
         await saveFormData();
+        loadSubjectKeys();
     }
 
     if (deferredFunction) {
@@ -558,7 +571,7 @@ function hideSurveyView() {
     $(".navbar").classList.remove("is-hidden");
     $("html").classList.add("has-navbar-fixed-top");
     $("#subjects-column").classList.remove("is-hidden");
-    $("#clinicaldata-study-events-column").classList.remove("is-hidden");
+    if (metadataHelper.getStudyEvents().length > 1) $("#clinicaldata-study-events-column").classList.remove("is-hidden");
     $("#clinicaldata-forms-column").classList.remove("is-hidden");
     $("#clinicaldata-column .panel").classList.remove("is-shadowless");
     $("#clinicaldata-column .panel-heading").classList.remove("is-hidden");
@@ -760,12 +773,15 @@ window.removeSubject = async function() {
 
 // The following two functions constitute logic to only show one column at a time on mobile devices including a navbar back button
 window.backOnMobile = function() {
+    if (!ioHelper.isMobile()) return;
+
     if (currentElementID.subject && currentElementID.studyEvent && currentElementID.form) {
         loadTree(currentElementID.studyEvent, null);
-    } else if (currentElementID.subject && currentElementID.studyEvent) {
+    } else if (currentElementID.subject && currentElementID.studyEvent && metadataHelper.getStudyEvents().length > 1) {
         loadTree(null, null);
     } else {
         $("#clinicaldata-study-events-column").classList.add("is-hidden-touch");
+        $("#clinicaldata-forms-column").classList.add("is-hidden-touch");
         $("#subjects-column").classList.remove("is-hidden-touch");
         $("#study-title").parentNode.classList.remove("is-hidden-touch");
         $("#mobile-back-button").classList.add("is-hidden");
@@ -775,7 +791,7 @@ window.backOnMobile = function() {
 
 function showColumnOnMobile() {
     // Hide or show navbar back button
-    if (currentElementID.subject || currentElementID.studyEvent || currentElementID.form) {
+    if (currentElementID.subject || currentElementID.form || (currentElementID.studyEvent && metadataHelper.getStudyEvents().length > 1)) {
         $("#study-title").parentNode.classList.add("is-hidden-touch");
         $("#mobile-back-button").classList.remove("is-hidden");
         $("#mobile-back-button").classList.add("is-hidden-desktop");
