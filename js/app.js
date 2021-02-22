@@ -88,8 +88,8 @@ const startApp = async () => {
     adjustUIToUser();
     setIOListeners();
 
-    // If there is at least one subject stored, automatically open the clinicaldata module
-    clinicaldataHelper.getSubjects().length > 0 ? metadataModule.hide() : metadataModule.show();
+    // If there is at least one study event, automatically open the clinicaldata module
+    metadataHelper.getStudyEvents().length > 0 ? metadataModule.hide() : metadataModule.show();
 
     // For performance purposes, add the remaining modals to the DOM only after the main app has been rendered
     addModalsToDOM();
@@ -520,6 +520,7 @@ export function setIOListeners() {
 }
 
 function addModalsToDOM() {
+    // TODO: This could be improved in the future by loading the modal js module files dynamically
     const modalNames = ["project", "more", "about", "close-clinicaldata", "subject", "survey-code"];
     for (let modalName of modalNames) {
         document.body.appendChild(document.createElement(modalName + "-modal"));

@@ -6,12 +6,19 @@ class StartModal extends HTMLElement {
                 <div class="modal-content is-large">
                     <div class="box">
                         <div class="width-is-two-thirds">
-                            <h1 class="title">OpenEDC – Start</h1>
-                            <h2 class="subtitle">Please choose a starting point</h2>
+                            <div id="openedc-title">
+                                <figure class="image is-64x64 mr-3">
+                                    <img src="./img/android-chrome-512.png">
+                                </figure>
+                                <div>
+                                    <h1 class="title">OpenEDC</h1>
+                                    <h2 class="subtitle">Please choose a starting point</h2>
+                                </div>
+                            </div>
                             <hr>
                             <p class="mb-5">This free and <a target="_blank" href="https://github.com/imi-muenster/OpenEDC">open-source</a> electronic data capture (EDC) system lets you create and conduct secure medical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> format.</p>
                             <p class="mb-5">All data is entirely processed offline on your local device. You can optionally connect to your own <a target="_blank" href="https://github.com/imi-muenster/OpenEDC-Server">OpenEDC Server</a> to create multi-centric research studies with multiple users and sites.</p>
-                            <p class="mb-5">For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you have an ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an exemplary project and see how it all works.</p>
+                            <p class="mb-5">For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you have an CDISC ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an exemplary project and see how it all works.</p>
                             <div class="buttons is-centered">
                                 <button class="button" onclick="newProject()">New Project</button>
                                 <div class="file" id="odm-upload">

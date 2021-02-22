@@ -10,19 +10,22 @@ class Repository {
     }
 }
 
-const supportedRepositories = [
-    new Repository("Portal of Medical Data Models", "modelIds", "https://medical-data-models.org/modelIds/download?format=odm&form-lang=en")
+const repositories = [
+    new Repository("Portal of Medical Data Models", "modelIds", "https://mdmj-staging.uni-muenster.de/modelIds/download?format=odm&form-lang=en")
 ];
 
 export const getParameterNames = () => {
-    return supportedRepositories.map(repo => repo.parameterName);
+    return repositories.map(repository => repository.parameterName);
 }
 
 export const getModel = async (parameterName, parameter) => {
-    const repository = supportedRepositories.find(repo => repo.parameterName == parameterName);
+    const repository = repositories.find(repository => repository.parameterName == parameterName);
 
-    const response = await fetch(repository.getDownloadUrl(parameter));
+    const response = await fetch(repository.getDownloadUrl(parameter), {
+        credentials: "include"
+    });
     if (!response.ok) throw response.status;
 
-    return Promise.resolve(response.text());
+    const odmXMLString = await response.text();
+    return Promise.resolve(odmXMLString);
 }
