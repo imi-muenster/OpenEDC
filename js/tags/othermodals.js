@@ -222,7 +222,7 @@ class SurveyCodeModal extends HTMLElement {
 }
 
 class MessageModal extends HTMLElement {
-    setTitle(title) { this.title = title; }
+    setHeading(heading) { this.heading = heading; }
     setMessage(message) { this.message = message; }
     setCallbacks(callbacks) { this.callbacks = callbacks; }
     setCallbackType(callbackType) { this.callbackType = callbackType; }
@@ -234,7 +234,7 @@ class MessageModal extends HTMLElement {
                 <div class="modal-background"></div>
                 <div class="modal-content is-medium">
                     <div class="box has-text-centered">
-                        <h2 class="subtitle">${this.title}</h2>
+                        <h2 class="subtitle">${this.heading}</h2>
                         <p class="mb-5">${this.message}</p>
                         <div class="buttons is-centered"></div>
                     </div>

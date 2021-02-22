@@ -27,7 +27,7 @@ class ProjectModal extends HTMLElement {
                                     </div>
                                 </div>
                                 <form class="is-hidden" id="initialize-server-form">
-                                    <p class="mt-5 mb-5"><strong>A new OpenEDC Server could be found. You can now create an account for the server.</strong></p>
+                                    <p class="mt-5 mb-5"><strong>You can now create an account for the server. Please choose a secure password that you can remember.</strong></p>
                                     <input class="input is-small mb-3" id="owner-username-input" type="text" placeholder="Username" autocomplete="username">
                                     <input class="input is-small mb-3" id="owner-password-input" type="password" placeholder="Password" autocomplete="new-password">
                                     <input class="input is-small mb-5" id="owner-confirm-password-input" type="password" placeholder="Password (confirm)" autocomplete="new-password">

@@ -489,9 +489,9 @@ export function hideMenu() {
     $("#language-dropdown").classList.add("is-hidden-touch");
 }
 
-export function showMessage(title, message, callbacks, callbackType) {
+export function showMessage(heading, message, callbacks, callbackType) {
     const messageModal = document.createElement("message-modal");
-    messageModal.setTitle(title);
+    messageModal.setHeading(heading);
     messageModal.setMessage(message);
     messageModal.setCallbacks(callbacks);
     messageModal.setCallbackType(callbackType == callbackTypes.DANGER ? "is-danger" : "is-link");

@@ -289,12 +289,10 @@ async function loadFormData() {
 async function loadFormMetadata() {
     if (!currentElementID.studyEvent || !currentElementID.form) return;
 
-    let translatedText = metadataHelper.getElementDefByOID(currentElementID.form).querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-    if (translatedText) {
-        $("#clinicaldata-form-title .subtitle").textContent = translatedText.textContent;
-    } else {
-        $("#clinicaldata-form-title .subtitle").textContent = metadataHelper.getStudyName();
-    }
+    // Add the form title and use the name as fallback
+    const formDef = metadataHelper.getElementDefByOID(currentElementID.form);
+    const translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
+    $("#clinicaldata-form-title .subtitle").textContent = translatedText ? translatedText.textContent : formDef.getAttribute("Name");
 
     // Add the form skeleton
     let form = await metadataHelper.getFormAsHTML(currentElementID.form, locale, ioHelper.isTextAsTextarea());
