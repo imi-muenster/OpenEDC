@@ -1,8 +1,8 @@
 {
     "name": "OpenEDC",
     "short_name": "OpenEDC",
-    "scope": "/",
-    "start_url": ".",
+    "scope": "./",
+    "start_url": "./",
     "display": "standalone",
     "background_color": "#FFFFFF",
     "theme_color": "#FFFFFF",
