@@ -100,7 +100,7 @@ class AboutModal extends HTMLElement {
         const address_2 = "Director: Prof. Dr. Martin Dugas";
         const address_3 = "Albert-Schweitzer-Campus 1, A11";
         const address_4 = "48149 Münster, Germany";
-        const dataProtectionPolicy = "https://medical-data-models.org/imprint?lang=en#data-privacy";
+        const dataProtectionPolicy = "https://privacy.openedc.org";
 
         this.innerHTML = `
             <div class="modal" id="about-modal">
@@ -126,7 +126,7 @@ class AboutModal extends HTMLElement {
                                 <span class="icon">
                                     <i class="fas fa-arrow-right"></i>
                                 </span>
-                                <span>Data Protection Policy</span>
+                                <span>Privacy Policy</span>
                             </a>
                             <br>
                             <button class="button" onclick="hideAboutModal()">Close</button>
