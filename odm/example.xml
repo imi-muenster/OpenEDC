@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" FileType="Snapshot" FileOID="Exemplary Project" CreationDateTime="2021-01-17T15:24:38.283Z" ODMVersion="1.3.2">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" FileType="Snapshot" FileOID="Exemplary Project" CreationDateTime="2021-03-08T08:10:12.839Z" ODMVersion="1.3.2">
     <Study OID="S.1">
         <GlobalVariables>
             <StudyName>Exemplary Project</StudyName>
@@ -29,6 +29,12 @@
                 <Symbol>
                     <TranslatedText xml:lang="en">years</TranslatedText>
                     <TranslatedText xml:lang="de">Jahre</TranslatedText>
+                </Symbol>
+            </MeasurementUnit>
+            <MeasurementUnit OID="MM.5" Name="cm">
+                <Symbol>
+                    <TranslatedText xml:lang="en">cm</TranslatedText>
+                    <TranslatedText xml:lang="de">cm</TranslatedText>
                 </Symbol>
             </MeasurementUnit>
         </BasicDefinitions>
@@ -212,6 +218,13 @@
                     <TranslatedText xml:lang="en">What is your height?</TranslatedText>
                     <TranslatedText xml:lang="de">Wie groß sind Sie?</TranslatedText>
                 </Question>
+                <MeasurementUnitRef MeasurementUnitOID="MM.5"/>
+                <RangeCheck Comparator="GT" SoftHard="Hard">
+                    <CheckValue>1</CheckValue>
+                </RangeCheck>
+                <RangeCheck Comparator="LT" SoftHard="Hard">
+                    <CheckValue>3</CheckValue>
+                </RangeCheck>
             </ItemDef>
             <ItemDef OID="CountryOfBirth" Name="CountryOfBirth" DataType="text">
                 <Question>

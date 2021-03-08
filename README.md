@@ -26,7 +26,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-The OpenEDC functionality is built with vanilla JavaScript and HTML and hence does not rely on a thrid-party JavaScript framework. However, <a target="_blank" href="https://github.com/brix/crypto-js">crypto-js</a>, a JavaScript library of crypto standards, is needed for the local AES encryption or end-to-end encryption when connected to a server. A build step is not required.
+The OpenEDC functionality is built with vanilla JavaScript and HTML and hence does not rely on a third-party JavaScript framework. However, <a target="_blank" href="https://github.com/brix/crypto-js">crypto-js</a>, a JavaScript library of crypto standards, is needed for the local AES encryption or end-to-end encryption when connected to a server. A build step is not required.
 
 ### Installing
 
