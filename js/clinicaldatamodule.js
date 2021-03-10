@@ -664,6 +664,7 @@ function showAuditRecordDataView() {
     $("#audit-record-data-hint").classList.remove("is-hidden");
     $("#survey-view-button").classList.add("is-hidden");
     $("#clinicaldata-navigate-buttons").classList.add("is-hidden");
+    disableInputElements(true);
     skipDataHasChangedCheck = true;
 }
 
@@ -671,6 +672,12 @@ function hideAuditRecordDataView() {
     $("#audit-record-data-hint").classList.add("is-hidden");
     $("#survey-view-button").classList.remove("is-hidden");
     $("#clinicaldata-navigate-buttons").classList.remove("is-hidden");
+}
+
+function disableInputElements(disabled) {
+    document.querySelectorAll("#clinicaldata-content input").forEach(input => input.disabled = disabled);
+    document.querySelectorAll("#clinicaldata-content select").forEach(input => input.disabled = disabled);
+    document.querySelectorAll("#clinicaldata-content textarea").forEach(input => input.disabled = disabled);
 }
 
 function surveyViewIsActive() {
