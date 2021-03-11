@@ -78,7 +78,11 @@ class ClinicaldataSection extends HTMLElement {
                                     <article class="message is-link is-hidden" id="audit-record-data-hint">
                                         <div class="message-body">
                                             <p i18n="audit-record-data-hint"></p>
-                                            <p id="audit-record-most-current-hint" i18n="audit-record-most-current-hint"></p>
+                                        </div>
+                                    </article>
+                                    <article class="message is-link is-hidden" id="form-validated-hint">
+                                        <div class="message-body">
+                                            <p i18n="form-validated-hint"></p>
                                         </div>
                                     </article>
                                     <nav class="level">
@@ -103,14 +107,14 @@ class ClinicaldataSection extends HTMLElement {
                                     <nav class="level is-mobile mb-3">
                                         <div class="level-left">
                                             <div class="level-item">
-                                                <button class="button" id="clinicaldata-close-button" onclick="cancelFormOrSurveyEntry()" i18n="close">Close</button>
+                                                <button class="button" id="clinicaldata-close-button" onclick="cancelFormOrSurveyEntry()" i18n="close"></button>
                                             </div>
                                         </div>
                                         <div class="level-right">
                                             <div class="level-item">
                                                 <div class="buttons has-addons" id="clinicaldata-navigate-buttons">
-                                                    <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" i18n="back">Back</button>
-                                                    <button class="button is-link" id="clinicaldata-next-button" onclick="loadNextFormData()" i18n="continue">Continue</button>
+                                                    <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" i18n="back"></button>
+                                                    <button class="button is-link" id="clinicaldata-next-button" onclick="loadNextFormData()"></button>
                                                 </div>
                                             </div>
                                         </div>
@@ -123,7 +127,7 @@ class ClinicaldataSection extends HTMLElement {
                                                     <span class="icon">
                                                         <i class="fas fa-check-circle"></i>
                                                     </span>
-                                                    <span>Mark form as validated?</span>
+                                                    <span i18n="mark-form-validated"></span>
                                                 </button>
                                             </div>
                                         </div>

@@ -271,22 +271,34 @@ async function loadFormData() {
     ioHelper.removeIsActiveFromElement($("#clinicaldata-form-panel-blocks a.is-active"));
     $(`#clinicaldata-form-panel-blocks [oid="${currentElementID.form}"]`).classList.add("is-active");
 
+    resetFormUIElements();
+
     await loadFormMetadata();
     loadFormClinicaldata();
     $("#clinicaldata-form-data").classList.remove("is-hidden");
 
     // Show a hint if no subject is selected
-    currentElementID.subject ? $("#no-subject-selected-hint").classList.add("is-hidden") : $("#no-subject-selected-hint").classList.remove("is-hidden");
+    if (!currentElementID.subject) $("#no-subject-selected-hint").classList.remove("is-hidden");
 
     skipMandatoryCheck = false;
     skipDataHasChangedCheck = false;
 
     // Handle cachedData, that is usually cached when the language is changed
-    cachedFormDataIsAuditRecord ? showAuditRecordDataView() : (surveyViewIsActive() ? null : hideAuditRecordDataView());
+    if (cachedFormDataIsAuditRecord) showAuditRecordDataView();
     cachedFormDataIsAuditRecord = false;
     cachedFormData = null;
 
     scrollToFormStart();
+}
+
+function resetFormUIElements() {
+    $("#no-subject-selected-hint").classList.add("is-hidden")
+    $("#form-validated-hint").classList.add("is-hidden");
+    $("#audit-record-data-hint").classList.add("is-hidden");
+    $("#survey-view-button").classList.remove("is-hidden");
+    $("#clinicaldata-navigate-buttons").classList.remove("is-hidden");
+    $("#form-validate-button").classList.remove("is-hidden");
+    $("#form-validate-button").classList.remove("is-validated");
 }
 
 async function loadFormMetadata() {
@@ -305,14 +317,13 @@ async function loadFormMetadata() {
     // Add dynamic form logic async (conditional items, field validation, uncheck of radio buttons)
     addDynamicFormLogic();
 
-    // Adjust the form navigation buttons and reset the form validate button
+    // Adjust the form navigation buttons
     $("#clinicaldata-previous-button").disabled = getPreviousFormOID(currentElementID.form) ? false : true;
     if (!getNextFormOID(currentElementID.form)) {
         $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("finish");
     } else {
         $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("continue");
     }
-    $("#form-validate-button").classList.remove("is-validated");
 }
 
 async function addDynamicFormLogic() {
@@ -382,11 +393,8 @@ function loadFormClinicaldata() {
 
     showErrors(metadataNotFoundErrors, hiddenFieldWithValueError);
 
-    // Adjust the form lock button
-    if (clinicaldataHelper.getDataStatusForForm(currentElementID.studyEvent, currentElementID.form) == clinicaldataHelper.dataStatusTypes.VALIDATED) {
-        disableInputElements();
-        $("#form-validate-button").classList.add("is-validated");
-    }
+    // Adjust the form lock button and hint
+    if (clinicaldataHelper.getDataStatusForForm(currentElementID.studyEvent, currentElementID.form) == clinicaldataHelper.dataStatusTypes.VALIDATED) showValidatedFormView();
 }
 
 function showErrors(metadataNotFoundErrors, hiddenFieldWithValueError) {
@@ -684,18 +692,22 @@ function surveyCodeButtonPressed(value) {
     }
 }
 
+function showValidatedFormView() {
+    if (cachedFormDataIsAuditRecord) return;
+
+    $("#form-validated-hint").classList.remove("is-hidden");
+    $("#survey-view-button").classList.add("is-hidden");
+    $("#form-validate-button").classList.add("is-validated");
+    disableInputElements();
+}
+
 function showAuditRecordDataView() {
     $("#audit-record-data-hint").classList.remove("is-hidden");
     $("#survey-view-button").classList.add("is-hidden");
     $("#clinicaldata-navigate-buttons").classList.add("is-hidden");
+    $("#form-validate-button").classList.add("is-hidden");
     disableInputElements();
     skipDataHasChangedCheck = true;
-}
-
-function hideAuditRecordDataView() {
-    $("#audit-record-data-hint").classList.add("is-hidden");
-    $("#survey-view-button").classList.remove("is-hidden");
-    $("#clinicaldata-navigate-buttons").classList.remove("is-hidden");
 }
 
 function disableInputElements() {
@@ -760,13 +772,9 @@ async function showAuditRecordFormData(studyEventOID, formOID, date) {
     cachedFormData = clinicaldataHelper.getAuditRecordFormData(studyEventOID, formOID, date);
     if (!cachedFormData) return;
 
-    skipDataHasChangedCheck = true;
+    cachedFormDataIsAuditRecord = true;
     await loadTree(studyEventOID, formOID);
 
-    // Show a hint if the current data or data that is equivalent to the current data is shown
-    dataHasChanged() ? $("#audit-record-most-current-hint").classList.add("is-hidden") : $("#audit-record-most-current-hint").classList.remove("is-hidden");
-
-    showAuditRecordDataView();
     hideSubjectInfo();
 }
 
