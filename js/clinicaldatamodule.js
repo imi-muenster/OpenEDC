@@ -299,6 +299,7 @@ function resetFormUIElements() {
     $("#clinicaldata-navigate-buttons").classList.remove("is-hidden");
     $("#form-validate-button").classList.remove("is-hidden");
     $("#form-validate-button").classList.remove("is-validated");
+    $("#clinicaldata-navigate-level").classList.remove("has-no-margin-bottom");
 }
 
 async function loadFormMetadata() {
@@ -462,7 +463,7 @@ window.validateForm = function() {
         $("#form-validate-button").classList.add("is-validated");
     } else {
         enableInputElements();
-        $("#form-validate-button").classList.remove("is-validated");
+        resetFormUIElements();
     }
 }
 
@@ -594,6 +595,8 @@ window.showSurveyView = function() {
     $("#clinicaldata-section").classList.add("p-3");
     $("#clinicaldata-form-title").classList.add("is-centered");
     $("#survey-view-button").classList.add("is-hidden");
+    $("#form-validate-button").classList.add("is-hidden");
+    $("#clinicaldata-navigate-level").classList.add("has-no-margin-bottom");
     scrollToFormStart();
 }
 
@@ -610,7 +613,6 @@ function hideSurveyView() {
     $("#clinicaldata-column .tree-panel-blocks").classList.remove("is-survey-view");
     $("#clinicaldata-section").classList.remove("p-3");
     $("#clinicaldata-form-title").classList.remove("is-centered");
-    $("#survey-view-button").classList.remove("is-hidden");
 }
 
 function showCloseClinicaldataModal() {
@@ -716,6 +718,7 @@ function showAuditRecordHint() {
     $("#survey-view-button").classList.add("is-hidden");
     $("#clinicaldata-navigate-buttons").classList.add("is-hidden");
     $("#form-validate-button").classList.add("is-hidden");
+    $("#clinicaldata-navigate-level").classList.add("has-no-margin-bottom");
     disableInputElements();
     skipDataHasChangedCheck = true;
 }

@@ -56,8 +56,12 @@ a.panel-block {
     padding: 30px;
 }
 
+.has-no-margin-bottom {
+    margin-bottom: 0px !important;
+}
+
 .has-no-padding-bottom {
-    padding-bottom: 0px;
+    padding-bottom: 0px !important;
 }
 
 .has-no-border-bottom {

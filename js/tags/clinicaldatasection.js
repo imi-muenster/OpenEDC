@@ -94,7 +94,7 @@ class ClinicaldataSection extends HTMLElement {
                                     </nav>
                                     <hr>
                                     <div id="clinicaldata-content"></div>
-                                    <nav class="level is-mobile mb-3">
+                                    <nav class="level is-mobile mb-3" id="clinicaldata-navigate-level">
                                         <div class="level-left">
                                             <div class="level-item">
                                                 <button class="button" id="clinicaldata-close-button" onclick="cancelFormOrSurveyEntry()" i18n="close"></button>
