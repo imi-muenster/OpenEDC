@@ -467,7 +467,7 @@ window.validateForm = function() {
 }
 
 function isFormValidated() {
- return $("#form-validate-button").classList.contains("is-validated");
+    return $("#form-validate-button").classList.contains("is-validated");
 }
 
 function scrollToFormStart() {
@@ -746,7 +746,7 @@ window.showSubjectInfo = function() {
     for (let auditRecord of clinicaldataHelper.getAuditRecords()) {
         const siteName = admindataHelper.getSiteNameByOID(auditRecord.locationOID);
         const userName = admindataHelper.getUserFullName(auditRecord.userOID);
-        let auditRecordElement = htmlElements.getAuditRecord(auditRecord.type, auditRecord.studyEventOID, auditRecord.formOID, userName, siteName, auditRecord.date);
+        let auditRecordElement = htmlElements.getAuditRecord(auditRecord.type, auditRecord.studyEventOID, auditRecord.formOID, auditRecord.dataStatus, userName, siteName, auditRecord.date);
         if (auditRecord.formOID) auditRecordElement.querySelector("button").onclick = () => showAuditRecordFormData(auditRecord.studyEventOID, auditRecord.formOID, auditRecord.date);
         $("#audit-records").appendChild(auditRecordElement);
     }

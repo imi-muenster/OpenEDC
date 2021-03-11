@@ -44,7 +44,7 @@ export function getTranslation(key) {
 
 async function loadTranslations(locale) {
     const response = await fetch(ioHelper.getBaseURL() + "/internationalization/" + locale + ".json");
-    return await response.json();
+    return await response.json().catch(() => []);
 }
 
 export function populatePresentLanguages(odm) {
@@ -74,11 +74,8 @@ function populateNonPresentLanguages() {
 }
 
 function getLanguageNameByLocale(locale) {
-    for (let [key, value] of Object.entries(locales)) {
-        if (locale == value) {
-            return key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
-        }
-    }
+    const languageName = Object.keys(locales).find(key => locales[key] == locale);
+    return languageName ? languageName.charAt(0).toUpperCase() + languageName.slice(1).toLowerCase() : locale;
 }
 
 export function getPresentLanguages() {
@@ -117,8 +114,6 @@ function addDividerNavbar() {
 }
 
 async function changeLanguage(locale) {
-    if (!Object.values(locales).includes(locale)) return;
-
     currentLocale = locale;
     currentLocaleSet = true;
     await internationalize();

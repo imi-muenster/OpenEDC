@@ -30,13 +30,14 @@ export class FormItemData {
 }
 
 export class AuditRecord {
-    constructor(type, studyEventOID, formOID, userOID, locationOID, date) {
+    constructor(type, studyEventOID, formOID, userOID, locationOID, date, dataStatus) {
         this.type = type;
         this.studyEventOID = studyEventOID;
         this.formOID = formOID;
         this.userOID = userOID;
         this.locationOID = locationOID;
         this.date = date;
+        this.dataStatus = dataStatus;
     }
 }
 
@@ -287,13 +288,17 @@ export function dataHasChanged(formItemDataList, studyEventOID, formOID, dataSta
 }
 
 export function getAuditRecords() {
-    let auditRecords = [];
+    const auditRecords = [];
 
     for (let studyEventData of $$("StudyEventData")) {
-        let studyEventOID = studyEventData.getAttribute("StudyEventOID");
+        const studyEventOID = studyEventData.getAttribute("StudyEventOID");
         for (let formData of studyEventData.querySelectorAll("FormData")) {
-            let formOID = formData.getAttribute("FormOID");
-            let auditRecord = formData.querySelector("AuditRecord")
+            const formOID = formData.getAttribute("FormOID");
+            const auditRecord = formData.querySelector("AuditRecord");
+            const flag = formData.querySelector("Flag");
+            const flagValue = flag ? flag.querySelector("FlagValue") : null;
+            const dataStatus = flagValue ? parseInt(flagValue.textContent) : null;
+            const dataStatusName = Object.keys(dataStatusTypes).find(key => dataStatusTypes[key] == dataStatus);
             if (!auditRecord) continue;
             auditRecords.push(new AuditRecord(
                 auditRecordTypes.FORMEDITED,
@@ -301,7 +306,8 @@ export function getAuditRecords() {
                 formOID,
                 auditRecord.querySelector("UserRef").getAttribute("UserOID"),
                 auditRecord.querySelector("LocationRef").getAttribute("LocationOID"),
-                new Date(auditRecord.querySelector("DateTimeStamp").textContent)
+                new Date(auditRecord.querySelector("DateTimeStamp").textContent),
+                dataStatusName.charAt(0).toUpperCase() + dataStatusName.slice(1).toLowerCase()
             ));
         }
     }
