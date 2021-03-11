@@ -72,18 +72,8 @@ class ClinicaldataSection extends HTMLElement {
                             <p class="panel-heading has-text-centered">Data</p>
                             <div class="tree-panel-blocks">
                                 <div class="is-hidden" id="clinicaldata-form-data">
-                                    <article class="message is-danger is-hidden" id="no-subject-selected-hint">
-                                        <div class="message-body" i18n="no-subject-selected-hint"></div>
-                                    </article>
-                                    <article class="message is-link is-hidden" id="audit-record-data-hint">
-                                        <div class="message-body">
-                                            <p i18n="audit-record-data-hint"></p>
-                                        </div>
-                                    </article>
-                                    <article class="message is-link is-hidden" id="form-validated-hint">
-                                        <div class="message-body">
-                                            <p i18n="form-validated-hint"></p>
-                                        </div>
+                                    <article class="message is-hidden" id="form-hint">
+                                        <div class="message-body"></div>
                                     </article>
                                     <nav class="level">
                                         <div class="level-left" id="clinicaldata-form-title">
