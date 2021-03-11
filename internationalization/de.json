@@ -2,7 +2,7 @@
     "no-subject-selected-hint": "Kein Subjekt ausgewählt. Sie können das Formular trotzdem ansehen und testen, eingegebene Daten werden jedoch nicht gespeichert. Sie können ein Subjekt auswählen indem Sie in der linken Spalte darauf klicken.",
     "no-subject-selected-warning": "Kein Subjekt ausgewählt. Bitte wählen Sie zuerst ein Subjekt in der linken Spalte aus.",
     "audit-record-data-hint": "Sie sehen aktuell den Audit Trail.",
-    "form-validated-hint": "Dieses Formular wurde als validiert markiert. Es kann nicht bearbeitet werden, bis es wieder als unvalidiert markiert wird. Dies benötigt eine gesonderte Berechtigung.",
+    "form-validated-hint": "Dieses Formular wurde als validiert markiert. Es kann nicht bearbeitet werden, bis es wieder als unvalidiert markiert wird.",
     "survey-view": "Umfrageansicht",
     "survey-finished": "Umfrage beendet",
     "survey-finished-text": "Danke, dass Sie an der Umfrage teilgenommen haben.",

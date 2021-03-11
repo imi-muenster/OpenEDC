@@ -16,8 +16,7 @@ class Subject {
     }
 
     get fileName() {
-        // The status is only attached if present since it has been introduced in 0.1.4 and should not break previously captured data without status
-        return this.key + fileNameSeparator + (this.siteOID || "") + fileNameSeparator + this.createdDate.getTime() + fileNameSeparator + this.modifiedDate.getTime() + (this.status ? fileNameSeparator + this.status : "");
+        return this.key + fileNameSeparator + (this.siteOID || "") + fileNameSeparator + this.createdDate.getTime() + fileNameSeparator + this.modifiedDate.getTime() + fileNameSeparator + this.status;
     }
 }
 
