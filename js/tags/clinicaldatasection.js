@@ -119,11 +119,11 @@ class ClinicaldataSection extends HTMLElement {
                                         <div class="level-left"></div>
                                         <div class="level-right">
                                             <div class="level-item">
-                                                <button class="button is-small" id="form-complete-button" onclick="markFormComplete()">
+                                                <button class="button is-small" id="form-validate-button" onclick="validateForm()">
                                                     <span class="icon">
                                                         <i class="fas fa-check-circle"></i>
                                                     </span>
-                                                    <span>Mark form as complete?</span>
+                                                    <span>Mark form as validated?</span>
                                                 </button>
                                             </div>
                                         </div>

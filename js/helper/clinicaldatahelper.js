@@ -57,7 +57,7 @@ export const dataStatusTypes = {
     EMPTY: 1,
     INCOMPLETE: 2,
     COMPLETE: 3,
-    VERIFIED: 4,
+    VALIDATED: 4,
     CONFLICT: 5
 };
 
@@ -214,7 +214,7 @@ function fileNameToSubject(fileName) {
 
 export async function storeSubjectFormData(studyEventOID, formOID, formItemDataList, dataStatus) {
     // Do not store any data if no subject has been loaded or the formdata to be stored did not change compared to the previous one
-    if (!subject || !dataHasChanged(formItemDataList, studyEventOID, formOID)) return;
+    if (!subject || !dataHasChanged(formItemDataList, studyEventOID, formOID, dataStatus)) return;
 
     // Do not store data if connected to server and user has no rights to store data
     if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes("Add subject data")) return;
@@ -280,9 +280,10 @@ function getFormItemDataList(formData) {
     return formItemDataList;
 }
 
-export function dataHasChanged(formItemDataList, studyEventOID, formOID) {
+export function dataHasChanged(formItemDataList, studyEventOID, formOID, dataStatus) {
     console.log("Check if data has changed ...");
-    return JSON.stringify(formItemDataList) != JSON.stringify(getSubjectFormData(studyEventOID, formOID));
+    const differentStatus = dataStatus ? dataStatus != getDataStatusForForm(studyEventOID, formOID) : false;
+    return JSON.stringify(formItemDataList) != JSON.stringify(getSubjectFormData(studyEventOID, formOID)) || differentStatus;
 }
 
 export function getAuditRecords() {
@@ -357,9 +358,9 @@ export async function setSubjectInfo(subjectKey, siteOID) {
 export function getDataStatus() {
     const dataStates = metadataHelper.getStudyEventOIDs().map(studyEventOID => getDataStatusForStudyEvent(studyEventOID));
 
-    if (dataStates.every(item => item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
-    if (dataStates.some(item => item == dataStatusTypes.COMPLETE)) return dataStatusTypes.INCOMPLETE;
-    if (dataStates.some(item => item == dataStatusTypes.INCOMPLETE)) return dataStatusTypes.INCOMPLETE;
+    if (dataStates.every(item => item == dataStatusTypes.VALIDATED)) return dataStatusTypes.VALIDATED;
+    if (dataStates.every(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
+    if (dataStates.some(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE || item == dataStatusTypes.INCOMPLETE)) return dataStatusTypes.INCOMPLETE;
     
     return dataStatusTypes.EMPTY;
 }
@@ -367,9 +368,9 @@ export function getDataStatus() {
 export function getDataStatusForStudyEvent(studyEventOID) {
     const dataStates = metadataHelper.getFormOIDsByStudyEvent(studyEventOID).map(formOID => getDataStatusForForm(studyEventOID, formOID));
 
-    if (dataStates.every(item => item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
-    if (dataStates.some(item => item == dataStatusTypes.COMPLETE)) return dataStatusTypes.INCOMPLETE;
-    if (dataStates.some(item => item == dataStatusTypes.INCOMPLETE)) return dataStatusTypes.INCOMPLETE;
+    if (dataStates.every(item => item == dataStatusTypes.VALIDATED)) return dataStatusTypes.VALIDATED;
+    if (dataStates.every(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
+    if (dataStates.some(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE || item == dataStatusTypes.INCOMPLETE)) return dataStatusTypes.INCOMPLETE;
     
     return dataStatusTypes.EMPTY;
 }
@@ -378,7 +379,7 @@ export function getDataStatusForForm(studyEventOID, formOID) {
     const formData = getCurrentFormData(studyEventOID, formOID);
     if (!formData) return dataStatusTypes.EMPTY;
 
-    // Return complete even if there is no flag to support versions before 0.1.5 and impoted data from other systems without a flag
+    // Return complete even if there is no flag to support versions before 0.1.5 and imported data from other systems without a flag
     const flag = formData.querySelector("Flag");
     if (!flag) return dataStatusTypes.COMPLETE;
 

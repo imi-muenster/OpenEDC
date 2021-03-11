@@ -231,7 +231,7 @@ a.panel-block:hover {
     width: 0px;
 }
 
-#form-complete-button:not(.is-complete) .icon {
+#form-validate-button:not(.is-validated) .icon {
     display: none;
 }
 

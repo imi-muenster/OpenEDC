@@ -275,6 +275,9 @@ async function loadFormData() {
     loadFormClinicaldata();
     $("#clinicaldata-form-data").classList.remove("is-hidden");
 
+    // Show a hint if no subject is selected
+    currentElementID.subject ? $("#no-subject-selected-hint").classList.add("is-hidden") : $("#no-subject-selected-hint").classList.remove("is-hidden");
+
     skipMandatoryCheck = false;
     skipDataHasChangedCheck = false;
 
@@ -302,13 +305,14 @@ async function loadFormMetadata() {
     // Add dynamic form logic async (conditional items, field validation, uncheck of radio buttons)
     addDynamicFormLogic();
 
-    // Adjust the form navigation buttons
+    // Adjust the form navigation buttons and reset the form validate button
     $("#clinicaldata-previous-button").disabled = getPreviousFormOID(currentElementID.form) ? false : true;
     if (!getNextFormOID(currentElementID.form)) {
         $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("finish");
     } else {
         $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("continue");
     }
+    $("#form-validate-button").classList.remove("is-validated");
 }
 
 async function addDynamicFormLogic() {
@@ -336,9 +340,7 @@ function uncheckRadioitem(radioItem) {
 }
 
 function loadFormClinicaldata() {
-    if (!currentElementID.studyEvent || !currentElementID.form) return;
-    // TODO: Should be moved to loadFormData(). Then, the line above should include !currentElementID.subject
-    currentElementID.subject ? $("#no-subject-selected-hint").classList.add("is-hidden") : $("#no-subject-selected-hint").classList.remove("is-hidden");
+    if (!currentElementID.studyEvent || !currentElementID.form || !currentElementID.subject) return;
 
     // Two types of errors that can occur during the data loading process
     let metadataNotFoundErrors = [];
@@ -379,6 +381,12 @@ function loadFormClinicaldata() {
     }
 
     showErrors(metadataNotFoundErrors, hiddenFieldWithValueError);
+
+    // Adjust the form lock button
+    if (clinicaldataHelper.getDataStatusForForm(currentElementID.studyEvent, currentElementID.form) == clinicaldataHelper.dataStatusTypes.VALIDATED) {
+        disableInputElements();
+        $("#form-validate-button").classList.add("is-validated");
+    }
 }
 
 function showErrors(metadataNotFoundErrors, hiddenFieldWithValueError) {
@@ -441,8 +449,17 @@ function getPreviousFormOID(nextFormOID) {
     }
 }
 
-window.markFormComplete = function() {
-    $("#form-complete-button").classList.toggle("is-complete");
+window.validateForm = function() {
+    if (!isFormValidated()) {
+        $("#form-validate-button").classList.add("is-validated");
+    } else {
+        enableInputElements();
+        $("#form-validate-button").classList.remove("is-validated");
+    }
+}
+
+function isFormValidated() {
+ return $("#form-validate-button").classList.contains("is-validated");
 }
 
 function scrollToFormStart() {
@@ -459,6 +476,7 @@ async function saveFormData() {
     let dataStatus = clinicaldataHelper.dataStatusTypes.COMPLETE;
     if (!mandatoryFieldsAnswered) dataStatus = clinicaldataHelper.dataStatusTypes.INCOMPLETE;
     if (formItemDataList.length == 0) dataStatus = clinicaldataHelper.dataStatusTypes.EMPTY;
+    if (isFormValidated()) dataStatus = clinicaldataHelper.dataStatusTypes.VALIDATED;
     
     // Store data
     await clinicaldataHelper.storeSubjectFormData(currentElementID.studyEvent, currentElementID.form, formItemDataList, dataStatus);
@@ -497,6 +515,8 @@ function getFormData() {
 }
 
 function checkMandatoryFields(formItemDataList) {
+    if (isFormValidated()) return true;
+
     let mandatoryFieldsAnswered = true;
     for (let mandatoryField of $$(".preview-field[mandatory='Yes']:not(.is-hidden)")) {
         if (!formItemDataList.find(formItemData => formItemData.itemGroupOID == mandatoryField.getAttribute("preview-field-group-oid") && formItemData.itemOID == mandatoryField.getAttribute("preview-field-oid"))) {
@@ -695,7 +715,7 @@ function surveyViewIsActive() {
 }
 
 function dataHasChanged() {
-    return !skipDataHasChangedCheck && currentElementID.subject && currentElementID.studyEvent && currentElementID.form && clinicaldataHelper.dataHasChanged(getFormData(), currentElementID.studyEvent, currentElementID.form)
+    return !skipDataHasChangedCheck && currentElementID.subject && currentElementID.studyEvent && currentElementID.form && clinicaldataHelper.dataHasChanged(getFormData(), currentElementID.studyEvent, currentElementID.form);
 }
 
 window.showSubjectInfo = function() {
