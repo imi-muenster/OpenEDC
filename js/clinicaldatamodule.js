@@ -441,6 +441,10 @@ function getPreviousFormOID(nextFormOID) {
     }
 }
 
+window.markFormComplete = function() {
+    $("#form-complete-button").classList.toggle("is-complete");
+}
+
 function scrollToFormStart() {
     // Scroll to the beginning of the form on desktop and mobile
     document.querySelector("#clinicaldata-form-data").scrollIntoView();
@@ -664,7 +668,7 @@ function showAuditRecordDataView() {
     $("#audit-record-data-hint").classList.remove("is-hidden");
     $("#survey-view-button").classList.add("is-hidden");
     $("#clinicaldata-navigate-buttons").classList.add("is-hidden");
-    disableInputElements(true);
+    disableInputElements();
     skipDataHasChangedCheck = true;
 }
 
@@ -674,10 +678,16 @@ function hideAuditRecordDataView() {
     $("#clinicaldata-navigate-buttons").classList.remove("is-hidden");
 }
 
-function disableInputElements(disabled) {
-    document.querySelectorAll("#clinicaldata-content input").forEach(input => input.disabled = disabled);
-    document.querySelectorAll("#clinicaldata-content select").forEach(input => input.disabled = disabled);
-    document.querySelectorAll("#clinicaldata-content textarea").forEach(input => input.disabled = disabled);
+function disableInputElements() {
+    document.querySelectorAll("#clinicaldata-content input").forEach(input => input.disabled = true);
+    document.querySelectorAll("#clinicaldata-content select").forEach(input => input.disabled = true);
+    document.querySelectorAll("#clinicaldata-content textarea").forEach(input => input.disabled = true);
+}
+
+function enableInputElements() {
+    document.querySelectorAll("#clinicaldata-content input").forEach(input => input.disabled = false);
+    document.querySelectorAll("#clinicaldata-content select").forEach(input => input.disabled = false);
+    document.querySelectorAll("#clinicaldata-content textarea").forEach(input => input.disabled = false);
 }
 
 function surveyViewIsActive() {

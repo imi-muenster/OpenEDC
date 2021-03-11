@@ -100,15 +100,34 @@ class ClinicaldataSection extends HTMLElement {
                                     </nav>
                                     <hr>
                                     <div id="clinicaldata-content"></div>
-                                    <button class="button" id="clinicaldata-close-button" onclick="cancelFormOrSurveyEntry()" i18n="close"></button>
-                                    <div class="field has-addons is-pulled-right" id="clinicaldata-navigate-buttons">
-                                        <div class="control">
-                                            <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" i18n="back"></button>
+                                    <nav class="level is-mobile mb-3">
+                                        <div class="level-left">
+                                            <div class="level-item">
+                                                <button class="button" id="clinicaldata-close-button" onclick="cancelFormOrSurveyEntry()" i18n="close">Close</button>
+                                            </div>
                                         </div>
-                                        <div class="control">
-                                            <button class="button is-link" id="clinicaldata-next-button" onclick="loadNextFormData()">Continue</button>
+                                        <div class="level-right">
+                                            <div class="level-item">
+                                                <div class="buttons has-addons" id="clinicaldata-navigate-buttons">
+                                                    <button class="button" id="clinicaldata-previous-button" onclick="loadPreviousFormData()" i18n="back">Back</button>
+                                                    <button class="button is-link" id="clinicaldata-next-button" onclick="loadNextFormData()" i18n="continue">Continue</button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </nav>
+                                    <nav class="level is-mobile">
+                                        <div class="level-left"></div>
+                                        <div class="level-right">
+                                            <div class="level-item">
+                                                <button class="button is-small" id="form-complete-button" onclick="markFormComplete()">
+                                                    <span class="icon">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </span>
+                                                    <span>Mark form as complete?</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </nav>
                                 </div>
                             </div>
                         </nav>

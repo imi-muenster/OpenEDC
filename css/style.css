@@ -149,13 +149,6 @@ a.panel-block:hover {
     margin-bottom: 5px;
 }
 
-.checkbox-button {
-    margin-bottom: 12px;
-    width: 100%;
-    justify-content: flex-start;
-    border-radius: 4px !important;
-}
-
 .is-clickable {
     cursor: pointer; 
 }
@@ -234,8 +227,12 @@ a.panel-block:hover {
     margin: 0 auto;
 }
 
-.button.is-large.is-rounded{
+.button.is-large.is-rounded {
     width: 0px;
+}
+
+#form-complete-button:not(.is-complete) .icon {
+    display: none;
 }
 
 @media only screen and (max-width: 768px)  {
