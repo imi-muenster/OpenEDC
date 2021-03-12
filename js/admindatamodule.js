@@ -83,22 +83,24 @@ function loadUser(userOID) {
         $("#user-username-input").disabled = false;
         $("#user-password-input").disabled = false;
         $("#user-password-input").placeholder = "";
-        $$(`#user-rights input`).forEach(checkbox => checkbox.checked = false);
+        $$("#user-rights input").forEach(checkbox => {
+            checkbox.disabled = false;
+            checkbox.checked = false;
+        });
         ioHelper.getUserOnServer(userOID)
             .then(user => {
                 if (user.username) {
                     $("#user-username-input").value = user.username
                     $("#user-password-input").placeholder = "Reset initial password";
                 }
-                $$(`#user-rights input`).forEach(checkbox => {
-                    checkbox.disabled = false;
+                $$("#user-rights input").forEach(checkbox => {
                     if (user.rights && user.rights.includes(checkbox.name)) checkbox.checked = true;
                 });
             })
             .catch(() => console.log("The selected user could not be loaded from the server (i.e., offline, no permission, or user not yet synced with the server)."));
     } else {
         // Local users have all rights
-        $$(`#user-rights input`).forEach(checkbox => checkbox.checked = true);
+        $$("#user-rights input").forEach(checkbox => checkbox.checked = true);
     }
 }
 
