@@ -217,13 +217,16 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
 
     const currentDataStatus = getDataStatusForForm(studyEventOID, formOID);
 
-    // Do not store any data if neither the formdata nor the data status changed
+    // Do not store data if neither the formdata nor the data status changed
     if (currentDataStatus == dataStatus && !dataHasChanged(formItemDataList, studyEventOID, formOID)) return;
 
     // Do not store data if connected to server and user has no rights to store data
     if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.ADDSUBJECTDATA)) return;
 
-    // Do not store data if the form is (in-)validated without permission
+    // Do not store data if the current data status is set to validated and the user has no permission for invalidation
+    if (currentDataStatus == dataStatusTypes.VALIDATED && ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.VALIDATEFORMS)) return;
+
+    // Do not store data if the form status is set to (in-)validated without permission
     if (currentDataStatus != dataStatus && (currentDataStatus == dataStatusTypes.VALIDATED || dataStatus == dataStatusTypes.VALIDATED)) {
         if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.VALIDATEFORMS)) return;
     }
