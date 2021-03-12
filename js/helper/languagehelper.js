@@ -3,20 +3,23 @@ import * as ioHelper from "./iohelper.js";
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-export const locales = {
-    "ENGLISH": "en",
-    "DUTCH": "nl",
-    "FRENCH": "fr",
-    "GERMAN": "de",
-    "ITALIAN": "it",
-    "PORTUGUESE": "pt",
-    "RUSSIAN": "ru",
-    "SPANISH": "es",
-    "SWEDISH": "sv",
-    "TURKISH": "tr"
+const locales = {
+    ENGLISH: "en",
+    DUTCH: "nl",
+    FRENCH: "fr",
+    GERMAN: "de",
+    ITALIAN: "it",
+    PORTUGUESE: "pt",
+    RUSSIAN: "ru",
+    SPANISH: "es",
+    SWEDISH: "sv",
+    TURKISH: "tr"
 }
 
 const defaultLocale = locales.ENGLISH;
+
+export const untranslatedLocale = "none";
+const untranslatedName = "Not translated";
 
 let currentLocale = defaultLocale;
 let currentLocaleSet = false;
@@ -51,8 +54,8 @@ export function populatePresentLanguages(odm) {
     localesInODM = [];
     localesNotInODM = [];
 
-    for (let translatedText of odm.querySelectorAll("TranslatedText")) {
-        let locale = translatedText.getAttribute("xml:lang");
+    for (const translatedText of odm.querySelectorAll("TranslatedText")) {
+        const locale = translatedText.getAttribute("xml:lang") ? translatedText.getAttribute("xml:lang") : untranslatedLocale;
         if (!localesInODM.includes(locale)) {
             localesInODM.push(locale);
         }
@@ -74,7 +77,8 @@ function populateNonPresentLanguages() {
 }
 
 function getLanguageNameByLocale(locale) {
-    const languageName = Object.keys(locales).find(key => locales[key] == locale);
+    let languageName = Object.keys(locales).find(key => locales[key] == locale);
+    if (locale == untranslatedLocale) languageName = untranslatedName;
     return languageName ? languageName.charAt(0).toUpperCase() + languageName.slice(1).toLowerCase() : locale;
 }
 
