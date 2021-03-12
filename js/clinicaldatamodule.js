@@ -698,6 +698,8 @@ function showNoSubjectHint() {
     $("#form-hint .message-body").textContent = languageHelper.getTranslation("no-subject-selected-hint");
     $("#form-hint").classList.add("is-danger");
     $("#form-hint").classList.remove("is-hidden");
+    $("#form-validate-button").classList.add("is-hidden");
+    $("#clinicaldata-navigate-level").classList.add("has-no-margin-bottom");
 }
 
 function showValidatedFormHint() {
