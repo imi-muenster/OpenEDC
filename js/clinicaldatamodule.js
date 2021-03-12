@@ -296,9 +296,8 @@ function resetFormUIElements() {
     $("#form-hint").classList.remove("is-link");
     $("#survey-view-button").classList.remove("is-hidden");
     $("#clinicaldata-navigate-buttons").classList.remove("is-hidden");
-    $("#form-validate-button").classList.remove("is-hidden");
+    $("#form-validate-level").classList.remove("is-hidden");
     $("#form-validate-button").classList.remove("is-validated");
-    $("#clinicaldata-navigate-level").classList.remove("has-no-margin-bottom");
 }
 
 async function loadFormMetadata() {
@@ -594,8 +593,7 @@ window.showSurveyView = function() {
     $("#clinicaldata-section").classList.add("p-3");
     $("#clinicaldata-form-title").classList.add("is-centered");
     $("#survey-view-button").classList.add("is-hidden");
-    $("#form-validate-button").classList.add("is-hidden");
-    $("#clinicaldata-navigate-level").classList.add("has-no-margin-bottom");
+    $("#form-validate-level").classList.add("is-hidden");
     scrollToFormStart();
 }
 
@@ -697,8 +695,7 @@ function showNoSubjectHint() {
     $("#form-hint .message-body").textContent = languageHelper.getTranslation("no-subject-selected-hint");
     $("#form-hint").classList.add("is-danger");
     $("#form-hint").classList.remove("is-hidden");
-    $("#form-validate-button").classList.add("is-hidden");
-    $("#clinicaldata-navigate-level").classList.add("has-no-margin-bottom");
+    $("#form-validate-level").classList.add("is-hidden");
 }
 
 function showValidatedFormHint() {
@@ -718,8 +715,7 @@ function showAuditRecordHint() {
     $("#form-hint").classList.remove("is-hidden");
     $("#survey-view-button").classList.add("is-hidden");
     $("#clinicaldata-navigate-buttons").classList.add("is-hidden");
-    $("#form-validate-button").classList.add("is-hidden");
-    $("#clinicaldata-navigate-level").classList.add("has-no-margin-bottom");
+    $("#form-validate-level").classList.add("is-hidden");
     disableInputElements();
     skipDataHasChangedCheck = true;
 }

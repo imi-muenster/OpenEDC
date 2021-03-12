@@ -204,12 +204,15 @@ function adjustUIToUser() {
             if (getCurrentMode() == appModes.METADATA) metadataModule.hide();
             $("#metadata-toggle-button").disabled = true;
         }
+        if (!user.rights.includes(admindataHelper.userRights.MANAGESUBJECTS)) {
+            $("#subject-info-button").disabled = true;
+        }
+        if (!user.rights.includes(admindataHelper.userRights.VALIDATEFORMS)) {
+            $("#form-validate-level").classList.add("is-hidden");
+        }
         if (!user.rights.includes(admindataHelper.userRights.ADDSUBJECTDATA)) {
             $("#add-subject-input").disabled = true;
             $("#add-subject-button").disabled = true;
-        }
-        if (!user.rights.includes(admindataHelper.userRights.MANAGESUBJECTS)) {
-            $("#subject-info-button").disabled = true;
         }
         if (user.site) {
             $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(user.site);
