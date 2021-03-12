@@ -148,7 +148,7 @@ class ProjectModal extends HTMLElement {
                                         <label class="label">Initial password</label>
                                         <input class="input" id="user-password-input" type="text">
                                     </div>
-                                    <div class="field is-hidden" id="user-rights">
+                                    <div class="field" id="user-rights">
                                         <hr>
                                         <label class="label">User rights</label>
                                     </div>

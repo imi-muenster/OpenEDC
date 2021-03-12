@@ -431,11 +431,6 @@ function getHeaders(authorization, contentTypeJSON) {
     return headers;
 }
 
-export async function getUserRights() {
-    const rightsResponse = await fetch(serverURL + "/api/users/rights");
-    return await rightsResponse.json();
-}
-
 export async function emptyMessageQueue() {
     const dynamicCache = await caches.open("dynamic-cache");
     const dynamicCacheEntries = await dynamicCache.keys();

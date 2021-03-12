@@ -197,18 +197,18 @@ function loginNotSuccessful(error) {
 function adjustUIToUser() {
     if (ioHelper.hasServerURL()) {
         const user = ioHelper.getLoggedInUser();
-        if (!user.rights.includes("Project options")) {
+        if (!user.rights.includes(admindataHelper.userRights.PROJECTOPTIONS)) {
             $("#project-modal-button").disabled = true;
         }
-        if (!user.rights.includes("Edit metadata")) {
+        if (!user.rights.includes(admindataHelper.userRights.EDITMETADATA)) {
             if (getCurrentMode() == appModes.METADATA) metadataModule.hide();
             $("#metadata-toggle-button").disabled = true;
         }
-        if (!user.rights.includes("Add subject data")) {
+        if (!user.rights.includes(admindataHelper.userRights.ADDSUBJECTDATA)) {
             $("#add-subject-input").disabled = true;
             $("#add-subject-button").disabled = true;
         }
-        if (!user.rights.includes("Manage subjects")) {
+        if (!user.rights.includes(admindataHelper.userRights.MANAGESUBJECTS)) {
             $("#subject-info-button").disabled = true;
         }
         if (user.site) {

@@ -173,7 +173,7 @@ async function loadSubjectData(subjectKey) {
     // If the currently logged in user has no metadata edit rights, then disable the form preview as well
     if (subjectKey == currentElementID.subject) {
         subjectKey = null;
-        if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes("Edit metadata")) currentElementID.form = null;
+        if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.EDITMETADATA)) currentElementID.form = null;
     }
 
     // Automatically select the first study event if there is only one (present here as well mainly because of mobile auto survey view function)
@@ -191,7 +191,7 @@ async function loadSubjectData(subjectKey) {
     ioHelper.removeIsActiveFromElement($("#subject-panel-blocks a.is-active"));
     if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
     $("#subject-info-button").disabled = currentElementID.subject ? false : true;
-    if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes("Manage subjects")) $("#subject-info-button").disabled = true;
+    if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.MANAGESUBJECTS)) $("#subject-info-button").disabled = true;
 
     await reloadTree();
 }
@@ -262,8 +262,7 @@ async function loadFormsByStudyEvent() {
 
 async function loadFormData() {
     // If connected to the server and the user has no metadata edit rights then disable the form preview functionality
-    // TODO: Create an enum with all rights in the ioHelper
-    if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes("Edit metadata") && !currentElementID.subject) {
+    if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.EDITMETADATA) && !currentElementID.subject) {
         ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("no-subject-selected-warning"));
         return;
     }

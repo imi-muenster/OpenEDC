@@ -13,6 +13,7 @@ export async function init() {
 
 export async function loadUsers() {
     ioHelper.removeElements($$("#users-options .panel a"));
+    ioHelper.removeElements($$("#user-rights .checkbox"));
     ioHelper.safeRemoveElement($("#user-site-select-outer"));
 
     $("#user-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("user-site-select", true, true, [], null));
@@ -42,20 +43,14 @@ export async function loadUsers() {
         $("#add-user-button").insertAdjacentElement("beforebegin", panelBlock);
     }
 
-    // Also, if connected to a server, mark the own user and add the user rights checkboxes
-    if (ioHelper.hasServerURL()) {
-        $("#add-user-button button").disabled = false;
-
-        const localUserOID = ioHelper.getLoggedInUser().oid;
-        $(`#users-options [oid="${localUserOID}"]`).textContent += " (you)";
-
-        $("#user-rights").classList.remove("is-hidden");
-        const userRights = await ioHelper.getUserRights();
-        ioHelper.removeElements($$("#user-rights .checkbox"));
-        for (let userRight of Object.values(userRights)) {
-            $("#user-rights").insertAdjacentHTML("beforeend", `<label class="checkbox"><input type="checkbox" name="${userRight}"> ${userRight}</label>`);
-        }
+    for (let userRight of Object.values(admindataHelper.userRights)) {
+        $("#user-rights").insertAdjacentHTML("beforeend", `<label class="checkbox"><input type="checkbox" name="${userRight}" disabled> ${userRight}</label>`);
     }
+
+    const localUserOID = admindataHelper.getCurrentUserOID();
+    $(`#users-options [oid="${localUserOID}"]`).textContent += " (you)";
+
+    if (ioHelper.hasServerURL()) $("#add-user-button button").disabled = false;
 }
 
 function loadUser(userOID) {
@@ -96,10 +91,14 @@ function loadUser(userOID) {
                     $("#user-password-input").placeholder = "Reset initial password";
                 }
                 $$(`#user-rights input`).forEach(checkbox => {
+                    checkbox.disabled = false;
                     if (user.rights && user.rights.includes(checkbox.name)) checkbox.checked = true;
                 });
             })
             .catch(() => console.log("The selected user could not be loaded from the server (i.e., offline, no permission, or user not yet synced with the server)."));
+    } else {
+        // Local users have all rights
+        $$(`#user-rights input`).forEach(checkbox => checkbox.checked = true);
     }
 }
 
