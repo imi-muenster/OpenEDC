@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.2.0
+
+- Forms can now be marked as validated which also locks them for users without the new form validation authorization
+- Dynamically hide and show the events column on desktop and mobile depending on the number of available metadata events
+- Many other performance, stability, and usability improvements
+
 ## 0.1.5
 
 - A form is now automatically marked as incomplete when at least one mandatory item was not answered

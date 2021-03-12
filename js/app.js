@@ -8,7 +8,7 @@ import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 import * as repositoryHelper from "./helper/repositoryhelper.js";
 
-const appVersion = "0.1.5";
+const appVersion = "0.2.0";
 
 const appModes = {
     METADATA: "METADATA",
