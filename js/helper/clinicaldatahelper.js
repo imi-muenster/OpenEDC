@@ -213,11 +213,20 @@ function fileNameToSubject(fileName) {
 }
 
 export async function storeSubjectFormData(studyEventOID, formOID, formItemDataList, dataStatus) {
-    // Do not store any data if no subject has been loaded or the formdata to be stored did not change compared to the previous one
-    if (!subject || !dataHasChanged(formItemDataList, studyEventOID, formOID, dataStatus)) return;
+    if (!subject) return;
+
+    const currentDataStatus = getDataStatusForForm(studyEventOID, formOID);
+
+    // Do not store any data if neither the formdata nor the data status changed
+    if (currentDataStatus == dataStatus && !dataHasChanged(formItemDataList, studyEventOID, formOID)) return;
 
     // Do not store data if connected to server and user has no rights to store data
     if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.ADDSUBJECTDATA)) return;
+
+    // Do not store data if the form is (in-)validated without permission
+    if (currentDataStatus != dataStatus && (currentDataStatus == dataStatusTypes.VALIDATED || dataStatus == dataStatusTypes.VALIDATED)) {
+        if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.VALIDATEFORMS)) return;
+    }
 
     let formData = clinicaldataTemplates.getFormData(formOID);
     formData.appendChild(clinicaldataTemplates.getAuditRecord(admindataHelper.getCurrentUserOID(), subject.siteOID, new Date().toISOString()));
@@ -280,10 +289,9 @@ function getFormItemDataList(formData) {
     return formItemDataList;
 }
 
-export function dataHasChanged(formItemDataList, studyEventOID, formOID, dataStatus) {
+export function dataHasChanged(formItemDataList, studyEventOID, formOID) {
     console.log("Check if data has changed ...");
-    const differentStatus = dataStatus ? dataStatus != getDataStatusForForm(studyEventOID, formOID) : false;
-    return JSON.stringify(formItemDataList) != JSON.stringify(getSubjectFormData(studyEventOID, formOID)) || differentStatus;
+    return JSON.stringify(formItemDataList) != JSON.stringify(getSubjectFormData(studyEventOID, formOID));
 }
 
 export function getAuditRecords() {

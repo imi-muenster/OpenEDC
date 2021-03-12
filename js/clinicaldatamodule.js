@@ -298,6 +298,8 @@ function resetFormUIElements() {
     $("#clinicaldata-navigate-buttons").classList.remove("is-hidden");
     $("#form-validate-level").classList.remove("is-hidden");
     $("#form-validate-button").classList.remove("is-validated");
+
+    if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.VALIDATEFORMS)) $("#form-validate-level").classList.add("is-hidden");
 }
 
 async function loadFormMetadata() {
