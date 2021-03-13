@@ -19,7 +19,7 @@ const locales = {
 const defaultLocale = locales.ENGLISH;
 
 export const untranslatedLocale = "none";
-const untranslatedName = "Not translated";
+const untranslatedName = "Not Translated";
 
 let currentLocale = defaultLocale;
 let currentLocaleSet = false;
@@ -55,7 +55,7 @@ export function populatePresentLanguages(odm) {
     localesNotInODM = [];
 
     for (const translatedText of odm.querySelectorAll("TranslatedText")) {
-        const locale = translatedText.getAttribute("xml:lang") ? translatedText.getAttribute("xml:lang") : untranslatedLocale;
+        const locale = translatedText.getAttribute("xml:lang");
         if (!localesInODM.includes(locale)) {
             localesInODM.push(locale);
         }
@@ -77,8 +77,9 @@ function populateNonPresentLanguages() {
 }
 
 function getLanguageNameByLocale(locale) {
-    let languageName = Object.keys(locales).find(key => locales[key] == locale);
-    if (locale == untranslatedLocale) languageName = untranslatedName;
+    if (locale == untranslatedLocale) return untranslatedName;
+
+    const languageName = Object.keys(locales).find(key => locales[key] == locale);
     return languageName ? languageName.charAt(0).toUpperCase() + languageName.slice(1).toLowerCase() : locale;
 }
 
