@@ -93,7 +93,7 @@ export function prepareDownload(untranslatedLocale, dataStatusTypes) {
     odmCopy.querySelector("ODM").setAttribute("FileOID", getStudyName());
     odmCopy.querySelector("ODM").setAttribute("CreationDateTime", new Date().toISOString());
 
-    // Remove the default/untranslated locale that might be added during odmValidation / preparation
+    // Remove the default/untranslated locale that might have been added during odmValidation / preparation
     odmCopy.querySelectorAll(`TranslatedText[*|lang="${untranslatedLocale}"]`).forEach(translatedText =>  translatedText.removeAttribute("xml:lang"));
 
     // Add a code list with all data status types but only when downloading the ODM with clinical data
