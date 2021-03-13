@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 ## 0.2.1
+
 - Added support for translated texts without lang attribute
 - Integrated ODM upload validation and preparation
 
