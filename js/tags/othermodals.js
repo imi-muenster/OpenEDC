@@ -235,7 +235,7 @@ class MessageModal extends HTMLElement {
                 <div class="modal-content is-medium">
                     <div class="box has-text-centered">
                         <h2 class="subtitle">${this.heading}</h2>
-                        <p class="mb-5">${this.message}</p>
+                        <div class="mb-5">${this.message}</div>
                         <div class="buttons is-centered"></div>
                     </div>
                 </div>

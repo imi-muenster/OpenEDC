@@ -1075,7 +1075,7 @@ window.elementDrop = async function(event) {
 window.showRemoveModal = async function() {
     const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID());
     if (subjectKeys.length > 0) {
-        ioHelper.showMessage("Cannot be removed", "You cannot currently remove this element since it has clinical data assigned for the following subjects:<br><br><strong>" + subjectKeys.join(", ") + "</strong>");
+        ioHelper.showMessage("Cannot be removed", "<p>You cannot currently remove this element since it has clinical data assigned for the following subjects:</p><br><strong>" + subjectKeys.join(", ") + "</strong>");
     } else {
         ioHelper.showMessage(
             "Please confirm",
