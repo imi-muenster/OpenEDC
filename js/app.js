@@ -7,7 +7,6 @@ import * as admindataHelper from "./helper/admindatahelper.js";
 import * as odmValidation from "./helper/odmvalidation.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
-import * as repositoryHelper from "./helper/repositoryhelper.js";
 
 const appVersion = "0.2.1";
 
@@ -536,14 +535,19 @@ function addModalsToDOM() {
 }
 
 async function handleURLSearchParameters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (!urlParams.toString()) return;
+
     // Get models from metadata repositories
-    // TODO: Load repositoryHelper module dynamically
     let models = [];
-    for (const [key, value] of new URLSearchParams(window.location.search)) {
-        if (repositoryHelper.getParameterNames().includes(key)) await repositoryHelper.getModel(key, value)
-            .catch(error => ioHelper.showMessage("Error", `Could not load model from external repository. The error was ${error}.`))
-            .then(model => models.push(model));
-    }
+    await import("./helper/repositoryhelper.js")
+        .then(async repositoryHelper => {
+            for (const [key, value] of urlParams) {
+                if (repositoryHelper.getParameterNames().includes(key)) await repositoryHelper.getModel(key, value)
+                    .then(model => models.push(model))
+                    .catch(error => ioHelper.showMessage("Error", `Could not load model from external repository. The error was ${error}`));
+            }
+        });
 }
 
 function getCurrentMode() {
