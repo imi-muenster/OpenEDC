@@ -4,7 +4,7 @@ import * as clinicaldataModule from "./clinicaldatamodule.js";
 import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
 import * as admindataModule from "./admindatamodule.js";
 import * as admindataHelper from "./helper/admindatahelper.js";
-import * as odmRepair from "./helper/odmrepair.js";
+import * as odmValidation from "./helper/odmvalidation.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 import * as repositoryHelper from "./helper/repositoryhelper.js";
@@ -254,7 +254,7 @@ window.uploadODM = async function() {
 
     let odmXMLString;
     try {
-        odmXMLString = odmRepair.process(content);
+        odmXMLString = odmValidation.process(content);
     } catch (error) {
         ioHelper.showMessage("Error", error);
         return;
@@ -266,7 +266,7 @@ window.uploadODM = async function() {
     startApp();
 }
 
-// TODO: Repair ODM
+// Might be removed in the future for a more generic ODM import and merge function
 window.uploadODMToServer = async function() {
     let file = $("#odm-upload-to-server .file-input");
     let content = await ioHelper.getFileContent(file.files[0]);
@@ -469,12 +469,7 @@ window.hideAboutModal = function() {
 }
 
 window.downloadODM = async function() {
-    metadataHelper.prepareDownload();
-    let odm = new DOMParser().parseFromString(metadataHelper.getSerializedMetadata(), "text/xml");
-
-    let dataStatusCodeList = metadataHelper.getDataStatusCodeList(clinicaldataHelper.dataStatusTypes);
-    const insertPosition = ioHelper.getLastElement(odm.querySelectorAll("ItemDef"));
-    if (insertPosition) insertPosition.insertAdjacentElement("afterend", dataStatusCodeList);
+    let odm = metadataHelper.prepareDownload(languageHelper.untranslatedLocale, clinicaldataHelper.dataStatusTypes);
 
     let admindata = admindataHelper.getAdmindata();
     if (admindata) odm.querySelector("ODM").appendChild(admindata);
@@ -482,15 +477,12 @@ window.downloadODM = async function() {
     let clinicaldata = await clinicaldataHelper.getClinicalData(metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID());
     if (clinicaldata) odm.querySelector("ODM").appendChild(clinicaldata);
 
-    // TODO: Should be moved to .prepareDownload() that should also integrate the dataStatusCodeList and return a ODM copy
-    odm.querySelectorAll(`TranslatedText[*|lang="${languageHelper.untranslatedLocale}"]`).forEach(translatedText =>  translatedText.removeAttribute("xml:lang"));
-
     ioHelper.download(metadataHelper.getStudyName()+".xml", new XMLSerializer().serializeToString(odm));
 }
 
 window.downloadODMMetadata = function() {
-    metadataHelper.prepareDownload();
-    ioHelper.download(metadataHelper.getStudyName()+"_metadata.xml", metadataHelper.getSerializedMetadata());
+    const odm = metadataHelper.prepareDownload(languageHelper.untranslatedLocale);
+    ioHelper.download(metadataHelper.getStudyName()+"_metadata.xml", new XMLSerializer().serializeToString(odm));
 }
 
 window.downloadCSV = async function() {

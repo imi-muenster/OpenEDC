@@ -87,6 +87,25 @@ export async function getFormAsHTML(formOID, locale, textAsTextarea) {
     return xsltProcessor.transformToFragment(domParser.parseFromString(prettifiedODM, "text/xml"), document);
 }
 
+export function prepareDownload(untranslatedLocale, dataStatusTypes) {
+    let odmCopy = new DOMParser().parseFromString(getSerializedMetadata(), "text/xml");
+
+    odmCopy.querySelector("ODM").setAttribute("FileOID", getStudyName());
+    odmCopy.querySelector("ODM").setAttribute("CreationDateTime", new Date().toISOString());
+
+    // Remove the default/untranslated locale that might be added during odmValidation / preparation
+    odmCopy.querySelectorAll(`TranslatedText[*|lang="${untranslatedLocale}"]`).forEach(translatedText =>  translatedText.removeAttribute("xml:lang"));
+
+    // Add a code list with all data status types but only when downloading the ODM with clinical data
+    if (dataStatusTypes) {
+        const dataStatusCodeList = getDataStatusCodeList(dataStatusTypes);
+        const insertPosition = ioHelper.getLastElement(odmCopy.querySelectorAll("ItemDef"));
+        if (insertPosition) insertPosition.insertAdjacentElement("afterend", dataStatusCodeList);
+    }
+    
+    return odmCopy;
+}
+
 export function getDataStatusCodeList(statusTypes) {
     let dataStatusCodeList = metadataTemplates.getCodeListDef(dataStatusCodeListOID);
     for (const [key, value] of Object.entries(statusTypes)) {
@@ -130,11 +149,6 @@ export function getStudyOID() {
 
 export function getMetaDataVersionOID() {
     return $("MetaDataVersion").getAttribute("OID");
-}
-
-export function prepareDownload() {
-    $("ODM").setAttribute("FileOID", getStudyName());
-    $("ODM").setAttribute("CreationDateTime", new Date().toISOString());
 }
 
 // TODO: This could be used within getStudyEvents()
