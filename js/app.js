@@ -9,7 +9,7 @@ import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 import * as repositoryHelper from "./helper/repositoryhelper.js";
 
-const appVersion = "0.2.0";
+const appVersion = "0.2.1";
 
 const appModes = {
     METADATA: "METADATA",
@@ -537,6 +537,7 @@ function addModalsToDOM() {
 
 async function handleURLSearchParameters() {
     // Get models from metadata repositories
+    // TODO: Load repositoryHelper module dynamically
     let models = [];
     for (const [key, value] of new URLSearchParams(window.location.search)) {
         if (repositoryHelper.getParameterNames().includes(key)) await repositoryHelper.getModel(key, value)

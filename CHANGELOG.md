@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.2.1
+- Added support for translated texts without lang attribute
+- Integrated ODM upload validation and preparation
+
 ## 0.2.0
 
 - Forms can now be marked as validated which also locks them for users without the new form validation authorization

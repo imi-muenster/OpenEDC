@@ -12,6 +12,8 @@ export function process(odmXMLString) {
     if (!odm.querySelector("Study")) throw "Empty ODM file uploaded.";
     if (!odm.querySelector("MetaDataVersion")) throw "ODM without metadata uploaded.";
 
+    // TODO: Extend list of validation checks
+
     // Add a lang attribute to translated texts without one
     for (const translatedText of odm.querySelectorAll("TranslatedText")) {
         if (!translatedText.getAttribute("xml:lang")) translatedText.setAttribute("xml:lang", languageHelper.untranslatedLocale);

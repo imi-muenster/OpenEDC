@@ -1,4 +1,4 @@
-const staticCacheName = "static-cache-0.2.0";
+const staticCacheName = "static-cache-0.2.1";
 const dynamicCacheName = "dynamic-cache";
 const messageQueueName = "message-queue";
 
@@ -19,6 +19,7 @@ const staticAssets = [
     "./js/helper/htmlelements.js",
     "./js/helper/iohelper.js",
     "./js/helper/languagehelper.js",
+    "./js/helper/odmvalidation.js",
     "./js/helper/validationhelper.js",
     "./js/odmtemplates/metadatatemplates.js",
     "./js/odmtemplates/admindatatemplates.js",
