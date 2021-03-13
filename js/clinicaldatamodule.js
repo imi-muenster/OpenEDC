@@ -402,7 +402,7 @@ function showErrors(metadataNotFoundErrors, hiddenFieldWithValueError) {
     let errorMessage = "";
 
     if (metadataNotFoundErrors.length > 0) {
-        errorMessage += "<p>One or multiple items in the clinical data could not be found in the metadata. This means that your clinical data and metadata might be out of sync or an imported ODM file is (partially) broken. You find a list of all clinical cata items that could not be found in the metadata below.</p><br>";
+        errorMessage += "<p>One or multiple items in the clinical data could not be found in the metadata. This means that your clinical data and metadata might be out of sync or an imported ODM file is (partially) broken. You can find a list of all clinical data items that could not be found in the metadata below.</p><br>";
         for (let error of metadataNotFoundErrors) {
             errorMessage += error.type == metadataHelper.elementTypes.ITEM ? "<p class='is-size-7'>ItemOID <strong>" + error.oid + "</strong></p>" : "<p class='is-size-7'>CodeListItemOID <strong>" + error.oid + "</strong>, CodedValue<strong>" + error.value + "</strong></p>";
         }
