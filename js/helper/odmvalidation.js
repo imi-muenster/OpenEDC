@@ -6,7 +6,11 @@ import * as languageHelper from "./languagehelper.js";
 export function process(odmXMLString) {
     let odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
 
+    // Basic file checks
+    // A check against the ODM xsd schema is currently not implemented for flexibility purposes (e.g., for supporting REDCap ODM files)
     if (!odm.querySelector("ODM")) throw "No ODM file uploaded.";
+    if (!odm.querySelector("Study")) throw "Empty ODM file uploaded.";
+    if (!odm.querySelector("MetaDataVersion")) throw "ODM without metadata uploaded.";
 
     // Add a lang attribute to translated texts without one
     for (const translatedText of odm.querySelectorAll("TranslatedText")) {

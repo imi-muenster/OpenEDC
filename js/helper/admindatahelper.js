@@ -29,12 +29,13 @@ export function loadEmptyProject(studyOID) {
 
 export function importAdmindata(odmXMLString) {
     const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
+    
     if (odm.querySelector("AdminData")) {
         admindata = odm.querySelector("AdminData");
         if (getUsers().length == 0) addUser();
         ioHelper.storeAdmindata(admindata);
     } else {
-        loadEmptyProject();
+        loadEmptyProject(odm.querySelector("Study").getAttribute("OID"));
     }
 }
 
