@@ -75,16 +75,46 @@ export function getMetadata() {
 }
 
 export async function getFormAsHTML(formOID, locale, textAsTextarea) {
-    let prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
-    let xsltProcessor = new XSLTProcessor();
-    let domParser = new DOMParser();
+    // Create a new ODM copy that only includes the required elements for performance reasons
+    // This might look like a lot of code but it increases the performance significantly
+    const prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
+    const reducedODM = new DOMParser().parseFromString(prettifiedODM, "text/xml");
 
-    xsltProcessor.importStylesheet(domParser.parseFromString(xsltStylesheet, "text/xml"));
+    const itemGroupOIDs = [];
+    for (const formDef of reducedODM.querySelectorAll("FormDef")) {
+        if (formDef.getAttribute("OID") == formOID) {
+            for (const itemGroupRef of formDef.querySelectorAll("ItemGroupRef")) {
+                itemGroupOIDs.push(itemGroupRef.getAttribute("ItemGroupOID"));
+            }
+        } else formDef.remove();
+    }
+    const itemOIDs = [];
+    for (const itemGroupDef of reducedODM.querySelectorAll("ItemGroupDef")) {
+        if (itemGroupOIDs.includes(itemGroupDef.getAttribute("OID"))) {
+            for (const itemRef of itemGroupDef.querySelectorAll("ItemRef")) {
+                itemOIDs.push(itemRef.getAttribute("ItemOID"));
+            }
+        } else itemGroupDef.remove();
+    }
+    const codeListOIDs = [];
+    for (const itemDef of reducedODM.querySelectorAll("ItemDef")) {
+        if (itemOIDs.includes(itemDef.getAttribute("OID"))) {
+            if (itemDef.querySelector("CodeListRef")) {
+                codeListOIDs.push(itemDef.querySelector("CodeListRef").getAttribute("CodeListOID"));
+            }
+        } else itemDef.remove();
+    }
+    for (const codeList of reducedODM.querySelectorAll("CodeList")) {
+        if (!codeListOIDs.includes(codeList.getAttribute("OID"))) codeList.remove();
+    }
+
+    const xsltProcessor = new XSLTProcessor();
+    xsltProcessor.importStylesheet(new DOMParser().parseFromString(xsltStylesheet, "text/xml"));
     xsltProcessor.setParameter(null, "formOID", formOID);
     xsltProcessor.setParameter(null, "locale", locale);
     xsltProcessor.setParameter(null, "textAsTextarea", textAsTextarea.toString());
 
-    return xsltProcessor.transformToFragment(domParser.parseFromString(prettifiedODM, "text/xml"), document);
+    return xsltProcessor.transformToFragment(reducedODM, document);
 }
 
 export function prepareDownload(untranslatedLocale, dataStatusTypes) {
