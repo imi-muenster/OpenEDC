@@ -550,7 +550,9 @@ function checkAppVersion() {
         .then(version => {
             if (version != appVersion) console.log("App is outdated.");
         })
-        .catch(() => console.log("App is offline."));
+        .catch(() => {
+            if (ioHelper.hasServerURL()) console.log("App is offline.");
+        });
 }
 
 async function handleURLSearchParameters() {

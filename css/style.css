@@ -64,12 +64,6 @@ a.panel-block {
     border-left: none !important;
 }
 
-.has-border-link-light {
-    border-color: #eef3fc !important;
-    background-color: #eef3fc !important;
-    color: #2160c4 !important;
-}
-
 hr {
     margin-top: 0px;
     margin-bottom: 20px;
@@ -151,12 +145,6 @@ a.panel-block:hover {
 
 .message {
     margin-bottom: 20px;
-}
-
-.button.is-static.is-white {
-    background-color: white;
-    border-color: white;
-    color: hsl(0, 0%, 21%);
 }
 
 .file-cta {
