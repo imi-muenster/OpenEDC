@@ -541,7 +541,9 @@ export function cacheFormData() {
     if (!currentElementID.studyEvent || !currentElementID.form || !currentElementID.subject) return;
 
     cachedFormData = getFormData();
-    cachedFormDataIsAuditRecord = $("#audit-record-data-hint").classList.contains("is-hidden") ? false : true;
+
+    // TODO: This could be improved in the future, but currently the form-hint has only is-link for the audit record view and validated forms
+    cachedFormDataIsAuditRecord = $("#form-hint").classList.contains("is-link") && !$("#form-validate-button").classList.contains("is-validated") ? true : false;
 }
 
 // TODO: closeFormData and cancelFormOrSurveyEntry could be further refactored
