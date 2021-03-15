@@ -1,5 +1,3 @@
-import * as languageHelper from "./languagehelper.js";
-
 class LoadXMLException {
     constructor(code) {
         this.code = code;

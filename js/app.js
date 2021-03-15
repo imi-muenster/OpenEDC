@@ -223,6 +223,8 @@ function adjustUIToUser() {
         const locationRef = user.querySelector("LocationRef");
         if (locationRef) $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(locationRef.getAttribute("LocationOID"));
     }
+
+    if (ioHelper.hasDecryptionKey()) $("#logout-button").classList.remove("is-hidden");
 }
 
 function showUninitializedHint() {
@@ -505,6 +507,11 @@ window.removeAllData = async function() {
 
 window.removeClinicaldata = async function() {
     await clinicaldataHelper.removeClinicaldata();
+    window.location.reload();
+}
+
+window.logout = function() {
+    // Since the decryption key and the user's hashed password are only stored as a temporary variable, reloading the app equals a logout
     window.location.reload();
 }
 
