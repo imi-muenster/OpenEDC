@@ -43,7 +43,7 @@ class NavigationBar extends HTMLElement {
                                     </span>
                                     <span>Model Forms</span>
                                 </button>
-                                <button class="button is-link is-light is-hidden ml-2" id="logout-button" onclick="logout()">
+                                <button class="button is-white is-hidden ml-2" id="logout-button" onclick="logout()">
                                     <span class="icon">
                                         <i class="fas fa-lock"></i>
                                     </span>
