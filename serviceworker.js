@@ -68,7 +68,7 @@ self.addEventListener("fetch", fetchEvent => {
             return staticCacheResponse || fetch(fetchEvent.request)
                 .then(async fetchResponse => {
                     const dynamicCache = await caches.open(dynamicCacheName);
-                    if (fetchEvent.request.method == "GET") {
+                    if (fetchEvent.request.method == "GET" && !fetchEvent.request.url.includes("version.json")) {
                         dynamicCache.put(fetchEvent.request.url, fetchResponse.clone());
                     } else if (fetchEvent.request.method == "PUT") {
                         dynamicCache.put(fetchEvent.request.url, new Response(requestBody, { status: fetchResponse.status, statusText: fetchResponse.statusText, headers: fetchResponse.headers }));

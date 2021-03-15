@@ -461,6 +461,13 @@ export async function emptyMessageQueue() {
     }
 }
 
+export async function getAppVersion() {
+    const versionReponse = await fetch(getBaseURL() + "/version.json");
+    const versionObject = await versionReponse.json();
+    
+    return versionObject.version; 
+}
+
 export function removeElements(elements) {
     for (let element of elements) {
         element.remove();

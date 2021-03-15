@@ -93,6 +93,9 @@ const startApp = async () => {
 
     // For performance purposes, add the remaining modals to the DOM only after the main app has been rendered
     addModalsToDOM();
+
+    // After all, check the app version or whether the app is currently offline
+    checkAppVersion();
 }
 
 const setTitles = () => {
@@ -539,6 +542,15 @@ function addModalsToDOM() {
     }
 
     languageHelper.internationalize();
+}
+
+function checkAppVersion() {
+    // TODO: The following may used to show a reload prompt or offline message
+    ioHelper.getAppVersion()
+        .then(version => {
+            if (version != appVersion) console.log("App is outdated.");
+        })
+        .catch(() => console.log("App is offline."));
 }
 
 async function handleURLSearchParameters() {
