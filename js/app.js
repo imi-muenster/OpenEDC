@@ -569,7 +569,9 @@ async function handleURLSearchParameters() {
     repositoryHelper.getModels(urlParams)
         .then(models => {
             if (!models) return;
-            else if (getCurrentState() == appStates.EMPTY) mergeMetadataModels(models);
+            window.history.replaceState(null, appVersion, ioHelper.getBaseURL());
+            
+            if (getCurrentState() == appStates.EMPTY) mergeMetadataModels(models);
             else if (getCurrentState() == appStates.UNLOCKED) {
                 ioHelper.showMessage("Note", "You want to load forms from a metadata repository but already have forms. Do you want to add the new forms, replace the current ones, or not load the new forms at all?", {
                     "Add": () => mergeMetadataModels(models),
@@ -578,7 +580,7 @@ async function handleURLSearchParameters() {
                         mergeMetadataModels(models);
                     }
                 });
-            }
+            } else ioHelper.showMessage("Note", "Unfortunately, it is currently not possible to add forms from external repositories when working with encrypted data.");
         })
         .catch(error => ioHelper.showMessage("Error", `Could not load model from external repository. The error was ${error}`));
 }
