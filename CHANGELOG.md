@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.2.2
+
+- Logout button when local password encryption is used
+- Various performance and stability improvements
+
 ## 0.2.1
 
 - Added support for translated texts without lang attribute
