@@ -1,31 +1,49 @@
 class Repository {
-    constructor(name, parameterName, downloadURL) {
+    constructor(name, modelParameterName, tokenParameterName, downloadURL) {
         this.name = name;
-        this.parameterName = parameterName;
+        this.modelParameterName = modelParameterName;
+        this.tokenParameterName = tokenParameterName;
         this.downloadURL = downloadURL;
     }
 
-    getDownloadUrl(parameter) {
-        return this.downloadURL.replace(this.parameterName, parameter);
+    getDownloadUrl(modelParameter, tokenParameter) {
+        return this.downloadURL.replace(modelPlaceholder, modelParameter).replace(tokenPlaceholder, tokenParameter);
     }
 }
 
+// Placeholder for the download URL
+const modelPlaceholder = "MODELPLACEHOLDER";
+const tokenPlaceholder = "TOKENPLACEHOLDER";
+
+// A list of all supported metadata repositories
+// The model parameter name (e.g., modelIds) must be unique to identify the repository
 const repositories = [
-    new Repository("Portal of Medical Data Models", "modelIds", "https://mdmj-staging.uni-muenster.de/modelIds/download?format=odm&form-lang=en")
+    new Repository("Portal of Medical Data Models", "modelIds", "userToken", `https://mdmj-staging.uni-muenster.de/api/v1/odmByToken?modelIds=${modelPlaceholder}&userToken=${tokenPlaceholder}`)
 ];
 
-export const getParameterNames = () => {
-    return repositories.map(repository => repository.parameterName);
-}
+export const getModels = async urlParams => {
+    const modelParameterNames = repositories.map(repository => repository.modelParameterName);
+    const tokenParameterNames = repositories.map(repository => repository.tokenParameterName);
 
-export const getModel = async (parameterName, parameter) => {
-    const repository = repositories.find(repository => repository.parameterName == parameterName);
+    let repository;
+    const modelParameters = [];
+    const tokenParameters = [];
+    for (const [parameterName, parameterValue] of urlParams) {
+        if (!repository) repository = repositories.find(repository => repository.modelParameterName == parameterName);
+        if (modelParameterNames.includes(parameterName)) modelParameters.push(parameterValue);
+        if (tokenParameterNames.includes(parameterName)) tokenParameters.push(parameterValue);
+    }
+    
+    const models = [];
+    for (const modelParameter of modelParameters) {
+        const response = await fetch(repository.getDownloadUrl(modelParameter, tokenParameters[0]));
+        if (!response.ok) throw response.status;
+    
+        const odmXMLString = await response.text();
+        models.push(odmXMLString);
 
-    const response = await fetch(repository.getDownloadUrl(parameter), {
-        credentials: "include"
-    });
-    if (!response.ok) throw response.status;
-
-    const odmXMLString = await response.text();
-    return Promise.resolve(odmXMLString);
+        if (tokenParameters.length > 1) tokenParameters.shift();
+    }
+    
+    return Promise.resolve(models);
 }

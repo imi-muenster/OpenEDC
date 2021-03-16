@@ -555,19 +555,18 @@ function checkAppVersion() {
         });
 }
 
-async function handleURLSearchParameters() {
+function handleURLSearchParameters() {
     const urlParams = new URLSearchParams(window.location.search);
     if (!urlParams.toString()) return;
 
     // Get models from metadata repositories
-    let models = [];
-    await import("./helper/repositoryhelper.js")
-        .then(async repositoryHelper => {
-            for (const [key, value] of urlParams) {
-                if (repositoryHelper.getParameterNames().includes(key)) await repositoryHelper.getModel(key, value)
-                    .then(model => models.push(model))
-                    .catch(error => ioHelper.showMessage("Error", `Could not load model from external repository. The error was ${error}`));
-            }
+    import("./helper/repositoryhelper.js")
+        .then(repositoryHelper => {
+            repositoryHelper.getModels(urlParams)
+                .then(models => {
+                    console.log(models);
+                })
+                .catch(error => ioHelper.showMessage("Error", `Could not load model from external repository. The error was ${error}`));
         });
 }
 
