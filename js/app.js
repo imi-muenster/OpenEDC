@@ -473,7 +473,7 @@ window.hideAboutModal = function() {
 }
 
 window.downloadODM = async function() {
-    let odm = metadataHelper.prepareDownload(languageHelper.untranslatedLocale, clinicaldataHelper.dataStatusTypes);
+    let odm = metadataHelper.prepareDownload(clinicaldataHelper.dataStatusTypes);
 
     let admindata = admindataHelper.getAdmindata();
     if (admindata) odm.querySelector("ODM").appendChild(admindata);
@@ -485,7 +485,7 @@ window.downloadODM = async function() {
 }
 
 window.downloadODMMetadata = function() {
-    const odm = metadataHelper.prepareDownload(languageHelper.untranslatedLocale);
+    const odm = metadataHelper.prepareDownload();
     ioHelper.download(metadataHelper.getStudyName()+"_metadata.xml", new XMLSerializer().serializeToString(odm));
 }
 
