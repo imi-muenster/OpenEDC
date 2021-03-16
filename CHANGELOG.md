@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.2.3
+
+- Translated text elements without lang attribute are now used as fallback / defaults during data capture
+- Boolean item translations (yes/no) are available for ten languages
+
 ## 0.2.2
 
 - Logout button when local password encryption is used
