@@ -573,10 +573,11 @@ async function handleURLSearchParameters() {
             
             if (getCurrentState() == appStates.EMPTY) mergeMetadataModels(models);
             else if (getCurrentState() == appStates.UNLOCKED) {
-                ioHelper.showMessage("Note", "You want to load forms from a metadata repository but already have forms. Do you want to add the new forms, replace the current ones, or not load the new forms at all?", {
+                ioHelper.showMessage("Note", "You already have forms. Do you want to add the new forms, replace the current ones, or not load the new forms at all?", {
                     "Add": () => mergeMetadataModels(models),
                     "Replace": () => {
-                        localStorage.clear();
+                        metadataHelper.removeMetadata();
+                        clinicaldataHelper.removeClinicaldata();
                         mergeMetadataModels(models);
                     }
                 });

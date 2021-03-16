@@ -75,6 +75,10 @@ export function getMetadata() {
     return metadata;
 }
 
+export function removeMetadata() {
+    metadata = null;
+}
+
 export async function getFormAsHTML(formOID, textAsTextarea) {
     // Create a new ODM copy that only includes the required elements for performance reasons
     // This might look like a lot of code but it increases the performance significantly
