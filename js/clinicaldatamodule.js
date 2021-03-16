@@ -41,14 +41,6 @@ export async function init() {
 }
 
 export function show() {
-    // Hide the study event column if there is only one event
-    if (metadataHelper.getStudyEvents().length == 1) {
-        $("#clinicaldata-study-events-column").classList.add("is-hidden");
-        currentElementID.studyEvent = metadataHelper.getStudyEvents()[0].getAttribute("OID");
-    } else {
-        $("#clinicaldata-study-events-column").classList.remove("is-hidden");
-    }
-
     loadSubjectKeys();
     reloadTree();
 
@@ -197,6 +189,12 @@ async function loadSubjectData(subjectKey) {
 }
 
 export async function reloadTree() {
+    // Hide the study event column if there is only one event
+    if (metadataHelper.getStudyEvents().length == 1) {
+        $("#clinicaldata-study-events-column").classList.add("is-hidden");
+        currentElementID.studyEvent = metadataHelper.getStudyEvents()[0].getAttribute("OID");
+    } else $("#clinicaldata-study-events-column").classList.remove("is-hidden");
+
     skipDataHasChangedCheck = true;
     await loadTree(currentElementID.studyEvent, currentElementID.form);
 }
