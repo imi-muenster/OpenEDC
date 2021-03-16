@@ -311,7 +311,7 @@ async function loadFormMetadata() {
     $("#clinicaldata-form-title .subtitle").textContent = translatedText ? translatedText.textContent : formDef.getAttribute("Name");
 
     // Add the form skeleton
-    let form = await metadataHelper.getFormAsHTML(currentElementID.form, locale, ioHelper.isTextAsTextarea());
+    let form = await metadataHelper.getFormAsHTML(currentElementID.form, ioHelper.isTextAsTextarea());
     ioHelper.safeRemoveElement($("#odm-html-content"));
     $("#clinicaldata-content").appendChild(form);
 

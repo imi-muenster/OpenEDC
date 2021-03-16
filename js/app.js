@@ -573,8 +573,3 @@ function handleURLSearchParameters() {
 function getCurrentMode() {
     return $("#metadata-section").classList.contains("is-hidden") ? appModes.CLINICALDATA : appModes.METADATA;
 }
-
-// A list of generic todos that are not crucial but can be improved in the future
-// In XSLT processing, remove the de/en differenatiation and translate boolean questions with the languageHelper, also remove xsl-templates when possible
-// Let is used very frequently even it it could be declared as const
-// It seems that .name alaways works instead of .getAttribute("name") -- could be replaced for all occurrences

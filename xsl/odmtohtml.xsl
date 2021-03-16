@@ -2,6 +2,8 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:odm="http://www.cdisc.org/ns/odm/v1.3">
     <xsl:param name="formOID"/>
     <xsl:param name="locale"/>
+    <xsl:param name="yes"/>
+    <xsl:param name="no"/>
     <xsl:param name="textAsTextarea"/>
     <xsl:template match="/">
         <div id="odm-html-content">
@@ -115,16 +117,8 @@
     <xsl:template name="booleanField">
         <xsl:param name="item"/>
         <xsl:param name="itemGroupOID"/>
-        <xsl:choose>
-            <xsl:when test="$locale = 'de'">
-                <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="1"/>&#160;Ja</label><br/>
-                <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="0"/>&#160;Nein</label>
-            </xsl:when>
-            <xsl:otherwise>
-                <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="1"/>&#160;Yes</label><br/>
-                <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="0"/>&#160;No</label>            
-            </xsl:otherwise>
-        </xsl:choose>
+        <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="1"/>&#160;<xsl:value-of select="$yes"/></label><br/>
+        <label class="radio"><input type="radio" name="{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="0"/>&#160;<xsl:value-of select="$no"/></label>            
     </xsl:template>
     <xsl:template name="measurementUnit">
         <xsl:param name="measurementUnit"/>

@@ -1,4 +1,5 @@
 import * as metadataTemplates from "../odmtemplates/metadatatemplates.js";
+import * as languageHelper from "./languagehelper.js";
 import * as ioHelper from "./iohelper.js";
 
 const $ = query => metadata.querySelector(query);
@@ -74,7 +75,7 @@ export function getMetadata() {
     return metadata;
 }
 
-export async function getFormAsHTML(formOID, locale, textAsTextarea) {
+export async function getFormAsHTML(formOID, textAsTextarea) {
     // Create a new ODM copy that only includes the required elements for performance reasons
     // This might look like a lot of code but it increases the performance significantly
     const prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
@@ -111,7 +112,9 @@ export async function getFormAsHTML(formOID, locale, textAsTextarea) {
     const xsltProcessor = new XSLTProcessor();
     xsltProcessor.importStylesheet(new DOMParser().parseFromString(xsltStylesheet, "text/xml"));
     xsltProcessor.setParameter(null, "formOID", formOID);
-    xsltProcessor.setParameter(null, "locale", locale);
+    xsltProcessor.setParameter(null, "locale", languageHelper.getCurrentLocale());
+    xsltProcessor.setParameter(null, "yes", languageHelper.getTranslation("yes"));
+    xsltProcessor.setParameter(null, "no", languageHelper.getTranslation("no"));
     xsltProcessor.setParameter(null, "textAsTextarea", textAsTextarea.toString());
 
     return xsltProcessor.transformToFragment(reducedODM, document);
