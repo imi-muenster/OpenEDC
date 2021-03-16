@@ -989,7 +989,13 @@ export function getCSVHeaders() {
     return headers;
 }
 
-function mergeMetadata(odmXMLString) {
+export function mergeMetadata(odmXMLString) {
+    // Simply import the metadata if there is no one yet
+    if (!metadata) {
+        importMetadata(odmXMLString);
+        return;
+    }
+
     // Create a register of all OIDs that need to be replaced with a new unique OID
     let replaceOIDs = {};
 

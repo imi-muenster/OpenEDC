@@ -45,5 +45,5 @@ export const getModels = async urlParams => {
         if (tokenParameters.length > 1) tokenParameters.shift();
     }
     
-    return Promise.resolve(models);
+    return Promise.resolve(models.length > 0 ? models : null);
 }

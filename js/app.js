@@ -11,9 +11,15 @@ import * as languageHelper from "./helper/languagehelper.js";
 const appVersion = "0.2.2";
 
 const appModes = {
-    METADATA: "METADATA",
-    CLINICALDATA: "CLINICALDATA"
+    METADATA: 1,
+    CLINICALDATA: 2
 };
+
+const appStates = {
+    EMPTY: 1,
+    LOCKED: 2,
+    UNLOCKED: 3
+}
 
 const $ = query => document.querySelector(query);
 
@@ -31,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
     // Initialize the application
-    metadataHelper.loadStoredMetadata()
+    await metadataHelper.loadStoredMetadata()
         .then(() => {
             startApp();
         })
@@ -51,17 +57,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 document.addEventListener("LanguageChanged", languageEvent => {
     metadataModule.setLanguage(languageEvent.detail);
-    if (getCurrentMode() == appModes.METADATA) {
-        metadataModule.reloadTree();
-        metadataModule.reloadDetailsPanel();
-    }
-
     clinicaldataModule.setLanguage(languageEvent.detail);
-    if (getCurrentMode() == appModes.CLINICALDATA) {
-        clinicaldataModule.cacheFormData();
-        clinicaldataModule.reloadTree();
-    }
     
+    reloadApp();
     ioHelper.hideMenu();
 });
 
@@ -252,17 +250,12 @@ window.newProject = function() {
 }
 
 window.uploadODM = async function() {
-    let file = $("#odm-upload .file-input");
-    let content = await ioHelper.getFileContent(file.files[0]);
+    const file = $("#odm-upload .file-input");
+    const content = await ioHelper.getFileContent(file.files[0]);
     if (!content) return;
 
-    let odmXMLString;
-    try {
-        odmXMLString = odmValidation.process(content);
-    } catch (error) {
-        ioHelper.showMessage("Error", error);
-        return;
-    }
+    const odmXMLString = validateODM(content);
+    if (!odmXMLString) return;
 
     metadataHelper.importMetadata(odmXMLString);
     admindataHelper.importAdmindata(odmXMLString);
@@ -270,17 +263,29 @@ window.uploadODM = async function() {
     startApp();
 }
 
+function validateODM(content) {
+    try {
+        return odmValidation.process(content);
+    } catch (error) {
+        ioHelper.showMessage("Error", error);
+        return;
+    }
+}
+
 // Might be removed in the future for a more generic ODM import and merge function
 window.uploadODMToServer = async function() {
-    let file = $("#odm-upload-to-server .file-input");
-    let content = await ioHelper.getFileContent(file.files[0]);
+    const file = $("#odm-upload-to-server .file-input");
+    const content = await ioHelper.getFileContent(file.files[0]);
     if (!content) return;
+
+    const odmXMLString = validateODM(content);
+    if (!odmXMLString) return;
 
     await clinicaldataHelper.removeClinicaldata();
 
-    metadataHelper.importMetadata(content);
-    await clinicaldataHelper.importClinicaldata(content);
-    window.location.reload();
+    metadataHelper.importMetadata(odmXMLString);
+    await clinicaldataHelper.importClinicaldata(odmXMLString);
+    reloadApp();
 }
 
 window.loadExample = async function() {
@@ -412,7 +417,7 @@ window.encryptData = function() {
     }
 
     ioHelper.encryptXMLData(credentials.password);
-    window.location.reload();
+    logout();
 }
 
 window.setSurveyCode = function() {
@@ -505,12 +510,12 @@ window.removeAllData = async function() {
         localStorage.clear();
     }
 
-    window.location.reload();
+    logout();
 }
 
 window.removeClinicaldata = async function() {
     await clinicaldataHelper.removeClinicaldata();
-    window.location.reload();
+    logout();
 }
 
 window.logout = function() {
@@ -555,21 +560,53 @@ function checkAppVersion() {
         });
 }
 
-function handleURLSearchParameters() {
+async function handleURLSearchParameters() {
     const urlParams = new URLSearchParams(window.location.search);
     if (!urlParams.toString()) return;
 
-    // Get models from metadata repositories
-    import("./helper/repositoryhelper.js")
-        .then(repositoryHelper => {
-            repositoryHelper.getModels(urlParams)
-                .then(models => {
-                    console.log(models);
-                })
-                .catch(error => ioHelper.showMessage("Error", `Could not load model from external repository. The error was ${error}`));
-        });
+    // Get models from metadata repositories and merge them
+    const repositoryHelper = await import("./helper/repositoryhelper.js");
+    repositoryHelper.getModels(urlParams)
+        .then(models => {
+            if (!models) return;
+            else if (getCurrentState() == appStates.EMPTY) mergeMetadataModels(models);
+            else if (getCurrentState() == appStates.UNLOCKED) {
+                ioHelper.showMessage("Note", "You want to load forms from a metadata repository but already have forms. Do you want to add the new forms, replace the current ones, or not load the new forms at all?", {
+                    "Add": () => mergeMetadataModels(models),
+                    "Replace": () => {
+                        localStorage.clear();
+                        mergeMetadataModels(models);
+                    }
+                });
+            }
+        })
+        .catch(error => ioHelper.showMessage("Error", `Could not load model from external repository. The error was ${error}`));
+}
+
+function mergeMetadataModels(models) {
+    models.forEach(model => {
+        const odmXMLString = validateODM(model);
+        if (odmXMLString) metadataHelper.mergeMetadata(odmXMLString);
+    });
+    reloadApp();
+}
+
+function reloadApp() {
+    if (getCurrentMode() == appModes.METADATA) {
+        metadataModule.reloadTree();
+        metadataModule.reloadDetailsPanel();
+    } else if (getCurrentMode() == appModes.CLINICALDATA) {
+        clinicaldataModule.cacheFormData();
+        clinicaldataModule.reloadTree();
+    } else startApp();
 }
 
 function getCurrentMode() {
     return $("#metadata-section").classList.contains("is-hidden") ? appModes.CLINICALDATA : appModes.METADATA;
+}
+
+function getCurrentState() {
+    if ($("#start-modal").classList.contains("is-active")) return appStates.EMPTY;
+    else if ($("#login-modal").classList.contains("is-active")) return appStates.LOCKED;
+    else return appStates.UNLOCKED;
 }
