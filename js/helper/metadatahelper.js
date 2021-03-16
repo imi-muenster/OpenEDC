@@ -117,6 +117,7 @@ export async function getFormAsHTML(formOID, textAsTextarea) {
     xsltProcessor.importStylesheet(new DOMParser().parseFromString(xsltStylesheet, "text/xml"));
     xsltProcessor.setParameter(null, "formOID", formOID);
     xsltProcessor.setParameter(null, "locale", languageHelper.getCurrentLocale());
+    xsltProcessor.setParameter(null, "defaultLocale", languageHelper.untranslatedLocale);
     xsltProcessor.setParameter(null, "yes", languageHelper.getTranslation("yes"));
     xsltProcessor.setParameter(null, "no", languageHelper.getTranslation("no"));
     xsltProcessor.setParameter(null, "textAsTextarea", textAsTextarea.toString());

@@ -2,6 +2,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:odm="http://www.cdisc.org/ns/odm/v1.3">
     <xsl:param name="formOID"/>
     <xsl:param name="locale"/>
+    <xsl:param name="defaultLocale"/>
     <xsl:param name="yes"/>
     <xsl:param name="no"/>
     <xsl:param name="textAsTextarea"/>
@@ -32,14 +33,18 @@
     <xsl:template name="itemGroupDescription">
         <xsl:param name="itemGroup"/>
         <h2 class="subtitle">
-            <xsl:value-of select="$itemGroup/odm:Description/odm:TranslatedText[@xml:lang=$locale]"/>
+            <xsl:call-template name="translatedText">
+                <xsl:with-param name="translatedText" select="$itemGroup/odm:Description"/>
+            </xsl:call-template>
         </h2>
     </xsl:template>
     <xsl:template name="itemQuestion">
         <xsl:param name="item"/>
         <xsl:param name="mandatory"/>
         <label class="label">
-            <xsl:value-of select="$item/odm:Question/odm:TranslatedText[@xml:lang=$locale]"/>
+            <xsl:call-template name="translatedText">
+                <xsl:with-param name="translatedText" select="$item/odm:Question"/>
+            </xsl:call-template>
             <xsl:if test="$mandatory = 'Yes'"> (*)</xsl:if>
         </label>
     </xsl:template>
@@ -99,16 +104,18 @@
                     <select type="select" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}">
                         <option value=""></option>
                         <xsl:for-each select="$codeList/odm:CodeListItem">
-                            <xsl:variable name="value" select="./odm:Decode/odm:TranslatedText[@xml:lang=$locale]"/>
-                            <option value="{@CodedValue}"><xsl:value-of select="$value"/></option>
+                            <option value="{@CodedValue}">
+                                <xsl:call-template name="translatedText">
+                                    <xsl:with-param name="translatedText" select="./odm:Decode"/>
+                                </xsl:call-template>
+                            </option>
                         </xsl:for-each>
                     </select>
                 </div>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:for-each select="$codeList/odm:CodeListItem">
-                    <xsl:variable name="value" select="./odm:Decode/odm:TranslatedText[@xml:lang=$locale]"/>
-                    <label class="radio"><input type="radio" name="{$itemGroupOID}-{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="{@CodedValue}"/>&#160;<xsl:value-of select="$value"/></label>
+                    <label class="radio"><input type="radio" name="{$itemGroupOID}-{$item/@OID}" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}" value="{@CodedValue}"/>&#160;<xsl:call-template name="translatedText"><xsl:with-param name="translatedText" select="./odm:Decode"/></xsl:call-template></label>
                     <br/>
                 </xsl:for-each>
             </xsl:otherwise>
@@ -123,7 +130,11 @@
     <xsl:template name="measurementUnit">
         <xsl:param name="measurementUnit"/>
         <div class="control">
-            <a class="button is-static"><xsl:value-of select="$measurementUnit/odm:Symbol/odm:TranslatedText[@xml:lang=$locale]"/></a>
+            <a class="button is-static">
+                <xsl:call-template name="translatedText">
+                    <xsl:with-param name="translatedText" select="$measurementUnit/odm:Symbol"/>
+                </xsl:call-template>
+            </a>
         </div>
     </xsl:template>
     <xsl:template name="input">
@@ -150,6 +161,18 @@
             </xsl:when>
             <xsl:otherwise>
                 <input class="input" type="text" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    <xsl:template name="translatedText">
+        <xsl:param name="translatedText"/>
+        <xsl:variable name="value" select="$translatedText/odm:TranslatedText[@xml:lang=$locale]"/>
+        <xsl:choose>
+            <xsl:when test="$value">
+                <xsl:value-of select="$value"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$translatedText/odm:TranslatedText[@xml:lang=$defaultLocale]"/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>

@@ -306,7 +306,8 @@ async function loadFormMetadata() {
     // Add the form title and use the name as fallback
     const formDef = metadataHelper.getElementDefByOID(currentElementID.form);
     const translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-    $("#clinicaldata-form-title .subtitle").textContent = translatedText ? translatedText.textContent : formDef.getAttribute("Name");
+    const formTitle = translatedText ? translatedText : formDef.querySelector(`Description TranslatedText[*|lang="${languageHelper.untranslatedLocale}"]`);
+    $("#clinicaldata-form-title .subtitle").textContent = formTitle ? formTitle.textContent : formDef.getAttribute("Name");
 
     // Add the form skeleton
     let form = await metadataHelper.getFormAsHTML(currentElementID.form, ioHelper.isTextAsTextarea());

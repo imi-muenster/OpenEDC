@@ -19,7 +19,7 @@ const locales = {
 const defaultLocale = locales.ENGLISH;
 
 export const untranslatedLocale = "none";
-const untranslatedName = "Not Translated";
+const untranslatedName = "Default";
 
 let currentLocale = defaultLocale;
 let currentLocaleSet = false;
@@ -97,9 +97,9 @@ export function createLanguageSelect(includeUnavailable) {
 
     if (localesInODM.length > 0) {
         localesInODM.forEach(locale => addLanguageOptionNavbar(locale));
-        if (includeUnavailable) addDividerNavbar();
+        if (includeUnavailable || localesInODM.includes(untranslatedLocale)) addDividerNavbar();
     }
-    if (includeUnavailable) localesNotInODM.forEach(locale => addLanguageOptionNavbar(locale));
+    if (includeUnavailable || localesInODM.includes(untranslatedLocale)) localesNotInODM.forEach(locale => addLanguageOptionNavbar(locale));
 
     $("#current-language").textContent = getLanguageNameByLocale(currentLocale);
 }
