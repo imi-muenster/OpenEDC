@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.2.4
+
+- Show item data types directly within the metadata tree
+- Improved the missing translation hint during metadata design
+
 ## 0.2.3
 
 - Translated text elements without lang attribute are now used as fallback / defaults during data capture
