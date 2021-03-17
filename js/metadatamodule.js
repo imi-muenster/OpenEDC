@@ -60,8 +60,8 @@ export function setLanguage(newLocale) {
     locale = newLocale;
 }
 
-function createPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue) {
-    let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue);
+function createPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, codedValue) {
+    let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, codedValue);
 
     panelBlock.ondragstart = dragStart;
     panelBlock.ondragenter = dragEnter;
@@ -242,7 +242,8 @@ function loadItemsByItemGroup(itemGroupOID, hideTree) {
     let itemDefs = metadataHelper.getItemsByItemGroup(itemGroupOID);
     for (let itemDef of itemDefs) {
         let translatedText = itemDef.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = createPanelBlock(itemDef.getAttribute("OID"), metadataHelper.elementTypes.ITEM, translatedText, itemDef.getAttribute("Name"));
+        const dataType = itemDef.querySelector("CodeListRef") ? "codelist (" + itemDef.getAttribute("DataType") + ")" : itemDef.getAttribute("DataType");
+        let panelBlock = createPanelBlock(itemDef.getAttribute("OID"), metadataHelper.elementTypes.ITEM, translatedText, itemDef.getAttribute("Name"), languageHelper.getTranslation(dataType));
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
     }
@@ -267,7 +268,7 @@ function loadCodeListItemsByItem(itemOID, hideTree) {
     let codeListItems = metadataHelper.getCodeListItemsByItem(itemOID);
     for (let codeListItem of codeListItems) {
         let translatedText = codeListItem.querySelector(`Decode TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = createPanelBlock(codeListItem.parentNode.getAttribute("OID"), metadataHelper.elementTypes.CODELISTITEM, translatedText, codeListItem.getAttribute("CodedValue"), codeListItem.getAttribute("CodedValue"));
+        let panelBlock = createPanelBlock(codeListItem.parentNode.getAttribute("OID"), metadataHelper.elementTypes.CODELISTITEM, translatedText, codeListItem.getAttribute("CodedValue"), null, codeListItem.getAttribute("CodedValue"));
         panelBlock.onclick = codeListItemClicked;
         $("#code-list-item-panel-blocks").appendChild(panelBlock);
     }

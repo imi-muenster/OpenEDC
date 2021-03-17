@@ -86,8 +86,13 @@ a.panel-block:hover {
     margin: 0 auto;
 }
 
-.panel-icon {
+.panel-icon, .panel-block-content, .panel-block-title, .panel-block-subtitle {
     pointer-events: none;
+}
+
+.panel-block-subtitle {
+    font-size: 12px;
+    color: gray;
 }
 
 .modal-content.is-large {

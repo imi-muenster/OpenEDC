@@ -2,16 +2,17 @@
 //
 // TODO: This file should be refactored. ODM attributes should be moved to another file and range checks as well as data types combined to one object.
 // Moreover, the code is quite redundant for some functions and creating a select should be refactored across the app as well.
+// For the data types there are already translations in the i18n files available
 //
 //
 
 const rangeCheckComparators = ["", "LT", "LE", "GT", "GE", "EQ", "NE"];
 const rangeCheckComparatorsDisplay = ["", "<", "<=", ">", ">=", "=", "!="];
 const dataTypes = ["text", "string", "date", "time", "datetime", "boolean", "integer", "float", "codelist (text)", "codelist (integer)", "codelist (float)"];
-const dataTypesDisplay = ["Text", "String", "Date", "Time", "Datetime", "Boolean", "Whole number", "Decimal number", "Choices (Text)", "Choices (Integer)", "Choices (Float)"];
+const dataTypesDisplay = ["Text", "String", "Date", "Time", "Datetime", "Boolean", "Whole number", "Decimal number", "Choices (Text)", "Choices (Whole number)", "Choices (Decimal number)"];
 const mandatory = ["No", "Yes"];
 
-export function getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, codedValue) {
+export function getMetadataPanelBlock(elementOID, elementType, titleText, fallbackText, subtitleText, codedValue) {
     let panelBlock = document.createElement("a");
     panelBlock.className = "panel-block";
     panelBlock.setAttribute("draggable", true);
@@ -19,10 +20,19 @@ export function getMetadataPanelBlock(elementOID, elementType, displayText, fall
     panelBlock.setAttribute("element-type", elementType);
     if (codedValue) panelBlock.setAttribute("coded-value", codedValue);
 
-    if (typeof displayText === "object" && displayText) {
-        panelBlock.textContent = displayText.textContent;
-    } else if (displayText) {
-        panelBlock.textContent = displayText;
+    let content = document.createElement("div");
+    content.className = "panel-block-content";
+
+    let title = document.createElement("div");
+    title.className = "panel-block-title";
+
+    let subtitle = document.createElement("div");
+    subtitle.className = "panel-block-subtitle";
+
+    if (typeof titleText === "object" && titleText) {
+        title.textContent = titleText.textContent;
+    } else if (titleText) {
+        title.textContent = titleText;
     } else {
         let dot = document.createElement("span");
         dot.className = "panel-icon has-text-link";
@@ -32,10 +42,19 @@ export function getMetadataPanelBlock(elementOID, elementType, displayText, fall
         panelBlock.appendChild(dot);
         panelBlock.title = "Element not translated.";
         if (fallbackText) {
-            panelBlock.appendChild(document.createTextNode(fallbackText));
+            title.textContent = fallbackText;
         } else {
-            panelBlock.appendChild(document.createTextNode("\u00A0"));
+            title.innerHTML = "&nbsp;";
         }
+    }
+
+    if (subtitleText) {
+        content.appendChild(title);
+        subtitle.textContent = subtitleText;
+        content.appendChild(subtitle);
+        panelBlock.appendChild(content);
+    } else {
+        panelBlock.appendChild(title);
     }
 
     return panelBlock;
