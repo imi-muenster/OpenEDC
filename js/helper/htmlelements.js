@@ -2,14 +2,14 @@
 //
 // TODO: This file should be refactored. ODM attributes should be moved to another file and range checks as well as data types combined to one object.
 // Moreover, the code is quite redundant for some functions and creating a select should be refactored across the app as well.
-// For the data types there are already translations in the i18n files available
+// For the data types there are already translations in the i18n files available (different codelist data types may be removed for usability purposes)
 //
 //
 
 const rangeCheckComparators = ["", "LT", "LE", "GT", "GE", "EQ", "NE"];
 const rangeCheckComparatorsDisplay = ["", "<", "<=", ">", ">=", "=", "!="];
 const dataTypes = ["text", "string", "date", "time", "datetime", "boolean", "integer", "float", "codelist (text)", "codelist (integer)", "codelist (float)"];
-const dataTypesDisplay = ["Text", "String", "Date", "Time", "Datetime", "Boolean", "Whole number", "Decimal number", "Choices (Text)", "Choices (Whole number)", "Choices (Decimal number)"];
+const dataTypesDisplay = ["Text", "String", "Date", "Time", "Datetime", "Boolean", "Whole Number", "Decimal Number", "Choices (Text)", "Choices (Whole Number)", "Choices (Decimal Number)"];
 const mandatory = ["No", "Yes"];
 
 export function getMetadataPanelBlock(elementOID, elementType, titleText, fallbackText, subtitleText, codedValue) {

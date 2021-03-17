@@ -242,7 +242,7 @@ function loadItemsByItemGroup(itemGroupOID, hideTree) {
     let itemDefs = metadataHelper.getItemsByItemGroup(itemGroupOID);
     for (let itemDef of itemDefs) {
         let translatedText = itemDef.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
-        const dataType = itemDef.querySelector("CodeListRef") ? "codelist (" + itemDef.getAttribute("DataType") + ")" : itemDef.getAttribute("DataType");
+        const dataType = itemDef.querySelector("CodeListRef") ? "codelist" : itemDef.getAttribute("DataType");
         let panelBlock = createPanelBlock(itemDef.getAttribute("OID"), metadataHelper.elementTypes.ITEM, translatedText, itemDef.getAttribute("Name"), languageHelper.getTranslation(dataType));
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
