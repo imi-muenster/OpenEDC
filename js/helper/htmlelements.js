@@ -6,10 +6,12 @@
 //
 //
 
+import * as languageHelper from "./languagehelper.js";
+
 const rangeCheckComparators = ["", "LT", "LE", "GT", "GE", "EQ", "NE"];
 const rangeCheckComparatorsDisplay = ["", "<", "<=", ">", ">=", "=", "!="];
 const dataTypes = ["text", "string", "date", "time", "datetime", "boolean", "integer", "float", "codelist (text)", "codelist (integer)", "codelist (float)"];
-const dataTypesDisplay = ["Text", "String", "Date", "Time", "Datetime", "Boolean", "Whole Number", "Decimal Number", "Choices (Text)", "Choices (Whole Number)", "Choices (Decimal Number)"];
+const dataTypesDisplay = ["Text", "String", "Date", "Time", "Datetime", "Yes / No", "Whole Number", "Decimal Number", "Choices (Text)", "Choices (Whole Number)", "Choices (Decimal Number)"];
 const mandatory = ["No", "Yes"];
 
 export function getMetadataPanelBlock(elementOID, elementType, titleText, fallbackText, subtitleText, codedValue) {
@@ -40,7 +42,7 @@ export function getMetadataPanelBlock(elementOID, elementType, titleText, fallba
         dotIcon.className = "fas fa-question";
         dot.appendChild(dotIcon);
         panelBlock.appendChild(dot);
-        panelBlock.title = "Element not translated.";
+        subtitleText = languageHelper.getTranslation("missing-translation");
         if (fallbackText) {
             title.textContent = fallbackText;
         } else {

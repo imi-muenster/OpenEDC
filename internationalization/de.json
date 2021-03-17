@@ -1,6 +1,7 @@
 {
     "yes": "Ja",
     "no": "Nein",
+    "missing-translation": "Fehlende Übersetzung",
     "no-subject-selected-hint": "Kein Subjekt ausgewählt. Sie können das Formular trotzdem ansehen und testen, eingegebene Daten werden jedoch nicht gespeichert. Sie können ein Subjekt auswählen indem Sie in der linken Spalte darauf klicken.",
     "no-subject-selected-warning": "Kein Subjekt ausgewählt. Bitte wählen Sie zuerst ein Subjekt in der linken Spalte aus.",
     "audit-record-data-hint": "Sie sehen aktuell den Audit Trail.",

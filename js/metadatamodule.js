@@ -337,9 +337,7 @@ function fillDetailsPanel(elementOID, elementType) {
     $("#duplicate-button-mobile").disabled = false;
     $("#more-button").disabled = false;
     $("#more-button-mobile").disabled = false;
-
     $("#oid-input").value = elementOID;
-    $("#question-textarea").placeholder = "Display property";
 
     let element = metadataHelper.getElementDefByOID(elementOID);
     let elementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), currentElementType, getParentOID(currentElementType));
@@ -465,7 +463,6 @@ function resetDetailsPanel() {
     $("#name-input").value = "";
     $("#name-input").placeholder = "";
     $("#question-textarea").value = "";
-    $("#question-textarea").placeholder = "";
     $("#datatype-select-inner").value = "";
     $("#mandatory-select-inner").value = "";
     $("#references-tag").classList.add("is-hidden");
