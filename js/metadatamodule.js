@@ -367,8 +367,8 @@ function fillDetailsPanel(elementOID, elementType) {
         case metadataHelper.elementTypes.CODELISTITEM:
             $("#mandatory-select-inner").disabled = true;
             $("#element-oid-label").textContent = "CodeList OID";
-            $("#element-short-label").textContent = "CodedValue";
-            $("#element-long-label").textContent = "Decode";
+            $("#element-short-label").textContent = "Coded Value";
+            $("#element-long-label").textContent = "Translated Choice";
             element = metadataHelper.getCodeListItem(currentElementID.codeList, currentElementID.codeListItem);
             $("#name-input").value = element.getAttribute("CodedValue");
             translatedText = element.querySelector(`Decode TranslatedText[*|lang="${locale}"]`);

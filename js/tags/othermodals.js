@@ -29,7 +29,7 @@ class StartModal extends HTMLElement {
                                         </span>
                                     </label>
                                 </div>
-                                <button class="button is-link" onclick="loadExample()">Example</button>
+                                <button class="button" onclick="loadExample()">Example</button>
                             </div>
                         </div>
                     </div>
