@@ -242,7 +242,6 @@ window.showForgotPasswordModal = function() {
 
 window.newProject = function() {
     metadataHelper.loadEmptyProject();
-    admindataHelper.loadEmptyProject(metadataHelper.getStudyOID());
     startApp();
 
     // Show the new project help message
@@ -290,7 +289,6 @@ window.uploadODMToServer = async function() {
 
 window.loadExample = async function() {
     await metadataHelper.loadExample();
-    admindataHelper.loadEmptyProject(metadataHelper.getStudyOID());
     startApp();
 }
 
@@ -573,9 +571,9 @@ async function handleURLSearchParameters() {
             
             if (getCurrentState() == appStates.EMPTY) mergeMetadataModels(models);
             else if (getCurrentState() == appStates.UNLOCKED) {
-                ioHelper.showMessage("Note", "You already have forms. Do you want to add the new forms, replace the current ones, or not load the new forms at all?", {
-                    "Add": () => mergeMetadataModels(models),
-                    "Replace": () => {
+                ioHelper.showMessage("Import metadata", "You already have forms in your project. Do you want to append the new forms to your project, remove your current data before import, or not load the new forms at all?", {
+                    "Append forms": () => mergeMetadataModels(models),
+                    "Remove current data": () => {
                         metadataHelper.removeMetadata();
                         clinicaldataHelper.removeClinicaldata();
                         mergeMetadataModels(models);
@@ -587,11 +585,13 @@ async function handleURLSearchParameters() {
 }
 
 function mergeMetadataModels(models) {
-    models.forEach(model => {
+    models.forEach(async model => {
         const odmXMLString = validateODM(model);
-        if (odmXMLString) metadataHelper.mergeMetadata(odmXMLString);
+        if (odmXMLString) await metadataHelper.mergeMetadata(odmXMLString);
     });
-    reloadApp();
+
+    if (getCurrentState() == appStates.UNLOCKED) reloadApp();
+    else if (getCurrentState() == appStates.EMPTY) startApp();
 }
 
 function reloadApp() {
@@ -601,7 +601,7 @@ function reloadApp() {
     } else if (getCurrentMode() == appModes.CLINICALDATA) {
         clinicaldataModule.cacheFormData();
         clinicaldataModule.reloadTree();
-    } else startApp();
+    }
 }
 
 function getCurrentMode() {

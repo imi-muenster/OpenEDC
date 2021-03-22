@@ -21,8 +21,8 @@ export const errors = {
 
 let admindata = null;
 
-export function loadEmptyProject(studyOID) {
-    admindata = admindataTemplates.getAdminData(studyOID);
+export function loadEmptyProject() {
+    admindata = admindataTemplates.getAdminData();
     addUser();
     ioHelper.storeAdmindata(admindata);
 }
@@ -35,12 +35,12 @@ export function importAdmindata(odmXMLString) {
         if (getUsers().length == 0) addUser();
         ioHelper.storeAdmindata(admindata);
     } else {
-        loadEmptyProject(odm.querySelector("Study").getAttribute("OID"));
+        loadEmptyProject();
     }
 }
 
 export function getAdmindata(studyOID) {
-    if (studyOID) admindata.setAttribute("StudyOID", studyOID);
+    admindata.setAttribute("StudyOID", studyOID);
     return admindata;
 }
 

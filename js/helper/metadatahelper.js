@@ -994,10 +994,17 @@ export function getCSVHeaders() {
     return headers;
 }
 
-export function mergeMetadata(odmXMLString) {
-    // Simply import the metadata if there is no one yet
+export async function mergeMetadata(odmXMLString) {
+    const odmCandidate = new DOMParser().parseFromString(odmXMLString, "text/xml");
+
+    // Add the study name in parentheses to the study event names for better distinction
+    const studyName = odmCandidate.querySelector("StudyName");
+    if (studyName) odmCandidate.querySelectorAll("StudyEventDef").forEach(studyEventDef => studyEventDef.setAttribute("Name", `${studyEventDef.getAttribute("Name")} (${studyName.textContent})`));
+
+    // Simply store the metadata if there is no one yet
     if (!metadata) {
-        importMetadata(odmXMLString);
+        metadata = odmCandidate;
+        await storeMetadata();
         return;
     }
 
@@ -1005,18 +1012,18 @@ export function mergeMetadata(odmXMLString) {
     let replaceOIDs = {};
 
     // RegExp to get all OIDs does not work as Safari currently does not support lookbehind (odmXMLString.match(/(?<= OID\=\")(.*?)(?=\")/g).forEach ... )
-    const odmCandidate = new DOMParser().parseFromString(odmXMLString, "text/xml");
     odmCandidate.querySelectorAll("[OID]").forEach(element => {
         const oid = element.getAttribute("OID");
         if (getElementDefByOID(oid) || Object.values(replaceOIDs).includes(oid)) {
             const oidPrefix = oid.split(".")[0] + ".";
             let count = 1;
-            while (getElementDefByOID(oidPrefix + count) || Object.values(replaceOIDs).includes(oidPrefix + count)) count += 1;
+            while (getElementDefByOID(oidPrefix + count) || Object.values(replaceOIDs).includes(oidPrefix + count) || odmCandidate.querySelector(`[OID="${oidPrefix + count}"]`)) count += 1;
             replaceOIDs[oid] = oidPrefix + count;
         }
     });
 
     // Replace all OIDs that needs to be replaced
+    odmXMLString = new XMLSerializer().serializeToString(odmCandidate);
     Object.keys(replaceOIDs).reverse().forEach(oldOID => odmXMLString = odmXMLString.replace(new RegExp(`OID="${oldOID}"`, "g"), `OID="${replaceOIDs[oldOID]}"`));
     let odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
 
@@ -1030,5 +1037,5 @@ export function mergeMetadata(odmXMLString) {
     odm.querySelectorAll("CodeList").forEach(codeList => insertElementDef(elementDefinitonNames.CODELIST, codeList));
     odm.querySelectorAll("ConditionDef").forEach(conditionDef => insertElementDef(elementDefinitonNames.CONDITION, conditionDef));
 
-    storeMetadata();
+    await storeMetadata();
 }

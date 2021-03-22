@@ -1,7 +1,7 @@
 const template = string => new DOMParser().parseFromString(string, "text/xml").documentElement;
 
-export const getAdminData = studyOID => template(`
-    <AdminData StudyOID="${studyOID}">
+export const getAdminData = () => template(`
+    <AdminData>
     </AdminData>
 `);
 
