@@ -7,8 +7,7 @@ const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
 export async function init() {
-    await admindataHelper.loadStoredAdmindata();
-    if (!admindataHelper.getAdmindata()) admindataHelper.loadEmptyProject();
+    await admindataHelper.loadStoredAdmindata().catch(() => admindataHelper.loadEmptyProject());
 }
 
 export async function loadUsers() {

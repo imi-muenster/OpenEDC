@@ -480,7 +480,7 @@ window.hideAboutModal = function() {
 window.downloadODM = async function() {
     let odm = metadataHelper.prepareDownload(clinicaldataHelper.dataStatusTypes);
 
-    let admindata = admindataHelper.getAdmindata();
+    let admindata = admindataHelper.getAdmindata(metadataHelper.getStudyOID());
     if (admindata) odm.querySelector("ODM").appendChild(admindata);
 
     let clinicaldata = await clinicaldataHelper.getClinicalData(metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID());

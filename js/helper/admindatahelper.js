@@ -39,7 +39,8 @@ export function importAdmindata(odmXMLString) {
     }
 }
 
-export function getAdmindata() {
+export function getAdmindata(studyOID) {
+    if (studyOID) admindata.setAttribute("StudyOID", studyOID);
     return admindata;
 }
 
