@@ -1001,41 +1001,42 @@ export async function mergeMetadata(odmXMLString) {
     const studyName = odmCandidate.querySelector("StudyName");
     if (studyName) odmCandidate.querySelectorAll("StudyEventDef").forEach(studyEventDef => studyEventDef.setAttribute("Name", `${studyEventDef.getAttribute("Name")} (${studyName.textContent})`));
 
+    // Remove admin and clinical data
+    odmCandidate.querySelectorAll("AdminData").forEach(adminData => adminData.remove());
+    odmCandidate.querySelectorAll("ClinicalData").forEach(clinicalData => clinicalData.remove());
+
     // Simply store the metadata if there is no one yet
-    if (!metadata) {
-        metadata = odmCandidate;
-        await storeMetadata();
-        return;
+    if (!metadata) metadata = odmCandidate;
+    else {
+        // Create a register of all OIDs that need to be replaced with a new unique OID
+        let replaceOIDs = {};
+
+        // RegExp to get all OIDs does not work as Safari currently does not support lookbehind (odmXMLString.match(/(?<= OID\=\")(.*?)(?=\")/g).forEach ... )
+        odmCandidate.querySelectorAll("[OID]").forEach(element => {
+            const oid = element.getAttribute("OID");
+            if (getElementDefByOID(oid) || Object.values(replaceOIDs).includes(oid)) {
+                const oidPrefix = oid.split(".")[0] + ".";
+                let count = 1;
+                while (getElementDefByOID(oidPrefix + count) || Object.values(replaceOIDs).includes(oidPrefix + count) || odmCandidate.querySelector(`[OID="${oidPrefix + count}"]`)) count += 1;
+                replaceOIDs[oid] = oidPrefix + count;
+            }
+        });
+
+        // Replace all OIDs that needs to be replaced
+        odmXMLString = new XMLSerializer().serializeToString(odmCandidate);
+        Object.keys(replaceOIDs).reverse().forEach(oldOID => odmXMLString = odmXMLString.replace(new RegExp(`OID="${oldOID}"`, "g"), `OID="${replaceOIDs[oldOID]}"`));
+        let odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
+
+        // Merge the new model into the old one
+        odm.querySelectorAll("MeasurementUnit").forEach(measurementUnit => insertMeasurementUnit(measurementUnit));
+        odm.querySelectorAll("StudyEventRef").forEach(studyEventRef => insertStudyEventRef(studyEventRef));
+        odm.querySelectorAll("StudyEventDef").forEach(studyEventDef => insertElementDef(elementDefinitonNames.STUDYEVENT, studyEventDef));
+        odm.querySelectorAll("FormDef").forEach(formDef => insertElementDef(elementDefinitonNames.FORM, formDef));
+        odm.querySelectorAll("ItemGroupDef").forEach(itemGroupDef => insertElementDef(elementDefinitonNames.ITEMGROUP, itemGroupDef));
+        odm.querySelectorAll("ItemDef").forEach(itemDef => insertElementDef(elementDefinitonNames.ITEM, itemDef));
+        odm.querySelectorAll("CodeList").forEach(codeList => insertElementDef(elementDefinitonNames.CODELIST, codeList));
+        odm.querySelectorAll("ConditionDef").forEach(conditionDef => insertElementDef(elementDefinitonNames.CONDITION, conditionDef));
     }
-
-    // Create a register of all OIDs that need to be replaced with a new unique OID
-    let replaceOIDs = {};
-
-    // RegExp to get all OIDs does not work as Safari currently does not support lookbehind (odmXMLString.match(/(?<= OID\=\")(.*?)(?=\")/g).forEach ... )
-    odmCandidate.querySelectorAll("[OID]").forEach(element => {
-        const oid = element.getAttribute("OID");
-        if (getElementDefByOID(oid) || Object.values(replaceOIDs).includes(oid)) {
-            const oidPrefix = oid.split(".")[0] + ".";
-            let count = 1;
-            while (getElementDefByOID(oidPrefix + count) || Object.values(replaceOIDs).includes(oidPrefix + count) || odmCandidate.querySelector(`[OID="${oidPrefix + count}"]`)) count += 1;
-            replaceOIDs[oid] = oidPrefix + count;
-        }
-    });
-
-    // Replace all OIDs that needs to be replaced
-    odmXMLString = new XMLSerializer().serializeToString(odmCandidate);
-    Object.keys(replaceOIDs).reverse().forEach(oldOID => odmXMLString = odmXMLString.replace(new RegExp(`OID="${oldOID}"`, "g"), `OID="${replaceOIDs[oldOID]}"`));
-    let odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
-
-    // Merge the new model into the old one
-    odm.querySelectorAll("MeasurementUnit").forEach(measurementUnit => insertMeasurementUnit(measurementUnit));
-    odm.querySelectorAll("StudyEventRef").forEach(studyEventRef => insertStudyEventRef(studyEventRef));
-    odm.querySelectorAll("StudyEventDef").forEach(studyEventDef => insertElementDef(elementDefinitonNames.STUDYEVENT, studyEventDef));
-    odm.querySelectorAll("FormDef").forEach(formDef => insertElementDef(elementDefinitonNames.FORM, formDef));
-    odm.querySelectorAll("ItemGroupDef").forEach(itemGroupDef => insertElementDef(elementDefinitonNames.ITEMGROUP, itemGroupDef));
-    odm.querySelectorAll("ItemDef").forEach(itemDef => insertElementDef(elementDefinitonNames.ITEM, itemDef));
-    odm.querySelectorAll("CodeList").forEach(codeList => insertElementDef(elementDefinitonNames.CODELIST, codeList));
-    odm.querySelectorAll("ConditionDef").forEach(conditionDef => insertElementDef(elementDefinitonNames.CONDITION, conditionDef));
 
     await storeMetadata();
 }
