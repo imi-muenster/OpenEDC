@@ -995,23 +995,14 @@ export function getCSVHeaders() {
 }
 
 export async function mergeMetadata(odmXMLString) {
-    const odmCandidate = new DOMParser().parseFromString(odmXMLString, "text/xml");
-
-    // Add the study name in parentheses to the study event names for better distinction
-    const studyName = odmCandidate.querySelector("StudyName");
-    if (studyName) odmCandidate.querySelectorAll("StudyEventDef").forEach(studyEventDef => studyEventDef.setAttribute("Name", `${studyEventDef.getAttribute("Name")} (${studyName.textContent})`));
-
-    // Remove admin and clinical data
-    odmCandidate.querySelectorAll("AdminData").forEach(adminData => adminData.remove());
-    odmCandidate.querySelectorAll("ClinicalData").forEach(clinicalData => clinicalData.remove());
-
-    // Simply store the metadata if there is no one yet
-    if (!metadata) metadata = odmCandidate;
+    // Simply import the metadata if there is no one yet
+    if (!metadata) importMetadata(odmXMLString);
     else {
         // Create a register of all OIDs that need to be replaced with a new unique OID
         let replaceOIDs = {};
 
         // RegExp to get all OIDs does not work as Safari currently does not support lookbehind (odmXMLString.match(/(?<= OID\=\")(.*?)(?=\")/g).forEach ... )
+        const odmCandidate = new DOMParser().parseFromString(odmXMLString, "text/xml");
         odmCandidate.querySelectorAll("[OID]").forEach(element => {
             const oid = element.getAttribute("OID");
             if (getElementDefByOID(oid) || Object.values(replaceOIDs).includes(oid)) {
@@ -1022,10 +1013,9 @@ export async function mergeMetadata(odmXMLString) {
             }
         });
 
-        // Replace all OIDs that needs to be replaced
-        odmXMLString = new XMLSerializer().serializeToString(odmCandidate);
+        // Replace all OIDs that need to be replaced
         Object.keys(replaceOIDs).reverse().forEach(oldOID => odmXMLString = odmXMLString.replace(new RegExp(`OID="${oldOID}"`, "g"), `OID="${replaceOIDs[oldOID]}"`));
-        let odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
+        const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
 
         // Merge the new model into the old one
         odm.querySelectorAll("MeasurementUnit").forEach(measurementUnit => insertMeasurementUnit(measurementUnit));
