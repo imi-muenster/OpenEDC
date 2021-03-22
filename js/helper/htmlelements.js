@@ -22,16 +22,11 @@ export function getMetadataPanelBlock(elementOID, elementType, titleText, fallba
     panelBlock.setAttribute("element-type", elementType);
     if (codedValue) panelBlock.setAttribute("coded-value", codedValue);
 
-    let content = document.createElement("div");
-    content.className = "panel-block-content";
-
     let title = document.createElement("div");
     title.className = "panel-block-title";
 
-    let subtitle = document.createElement("div");
-    subtitle.className = "panel-block-subtitle";
-
     if (typeof titleText === "object" && titleText) {
+        // TODO: Needed?
         title.textContent = titleText.textContent;
     } else if (titleText) {
         title.textContent = titleText;
@@ -51,7 +46,11 @@ export function getMetadataPanelBlock(elementOID, elementType, titleText, fallba
     }
 
     if (subtitleText) {
+        let content = document.createElement("div");
+        content.className = "panel-block-content";
         content.appendChild(title);
+        let subtitle = document.createElement("div");
+        subtitle.className = "panel-block-subtitle";
         subtitle.textContent = subtitleText;
         content.appendChild(subtitle);
         panelBlock.appendChild(content);
@@ -62,7 +61,7 @@ export function getMetadataPanelBlock(elementOID, elementType, titleText, fallba
     return panelBlock;
 }
 
-export function getClinicaldataPanelBlock(elementOID, displayText, fallbackText, dataStatus) {
+export function getClinicaldataPanelBlock(elementOID, titleText, fallbackText, subtitleText, dataStatus) {
     let panelBlock = document.createElement("a");
     panelBlock.className = "panel-block";
     panelBlock.setAttribute("oid", elementOID);
@@ -93,14 +92,31 @@ export function getClinicaldataPanelBlock(elementOID, displayText, fallbackText,
         panelBlock.appendChild(dot);
     }
 
-    if (typeof displayText === "object" && displayText) {
-        panelBlock.appendChild(document.createTextNode(displayText.textContent));
-    } else if (displayText) {
-        panelBlock.appendChild(document.createTextNode(displayText));
+    let title = document.createElement("div");
+    title.className = "panel-block-title";
+
+    if (typeof titleText === "object" && titleText) {
+        // TODO: Needed?
+        title.textContent = titleText.textContent;
+    } else if (titleText) {
+        title.textContent = titleText;
     } else if (fallbackText) {
-        panelBlock.appendChild(document.createTextNode(fallbackText));
+        title.textContent = fallbackText;
     } else {
-        panelBlock.appendChild(document.createTextNode("\u00A0"));
+        title.innerHTML = "&nbsp;";
+    }
+
+    if (subtitleText) {
+        let content = document.createElement("div");
+        content.className = "panel-block-content";
+        content.appendChild(title);
+        let subtitle = document.createElement("div");
+        subtitle.className = "panel-block-subtitle";
+        subtitle.textContent = subtitleText;
+        content.appendChild(subtitle);
+        panelBlock.appendChild(content);
+    } else {
+        panelBlock.appendChild(title);
     }
 
     return panelBlock;

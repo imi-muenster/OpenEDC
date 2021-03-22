@@ -138,13 +138,14 @@ window.addSubject = function() {
 export function loadSubjectKeys() {
     ioHelper.removeElements($$("#subject-panel-blocks a"));
 
-    const site = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
+    const selectedSite = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
     const sortOrder = $("#sort-subject-select-inner").value;
-    const subjects = clinicaldataHelper.getSubjects(site, sortOrder)
+    const subjects = clinicaldataHelper.getSubjects(selectedSite, sortOrder);
     subjects.length > 0 ? $("#no-subjects-hint").classList.add("is-hidden") : $("#no-subjects-hint").classList.remove("is-hidden");
 
     for (let subject of subjects) {
-        let panelBlock = htmlElements.getClinicaldataPanelBlock(subject.uniqueKey, subject.key, null, subject.status);
+        const siteSubtitle = subject.siteOID && !selectedSite ? admindataHelper.getSiteNameByOID(subject.siteOID) : null;
+        let panelBlock = htmlElements.getClinicaldataPanelBlock(subject.uniqueKey, subject.key, null, siteSubtitle, subject.status);
         panelBlock.onclick = () => loadSubjectData(subject.uniqueKey);
         $("#subject-panel-blocks").appendChild(panelBlock);
     }
@@ -219,7 +220,7 @@ async function loadTree(studyEventOID, formOID) {
         const studyEventOID = studyEventDef.getAttribute("OID");
         const translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
-        let panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedText, studyEventDef.getAttribute("Name"), dataStatus);
+        let panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedText, studyEventDef.getAttribute("Name"), null, dataStatus);
         panelBlock.onclick = () => loadTree(studyEventOID, null);
         $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
     }
@@ -238,7 +239,7 @@ async function loadFormsByStudyEvent() {
         const formOID = formDef.getAttribute("OID");
         const translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForForm(currentElementID.studyEvent, formOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
-        let panelBlock = htmlElements.getClinicaldataPanelBlock(formOID, translatedText, formDef.getAttribute("Name"), dataStatus);
+        let panelBlock = htmlElements.getClinicaldataPanelBlock(formOID, translatedText, formDef.getAttribute("Name"), null, dataStatus);
         panelBlock.onclick = () => loadTree(currentElementID.studyEvent, formOID);
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
     }
