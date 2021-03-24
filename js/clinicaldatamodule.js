@@ -290,7 +290,7 @@ async function loadFormData() {
 }
 
 function resetFormUIElements() {
-    $("#form-hint").classList.add("is-hidden")
+    $("#form-hint").classList.add("is-hidden");
     $("#form-hint").classList.remove("is-danger");
     $("#form-hint").classList.remove("is-link");
     $("#survey-view-button").classList.remove("is-hidden");
@@ -298,7 +298,8 @@ function resetFormUIElements() {
     $("#form-validate-level").classList.remove("is-hidden");
     $("#form-validate-button").classList.remove("is-validated");
 
-    if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.VALIDATEFORMS)) $("#form-validate-level").classList.add("is-hidden");
+    if (surveyViewIsActive()) $("#survey-view-button").classList.add("is-hidden");
+    if (surveyViewIsActive() || (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.VALIDATEFORMS))) $("#form-validate-level").classList.add("is-hidden");
 }
 
 async function loadFormMetadata() {
