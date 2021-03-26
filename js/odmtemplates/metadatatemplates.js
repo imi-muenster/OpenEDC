@@ -38,7 +38,7 @@ export let getItemRef = oid => template(`
 `);
 
 export let getItemDef = oid => template(`
-    <ItemDef OID="${oid}" Name="${oid}" DataType="text">
+    <ItemDef OID="${oid}" Name="${oid}" DataType="integer">
     </ItemDef>
 `);
 

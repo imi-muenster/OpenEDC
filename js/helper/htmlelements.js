@@ -10,8 +10,8 @@ import * as languageHelper from "./languagehelper.js";
 
 const rangeCheckComparators = ["", "LT", "LE", "GT", "GE", "EQ", "NE"];
 const rangeCheckComparatorsDisplay = ["", "<", "<=", ">", ">=", "=", "!="];
-const dataTypes = ["text", "string", "date", "time", "datetime", "boolean", "integer", "float", "codelist (text)", "codelist (integer)", "codelist (float)"];
-const dataTypesDisplay = ["Text", "String", "Date", "Time", "Datetime", "Yes / No", "Whole Number", "Decimal Number", "Choices (default - coded text)", "Choices (coded whole number)", "Choices (coded decimal number)"];
+const dataTypes = ["integer", "float", "boolean", "text", "date", "time", "datetime", "codelist (text)", "codelist (integer)", "codelist (float)", "string", "double"];
+const dataTypesDisplay = ["Whole Number", "Decimal Number", "Yes / No", "Text", "Date", "Time", "Datetime", "Choices (coded text - default)", "Choices (coded whole number)", "Choices (coded decimal number)", "String (multiline text)", "Decimal Number (double precision)"];
 const mandatory = ["No", "Yes"];
 
 export function getMetadataPanelBlock(elementOID, elementType, titleText, fallbackText, subtitleText, codedValue) {

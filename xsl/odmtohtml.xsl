@@ -141,6 +141,12 @@
         <xsl:param name="item"/>
         <xsl:param name="itemGroupOID"/>
         <xsl:choose>
+            <xsl:when test="$item/@DataType = 'integer'">
+                <input class="input" type="text" inputmode="numeric" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
+            </xsl:when>
+            <xsl:when test="$item/@DataType = 'float' or $item/@DataType = 'double'">
+                <input class="input" type="text" inputmode="decimal" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
+            </xsl:when>
             <xsl:when test="$item/@DataType = 'date'">
                 <input class="input" type="date" placeholder="yyyy-mm-dd" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
             </xsl:when>
@@ -149,12 +155,6 @@
             </xsl:when>
             <xsl:when test="$item/@DataType = 'datetime'">
                 <input class="input" type="datetime-local" placeholder="yyyy-mm-dd[T]hh:mm" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
-            </xsl:when>
-            <xsl:when test="$item/@DataType = 'integer'">
-                <input class="input" type="text" inputmode="numeric" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
-            </xsl:when>
-            <xsl:when test="$item/@DataType = 'float'">
-                <input class="input" type="text" inputmode="decimal" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"/>
             </xsl:when>
             <xsl:when test="$item/@DataType = 'string' and $textAsTextarea = 'true'">
                 <textarea class="textarea" type="textarea" preview-oid="{$item/@OID}" preview-group-oid="{$itemGroupOID}"></textarea>
