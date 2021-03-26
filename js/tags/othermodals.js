@@ -8,7 +8,7 @@ class StartModal extends HTMLElement {
                         <div class="width-is-two-thirds">
                             <div id="openedc-title">
                                 <figure class="image is-64x64 mr-3">
-                                    <img src="./img/android-chrome-512.png">
+                                    <img src="./img/title-logo.png">
                                 </figure>
                                 <div>
                                     <h1 class="title">OpenEDC</h1>
