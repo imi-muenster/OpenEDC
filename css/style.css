@@ -23,6 +23,11 @@ html, body {
     margin-bottom: 20px;
 }
 
+#openedc-title .image {
+    width: 72px;
+    height: 72px;
+}
+
 .section {
     padding: 30px 20px;
 }

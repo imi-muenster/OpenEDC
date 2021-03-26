@@ -7,7 +7,7 @@ class StartModal extends HTMLElement {
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <div id="openedc-title">
-                                <figure class="image is-64x64 mr-3">
+                                <figure class="image mr-3">
                                     <img src="./img/title-logo.png">
                                 </figure>
                                 <div>
