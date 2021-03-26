@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.2.6
+
+- Added support for the double data type and rearranged the list of data types
+- New logo
+
 ## 0.2.5
 
 - Show the sites of subjects in the subject list when no site is selected as filter
