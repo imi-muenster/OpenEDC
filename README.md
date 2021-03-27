@@ -1,6 +1,6 @@
 # OpenEDC
 
-[OpenEDC](https://openedc.org/) is a free and open-source electronic data capture (EDC) system that lets you create and conduct secure clinical research studies based on the [CDISC ODM-XML](https://www.cdisc.org/standards/data-exchange/odm) format.
+[OpenEDC](https://openedc.org/) is a free and open-source electronic data capture (EDC) system that lets you design and conduct secure clinical research studies based on the [CDISC ODM-XML](https://www.cdisc.org/standards/data-exchange/odm) format.
 
 OpenEDC is a cross-platform progressive web application (PWA) that can also be installed as a standalone app and works offline. The application itself is client-based. All data is exclusively processed on the local device it is running on. For security reasons, all data can be AES encrypted on the device as well.
 
