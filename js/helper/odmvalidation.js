@@ -1,5 +1,6 @@
 import * as ioHelper from "./iohelper.js";
 import * as languageHelper from "./languagehelper.js";
+import * as metadataTemplates from "../odmtemplates/metadatatemplates.js";
 
 // This function is used to validate an imported ODM file and prepare it before it is further processed
 // Preparing can include the removal of forgein namespaces, ordering metadata elements according to their order number, adjusting the ODM version, handling translated texts without lang attribute, etc.
@@ -12,7 +13,19 @@ export function process(odmXMLString) {
     if (!odm.querySelector("Study")) throw "Empty ODM file uploaded.";
     if (!odm.querySelector("MetaDataVersion")) throw "ODM without metadata uploaded.";
 
-    // TODO: Extend list of validation checks
+    // Add a protocol element if there is no one present (e.g., for supporting the CDISC eCRF Portal)
+    // Moreover, add a study event and reference all forms within this event if there is no one available
+    if (!odm.querySelector("Protocol")) {
+        odm.querySelector("MetaDataVersion").insertAdjacentElement("afterbegin", metadataTemplates.getProtocol());
+
+        if (!odm.querySelector("StudyEventDef")) {
+            const studyEventDef = metadataTemplates.getStudyEventDef("SE.1", "First Event")
+            odm.querySelectorAll("FormDef").forEach(formDef => studyEventDef.appendChild(metadataTemplates.getFormRef(formDef.getAttribute("OID"))));
+            odm.querySelector("Protocol").insertAdjacentElement("afterend", studyEventDef);
+        }
+
+        odm.querySelectorAll("StudyEventDef").forEach(studyEventDef => odm.querySelector("Protocol").appendChild(metadataTemplates.getStudyEventRef(studyEventDef.getAttribute("OID"))));
+    }
 
     // Add a lang attribute to translated texts without one
     for (const translatedText of odm.querySelectorAll("TranslatedText")) {

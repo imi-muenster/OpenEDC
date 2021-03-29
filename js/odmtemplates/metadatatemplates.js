@@ -69,6 +69,11 @@ export let getStudyEventDef = (oid, name) => template(`
     </StudyEventDef>
 `);
 
+export let getProtocol = () => template(`
+    <Protocol>
+    </Protocol>
+`);
+
 export let getODMTemplate = () => {
     let template = `<?xml version="1.0" encoding="UTF-8"?>
                         <ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" FileType="Snapshot" FileOID="" CreationDateTime="" ODMVersion="1.3.2" SourceSystem="OpenEDC">
