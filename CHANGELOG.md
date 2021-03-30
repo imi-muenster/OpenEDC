@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.2.7
+
+- Support for the CDISC eCRF Portal
+- Usability, textual, and layout improvements
+
 ## 0.2.6
 
 - Added support for the double data type and rearranged the list of data types
