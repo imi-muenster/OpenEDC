@@ -571,7 +571,7 @@ async function handleURLSearchParameters() {
             
             if (getCurrentState() == appStates.EMPTY) mergeMetadataModels(models);
             else if (getCurrentState() == appStates.UNLOCKED) {
-                ioHelper.showMessage("Import metadata", "You already have forms in your project. Do you want to append the new forms to your project, remove your current data before import, or not load the new forms at all?", {
+                ioHelper.showMessage("Import metadata", "You already have forms in your project. Do you want to append the new forms to your project, remove your current data before import, or not load the new forms?", {
                     "Append forms": () => mergeMetadataModels(models),
                     "Remove current data": () => {
                         metadataHelper.removeMetadata();

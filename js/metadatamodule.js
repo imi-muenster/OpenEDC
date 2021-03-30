@@ -693,8 +693,6 @@ function arrowKeyListener(event) {
         }
     } else if (event.code == "KeyA") {
         addCurrentElementType();
-    } else if (event.code == "KeyR") {
-        removeElement();
     } else if (event.code == "Tab") {
         $("#oid-input").focus();
     }
@@ -1071,7 +1069,9 @@ window.elementDrop = async function(event) {
 }
 
 window.showRemoveModal = async function() {
-    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID());
+    const currentElement = currentElementType == metadataHelper.elementTypes.CODELISTITEM ? currentElementID.item : getCurrentElementOID();
+    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(currentElement);
+    
     if (subjectKeys.length > 0) {
         ioHelper.showMessage("Cannot be removed", "<p>You cannot currently remove this element since it has clinical data assigned for the following subjects:</p><br><strong>" + subjectKeys.join(", ") + "</strong>");
     } else {
