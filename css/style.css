@@ -236,4 +236,8 @@ a.panel-block:hover {
     .width-is-three-quarters, .width-is-two-thirds {
         width: 100%;
     }
+
+    #survey-view-button {
+        margin-left: 0px !important;
+    }
 }

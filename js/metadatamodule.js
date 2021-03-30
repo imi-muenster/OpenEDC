@@ -693,6 +693,8 @@ function arrowKeyListener(event) {
         }
     } else if (event.code == "KeyA") {
         addCurrentElementType();
+    } else if (event.code == "KeyR") {
+        showRemoveModal();
     } else if (event.code == "Tab") {
         $("#oid-input").focus();
     }
