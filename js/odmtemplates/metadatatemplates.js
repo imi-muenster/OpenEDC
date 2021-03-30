@@ -37,8 +37,8 @@ export let getItemRef = oid => template(`
     <ItemRef ItemOID="${oid}" Mandatory="No"/>
 `);
 
-export let getItemDef = oid => template(`
-    <ItemDef OID="${oid}" Name="${oid}" DataType="integer">
+export let getItemDef = (oid, name) => template(`
+    <ItemDef OID="${oid}" Name="${name}" DataType="integer">
     </ItemDef>
 `);
 
@@ -46,8 +46,8 @@ export let getItemGroupRef = oid => template(`
     <ItemGroupRef ItemGroupOID="${oid}" Mandatory="No"/>
 `);
 
-export let getItemGroupDef = oid => template(`
-    <ItemGroupDef OID="${oid}" Name="${oid}" Repeating="No">
+export let getItemGroupDef = (oid, name) => template(`
+    <ItemGroupDef OID="${oid}" Name="${name}" Repeating="No">
     </ItemGroupDef>
 `);
 
@@ -55,8 +55,8 @@ export let getFormRef = oid => template(`
     <FormRef FormOID="${oid}" Mandatory="No"/>
 `);
 
-export let getFormDef = oid => template(`
-    <FormDef OID="${oid}" Name="${oid}" Repeating="No">
+export let getFormDef = (oid, name) => template(`
+    <FormDef OID="${oid}" Name="${name}" Repeating="No">
     </FormDef>
 `);
 
@@ -65,7 +65,7 @@ export let getStudyEventRef = oid => template(`
 `);
 
 export let getStudyEventDef = (oid, name) => template(`
-    <StudyEventDef OID="${oid}" Name="${name ? name : oid}" Repeating="No" Type="Common">
+    <StudyEventDef OID="${oid}" Name="${name}" Repeating="No" Type="Common">
     </StudyEventDef>
 `);
 

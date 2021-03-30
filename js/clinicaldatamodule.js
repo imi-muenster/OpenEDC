@@ -65,6 +65,8 @@ export function hide() {
 
     metadataModule.show();
     ioHelper.hideMenu();
+
+    adjustMobileUI(true);
 }
 
 export function setLanguage(newLocale) {
@@ -225,7 +227,7 @@ async function loadTree(studyEventOID, formOID) {
         $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
     }
 
-    showColumnOnMobile();
+    adjustMobileUI();
     if (!currentElementID.studyEvent && !currentElementID.form && metadataHelper.getStudyEvents().length == 1) backOnMobile();
     if (currentElementID.studyEvent) await loadFormsByStudyEvent();
 }
@@ -248,7 +250,7 @@ async function loadFormsByStudyEvent() {
     if (ioHelper.isAutoSurveyView() && ioHelper.isMobile() && currentElementID.subject && formDefs.length > 0 && !currentElementID.form) {
         currentElementID.form = formDefs[0].getAttribute("OID");
         showSurveyView();
-        showColumnOnMobile();
+        adjustMobileUI();
     }
 
     if (currentElementID.form) {
@@ -336,12 +338,13 @@ async function addDynamicFormLogic() {
     validationHelper.process(metadataHelper.getItemOIDSWithRangeChecksByForm(currentElementID.form));
     
     // Third, allow the user to uncheck an already checked group of radio items
-    document.querySelectorAll("input[type='radio']").forEach(radioItem => {
-        radioItem.addEventListener("mouseup", mouseEvent => uncheckRadioitem(mouseEvent.target));
+    document.querySelectorAll("#clinicaldata-content label.radio").forEach(radioItem => {
+        radioItem.addEventListener("mouseup", mouseEvent => uncheckRadioItem(mouseEvent.target));
     });
 }
 
-function uncheckRadioitem(radioItem) {
+function uncheckRadioItem(radioItem) {
+    radioItem = radioItem.querySelector("input") ? radioItem.querySelector("input") : radioItem;
     if (radioItem.checked) {
         setTimeout(() => {
             radioItem.checked = false;
@@ -847,11 +850,11 @@ window.backOnMobile = function() {
     }
 }
 
-function showColumnOnMobile() {
+function adjustMobileUI(forceHideBackButton) {
     if (!ioHelper.isMobile()) return;
     
     // Hide or show navbar back button
-    if (currentElementID.subject || currentElementID.form || (currentElementID.studyEvent && metadataHelper.getStudyEvents().length > 1)) {
+    if (!forceHideBackButton && (currentElementID.subject || currentElementID.form || (currentElementID.studyEvent && metadataHelper.getStudyEvents().length > 1))) {
         $("#study-title").parentNode.classList.add("is-hidden-touch");
         $("#mobile-back-button").classList.remove("is-hidden");
         $("#mobile-back-button").classList.add("is-hidden-desktop");
@@ -860,6 +863,9 @@ function showColumnOnMobile() {
         $("#mobile-back-button").classList.add("is-hidden");
         $("#mobile-back-button").classList.remove("is-hidden-desktop");
     }
+
+    // Cancel further execution if function was merely called to hide the navbar back button
+    if (forceHideBackButton) return;
 
     // Show respective column
     $$("#subjects-column, #clinicaldata-study-events-column, #clinicaldata-forms-column, #clinicaldata-column").forEach(column => column.classList.add("is-hidden-touch"));

@@ -23,12 +23,6 @@ html, body {
     margin-bottom: 20px;
 }
 
-#openedc-title figure {
-    width: 72px;
-    height: 72px;
-    margin-right: 8px;
-}
-
 .section {
     padding: 30px 20px;
 }
@@ -148,6 +142,10 @@ a.panel-block:hover {
 
 .field label.radio:not(:last-child) {
     margin-bottom: 5px;
+}
+
+.input[disabled], .select select[disabled], .textarea[disabled] {
+    color: #4a4a4a;
 }
 
 .is-clickable {

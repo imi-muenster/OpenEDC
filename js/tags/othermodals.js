@@ -7,7 +7,7 @@ class StartModal extends HTMLElement {
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <div id="openedc-title">
-                                <figure>
+                                <figure class="image is-64x64 mr-2">
                                     <img src="./img/title-logo.png">
                                 </figure>
                                 <div>
@@ -169,7 +169,7 @@ class SubjectModal extends HTMLElement {
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <h1 class="title">Options and Audit Trail</h1>
-                            <h2 class="subtitle">of Subject: <strong></strong></h2>
+                            <h2 class="subtitle">for Subject: <strong></strong></h2>
                             <hr>
                             <h2 class="subtitle">Subject Options</h2>
                             <div class="field">

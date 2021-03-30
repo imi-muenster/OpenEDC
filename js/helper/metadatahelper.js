@@ -599,7 +599,7 @@ function generateUniqueCodedValue(codeListOID) {
 export function createStudyEvent() {
     const newStudyEventOID = generateUniqueOID("SE.");
     insertStudyEventRef(metadataTemplates.getStudyEventRef(newStudyEventOID));
-    insertElementDef(elementDefinitonNames.STUDYEVENT, metadataTemplates.getStudyEventDef(newStudyEventOID));
+    insertElementDef(elementDefinitonNames.STUDYEVENT, metadataTemplates.getStudyEventDef(newStudyEventOID, "New Event"));
     
     return newStudyEventOID;
 }
@@ -620,7 +620,7 @@ function insertElementDef(definitionName, studyEventDef) {
 export function createForm(studyEventOID) {
     const newFormOID = generateUniqueOID("F.");
     insertFormRef(metadataTemplates.getFormRef(newFormOID), studyEventOID);
-    insertElementDef(elementDefinitonNames.FORM, metadataTemplates.getFormDef(newFormOID));
+    insertElementDef(elementDefinitonNames.FORM, metadataTemplates.getFormDef(newFormOID, "New Form"));
 
     return newFormOID;
 }
@@ -642,7 +642,7 @@ export function insertFormRef(formRef, studyEventOID) {
 export function createItemGroup(formOID) {
     const newItemGroupOID = generateUniqueOID("IG.");
     insertItemGroupRef(metadataTemplates.getItemGroupRef(newItemGroupOID), formOID);
-    insertElementDef(elementDefinitonNames.ITEMGROUP, metadataTemplates.getItemGroupDef(newItemGroupOID));
+    insertElementDef(elementDefinitonNames.ITEMGROUP, metadataTemplates.getItemGroupDef(newItemGroupOID, "New Group"));
 
     return newItemGroupOID;
 }
@@ -664,7 +664,7 @@ export function insertItemGroupRef(itemGroupRef, formOID) {
 export function createItem(itemGroupOID) {
     const newItemOID = generateUniqueOID("I.");
     insertItemRef(metadataTemplates.getItemRef(newItemOID), itemGroupOID);
-    insertElementDef(elementDefinitonNames.ITEM, metadataTemplates.getItemDef(newItemOID));
+    insertElementDef(elementDefinitonNames.ITEM, metadataTemplates.getItemDef(newItemOID, "New Item"));
 
     return newItemOID;
 }
