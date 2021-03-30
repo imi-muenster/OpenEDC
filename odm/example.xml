@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" FileType="Snapshot" FileOID="Exemplary Project" CreationDateTime="2021-03-08T08:10:12.839Z" ODMVersion="1.3.2" SourceSystem="OpenEDC">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" FileType="Snapshot" FileOID="Exemplary Project" CreationDateTime="2021-03-30T17:57:55.146Z" ODMVersion="1.3.2" SourceSystem="OpenEDC">
     <Study OID="S.1">
         <GlobalVariables>
             <StudyName>Exemplary Project</StudyName>
@@ -239,12 +239,11 @@
                     <TranslatedText xml:lang="de">Bitte geben Sie ihr Geburtsland ein</TranslatedText>
                 </Question>
             </ItemDef>
-            <ItemDef OID="Pregnant" Name="Pregnant" DataType="text">
+            <ItemDef OID="Pregnant" Name="Pregnant" DataType="boolean">
                 <Question>
                     <TranslatedText xml:lang="en">Are you currently pregnant?</TranslatedText>
                     <TranslatedText xml:lang="de">Sind Sie zur Zeit schwanger?</TranslatedText>
                 </Question>
-                <CodeListRef CodeListOID="CL.3"/>
             </ItemDef>
             <ItemDef OID="I.1" Name="SchoolQualification" DataType="text">
                 <Question>
@@ -253,47 +252,41 @@
                 </Question>
                 <CodeListRef CodeListOID="CL.4"/>
             </ItemDef>
-            <ItemDef OID="CardiovascularDiseases" Name="CardiovascularDiseases" DataType="text">
+            <ItemDef OID="CardiovascularDiseases" Name="CardiovascularDiseases" DataType="boolean">
                 <Question>
                     <TranslatedText xml:lang="en">Have you had cardiovascular diseases?</TranslatedText>
                     <TranslatedText xml:lang="de">Hatten Sie in der Vergangenheit Erkrankungen des Herzkreislaufsystems?</TranslatedText>
                 </Question>
-                <CodeListRef CodeListOID="CL.5"/>
             </ItemDef>
-            <ItemDef OID="I.8" Name="HeartAttackStents" DataType="text">
+            <ItemDef OID="I.8" Name="HeartAttackStents" DataType="boolean">
                 <Question>
                     <TranslatedText xml:lang="en">... yes, I had a heart attack or I am having stents.</TranslatedText>
                     <TranslatedText xml:lang="de">... ja, ich hatte einen Herzinfarkt oder habe Stents am Herzen.</TranslatedText>
                 </Question>
-                <CodeListRef CodeListOID="CL.5"/>
             </ItemDef>
-            <ItemDef OID="I.9" Name="Stroke" DataType="text">
+            <ItemDef OID="I.9" Name="Stroke" DataType="boolean">
                 <Question>
                     <TranslatedText xml:lang="en">... yes, I had a stroke.</TranslatedText>
                     <TranslatedText xml:lang="de">... ja, ich hatte einen Schlaganfall.</TranslatedText>
                 </Question>
-                <CodeListRef CodeListOID="CL.5"/>
             </ItemDef>
-            <ItemDef OID="TumorDiseases" Name="TumorDiseases" DataType="text">
+            <ItemDef OID="TumorDiseases" Name="TumorDiseases" DataType="boolean">
                 <Question>
                     <TranslatedText xml:lang="en">Have you had a tumor?</TranslatedText>
                     <TranslatedText xml:lang="de">Wurde in der Vergangenheit ein bösartiger Tumor oder Krebs bei Ihnen diagnostiziert?</TranslatedText>
                 </Question>
-                <CodeListRef CodeListOID="CL.6"/>
             </ItemDef>
-            <ItemDef OID="I.10" Name="BreastCancer" DataType="text">
+            <ItemDef OID="I.10" Name="BreastCancer" DataType="boolean">
                 <Question>
                     <TranslatedText xml:lang="en">... yes, I had breast cancer.</TranslatedText>
                     <TranslatedText xml:lang="de">... ja, ich hatte Brustkrebs.</TranslatedText>
                 </Question>
-                <CodeListRef CodeListOID="CL.6"/>
             </ItemDef>
-            <ItemDef OID="I.11" Name="SkinCancer" DataType="text">
+            <ItemDef OID="I.11" Name="SkinCancer" DataType="boolean">
                 <Question>
                     <TranslatedText xml:lang="en">... yes, I had skin cancer.</TranslatedText>
                     <TranslatedText xml:lang="de">... ja, ich hatte Hautkrebs.</TranslatedText>
                 </Question>
-                <CodeListRef CodeListOID="CL.6"/>
             </ItemDef>
             <ItemDef OID="I.7" Name="PregnancyDuration" DataType="integer">
                 <Question>
@@ -308,12 +301,11 @@
                     <CheckValue>40</CheckValue>
                 </RangeCheck>
             </ItemDef>
-            <ItemDef OID="SideEffect" Name="SideEffect" DataType="text">
+            <ItemDef OID="SideEffect" Name="SideEffect" DataType="boolean">
                 <Question>
                     <TranslatedText xml:lang="en">A side effect occured</TranslatedText>
                     <TranslatedText xml:lang="de">Eine Nebenwirkung ist aufgetreten</TranslatedText>
                 </Question>
-                <CodeListRef CodeListOID="CL.7"/>
             </ItemDef>
             <ItemDef OID="I.12" Name="WhichSideEffect" DataType="text">
                 <Question>
@@ -321,12 +313,11 @@
                     <TranslatedText xml:lang="de">Welche Nebenwirkung ist aufgetreten?</TranslatedText>
                 </Question>
             </ItemDef>
-            <ItemDef OID="SymptomsChanged" Name="SymptomsChanged" DataType="text">
+            <ItemDef OID="SymptomsChanged" Name="SymptomsChanged" DataType="boolean">
                 <Question>
                     <TranslatedText xml:lang="en">The symptom changed</TranslatedText>
                     <TranslatedText xml:lang="de">Das Symptom hat sich verändert</TranslatedText>
                 </Question>
-                <CodeListRef CodeListOID="CL.7"/>
             </ItemDef>
             <ItemDef OID="I.5" Name="WhichSymptomChanges" DataType="text">
                 <Question>
@@ -361,7 +352,7 @@
                     <TranslatedText xml:lang="de">Wann haben Sie die Schule absolviert?</TranslatedText>
                 </Question>
             </ItemDef>
-            <ItemDef OID="I.17" Name="Example" DataType="string">
+            <ItemDef OID="I.17" Name="Example" DataType="text">
                 <Question>
                     <TranslatedText xml:lang="de">Dies ist ein Beispielelement</TranslatedText>
                     <TranslatedText xml:lang="en">This is an examplary item</TranslatedText>
@@ -449,20 +440,6 @@
                     </Decode>
                 </CodeListItem>
             </CodeList>
-            <CodeList OID="CL.3" Name="CL.3" DataType="text">
-                <CodeListItem CodedValue="Yes">
-                    <Decode>
-                        <TranslatedText xml:lang="en">Yes</TranslatedText>
-                        <TranslatedText xml:lang="de">Ja</TranslatedText>
-                    </Decode>
-                </CodeListItem>
-                <CodeListItem CodedValue="No">
-                    <Decode>
-                        <TranslatedText xml:lang="en">No</TranslatedText>
-                        <TranslatedText xml:lang="de">Nein</TranslatedText>
-                    </Decode>
-                </CodeListItem>
-            </CodeList>
             <CodeList OID="CL.4" Name="CL.4" DataType="text">
                 <CodeListItem CodedValue="1">
                     <Decode>
@@ -492,48 +469,6 @@
                     <Decode>
                         <TranslatedText xml:lang="en">Ph.D.</TranslatedText>
                         <TranslatedText xml:lang="de">Doktor</TranslatedText>
-                    </Decode>
-                </CodeListItem>
-            </CodeList>
-            <CodeList OID="CL.5" Name="CL.5" DataType="text">
-                <CodeListItem CodedValue="Yes">
-                    <Decode>
-                        <TranslatedText xml:lang="en">Yes</TranslatedText>
-                        <TranslatedText xml:lang="de">Ja</TranslatedText>
-                    </Decode>
-                </CodeListItem>
-                <CodeListItem CodedValue="No">
-                    <Decode>
-                        <TranslatedText xml:lang="en">No</TranslatedText>
-                        <TranslatedText xml:lang="de">Nein</TranslatedText>
-                    </Decode>
-                </CodeListItem>
-            </CodeList>
-            <CodeList OID="CL.6" Name="CL.6" DataType="text">
-                <CodeListItem CodedValue="Yes">
-                    <Decode>
-                        <TranslatedText xml:lang="en">Yes</TranslatedText>
-                        <TranslatedText xml:lang="de">Ja</TranslatedText>
-                    </Decode>
-                </CodeListItem>
-                <CodeListItem CodedValue="No">
-                    <Decode>
-                        <TranslatedText xml:lang="en">No</TranslatedText>
-                        <TranslatedText xml:lang="de">Nein</TranslatedText>
-                    </Decode>
-                </CodeListItem>
-            </CodeList>
-            <CodeList OID="CL.7" Name="CL.7" DataType="text">
-                <CodeListItem CodedValue="Yes">
-                    <Decode>
-                        <TranslatedText xml:lang="en">Yes</TranslatedText>
-                        <TranslatedText xml:lang="de">Ja</TranslatedText>
-                    </Decode>
-                </CodeListItem>
-                <CodeListItem CodedValue="No">
-                    <Decode>
-                        <TranslatedText xml:lang="en">No</TranslatedText>
-                        <TranslatedText xml:lang="de">Nein</TranslatedText>
                     </Decode>
                 </CodeListItem>
             </CodeList>
@@ -579,31 +514,31 @@
                 <Description>
                     <TranslatedText xml:lang="en">CardiovascularDiseasesNotYes</TranslatedText>
                 </Description>
-                <FormalExpression>CardiovascularDiseases != "Yes"</FormalExpression>
+                <FormalExpression>CardiovascularDiseases != "1"</FormalExpression>
             </ConditionDef>
             <ConditionDef OID="C.4" Name="TumorDiseasesNotYes">
                 <Description>
                     <TranslatedText xml:lang="en">TumorDiseasesNotYes</TranslatedText>
                 </Description>
-                <FormalExpression>TumorDiseases != "Yes"</FormalExpression>
+                <FormalExpression>TumorDiseases != "1"</FormalExpression>
             </ConditionDef>
             <ConditionDef OID="C.5" Name="PregnantNotYes">
                 <Description>
                     <TranslatedText xml:lang="en">PregnantNotYes</TranslatedText>
                 </Description>
-                <FormalExpression>Pregnant != "Yes"</FormalExpression>
+                <FormalExpression>Pregnant != "1"</FormalExpression>
             </ConditionDef>
             <ConditionDef OID="C.6" Name="SideEffectNotYes">
                 <Description>
                     <TranslatedText xml:lang="en">SideEffectNotYes</TranslatedText>
                 </Description>
-                <FormalExpression>SideEffect != "Yes"</FormalExpression>
+                <FormalExpression>SideEffect != "1"</FormalExpression>
             </ConditionDef>
             <ConditionDef OID="C.7" Name="SymptomsChangedNotYes">
                 <Description>
                     <TranslatedText xml:lang="en">SymptomsChangedNotYes</TranslatedText>
                 </Description>
-                <FormalExpression>SymptomsChanged != "Yes"</FormalExpression>
+                <FormalExpression>SymptomsChanged != "1"</FormalExpression>
             </ConditionDef>
         </MetaDataVersion>
     </Study>

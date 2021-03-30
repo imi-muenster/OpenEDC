@@ -18,7 +18,7 @@ class StartModal extends HTMLElement {
                             <hr>
                             <p class="mb-5">This free and <a target="_blank" href="https://github.com/imi-muenster/OpenEDC">open-source</a> electronic data capture (EDC) system lets you design and conduct secure medical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> standard.</p>
                             <p class="mb-5">All data is entirely processed offline on your local device. You can optionally connect to your own <a target="_blank" href="https://github.com/imi-muenster/OpenEDC-Server">OpenEDC Server</a> to create research studies with multiple users and sites.</p>
-                            <p class="mb-5">For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you have an CDISC ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an illustrative project.</p>
+                            <p class="mb-5">For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you have an CDISC ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an illustrative project and see how it all works.</p>
                             <div class="buttons is-centered">
                                 <button class="button" onclick="newProject()">New Project</button>
                                 <div class="file" id="odm-upload">
