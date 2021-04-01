@@ -1,6 +1,7 @@
 import * as clinicaldataTemplates from "../odmtemplates/clinicaldatatemplates.js";
 import * as metadataHelper from "./metadatahelper.js";
 import * as admindataHelper from "./admindatahelper.js";
+import * as languageHelper from "./languagehelper.js";
 import * as ioHelper from "./iohelper.js";
 
 class Subject {
@@ -117,7 +118,7 @@ export async function loadSubjects() {
             
             // Show a warning that data conflicts exist when the user has manage subjects right and the warning has not shown before
             if (ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.MANAGESUBJECTS) && !document.querySelector(".panel-icon.has-text-danger")) {
-                ioHelper.showMessage("Data conflicts present", "One subject exists multiple times in your data. This can happen when multiple users edited the same subject at the same time or if a user worked offline over an extended period of time.<br><br>The affected subjects are marked with a red dot. Please review the data and remove the subject instance(s) that you do not want to keep. You can look in the audit trail to see which person audited which instance.");
+                ioHelper.showMessage(languageHelper.getTranslation("data-conflicts-present"), languageHelper.getTranslation("data-conflicts-present-error"));
             }
         }
     }

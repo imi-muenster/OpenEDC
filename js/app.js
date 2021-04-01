@@ -230,10 +230,12 @@ function adjustUIToUser() {
 }
 
 function showUninitializedHint() {
+    // TODO: i18n (not yet possible, since the start and login modal are rendered before the languageHelper is initialized for performance reasons)
     ioHelper.showMessage("Server uninitialized", `This OpenEDC Server has not yet been initialized.<br><br>You can either go to <a target="_blank" href="https://openedc.org">openedc.org</a> to initialize this server with data that you have already locally captured there, or, alternatively, close this hint, start a new local project here, and initialize the server from here as well.<br><br>In both cases, use the <i>Project Options</i> button in the top right corner of the app and follow the instructions to initialize this server.`);
 }
 
 window.showForgotPasswordModal = function() {
+    // TODO: i18n (not yet possible, since the start and login modal are rendered before the languageHelper is initialized for performance reasons)
     if (ioHelper.hasServerURL()) {
         ioHelper.showMessage("Forgot password", "All data within OpenEDC is stored and transferred end-to-end encrypted. Therefore, it is currently not possible to automatically reset a forgotten password, unfortunately.<br><br>If you forgot your password, please contact the person that gave you your login credentials. This person is able to reset your password with a new initial password.");
     } else {
@@ -424,7 +426,7 @@ window.encryptData = function() {
 window.setSurveyCode = function() {
     ioHelper.setSurveyCode($("#survey-code-input").value)
         .then(() => hideProjectModal())
-        .catch(() => ioHelper.showMessage("Survey code not set", "The survey code could not be set. Enter a 4-digit numerical code."));
+        .catch(() => ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("survey-code-error")));
 }
 
 window.miscOptionClicked = function(event) {
@@ -574,7 +576,7 @@ async function handleURLSearchParameters() {
             
             if (getCurrentState() == appStates.EMPTY) mergeMetadataModels(models);
             else if (getCurrentState() == appStates.UNLOCKED) {
-                ioHelper.showMessage("Import metadata", "You already have forms in your project. Do you want to append the new forms to your project, remove your current data before import, or not load the new forms?", {
+                ioHelper.showMessage(languageHelper.getTranslation("import-metadata"), languageHelper.getTranslation("import-metadata-merge-hint"), {
                     "Append forms": () => mergeMetadataModels(models),
                     "Remove current data": () => {
                         metadataHelper.removeMetadata();
@@ -582,9 +584,9 @@ async function handleURLSearchParameters() {
                         mergeMetadataModels(models);
                     }
                 });
-            } else ioHelper.showMessage("Note", "Unfortunately, it is currently not possible to add forms from external repositories when working with encrypted data.");
+            } else ioHelper.showMessage(languageHelper.getTranslation("Note"), languageHelper.getTranslation("metadata-import-encrypted-hint"));
         })
-        .catch(error => ioHelper.showMessage("Error", `Could not load model from external repository. The error was ${error}`));
+        .catch(error => ioHelper.showMessage(languageHelper.getTranslation("Error"), languageHelper.getTranslation("metadata-import-error")));
 }
 
 function mergeMetadataModels(models) {

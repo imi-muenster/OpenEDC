@@ -129,10 +129,10 @@ window.addSubject = function() {
         .catch(error => {
             switch (error) {
                 case clinicaldataHelper.errors.SUBJECTKEYEMPTY:
-                    ioHelper.showMessage("Enter subject key", "Please enter a key for the subject first.");
+                    ioHelper.showMessage(languageHelper.getTranslation("enter-subject-key"), languageHelper.getTranslation("enter-subject-key-text"));
                     break;
                 case clinicaldataHelper.errors.SUBJECTKEYEXISTENT:
-                    ioHelper.showMessage("Subject key existent", "The entered subject key already exists. Please enter another one.");
+                    ioHelper.showMessage(languageHelper.getTranslation("subject-key-existent"), languageHelper.getTranslation("subject-key-existent-text"));
             }
         });
 }
@@ -180,7 +180,7 @@ async function loadSubjectData(subjectKey) {
     await clinicaldataHelper.loadSubject(currentElementID.subject).catch(() => {
         currentElementID.subject = null;
         clinicaldataHelper.clearSubject();
-        ioHelper.showMessage("Subject could not be loaded", "The selected subject could not be loaded. Your are either offline and open the subject for the first time or someone just recently edited the subject.<br><br>Please wait a few seconds and try again.");
+        ioHelper.showMessage(languageHelper.getTranslation("subject-not-loaded-title"), languageHelper.getTranslation("subject-not-loaded-error"));
     });
 
     ioHelper.removeIsActiveFromElement($("#subject-panel-blocks a.is-active"));
@@ -417,7 +417,7 @@ function showErrors(metadataNotFoundErrors, hiddenFieldWithValueError) {
         errorMessage += "Based on the conditions, one or multiple items in the clinical data should be hidden but have values assigned to them. These fields were highlighted and can be reviewed and removed by you.";
     }
 
-    if (errorMessage.length > 0) ioHelper.showMessage("Error", errorMessage);
+    if (errorMessage.length > 0) ioHelper.showMessage(languageHelper.getTranslation("error"), errorMessage);
 }
 
 window.loadNextFormData = async function() {
@@ -814,10 +814,10 @@ window.saveSubjectInfo = function() {
         .catch(error => {
             switch (error) {
                 case clinicaldataHelper.errors.SUBJECTKEYEMPTY:
-                    ioHelper.showMessage("Enter subject key", "Please enter a key for the subject first.");
+                    ioHelper.showMessage(languageHelper.getTranslation("enter-subject-key"), languageHelper.getTranslation("enter-subject-key-text"));
                     break;
                 case clinicaldataHelper.errors.SUBJECTKEYEXISTENT:
-                    ioHelper.showMessage("Subject key existent", "The entered subject key already exists. Please enter another one.");
+                    ioHelper.showMessage(languageHelper.getTranslation("subject-key-existent"), languageHelper.getTranslation("subject-key-existent-text"));
             }
             showSubjectInfo();
         });

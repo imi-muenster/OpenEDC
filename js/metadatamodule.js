@@ -480,10 +480,10 @@ window.saveElement = async function() {
             if (metadataHelper.setElementOID(currentElementOID, newOID, currentElementType)) {
                 setCurrentElementOID(newOID);
             } else {
-                ioHelper.showMessage("OID not changed", "The entered OID is already in use.");
+                ioHelper.showMessage(languageHelper.getTranslation("id-not-changed"), languageHelper.getTranslation("id-not-changed-error-used"));
             }
         } else {
-            ioHelper.showMessage("OID not changed", "The OID could not be changed since there is clinical data assigned to this element. You can try to remove the element to see a list of subjects that contain data for this element.");
+            ioHelper.showMessage(languageHelper.getTranslation("id-not-changed"), languageHelper.getTranslation("id-not-changed-error-data"));
         }
     }
 
@@ -1022,7 +1022,7 @@ window.elementDrop = async function(event) {
         // Extra if-statement for performance reasons (do not load all subjects when sourceParentOID and targetParentOID are equal)
         const subjectsHavingDataForElement = await clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID);
         if (subjectsHavingDataForElement.length > 0) {
-            ioHelper.showMessage("Element not moved", "The element could not be moved since there is clinical data assigned to it. You can try to remove the element to see a list of subjects that contain data for this element.");
+            ioHelper.showMessage(languageHelper.getTranslation("element-not-moved"), languageHelper.getTranslation("element-not-moved-error"));
             return;
         }
     }
@@ -1075,7 +1075,7 @@ window.showRemoveModal = async function() {
     const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(currentElement);
     
     if (subjectKeys.length > 0) {
-        ioHelper.showMessage("Cannot be removed", "<p>You cannot currently remove this element since it has clinical data assigned for the following subjects:</p><br><strong>" + subjectKeys.join(", ") + "</strong>");
+        ioHelper.showMessage(languageHelper.getTranslation("cannot-be-removed"), languageHelper.getTranslation("cannot-be-removed-text") + subjectKeys.join(", ") + "</strong>");
     } else {
         ioHelper.showMessage(
             "Please confirm",
