@@ -150,13 +150,13 @@ export function getEmptyAliasInputElement() {
     input.setAttribute("type", "text");
 
     input.className = "input alias-context";
-    input.setAttribute("placeholder", "Context");
+    input.setAttribute("placeholder", languageHelper.getTranslation("context"));
     field.appendChild(input.cloneNode());
     
     field.insertAdjacentHTML("beforeend", "&nbsp;&nbsp;");
 
     input.className = "input alias-name";
-    input.setAttribute("placeholder", "Name");
+    input.setAttribute("placeholder", languageHelper.getTranslation("name"));
     field.appendChild(input.cloneNode());
 
     return field;
@@ -191,13 +191,13 @@ export function getEmptyMeasurementUnitInputElement() {
     input.setAttribute("type", "text");
 
     input.className = "input measurement-unit-name";
-    input.setAttribute("placeholder", "Name");
+    input.setAttribute("placeholder", languageHelper.getTranslation("name"));
     field.appendChild(input.cloneNode());
     
     field.insertAdjacentHTML("beforeend", "&nbsp;&nbsp;");
 
     input.className = "input measurement-unit-symbol";
-    input.setAttribute("placeholder", "Symbol");
+    input.setAttribute("placeholder", languageHelper.getTranslation("symbol"));
     field.appendChild(input.cloneNode());
 
     return field;
@@ -232,13 +232,13 @@ export function getEmptyConditionInputElement() {
     input.setAttribute("type", "text");
 
     input.className = "input condition-name";
-    input.setAttribute("placeholder", "Name");
+    input.setAttribute("placeholder", languageHelper.getTranslation("name"));
     field.appendChild(input.cloneNode());
     
     field.insertAdjacentHTML("beforeend", "&nbsp;&nbsp;");
 
     input.className = "input condition-formex";
-    input.setAttribute("placeholder", "Formal expression");
+    input.setAttribute("placeholder", languageHelper.getTranslation("formal-expression"));
     field.appendChild(input.cloneNode());
 
     return field;
@@ -274,7 +274,7 @@ export function getEmptyRangeCheckInputElement() {
     let input = document.createElement("input");
     input.setAttribute("type", "text");
     input.className = "input range-check-value";
-    input.setAttribute("placeholder", "Check value");
+    input.setAttribute("placeholder", languageHelper.getTranslation("check-value"));
     field.appendChild(input);
 
     return field;
