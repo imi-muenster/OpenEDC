@@ -162,12 +162,13 @@ function showLoginModal() {
         } else {
             const credentials = new ioHelper.Credentials(username, password, confirmPassword);
             if (credentials.error) {
-                ioHelper.showMessage("Password not set", credentials.error);
+                // TODO: This could be improved in the future -- passing the error to the languageHelper is not very nice
+                ioHelper.showMessage(languageHelper.getTranslation("password-not-set"), languageHelper.getTranslation(credentials.error));
                 return;
             }
             ioHelper.setOwnPassword(credentials)
                 .then(loginSuccessful)
-                .catch(error => ioHelper.showMessage("Password not set", error));
+                .catch(error => ioHelper.showMessage(languageHelper.getTranslation("password-not-set"), error));
         }
     };
 
@@ -266,7 +267,7 @@ function validateODM(content) {
     try {
         return odmValidation.process(content);
     } catch (error) {
-        ioHelper.showMessage("Error", error);
+        ioHelper.showMessage(languageHelper.getTranslation("error"), error);
         return;
     }
 }
@@ -372,10 +373,10 @@ window.connectToServer = function() {
                     $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
                     break;
                 case ioHelper.serverStatus.SERVERINITIALIZED:
-                    ioHelper.showMessage("Server initialized", "The server has already been initialized.");
+                    ioHelper.showMessage(languageHelper.getTranslation("Error"), "The server has already been initialized.");
             }
         })
-        .catch(() => ioHelper.showMessage("Server not found", "There could be no OpenEDC Server found for this URL."));
+        .catch(() => ioHelper.showMessage(languageHelper.getTranslation("Error"), "There could be no OpenEDC Server found for this URL."));
 }
 
 window.initializeServer = function(event) {
@@ -386,7 +387,8 @@ window.initializeServer = function(event) {
     const confirmPassword = $("#owner-confirm-password-input").value;
     const credentials = new ioHelper.Credentials(username, password, confirmPassword);
     if (credentials.error) {
-        ioHelper.showMessage("Account not created", credentials.error);
+        // TODO: This could be improved in the future -- passing the error to the languageHelper is not very nice
+        ioHelper.showMessage(languageHelper.getTranslation("password-not-set"), languageHelper.getTranslation(credentials.error));
         return;
     }
 
@@ -396,7 +398,7 @@ window.initializeServer = function(event) {
     const userOID = admindataHelper.getCurrentUserOID();
     ioHelper.initializeServer(serverURL, userOID, credentials)
         .then(serverURL => window.location.replace(serverURL))
-        .catch(error => ioHelper.showMessage("Account not created", error));
+        .catch(error => ioHelper.showMessage(languageHelper.getTranslation("Error"), error));
 }
 
 window.encryptData = function() {
@@ -410,7 +412,8 @@ window.encryptData = function() {
     const confirmPassword = $("#confirm-encryption-password-input").value;
     const credentials = new ioHelper.Credentials(username, password, confirmPassword);
     if (credentials.error) {
-        ioHelper.showMessage("Data not encrypted", credentials.error);
+        // TODO: This could be improved in the future -- passing the error to the languageHelper is not very nice
+        ioHelper.showMessage(languageHelper.getTranslation("password-not-set"), languageHelper.getTranslation(credentials.error));
         return;
     }
 

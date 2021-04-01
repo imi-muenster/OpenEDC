@@ -9,9 +9,9 @@ class LoadXMLException {
 export class Credentials {
     constructor(username, password, confirmPassword) {
         const errors = {
-            NOTALLFIELDSENTERED: "Please enter all fields.",
-            PASSWORDSNOTEQUAL: "The password and confirmation password are not equal.",
-            PASSWORDPATTERNVIOLATION: "The password must be at least eight characters in length and have a number, lower case and upper case character."
+            NOTALLFIELDSENTERED: "enter-all-fields",
+            PASSWORDSNOTEQUAL: "passwords-not-equal",
+            PASSWORDPATTERNVIOLATION: "password-not-secure"
         }
 
         // Do not throw error since validation is not desired in all instances (e.g., not when setting a new inital user password)
