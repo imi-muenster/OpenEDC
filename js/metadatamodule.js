@@ -1077,23 +1077,21 @@ window.showRemoveModal = async function() {
     if (subjectKeys.length > 0) {
         ioHelper.showMessage(languageHelper.getTranslation("cannot-be-removed"), languageHelper.getTranslation("cannot-be-removed-text") + subjectKeys.join(", ") + "</strong>");
     } else {
-        ioHelper.showMessage(
-            "Please confirm",
-            "The reference to the element will be removed. The element definition will be removed as well if there is no other reference to it.",
-            { "Remove": () => removeElement() },
+        ioHelper.showMessage(languageHelper.getTranslation("please-confirm"), languageHelper.getTranslation("element-remove-hint"),
+            {
+                [languageHelper.getTranslation("remove")]: () => removeElement()
+            },
             ioHelper.callbackTypes.DANGER
         );
     }
 }
 
 window.showDuplicateModal = function() {
-    ioHelper.showMessage(
-        "Mode of duplication",
-        "It possible to either duplicate the reference to the elements definition, to create a new shallow copy with the same children references, or to recursively deep copy the element and all its descendants.<br><br>Hint: If you create a reference, the original element and its descendants are updated if you make changes in the new element. A shallow or deep copy lets you make changes that do not affect the original element (shallow) and its descendants (deep). In a shallow copy you can still rearrange, remove, or add direct children references without affecting the original element.",
+    ioHelper.showMessage(languageHelper.getTranslation("mode-of-duplication"), languageHelper.getTranslation("duplication-hint"),
         {
-            "Reference": () => duplicateReference(),
-            "Shallow copy": () => copyElement(false),
-            "Deep copy": () => copyElement(true)
+            [languageHelper.getTranslation("reference")]: () => duplicateReference(),
+            [languageHelper.getTranslation("shallow-copy")]: () => copyElement(false),
+            [languageHelper.getTranslation("deep-copy")]: () => copyElement(true)
         }
     );
 }

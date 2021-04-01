@@ -375,10 +375,14 @@ window.connectToServer = function() {
                     $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
                     break;
                 case ioHelper.serverStatus.SERVERINITIALIZED:
-                    ioHelper.showMessage(languageHelper.getTranslation("Error"), "The server has already been initialized.");
+                    ioHelper.showMessage(languageHelper.getTranslation("Note"), languageHelper.getTranslation("server-initialized-hint"),
+                        {
+                            [languageHelper.getTranslation("open-server")]: () => window.location.replace("https://" + serverURL)
+                        }
+                    );
             }
         })
-        .catch(() => ioHelper.showMessage(languageHelper.getTranslation("Error"), "There could be no OpenEDC Server found for this URL."));
+        .catch(() => ioHelper.showMessage(languageHelper.getTranslation("Error"), languageHelper.getTranslation("server-not-found-error")));
 }
 
 window.initializeServer = function(event) {
@@ -576,12 +580,13 @@ async function handleURLSearchParameters() {
             
             if (getCurrentState() == appStates.EMPTY) mergeMetadataModels(models);
             else if (getCurrentState() == appStates.UNLOCKED) {
-                ioHelper.showMessage(languageHelper.getTranslation("import-metadata"), languageHelper.getTranslation("import-metadata-merge-hint"), {
-                    "Append forms": () => mergeMetadataModels(models),
-                    "Remove current data": () => {
-                        metadataHelper.removeMetadata();
-                        clinicaldataHelper.removeClinicaldata();
-                        mergeMetadataModels(models);
+                ioHelper.showMessage(languageHelper.getTranslation("import-metadata"), languageHelper.getTranslation("import-metadata-merge-hint"),
+                    {
+                        [languageHelper.getTranslation("append-forms")]: () => mergeMetadataModels(models),
+                        [languageHelper.getTranslation("remove-current-data")]: () => {
+                            metadataHelper.removeMetadata();
+                            clinicaldataHelper.removeClinicaldata();
+                            mergeMetadataModels(models);
                     }
                 });
             } else ioHelper.showMessage(languageHelper.getTranslation("Note"), languageHelper.getTranslation("metadata-import-encrypted-hint"));
