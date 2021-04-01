@@ -455,17 +455,17 @@ window.saveStudyNameDescription = function() {
 
 window.showRemoveDataModal = function(complete) {
     if (complete) {
-        ioHelper.showMessage(
-            "Remove all data",
-            "Do you really want to remove all data? This cannot be undone.",
-            { "Remove": () => removeAllData() },
+        ioHelper.showMessage(languageHelper.getTranslation("please-confirm"), languageHelper.getTranslation("remove-data-complete-warning"),
+            {
+                [languageHelper.getTranslation("remove")]: () => removeAllData()
+            },
             ioHelper.callbackTypes.DANGER
         );
     } else {
-        ioHelper.showMessage(
-            "Remove clinical data",
-            "Do you really want to remove all clinical data? This cannot be undone.",
-            { "Remove": () => removeClinicaldata() },
+        ioHelper.showMessage(languageHelper.getTranslation("please-confirm"), languageHelper.getTranslation("remove-data-clinicaldata-warning"),
+            {
+                [languageHelper.getTranslation("remove")]: () => removeClinicaldata()
+            },
             ioHelper.callbackTypes.DANGER
         );
     }
