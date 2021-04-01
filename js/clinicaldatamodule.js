@@ -29,11 +29,10 @@ let surveyCode = null;
 
 export async function init() {
     await clinicaldataHelper.loadSubjects();
+    setIOListeners();
 
     // Currently, the subjects are reloaded every 10 seconds -- this should be improved in the future by means of server-sent events or a websocket
     setLoadSubjectsTimer();
-
-    setIOListeners();
 }
 
 export function show() {

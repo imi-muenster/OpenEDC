@@ -25,12 +25,6 @@ let locale = null;
 
 export function init() {
     metadataHelper.init();
-    
-    currentElementID.studyEvent = null;
-    currentElementType = null;
-
-    createDatatypeMandatorySelect();
-    resetDetailsPanel();
     setIOListeners();
 }
 
@@ -58,6 +52,10 @@ export function hide() {
 
 export function setLanguage(newLocale) {
     locale = newLocale;
+
+    // Create the selects and reload the details panel
+    createDatatypeMandatorySelect();
+    resetDetailsPanel();
 }
 
 function createPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, codedValue) {
@@ -70,8 +68,10 @@ function createPanelBlock(elementOID, elementType, displayText, fallbackText, su
 }
 
 function createDatatypeMandatorySelect() {
-    if (!$("#datatype-select-outer")) $("#datatype-label").insertAdjacentElement("afterend", htmlElements.getDataTypeSelect());
-    if (!$("#mandatory-select-outer")) $("#mandatory-label").insertAdjacentElement("afterend", htmlElements.getMandatorySelect());
+    ioHelper.safeRemoveElement($("#datatype-select-outer"));
+    ioHelper.safeRemoveElement($("#mandatory-select-outer"));
+    $("#datatype-label").insertAdjacentElement("afterend", htmlElements.getDataTypeSelect());
+    $("#mandatory-label").insertAdjacentElement("afterend", htmlElements.getMandatorySelect());
 }
 
 function createConditionSelect() {
@@ -362,7 +362,7 @@ function fillDetailsPanel(elementOID, elementType) {
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-question");
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             translatedText = element.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
-            $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(elementOID) ? "codelist (" + element.getAttribute("DataType") + ")" : element.getAttribute("DataType");
+            $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(elementOID) ? "codelist-" + element.getAttribute("DataType") : element.getAttribute("DataType");
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             $("#mandatory-select-inner").disabled = true;
@@ -617,7 +617,7 @@ function saveMeasurementUnits() {
 
 function handleItemDataType(itemOID, dataType) {
     let dataTypeIsCodelist = dataType.startsWith("codelist");
-    let codeListType = dataTypeIsCodelist ? dataType.match(/\((.*)\)/)[1] : null;
+    let codeListType = dataTypeIsCodelist ? dataType.split("-")[1] : null;
 
     let codeListRef = metadataHelper.getElementDefByOID(itemOID).querySelector("CodeListRef");
     if (codeListRef && !dataTypeIsCodelist) {

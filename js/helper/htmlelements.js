@@ -10,8 +10,7 @@ import * as languageHelper from "./languagehelper.js";
 
 const rangeCheckComparators = ["", "LT", "LE", "GT", "GE", "EQ", "NE"];
 const rangeCheckComparatorsDisplay = ["", "<", "<=", ">", ">=", "=", "!="];
-const dataTypes = ["integer", "float", "boolean", "text", "date", "time", "datetime", "codelist (text)", "codelist (integer)", "codelist (float)", "string", "double"];
-const dataTypesDisplay = ["Whole Number", "Decimal Number", "Yes / No", "Text", "Date", "Time", "Datetime", "Choices (coded text - default)", "Choices (coded whole number)", "Choices (coded decimal number)", "String (multiline text)", "Decimal Number (double precision)"];
+const dataTypes = ["integer", "float", "boolean", "text", "string", "date", "time", "datetime", "codelist-text", "codelist-integer", "codelist-float", "double"];
 const mandatory = ["No", "Yes"];
 
 export function getMetadataPanelBlock(elementOID, elementType, titleText, fallbackText, subtitleText, codedValue) {
@@ -281,11 +280,13 @@ export function getEmptyRangeCheckInputElement() {
 }
 
 export function getDataTypeSelect() {
-    return getSelect("datatype-select", true, true, dataTypes, null, dataTypesDisplay);
+    const translatedOptions = dataTypes.map(option => languageHelper.getTranslation(option));
+    return getSelect("datatype-select", true, true, dataTypes, null, translatedOptions);
 }
 
 export function getMandatorySelect() {
-    return getSelect("mandatory-select", true, true, mandatory);
+    const translatedOptions = mandatory.map(option => languageHelper.getTranslation(option.toLowerCase()));
+    return getSelect("mandatory-select", true, true, mandatory, null, translatedOptions);
 }
 
 export function getSelect(name, isUnique, isFullwidth, values, selectedValue, displayTexts) {
