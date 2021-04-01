@@ -34,9 +34,7 @@ const staticAssets = [
     "./lib/fontawesome.js",
     "./lib/crypto-js.js",
     "./odm/example.xml",
-    "./xsl/odmtohtml.xsl",
-    "./favicon.ico",
-    "./manifest.json"
+    "./xsl/odmtohtml.xsl"
 ];
 
 // Cache static assets
