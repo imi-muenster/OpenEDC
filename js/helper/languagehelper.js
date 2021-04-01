@@ -116,6 +116,5 @@ async function changeLanguage(locale) {
     currentLocale = locale;
     currentLocaleSet = true;
     await internationalize();
-    createLanguageSelect();
     document.dispatchEvent(new CustomEvent("LanguageChanged", { detail: currentLocale }));
 }
