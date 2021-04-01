@@ -5,15 +5,15 @@ export const getAdminData = () => template(`
     </AdminData>
 `);
 
-export const getUser = (oid) => template(`
+export const getUser = (oid, firstName, lastName) => template(`
     <User OID="${oid}">
-        <FirstName>New</FirstName>
-        <LastName>User</LastName>
+        <FirstName>${firstName}</FirstName>
+        <LastName>${lastName}</LastName>
     </User>
 `);
 
-export const getSite = (oid, studyOID, metadataVersionOID, date) => template(`
-    <Location OID="${oid}" Name="New Site" LocationType="Site">
+export const getSite = (oid, name, studyOID, metadataVersionOID, date) => template(`
+    <Location OID="${oid}" Name="${name}" LocationType="Site">
         <MetaDataVersionRef StudyOID="${studyOID}" MetaDataVersionOID="${metadataVersionOID}" EffectiveDate="${date}"></MetaDataVersionRef>
     </Location>
 `);

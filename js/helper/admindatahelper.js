@@ -1,6 +1,7 @@
 import * as metadataHelper from "./metadatahelper.js";
 import * as clinicaldataHelper from "./clinicaldatahelper.js";
 import * as admindataTemplates from "../odmtemplates/admindatatemplates.js";
+import * as languageHelper from "./languagehelper.js";
 import * as ioHelper from "./iohelper.js";
 
 const $ = query => admindata.querySelector(query);
@@ -68,7 +69,7 @@ export function getCurrentUserOID() {
 
 export function addUser() {
     const newUserOID = generateUniqueOID("U.");
-    const newUser = admindataTemplates.getUser(newUserOID);
+    const newUser = admindataTemplates.getUser(newUserOID, languageHelper.getTranslation("new"), languageHelper.getTranslation("user"));
     
     const lastUser = ioHelper.getLastElement(getUsers());
     if (lastUser) {
@@ -126,7 +127,7 @@ export function getSites() {
 
 export function addSite() {
     const newSiteOID = generateUniqueOID("L.");
-    const newSite = admindataTemplates.getSite(newSiteOID, metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID(), new Date().toISOString().split("T")[0]);
+    const newSite = admindataTemplates.getSite(newSiteOID, languageHelper.getTranslation("new-site"), metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID(), new Date().toISOString().split("T")[0]);
     
     const lastSite = ioHelper.getLastElement(getSites());
     if (lastSite) {
