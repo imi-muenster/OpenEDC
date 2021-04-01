@@ -359,16 +359,16 @@ function fillDetailsPanel(elementOID, elementType) {
             break;
         case metadataHelper.elementTypes.ITEM:
             $("#datatype-select-inner").disabled = false;
-            $("#element-long-label").textContent = "Translated Question";
+            $("#element-long-label").textContent = languageHelper.getTranslation("translated-question");
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             translatedText = element.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
             $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(elementOID) ? "codelist (" + element.getAttribute("DataType") + ")" : element.getAttribute("DataType");
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             $("#mandatory-select-inner").disabled = true;
-            $("#element-oid-label").textContent = "CodeList OID";
-            $("#element-short-label").textContent = "Coded Value";
-            $("#element-long-label").textContent = "Translated Choice";
+            $("#element-oid-label").textContent = languageHelper.getTranslation("choices-unique-id");
+            $("#element-short-label").textContent = languageHelper.getTranslation("coded-value");
+            $("#element-long-label").textContent = languageHelper.getTranslation("translated-choice");
             element = metadataHelper.getCodeListItem(currentElementID.codeList, currentElementID.codeListItem);
             $("#name-input").value = element.getAttribute("CodedValue");
             translatedText = element.querySelector(`Decode TranslatedText[*|lang="${locale}"]`);
@@ -466,9 +466,9 @@ function resetDetailsPanel() {
     $("#datatype-select-inner").value = "";
     $("#mandatory-select-inner").value = "";
     $("#references-tag").classList.add("is-hidden");
-    $("#element-oid-label").textContent = "OID";
-    $("#element-short-label").textContent = "Name";
-    $("#element-long-label").textContent = "Translated Description";
+    $("#element-oid-label").textContent = languageHelper.getTranslation("unique-id");
+    $("#element-short-label").textContent = languageHelper.getTranslation("name");
+    $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
 }
 
 window.saveElement = async function() {

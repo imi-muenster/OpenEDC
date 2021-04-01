@@ -5,17 +5,17 @@ class ClinicaldataSection extends HTMLElement {
                 <div class="columns is-desktop">
                     <div class="column" id="subjects-column">
                         <nav class="panel is-link">
-                            <p class="panel-heading has-text-centered">Subjects</p>
+                            <p class="panel-heading has-text-centered" i18n="subjects"></p>
                             <div class="panel-block has-no-padding-bottom has-no-border-bottom">
                                 <div class="field is-grouped is-fullwidth">
                                     <div class="control is-expanded has-icons-left">
-                                        <input class="input" id="add-subject-input" type="text" placeholder="New Subject">
+                                        <input class="input" id="add-subject-input" type="text" i18n-ph="new-subject">
                                         <span class="icon is-left">
                                             <i class="fas fa-plus"></i>
                                         </span>
                                     </div>
                                     <div class="control">
-                                        <button class="button is-link is-light" id="add-subject-button" onclick="addSubject()">Add</button>
+                                        <button class="button is-link is-light" id="add-subject-button" onclick="addSubject()" i18n="add"></button>
                                     </div>
                                 </div>
                             </div>
@@ -39,37 +39,37 @@ class ClinicaldataSection extends HTMLElement {
                             </div>
                             <div class="panel-block has-no-padding-bottom has-no-border-bottom">
                                 <div class="control has-icons-left">
-                                    <input class="input" id="search-subject-input" type="text" placeholder="Search">
+                                    <input class="input" id="search-subject-input" type="text" i18n-ph="search">
                                     <span class="icon is-left">
                                         <i class="fas fa-search"></i>
                                     </span>
                                 </div>
                             </div>
                             <div class="panel-block">
-                                <button class="button is-small is-fullwidth" id="subject-info-button" onclick="showSubjectInfo()" disabled>Options and Audit Trail</button>
+                                <button class="button is-small is-fullwidth" id="subject-info-button" onclick="showSubjectInfo()" i18n="options-and-audit-trail" disabled></button>
                             </div>
                             <div class="tree-panel-blocks" id="subject-panel-blocks">
                                 <div class="panel-block has-text-centered has-text-grey-light" id="no-subjects-hint">
-                                    <p>No subjects available. Please add a new subject with the button above.</p>
+                                    <p i18n="no-subjects-hint"></p>
                                 </div>
                             </div>
                         </nav>
                     </div>
                     <div class="column is-hidden-touch" id="clinicaldata-study-events-column">
                         <nav class="panel is-link">
-                            <p class="panel-heading has-text-centered">Events</p>
+                            <p class="panel-heading has-text-centered" i18n="events"></p>
                             <div class="tree-panel-blocks" id="clinicaldata-study-event-panel-blocks"></div>
                         </nav>
                     </div>
                     <div class="column is-hidden-touch" id="clinicaldata-forms-column">
                         <nav class="panel is-link">
-                            <p class="panel-heading has-text-centered">Forms</p>
+                            <p class="panel-heading has-text-centered" i18n="forms"></p>
                             <div class="tree-panel-blocks" id="clinicaldata-form-panel-blocks"></div>
                         </nav>
                     </div>
                     <div class="column is-two-fifths-desktop is-hidden-touch" id="clinicaldata-column">
                         <nav class="panel is-link">
-                            <p class="panel-heading has-text-centered">Data</p>
+                            <p class="panel-heading has-text-centered" i18n="data"></p>
                             <div class="tree-panel-blocks">
                                 <div class="is-hidden" id="clinicaldata-form-data">
                                     <article class="message is-hidden" id="form-hint">

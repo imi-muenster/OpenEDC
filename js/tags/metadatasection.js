@@ -9,46 +9,46 @@ class MetadataSection extends HTMLElement {
                 <div class="columns is-desktop is-centered" id="details-panel">
                     <div class="column is-one-fifth-desktop">
                         <div class="field">
-                            <label class="label" id="element-oid-label">OID</label>
+                            <label class="label" id="element-oid-label"></label>
                             <input class="input" type="text" id="oid-input" autocomplete="off" disabled>
                         </div>
                         <div class="field">
-                            <label class="label" id="element-short-label">Name</label>
+                            <label class="label" id="element-short-label"></label>
                             <input class="input" type="text" id="name-input" autocomplete="off" disabled>
                         </div>
                         <div class="buttons is-hidden-touch">
-                            <button class="button is-link" id="save-button" onclick="saveElement()" disabled>Save Changes</button>
-                            <button class="button is-danger" id="remove-button" onclick="showRemoveModal()" disabled>Remove</button>
+                            <button class="button is-link" id="save-button" onclick="saveElement()" i18n="save-changes" disabled></button>
+                            <button class="button is-danger" id="remove-button" onclick="showRemoveModal()" i18n="remove" disabled></button>
                         </div>
                     </div>
                     <div class="column is-one-fifth-desktop">
                         <div class="field">
-                            <label class="label" id="element-long-label">Translated Description</label>
+                            <label class="label" id="element-long-label"></label>
                             <textarea class="textarea" id="question-textarea" disabled></textarea>
                         </div>
                         <div class="tags has-addons is-centered is-hidden" id="references-tag">
-                            <span class="tag">Multiple references of element</span>
+                            <span class="tag" i18n="multiple-references-hint"></span>
                             <span class="tag is-link" id="number-of-references"></span>
                         </div>
                     </div>
                     <div class="column is-one-fifth-desktop">
                         <div class="field">
-                            <label class="label" id="datatype-label">Data Type</label>
+                            <label class="label" id="datatype-label" i18n="data-type"></label>
                         </div>
                         <div class="field">
-                            <label class="label" id="mandatory-label">Mandatory</label>
+                            <label class="label" id="mandatory-label" i18n="mandatory"></label>
                         </div>
                         <div class="buttons is-pulled-right is-hidden-touch">
-                            <button class="button" id="duplicate-button" onclick="showDuplicateModal()" disabled>Duplicate</button>
-                            <button class="button" id="more-button" onclick="showMoreModal()" disabled>More</button>
+                            <button class="button" id="duplicate-button" onclick="showDuplicateModal()" i18n="duplicate" disabled></button>
+                            <button class="button" id="more-button" onclick="showMoreModal()" i18n="more" disabled></button>
                         </div>
                     </div>
                     <div class="column is-hidden-desktop">
                         <div class="buttons">
-                            <button class="button is-link" id="save-button-mobile" onclick="saveElement()" disabled>Save Changes</button>
-                            <button class="button is-danger" id="remove-button-mobile" onclick="showRemoveModal()" disabled>Remove</button>
-                            <button class="button" id="duplicate-button-mobile" onclick="showDuplicateModal()" disabled>Duplicate</button>
-                            <button class="button" id="more-button-mobile" onclick="showMoreModal()" disabled>More</button>
+                            <button class="button is-link" id="save-button-mobile" onclick="saveElement()" i18n="save-changes" disabled></button>
+                            <button class="button is-danger" id="remove-button-mobile" onclick="showRemoveModal()" i18n="remove" disabled></button>
+                            <button class="button" id="duplicate-button-mobile" onclick="showDuplicateModal()" i18n="duplicate" disabled></button>
+                            <button class="button" id="more-button-mobile" onclick="showMoreModal()" i18n="more" disabled></button>
                         </div>
                     </div>
                 </div>
@@ -56,37 +56,37 @@ class MetadataSection extends HTMLElement {
                 <div class="columns is-desktop">
                     <div class="column">
                         <nav class="panel is-link">
-                            <p class="panel-heading has-text-centered">Events</p>
+                            <p class="panel-heading has-text-centered" i18n="events"></p>
                             <div class="tree-panel-blocks" id="study-event-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                             <div class="panel-block has-light-border-top" id="study-events-add-button">
-                                <button class="button is-link is-light is-fullwidth" onclick="addStudyEvent(event)" element-type="studyevent" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">Add</button>
+                                <button class="button is-link is-light is-fullwidth" onclick="addStudyEvent(event)" element-type="studyevent" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)" i18n="add"></button>
                             </div>
                         </nav>
                     </div>
                     <div class="column">
                         <nav class="panel is-link">
-                            <p class="panel-heading has-text-centered">Forms</p>
+                            <p class="panel-heading has-text-centered" i18n="forms"></p>
                             <div class="tree-panel-blocks" id="form-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                             <div class="panel-block has-light-border-top" id="forms-add-button">
-                                <button class="button is-link is-light is-fullwidth" onclick="addForm(event)" element-type="form" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)" disabled>Add</button>
+                                <button class="button is-link is-light is-fullwidth" onclick="addForm(event)" element-type="form" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)" i18n="add" disabled></button>
                             </div>
                         </nav>
                     </div>
                     <div class="column">
                         <nav class="panel is-link">
-                            <p class="panel-heading has-text-centered">Groups</p>
+                            <p class="panel-heading has-text-centered" i18n="groups"></p>
                             <div class="tree-panel-blocks" id="item-group-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                             <div class="panel-block has-light-border-top" id="item-groups-add-button">
-                                <button class="button is-link is-light is-fullwidth" onclick="addItemGroup(event)" element-type="itemgroup" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)" disabled>Add</button>
+                                <button class="button is-link is-light is-fullwidth" onclick="addItemGroup(event)" element-type="itemgroup" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)" i18n="add" disabled></button>
                             </div>
                         </nav>
                     </div>
                     <div class="column">
                         <nav class="panel is-link">
-                            <p class="panel-heading has-text-centered">Items</p>
+                            <p class="panel-heading has-text-centered" i18n="items"></p>
                             <div class="tree-panel-blocks" id="item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                             <div class="panel-block has-light-border-top" id="items-add-button">
-                                <button class="button is-link is-light is-fullwidth" onclick="addItem(event)" element-type="item" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)" disabled>Add</button>
+                                <button class="button is-link is-light is-fullwidth" onclick="addItem(event)" element-type="item" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)" i18n="add" disabled></button>
                             </div>
                         </nav>
                     </div>
@@ -95,7 +95,7 @@ class MetadataSection extends HTMLElement {
                             <p class="panel-heading has-text-centered">Choices</p>
                             <div class="tree-panel-blocks" id="code-list-item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                             <div class="panel-block has-light-border-top" id="code-list-items-add-button">
-                                <button class="button is-link is-light is-fullwidth" onclick="addCodeListItem(event)" element-type="codelistitem" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)" disabled>Add</button>
+                                <button class="button is-link is-light is-fullwidth" onclick="addCodeListItem(event)" element-type="codelistitem" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)" i18n="add" disabled></button>
                             </div>
                         </nav>
                     </div>

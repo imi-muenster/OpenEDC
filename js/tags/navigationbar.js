@@ -41,7 +41,7 @@ class NavigationBar extends HTMLElement {
                                     <span class="icon">
                                         <i class="fas fa-stop"></i>
                                     </span>
-                                    <span>Model Forms</span>
+                                    <span>Design Forms</span>
                                 </button>
                                 <button class="button is-hidden ml-2" id="logout-button" onclick="logout()">
                                     <span class="icon">

@@ -39,6 +39,7 @@ export async function internationalize() {
     else translations = await loadTranslations(currentLocale);
     
     document.querySelectorAll("[i18n]").forEach(element => element.textContent = getTranslation(element.getAttribute("i18n")));
+    document.querySelectorAll("[i18n-ph]").forEach(element => element.placeholder = getTranslation(element.getAttribute("i18n-ph")));
 }
 
 export function getTranslation(key) {
