@@ -24,6 +24,9 @@ let elementTypeOnDrag = null;
 let locale = null;
 
 export function init() {
+    createDatatypeMandatorySelect();
+    resetDetailsPanel();
+
     metadataHelper.init();
     setIOListeners();
 }
@@ -52,10 +55,6 @@ export function hide() {
 
 export function setLanguage(newLocale) {
     locale = newLocale;
-
-    // Create the selects and reload the details panel
-    createDatatypeMandatorySelect();
-    resetDetailsPanel();
 }
 
 function createPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, codedValue) {
@@ -68,10 +67,8 @@ function createPanelBlock(elementOID, elementType, displayText, fallbackText, su
 }
 
 function createDatatypeMandatorySelect() {
-    ioHelper.safeRemoveElement($("#datatype-select-outer"));
-    ioHelper.safeRemoveElement($("#mandatory-select-outer"));
-    $("#datatype-label").insertAdjacentElement("afterend", htmlElements.getDataTypeSelect());
-    $("#mandatory-label").insertAdjacentElement("afterend", htmlElements.getMandatorySelect());
+    if (!$("#datatype-select-outer")) $("#datatype-label").insertAdjacentElement("afterend", htmlElements.getDataTypeSelect());
+    if (!$("#mandatory-select-outer")) $("#mandatory-label").insertAdjacentElement("afterend", htmlElements.getMandatorySelect());
 }
 
 function createConditionSelect() {

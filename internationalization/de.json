@@ -1,7 +1,7 @@
 {
     "yes": "Ja",
     "no": "Nein",
-    "integer": "Ganzzahl",
+    "integer": "Ganze Zahl",
     "float": "Dezimalzahl",
     "double": "Dezimalzahl (double)",
     "codelist": "Wahlmöglichkeiten",

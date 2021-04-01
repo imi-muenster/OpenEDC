@@ -28,6 +28,8 @@ let deferredFunction = null;
 let surveyCode = null;
 
 export async function init() {
+    createSortTypeSelect();
+    
     await clinicaldataHelper.loadSubjects();
     setIOListeners();
 
@@ -67,9 +69,8 @@ export function hide() {
 export function setLanguage(newLocale) {
     locale = newLocale;
 
-    // Render both selects again with the new language
+    // Reload the site filter select (special case since the first entry -- All Sites -- should be i18n while the others should not)
     createSiteFilterSelect();
-    createSortTypeSelect();
 }
 
 export function createSiteFilterSelect() {
@@ -100,7 +101,7 @@ export function createSiteFilterSelect() {
 function createSortTypeSelect() {
     const translatedSortTypes = Object.values(clinicaldataHelper.sortOrderTypes).map(sortType => languageHelper.getTranslation(sortType));
     ioHelper.safeRemoveElement($("#sort-subject-select-outer"));
-    $("#sort-subject-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("sort-subject-select", true, true, Object.values(clinicaldataHelper.sortOrderTypes), null, translatedSortTypes));
+    $("#sort-subject-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("sort-subject-select", true, true, Object.values(clinicaldataHelper.sortOrderTypes), null, translatedSortTypes, true));
     $("#sort-subject-select-inner").oninput = inputEvent => {
         loadSubjectKeys();
         inputEvent.target.blur();

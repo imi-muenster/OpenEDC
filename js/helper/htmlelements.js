@@ -281,15 +281,15 @@ export function getEmptyRangeCheckInputElement() {
 
 export function getDataTypeSelect() {
     const translatedOptions = dataTypes.map(option => languageHelper.getTranslation(option));
-    return getSelect("datatype-select", true, true, dataTypes, null, translatedOptions);
+    return getSelect("datatype-select", true, true, dataTypes, null, translatedOptions, true);
 }
 
 export function getMandatorySelect() {
     const translatedOptions = mandatory.map(option => languageHelper.getTranslation(option.toLowerCase()));
-    return getSelect("mandatory-select", true, true, mandatory, null, translatedOptions);
+    return getSelect("mandatory-select", true, true, mandatory, null, translatedOptions, true);
 }
 
-export function getSelect(name, isUnique, isFullwidth, values, selectedValue, displayTexts) {
+export function getSelect(name, isUnique, isFullwidth, values, selectedValue, displayTexts, i18n) {
     let select = document.createElement("div");
     if (isUnique) {
         select.id = `${name}-outer`;
@@ -317,6 +317,7 @@ export function getSelect(name, isUnique, isFullwidth, values, selectedValue, di
         let option = document.createElement("option");
         option.value = values[i];
         option.textContent = displayTexts ? displayTexts[i] : values[i];
+        if (i18n) option.setAttribute("i18n", values[i].toLowerCase());
         if (values[i] == selectedValue) option.selected = true;
         innerSelect.appendChild(option);
     }

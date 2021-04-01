@@ -608,11 +608,9 @@ function reloadApp() {
     if (getCurrentMode() == appModes.METADATA) {
         metadataModule.reloadTree();
         metadataModule.reloadDetailsPanel();
-        languageHelper.createLanguageSelect(true);
     } else if (getCurrentMode() == appModes.CLINICALDATA) {
         clinicaldataModule.cacheFormData();
         clinicaldataModule.reloadTree();
-        languageHelper.createLanguageSelect();
     }
 }
 

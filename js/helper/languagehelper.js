@@ -102,6 +102,7 @@ function addLanguageOptionNavbar(locale) {
     let option = document.createElement("a");
     option.className = "navbar-item";
     option.textContent = getTranslation(locale);
+    option.setAttribute("i18n", locale);
     option.onclick = () => changeLanguage(locale);
     $("#language-dropdown").appendChild(option);
 }
@@ -116,5 +117,6 @@ async function changeLanguage(locale) {
     currentLocale = locale;
     currentLocaleSet = true;
     await internationalize();
+    $("#current-language").textContent = getTranslation(locale);
     document.dispatchEvent(new CustomEvent("LanguageChanged", { detail: currentLocale }));
 }
