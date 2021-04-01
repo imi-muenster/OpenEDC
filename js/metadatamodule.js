@@ -322,6 +322,32 @@ export function reloadTree() {
     reloadCodeListItems();
 }
 
+function resetDetailsPanel() {
+    $("#oid-input").disabled = true;
+    $("#name-input").disabled = true;
+    $("#save-button").disabled = true;
+    $("#save-button-mobile").disabled = true;
+    $("#remove-button").disabled = true;
+    $("#remove-button-mobile").disabled = true;
+    $("#duplicate-button").disabled = true;
+    $("#duplicate-button-mobile").disabled = true;
+    $("#more-button").disabled = true;
+    $("#more-button-mobile").disabled = true;
+    $("#question-textarea").disabled = true;
+    $("#datatype-select-inner").disabled = true;
+    $("#mandatory-select-inner").disabled = true;
+    $("#oid-input").value = "";
+    $("#name-input").value = "";
+    $("#name-input").placeholder = "";
+    $("#question-textarea").value = "";
+    $("#datatype-select-inner").value = "";
+    $("#mandatory-select-inner").value = "";
+    $("#references-tag").classList.add("is-hidden");
+    $("#element-oid-label").textContent = languageHelper.getTranslation("unique-id");
+    $("#element-short-label").textContent = languageHelper.getTranslation("name");
+    $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
+}
+
 function fillDetailsPanel(elementOID, elementType) {
     resetDetailsPanel();
     $("#oid-input").disabled = false;
@@ -336,17 +362,17 @@ function fillDetailsPanel(elementOID, elementType) {
     $("#more-button-mobile").disabled = false;
     $("#oid-input").value = elementOID;
 
-    let element = metadataHelper.getElementDefByOID(elementOID);
-    let elementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), currentElementType, getParentOID(currentElementType));
+    const element = metadataHelper.getElementDefByOID(elementOID);
+    const elementRef = metadataHelper.getElementRefByOID(elementOID, elementType, getParentOID(elementType));
     $("#name-input").value = element.getAttribute("Name");
 
-    let numberOfReferences = metadataHelper.getNumberOfRefs(elementOID, elementType);
+    const numberOfReferences = metadataHelper.getNumberOfRefs(elementOID, elementType);
     if (numberOfReferences > 1) {
         $("#references-tag").classList.remove("is-hidden");
         $("#number-of-references").textContent = numberOfReferences;
     }
 
-    let translatedText = null;
+    let translatedText;
     switch(elementType) {
         case metadataHelper.elementTypes.STUDYEVENT:
         case metadataHelper.elementTypes.FORM:
@@ -376,6 +402,7 @@ function fillDetailsPanel(elementOID, elementType) {
 
 export function reloadDetailsPanel() {
     if (currentElementType) fillDetailsPanel(getCurrentElementOID(), currentElementType);
+    else resetDetailsPanel();
 }
 
 function fillAliases() {
@@ -440,32 +467,6 @@ function fillMeasurementUnits() {
         let newInput = htmlElements.getMeasurementUnitInputElement(measurementUnit.getAttribute("OID"), measurementUnit.getAttribute("Name"), symbol);
         $(".empty-measurement-unit-field").insertAdjacentElement("beforebegin", newInput);
     }
-}
-
-function resetDetailsPanel() {
-    $("#oid-input").disabled = true;
-    $("#name-input").disabled = true;
-    $("#save-button").disabled = true;
-    $("#save-button-mobile").disabled = true;
-    $("#remove-button").disabled = true;
-    $("#remove-button-mobile").disabled = true;
-    $("#duplicate-button").disabled = true;
-    $("#duplicate-button-mobile").disabled = true;
-    $("#more-button").disabled = true;
-    $("#more-button-mobile").disabled = true;
-    $("#question-textarea").disabled = true;
-    $("#datatype-select-inner").disabled = true;
-    $("#mandatory-select-inner").disabled = true;
-    $("#oid-input").value = "";
-    $("#name-input").value = "";
-    $("#name-input").placeholder = "";
-    $("#question-textarea").value = "";
-    $("#datatype-select-inner").value = "";
-    $("#mandatory-select-inner").value = "";
-    $("#references-tag").classList.add("is-hidden");
-    $("#element-oid-label").textContent = languageHelper.getTranslation("unique-id");
-    $("#element-short-label").textContent = languageHelper.getTranslation("name");
-    $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
 }
 
 window.saveElement = async function() {
