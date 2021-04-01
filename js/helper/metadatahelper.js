@@ -599,7 +599,7 @@ function generateUniqueCodedValue(codeListOID) {
 export function createStudyEvent() {
     const newStudyEventOID = generateUniqueOID("SE.");
     insertStudyEventRef(metadataTemplates.getStudyEventRef(newStudyEventOID));
-    insertElementDef(elementDefinitonNames.STUDYEVENT, metadataTemplates.getStudyEventDef(newStudyEventOID, "New Event"));
+    insertElementDef(elementDefinitonNames.STUDYEVENT, metadataTemplates.getStudyEventDef(newStudyEventOID, languageHelper.getTranslation("new-event")));
     
     return newStudyEventOID;
 }
@@ -620,7 +620,7 @@ function insertElementDef(definitionName, studyEventDef) {
 export function createForm(studyEventOID) {
     const newFormOID = generateUniqueOID("F.");
     insertFormRef(metadataTemplates.getFormRef(newFormOID), studyEventOID);
-    insertElementDef(elementDefinitonNames.FORM, metadataTemplates.getFormDef(newFormOID, "New Form"));
+    insertElementDef(elementDefinitonNames.FORM, metadataTemplates.getFormDef(newFormOID, languageHelper.getTranslation("new-form")));
 
     return newFormOID;
 }
@@ -642,7 +642,7 @@ export function insertFormRef(formRef, studyEventOID) {
 export function createItemGroup(formOID) {
     const newItemGroupOID = generateUniqueOID("IG.");
     insertItemGroupRef(metadataTemplates.getItemGroupRef(newItemGroupOID), formOID);
-    insertElementDef(elementDefinitonNames.ITEMGROUP, metadataTemplates.getItemGroupDef(newItemGroupOID, "New Group"));
+    insertElementDef(elementDefinitonNames.ITEMGROUP, metadataTemplates.getItemGroupDef(newItemGroupOID, languageHelper.getTranslation("new-group")));
 
     return newItemGroupOID;
 }
@@ -664,7 +664,7 @@ export function insertItemGroupRef(itemGroupRef, formOID) {
 export function createItem(itemGroupOID) {
     const newItemOID = generateUniqueOID("I.");
     insertItemRef(metadataTemplates.getItemRef(newItemOID), itemGroupOID);
-    insertElementDef(elementDefinitonNames.ITEM, metadataTemplates.getItemDef(newItemOID, "New Item"));
+    insertElementDef(elementDefinitonNames.ITEM, metadataTemplates.getItemDef(newItemOID, languageHelper.getTranslation("new-item")));
 
     return newItemOID;
 }

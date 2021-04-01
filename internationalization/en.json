@@ -55,6 +55,10 @@
     "items": "Items",
     "choices": "Choices",
     "add": "Add",
+    "new-event": "New Event",
+    "new-form": "New Form",
+    "new-group": "New Group",
+    "new-item": "New Item",
 
     "subjects": "Subjects",
     "new-subject": "New Subject",

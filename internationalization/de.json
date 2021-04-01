@@ -55,6 +55,10 @@
     "items": "Elemente",
     "choices": "Wahlmöglichkeiten",
     "add": "Hinzufügen",
+    "new-event": "Neues Ereignis",
+    "new-form": "Neues Formular",
+    "new-group": "Neue Gruppe",
+    "new-item": "Neues Element",
 
     "subjects": "Subjekte",
     "new-subject": "Neues Subjekt",
