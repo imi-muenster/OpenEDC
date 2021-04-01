@@ -484,12 +484,12 @@ window.downloadODM = async function() {
     let clinicaldata = await clinicaldataHelper.getClinicalData(metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID());
     if (clinicaldata) odm.querySelector("ODM").appendChild(clinicaldata);
 
-    ioHelper.download(metadataHelper.getStudyName()+".xml", new XMLSerializer().serializeToString(odm));
+    ioHelper.download(metadataHelper.getStudyName(), "xml", new XMLSerializer().serializeToString(odm));
 }
 
 window.downloadODMMetadata = function() {
     const odm = metadataHelper.prepareDownload();
-    ioHelper.download(metadataHelper.getStudyName()+"_metadata.xml", new XMLSerializer().serializeToString(odm));
+    ioHelper.download(metadataHelper.getStudyName()+"_metadata", "xml", new XMLSerializer().serializeToString(odm));
 }
 
 window.downloadCSV = async function() {
@@ -497,7 +497,7 @@ window.downloadCSV = async function() {
     const csvData = await clinicaldataHelper.getCSVData(csvHeaders);
     const csvString = ioHelper.getCSVString(csvHeaders, csvData);
 
-    ioHelper.download(metadataHelper.getStudyName()+"_clinicaldata.csv", csvString);
+    ioHelper.download(metadataHelper.getStudyName()+"_clinicaldata", "csv", csvString);
 }
 
 window.removeAllData = async function() {

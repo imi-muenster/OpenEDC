@@ -500,18 +500,16 @@ export function showMessage(heading, message, callbacks, callbackType) {
     if (!$("message-modal")) document.body.appendChild(messageModal);
 }
 
-export function download(filename, content) {
-    let prettifiedContent = prettifyContent(content);
+export function download(filename, extension, content) {
+    const prettifiedContent = prettifyContent(content);
+    const element = document.createElement("a");
 
-    let element = document.createElement("a");
-    element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(prettifiedContent));
-    element.setAttribute("download", filename);
-
+    element.href = "data:text/" + extension + ";charset=utf-8," + encodeURIComponent(prettifiedContent);
+    element.download = filename + "." + extension;
     element.style.display = "none";
+
     document.body.appendChild(element);
-
     element.click();
-
     document.body.removeChild(element);
 }
 
