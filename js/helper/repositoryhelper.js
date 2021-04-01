@@ -19,7 +19,7 @@ const tokenPlaceholder = "TOKENPLACEHOLDER";
 // A list of all supported metadata repositories
 // The model parameter name (e.g., modelIds) must be unique to identify the repository with given URL parameters
 const repositories = [
-    new Repository(1, "Portal of Medical Data Models", "modelIds", "userToken", `https://mdmj-staging.uni-muenster.de/api/v1/odmByToken?modelId=${modelPlaceholder}&userToken=${tokenPlaceholder}`)
+    new Repository(1, "Portal of Medical Data Models", "modelIds", "userToken", `https://medical-data-models.org/api/v1/odmByToken?modelId=${modelPlaceholder}&userToken=${tokenPlaceholder}`)
 ];
 
 // Download and return all models
