@@ -50,8 +50,8 @@ const $ = query => subjectData.querySelector(query);
 const $$ = query => subjectData.querySelectorAll(query);
 
 export const sortOrderTypes = {
-    CREATEDDATE: "Creation Date",
-    ALPHANUMERICALLY: "Alphanumerical"
+    CREATEDDATE: "creation-date",
+    ALPHANUMERICALLY: "alphanumerical"
 };
 
 export const dataStatusTypes = {

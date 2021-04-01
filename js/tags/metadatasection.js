@@ -92,7 +92,7 @@ class MetadataSection extends HTMLElement {
                     </div>
                     <div class="column">
                         <nav class="panel is-link">
-                            <p class="panel-heading has-text-centered">Choices</p>
+                            <p class="panel-heading has-text-centered" i18n="choices"></p>
                             <div class="tree-panel-blocks" id="code-list-item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                             <div class="panel-block has-light-border-top" id="code-list-items-add-button">
                                 <button class="button is-link is-light is-fullwidth" onclick="addCodeListItem(event)" element-type="codelistitem" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)" i18n="add" disabled></button>

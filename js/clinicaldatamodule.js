@@ -28,16 +28,12 @@ let deferredFunction = null;
 let surveyCode = null;
 
 export async function init() {
-    currentElementID.subject = null;
-
-    createSiteFilterSelect();
-    createSortTypeSelect();
-    setIOListeners();
-
     await clinicaldataHelper.loadSubjects();
 
     // Currently, the subjects are reloaded every 10 seconds -- this should be improved in the future by means of server-sent events or a websocket
     setLoadSubjectsTimer();
+
+    setIOListeners();
 }
 
 export function show() {
@@ -71,10 +67,14 @@ export function hide() {
 
 export function setLanguage(newLocale) {
     locale = newLocale;
+
+    // Render both selects again with the new language
+    createSiteFilterSelect();
+    createSortTypeSelect();
 }
 
 export function createSiteFilterSelect() {
-    let sites = ["All Sites"];
+    let sites = [languageHelper.getTranslation("all-sites")];
     admindataHelper.getSites().forEach(site => sites.push(site.getAttribute("Name")));
 
     let currentSelection = null;
@@ -99,7 +99,9 @@ export function createSiteFilterSelect() {
 }
 
 function createSortTypeSelect() {
-    $("#sort-subject-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("sort-subject-select", true, true, Object.values(clinicaldataHelper.sortOrderTypes)));
+    const translatedSortTypes = Object.values(clinicaldataHelper.sortOrderTypes).map(sortType => languageHelper.getTranslation(sortType));
+    ioHelper.safeRemoveElement($("#sort-subject-select-outer"));
+    $("#sort-subject-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("sort-subject-select", true, true, Object.values(clinicaldataHelper.sortOrderTypes), null, translatedSortTypes));
     $("#sort-subject-select-inner").oninput = inputEvent => {
         loadSubjectKeys();
         inputEvent.target.blur();

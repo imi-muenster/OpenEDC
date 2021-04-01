@@ -43,6 +43,9 @@
 
     "subjects": "Subjects",
     "new-subject": "New Subject",
+    "all-sites": "All Sites",
+    "creation-date": "Creation Date",
+    "alphanumerical": "Alphanumerically",
     "search": "Search",
     "options-and-audit-trail": "Options and Audit Trail",
     "no-subjects-hint": "No subjects available. Please add a new subject with the button above.",
