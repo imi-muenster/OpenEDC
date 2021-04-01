@@ -19,7 +19,6 @@ const locales = {
 const defaultLocale = locales.ENGLISH;
 
 export const untranslatedLocale = "none";
-const untranslatedName = "Default";
 
 let currentLocale = defaultLocale;
 let currentLocaleSet = false;
@@ -78,13 +77,6 @@ function populateNonPresentLanguages() {
     }
 }
 
-function getLanguageNameByLocale(locale) {
-    if (locale == untranslatedLocale) return untranslatedName;
-
-    const languageName = Object.keys(locales).find(key => locales[key] == locale);
-    return languageName ? languageName.charAt(0).toUpperCase() + languageName.slice(1).toLowerCase() : locale;
-}
-
 export function getPresentLanguages() {
     return localesInODM;
 }
@@ -103,13 +95,13 @@ export function createLanguageSelect(includeUnavailable) {
     }
     if (includeUnavailable || localesInODM.includes(untranslatedLocale)) localesNotInODM.forEach(locale => addLanguageOptionNavbar(locale));
 
-    $("#current-language").textContent = getLanguageNameByLocale(currentLocale);
+    $("#current-language").textContent = getTranslation(currentLocale);
 }
 
 function addLanguageOptionNavbar(locale) {
     let option = document.createElement("a");
     option.className = "navbar-item";
-    option.textContent = getLanguageNameByLocale(locale);
+    option.textContent = getTranslation(locale);
     option.onclick = () => changeLanguage(locale);
     $("#language-dropdown").appendChild(option);
 }
@@ -124,6 +116,6 @@ async function changeLanguage(locale) {
     currentLocale = locale;
     currentLocaleSet = true;
     await internationalize();
-    $("#current-language").textContent = getLanguageNameByLocale(currentLocale);
+    createLanguageSelect();
     document.dispatchEvent(new CustomEvent("LanguageChanged", { detail: currentLocale }));
 }

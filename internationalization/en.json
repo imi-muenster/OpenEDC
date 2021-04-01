@@ -16,6 +16,18 @@
     "datetime": "Datetime",
     "missing-translation": "Missing Translation",
 
+    "en": "English",
+    "nl": "Dutch",
+    "fr": "French",
+    "de": "German",
+    "it": "Italian",
+    "pt": "Portuguese",
+    "ru": "Russian",
+    "es": "Spanish",
+    "sv": "Swedish",
+    "tr": "Turkish",
+    "none": "None",
+
     "about": "About",
     "close-example": "Close Example",
     "project-options": "Project Options",
