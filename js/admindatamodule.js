@@ -1,5 +1,6 @@
 import * as clinicaldataModule from "./clinicaldatamodule.js";
 import * as admindataHelper from "./helper/admindatahelper.js";
+import * as languageHelper from "./helper/languagehelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as htmlElements from "./helper/htmlelements.js";
 
@@ -140,7 +141,7 @@ window.removeUser = function() {
                 admindataHelper.removeUser(userOID);
                 loadUsers();
             })
-            .catch(() => ioHelper.showMessage("User not removed", "The user could not be removed. It seems that you are connected to an OpenEDC Server but the user could not be removed from the server. Please check your Internet connection and try again."));
+            .catch(() => ioHelper.showMessage(languageHelper.getTranslation("user-not-removed"), languageHelper.getTranslation("user-not-removed-hint")));
     } else {
         admindataHelper.removeUser(userOID);
         loadUsers();
@@ -215,10 +216,10 @@ window.removeSite = function() {
         .catch(error => {
             switch (error) {
                 case admindataHelper.errors.SITEHASSUBJECTS:
-                    ioHelper.showMessage("Site not removed", "The site could not be removed since there is at least one subject assigned to it.");
+                    ioHelper.showMessage(languageHelper.getTranslation("site-not-removed"), languageHelper.getTranslation("site-not-removed-hint-subject"));
                     break;
                 case admindataHelper.errors.SITEHASUSERS:
-                    ioHelper.showMessage("Site not removed", "The site could not be removed since there is at least one user assigned to it.");
+                    ioHelper.showMessage(languageHelper.getTranslation("site-not-removed"), languageHelper.getTranslation("site-not-removed-hint-user"));
             }
         });
 }

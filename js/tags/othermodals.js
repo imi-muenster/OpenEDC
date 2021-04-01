@@ -108,7 +108,7 @@ class AboutModal extends HTMLElement {
                 <div class="modal-content is-large">
                     <div class="box">
                         <div class="width-is-two-thirds">
-                            <h1 class="title">About OpenEDC</h1>
+                            <h1 class="title" i18n="about-openedc"></h1>
                             <h2 class="subtitle"></h2>
                             <hr>
                             <p class="mb-5">This free and <a target="_blank" href="https://github.com/imi-muenster/OpenEDC">open-source</a> electronic data capture (EDC) system lets you design and conduct secure medical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> standard.</p>
@@ -126,10 +126,10 @@ class AboutModal extends HTMLElement {
                                 <span class="icon">
                                     <i class="fas fa-arrow-right"></i>
                                 </span>
-                                <span>Privacy Policy</span>
+                                <span i18n="privacy-policy"></span>
                             </a>
                             <br>
-                            <button class="button" onclick="hideAboutModal()">Close</button>
+                            <button class="button" onclick="hideAboutModal()" i18n="close"></button>
                         </div>
                     </div>
                 </div>
@@ -168,28 +168,28 @@ class SubjectModal extends HTMLElement {
                 <div class="modal-content is-large">
                     <div class="box">
                         <div class="width-is-two-thirds">
-                            <h1 class="title">Options and Audit Trail</h1>
-                            <h2 class="subtitle">for Subject: <strong></strong></h2>
+                            <h1 class="title" i18n="options-and-audit-trail"></h1>
+                            <h2 class="subtitle"><span i18n="for-subject"></span>: <strong></strong></h2>
                             <hr>
-                            <h2 class="subtitle">Subject Options</h2>
+                            <h2 class="subtitle" i18n="subject-options"></h2>
                             <div class="field">
-                                <label class="label">Key</label>
+                                <label class="label" i18n="key"></label>
                                 <div class="control">
                                     <input class="input" id="subject-key-input" type="text">
                                 </div>
                             </div>
                             <div class="field">
-                                <label class="label">Site</label>
+                                <label class="label" i18n="site"></label>
                                 <div class="control" id="subject-site-control"></div>
                             </div>
                             <div class="buttons">
-                                <button class="button is-danger is-small" id="save-subject-info-button" onclick="saveSubjectInfo()">Save Changes</button>
-                                <button class="button is-small" onclick="hideSubjectInfo()">Cancel</button>
+                                <button class="button is-danger is-small" id="save-subject-info-button" onclick="saveSubjectInfo()" i18n="save-changes"></button>
+                                <button class="button is-small" onclick="hideSubjectInfo()" i18n="cancel"></button>
                             </div>
                             <hr>
-                            <h2 class="subtitle">Audit Trail</h2>
+                            <h2 class="subtitle" i18n="audit-trail"></h2>
                             <div id="audit-records"></div>
-                            <button class="button is-danger is-small" onclick="removeSubject()">Remove Subject</button>
+                            <button class="button is-danger is-small" onclick="removeSubject()" i18n="remove-subject"></button>
                         </div>
                     </div>
                 </div>

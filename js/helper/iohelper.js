@@ -1,3 +1,5 @@
+import * as languageHelper from "./languagehelper.js";
+
 class LoadXMLException {
     constructor(code) {
         this.code = code;
@@ -495,7 +497,7 @@ export function showMessage(heading, message, callbacks, callbackType) {
     messageModal.setMessage(message);
     messageModal.setCallbacks(callbacks);
     messageModal.setCallbackType(callbackType == callbackTypes.DANGER ? "is-danger" : "is-link");
-    messageModal.setCloseText(callbacks ? "Close" : "Okay");
+    messageModal.setCloseText(callbacks ? languageHelper.getTranslation("close") : languageHelper.getTranslation("okay"));
     
     if (!$("message-modal")) document.body.appendChild(messageModal);
 }
