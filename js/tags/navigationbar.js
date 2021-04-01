@@ -10,7 +10,7 @@ class NavigationBar extends HTMLElement {
                         <span class="icon">
                             <i class="fas fa-chevron-left"></i>
                         </span>
-                        <span>Back</span>
+                        <span i18n="back"></span>
                     </a>
                     <a class="navbar-burger">
                         <span aria-hidden="true"></span>
@@ -24,30 +24,30 @@ class NavigationBar extends HTMLElement {
                             <a class="navbar-link" id="current-language"></a>
                             <div class="navbar-dropdown is-hidden-touch" id="language-dropdown"></div>
                         </div>
-                        <a class="navbar-item" onclick="showAboutModal()">About</a>
+                        <a class="navbar-item" onclick="showAboutModal()" i18n="about"></a>
                     </div>
                     <div class="navbar-end">
                         <div class="navbar-item">
                             <div class="buttons">
-                                <button class="button is-hidden" id="close-example-button" onclick="removeAllData()">Close Example</button>
-                                <button class="button" id="project-modal-button" onclick="showProjectModal()">Project Options</button>
+                                <button class="button is-hidden" id="close-example-button" onclick="removeAllData()" i18n="close-example"></button>
+                                <button class="button" id="project-modal-button" onclick="showProjectModal()" i18n="project-options"></button>
                                 <button class="button is-link is-light mr-0" id="clinicaldata-toggle-button">
                                     <span class="icon">
                                         <i class="fas fa-play"></i>
                                     </span>
-                                    <span>Capture Data</span>
+                                    <span i18n="capture-data"></span>
                                 </button>
                                 <button class="button is-link is-light is-hidden mr-0" id="metadata-toggle-button">
                                     <span class="icon">
                                         <i class="fas fa-stop"></i>
                                     </span>
-                                    <span>Design Forms</span>
+                                    <span i18n="design-forms"></span>
                                 </button>
                                 <button class="button is-hidden ml-2" id="logout-button" onclick="logout()">
                                     <span class="icon">
                                         <i class="fas fa-lock"></i>
                                     </span>
-                                    <span>Log Out</span>
+                                    <span i18n="log-out"></span>
                                 </button>
                             </div>
                         </div>
