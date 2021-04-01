@@ -8,11 +8,11 @@ const $ = query => admindata.querySelector(query);
 const $$ = query => admindata.querySelectorAll(query);
 
 export const userRights = {
-    PROJECTOPTIONS: "Project options",
-    EDITMETADATA: "Edit metadata",
-    MANAGESUBJECTS: "Manage subjects",
-    VALIDATEFORMS: "Validate forms",
-    ADDSUBJECTDATA: "Add subject data"
+    PROJECTOPTIONS: "project-options",
+    EDITMETADATA: "edit-metadata",
+    MANAGESUBJECTS: "manage-subjects",
+    VALIDATEFORMS: "validate-forms",
+    ADDSUBJECTDATA: "add-subject-data"
 };
 
 export const errors = {

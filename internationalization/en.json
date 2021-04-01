@@ -157,6 +157,11 @@
     "study-description": "Study Description",
     "protocol-name": "Protocol Name",
 
+    "edit-metadata": "Edit Metadata",
+    "manage-subjects": "Manage Subjects",
+    "validate-forms": "Validate Forms",
+    "add-subject-data": "Add Subject Data",
+
     "about-openedc": "About OpenEDC",
     "privacy-policy": "Privacy Policy",
 

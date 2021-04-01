@@ -44,7 +44,8 @@ export async function loadUsers() {
     }
 
     for (let userRight of Object.values(admindataHelper.userRights)) {
-        $("#user-rights").insertAdjacentHTML("beforeend", `<label class="checkbox"><input type="checkbox" name="${userRight}" disabled> ${userRight}</label>`);
+        const translatedRight = languageHelper.getTranslation(userRight);
+        $("#user-rights").insertAdjacentHTML("beforeend", `<label class="checkbox"><input type="checkbox" name="${userRight}" disabled> ${translatedRight}</label>`);
     }
 
     const localUserOID = admindataHelper.getCurrentUserOID();
