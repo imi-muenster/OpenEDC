@@ -185,7 +185,20 @@
     "add-subject-data": "Klinische Daten hinzufügen",
 
     "about-openedc": "OpenEDC Impressum",
+    "about-text-1": "Mit diesem kostenlosen, <a target='_blank' href='https://github.com/imi-muenster/OpenEDC'>open-source</a> System zur Datenerfassung können Sie sichere medizinische Forschungsprojekte basierend auf dem <a target='_blank' href='https://www.cdisc.org/standards/data-exchange/odm'>CDISC ODM-XML</a> Standard entwerfen und durchführen.",
+    "about-text-2": "Alle Daten werden offline auf Ihrem lokalen Gerät verarbeitet und gespeichert. Sie können sich mit einem <a target='_blank' href='https://github.com/imi-muenster/OpenEDC-Server'>OpenEDC Server</a> verbinden, um Projekte mit mehreren Benutzern und Standorten zu erstellen.",
     "privacy-policy": "Datenschutzerklärung",
+    "start-text": "Für ein leeres Projekt wählen Sie <strong>Neues Projekt</strong>. Klicken Sie auf <strong>Öffnen</strong>, wenn Sie eine CDISC ODM-XML-Datei auf Ihrem Computer haben. Wenn Sie dieses System noch nicht verwendet haben, wählen Sie <strong>Beispiel</strong>, um ein Beispielprojekt zu laden.",
+    "new-prpject": "Neues Projekt",
+    "open": "Öffnen",
+    "Example": "Beispiel",
+    "forgot-password-question": "Passwort vergessen?",
+    "remove-data-question": "Daten löschen?",
+
+    "address_1": "Institut für Medizinische Informatik",
+    "address_2": "Direktor: Prof. Dr. Martin Dugas",
+    "address_3": "Albert-Schweitzer-Campus 1, A11",
+    "address_4": "48149 Münster, Deutschland",
 
     "for-subject": "Für Proband",
     "subject-options": "Probandoptionen",
@@ -233,6 +246,12 @@
     "site-not-removed": "Standort nicht gelöscht",
     "site-not-removed-hint-subject": "Der Standort konnte nicht entfernt werden, da ihm mindestens ein Proband zugeordnet ist.",
     "site-not-removed-hint-user": "Der Standort konnte nicht entfernt werden, da ihm mindestens ein Benutzer zugewiesen ist.",
+    "login-server-hint": "Bitte einloggen",
+    "login-server-text": "Sie sind mit einem OpenEDC Server verbunden. Bitte melden Sie sich mit Ihren Anmeldedaten an.",
+    "login-encrypted-title": "Daten sind verschlüsselt",
+    "login-encrypted-text": "Bitte geben Sie das Passwort ein, das Sie für die Datenverschlüsselung verwendet haben.",
+    "password-incorrenct-error": "Das Passwort ist falsch. Bitte versuchen Sie es erneut.",
+    "username-password-incorrect-error": "Der Benutzername oder das Passwort ist falsch. Bitte versuchen Sie es erneut.",
 
     "import-metadata": "Metadaten importieren",
     "import-metadata-merge-hint": "Sie haben bereits Formulare in Ihrem Projekt. Möchten Sie die neuen Formulare hinzufügen, die aktuellen zuerst löschen, oder die neuen Formulare gar nicht hinzufügen?",

@@ -16,20 +16,20 @@ class StartModal extends HTMLElement {
                                 </div>
                             </div>
                             <hr>
-                            <p class="mb-5">This free and <a target="_blank" href="https://github.com/imi-muenster/OpenEDC">open-source</a> electronic data capture (EDC) system lets you design and conduct secure medical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> standard.</p>
-                            <p class="mb-5">All data is entirely processed offline on your local device. You can optionally connect to your own <a target="_blank" href="https://github.com/imi-muenster/OpenEDC-Server">OpenEDC Server</a> to create research studies with multiple users and sites.</p>
-                            <p class="mb-5">For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you have an CDISC ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an illustrative project and see how it all works.</p>
+                            <p class="mb-5" i18n-html="about-text-1"></p>
+                            <p class="mb-5" i18n-html="about-text-2"></p>
+                            <p class="mb-5" i18n-html="start-text"></p>
                             <div class="buttons is-centered">
-                                <button class="button" onclick="newProject()">New Project</button>
+                                <button class="button" onclick="newProject()" i18n="new-project"></button>
                                 <div class="file" id="odm-upload">
                                     <label class="file-label">
                                         <input class="file-input" type="file" name="resume" onchange="uploadODM()">
                                         <span class="file-cta button">
-                                            <span class="file-label">Open</span>
+                                            <span class="file-label" i18n="open"></span>
                                         </span>
                                     </label>
                                 </div>
-                                <button class="button is-link" onclick="loadExample()">Example</button>
+                                <button class="button is-link" onclick="loadExample()" i18n="example"></button>
                             </div>
                         </div>
                     </div>
@@ -55,7 +55,7 @@ class LoginModal extends HTMLElement {
                             <form>
                                 <div class="field">
                                     <div class="control has-icons-left">
-                                        <input class="input" id="login-username-input" type="text" autocomplete="username" placeholder="Username">
+                                        <input class="input" id="login-username-input" type="text" autocomplete="username" i18n-ph="username">
                                         <span class="icon is-small is-left">
                                             <i class="fas fa-user"></i>
                                         </span>
@@ -63,7 +63,7 @@ class LoginModal extends HTMLElement {
                                 </div>
                                 <div class="field">
                                     <div class="control has-icons-left">
-                                        <input class="input" id="login-password-input" type="password" autocomplete="current-password" placeholder="Password">
+                                        <input class="input" id="login-password-input" type="password" autocomplete="current-password" i18n-ph="password">
                                         <span class="icon is-small is-left">
                                             <i class="fas fa-lock"></i>
                                         </span>
@@ -71,17 +71,17 @@ class LoginModal extends HTMLElement {
                                 </div>
                                 <div class="field is-hidden">
                                     <div class="control has-icons-left">
-                                        <input class="input" id="login-confirm-password-input" type="password" autocomplete="current-password" placeholder="Password (confirm)">
+                                        <input class="input" id="login-confirm-password-input" type="password" autocomplete="current-password" i18n-ph="password-confirm">
                                         <span class="icon is-small is-left">
                                             <i class="fas fa-lock"></i>
                                         </span>
                                     </div>
                                 </div>
-                                <button class="button is-link mt-3" id="open-button" type="submit">Open</button>
+                                <button class="button is-link mt-3" id="open-button" type="submit" i18n="open"></button>
                             </form>
                             <div class="buttons is-centered mt-3">
-                                <button class="button is-text is-small" onclick="showForgotPasswordModal()">Forgot password?</button>
-                                <button class="button is-text is-small is-hidden" id="remove-data-button" onclick="showRemoveDataModal(true)">Remove data?</button>
+                                <button class="button is-text is-small" onclick="showForgotPasswordModal()" i18n="forgot-password-question"></button>
+                                <button class="button is-text is-small is-hidden" id="remove-data-button" onclick="showRemoveDataModal(true)" i18n="remove-data-question"></button>
                             </div>
                         </div>
                     </div>
@@ -96,10 +96,6 @@ class AboutModal extends HTMLElement {
         const name = "Leonard Greulich";
         const phone = "+49 (251) 83-54730";
         const mail = "leonard.greulich@uni-muenster.de";
-        const address_1 = "Institute for Medical Informatics";
-        const address_2 = "Director: Prof. Dr. Martin Dugas";
-        const address_3 = "Albert-Schweitzer-Campus 1, A11";
-        const address_4 = "48149 Münster, Germany";
         const dataProtectionPolicy = "https://privacy.openedc.org";
 
         this.innerHTML = `
@@ -111,16 +107,16 @@ class AboutModal extends HTMLElement {
                             <h1 class="title" i18n="about-openedc"></h1>
                             <h2 class="subtitle"></h2>
                             <hr>
-                            <p class="mb-5">This free and <a target="_blank" href="https://github.com/imi-muenster/OpenEDC">open-source</a> electronic data capture (EDC) system lets you design and conduct secure medical research studies based on the <a target="_blank" href="https://www.cdisc.org/standards/data-exchange/odm">CDISC ODM-XML</a> standard.</p>
-                            <p class="mb-5">All data is entirely processed offline on your local device. You can optionally connect to your own <a target="_blank" href="https://github.com/imi-muenster/OpenEDC-Server">OpenEDC Server</a> to create research studies with multiple users and sites.</p>
+                            <p class="mb-5" i18n-html="about-text-1"></p>
+                            <p class="mb-5" i18n-html="about-text-2"></p>
                             <div class="notification">
                                 <p>${name}</p>
                                 <p>${phone}</p>
                                 <p class="mb-5"><a href="mailto:${mail}">${mail}</a></p>
-                                <p><strong>${address_1}</strong></p>
-                                <p>${address_2}</p>
-                                <p>${address_3}</p>
-                                <p>${address_4}</p>
+                                <p><strong i18n="address_1"></strong></p>
+                                <p i18n="address_2"></p>
+                                <p i18n="address_3"></p>
+                                <p i18n="address_4"></p>
                             </div>
                             <a class="button is-rounded is-small is-link mb-5" target="_blank" href="${dataProtectionPolicy}">
                                 <span class="icon">

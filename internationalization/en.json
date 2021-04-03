@@ -185,7 +185,20 @@
     "add-subject-data": "Add Subject Data",
 
     "about-openedc": "About OpenEDC",
+    "about-text-1": "This free and <a target='_blank' href='https://github.com/imi-muenster/OpenEDC'>open-source</a> electronic data capture (EDC) system lets you design and conduct secure medical research studies based on the <a target='_blank' href='https://www.cdisc.org/standards/data-exchange/odm'>CDISC ODM-XML</a> standard.",
+    "about-text-2": "All data is processed and stored offline on your local device. You can optionally connect to your own <a target='_blank' href='https://github.com/imi-muenster/OpenEDC-Server'>OpenEDC Server</a> to create research studies with multiple users and sites.",
     "privacy-policy": "Privacy Policy",
+    "start-text": "For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you have an CDISC ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an illustrative project and see how it all works.",
+    "new-prpject": "New Project",
+    "open": "Open",
+    "Example": "Example",
+    "forgot-password-question": "Forgot password?",
+    "remove-data-question": "Remove data?",
+
+    "address_1": "Institute for Medical Informatics",
+    "address_2": "Director: Prof. Dr. Martin Dugas",
+    "address_3": "Albert-Schweitzer-Campus 1, A11",
+    "address_4": "48149 Münster, Germany",
 
     "for-subject": "For Subject",
     "subject-options": "Subject Options",
@@ -233,6 +246,12 @@
     "site-not-removed": "Site not removed",
     "site-not-removed-hint-subject": "The site could not be removed since there is at least one subject assigned to it.",
     "site-not-removed-hint-user": "The site could not be removed since there is at least one user assigned to it.",
+    "login-server-hint": "Please login",
+    "login-server-text": "You are connected to an OpenEDC Server. Please login with your credentials.",
+    "login-encrypted-title": "Data is encrypted",
+    "login-encrypted-text": "Please enter the password that you used for the data encryption.",
+    "password-incorrenct-error": "The password is incorrect. Please try again.",
+    "username-password-incorrect-error": "The username or password is incorrect. Please try again.",
 
     "import-metadata": "Import metadata",
     "import-metadata-merge-hint": "You already have forms in your project. Do you want to append the new forms to your project, remove your current data before import, or not load the new forms?",

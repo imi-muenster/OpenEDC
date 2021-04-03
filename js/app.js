@@ -120,9 +120,9 @@ function showDecryptionKeyModal() {
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
     $("#login-username-input").parentNode.parentNode.classList.add("is-hidden");
     $("#remove-data-button").classList.remove("is-hidden");
-    $("#login-title").textContent = "Data is encrypted";
-    $("#login-text").textContent = "Please enter the password that you used for the data encryption.";
-    $("#login-incorrect-hint .message-body").textContent = "The password is incorrect. Please try again.";
+    $("#login-title").textContent = languageHelper.getTranslation("login-encrypted-title");
+    $("#login-text").textContent = languageHelper.getTranslation("login-enrypted-text");
+    $("#login-incorrect-hint .message-body").textContent = languageHelper.getTranslation("password-incorrect-error");
 
     // Set the click handler when clicking on the Open button
     $("#login-modal #open-button").onclick = clickEvent => {
@@ -142,9 +142,9 @@ function showCloseExampleButton() {
 
 function showLoginModal() {
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
-    $("#login-title").textContent = "Please login";
-    $("#login-text").textContent = "You are connected to an OpenEDC Server. Please login with your credentials.";
-    $("#login-incorrect-hint .message-body").textContent = "The username or password is incorrect. Please try again.";
+    $("#login-title").textContent = languageHelper.getTranslation("login-server-title");
+    $("#login-text").textContent = languageHelper.getTranslation("login-server-text");
+    $("#login-incorrect-hint .message-body").textContent = languageHelper.getTranslation("username-password-incorrect-error");
 
     // Set the click handler when clicking on the open button
     $("#login-modal #open-button").onclick = clickEvent => {
@@ -375,9 +375,9 @@ window.connectToServer = function() {
                     $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
                     break;
                 case ioHelper.serverStatus.SERVERINITIALIZED:
-                    ioHelper.showMessage(languageHelper.getTranslation("Note"), languageHelper.getTranslation("server-initialized-hint"),
+                    ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("server-initialized-hint"),
                         {
-                            [languageHelper.getTranslation("open-server")]: () => window.location.replace("https://" + serverURL)
+                            [languageHelper.getTranslation("open-server")]: () => window.location.href = "https://" + serverURL
                         }
                     );
             }
