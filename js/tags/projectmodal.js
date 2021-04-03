@@ -93,7 +93,7 @@ class ProjectModal extends HTMLElement {
                                 </div>
                             </div>
                             <div class="notification is-danger is-light">
-                                <h1 class="title is-4" i18n="remove-data">Remove Data</h1>
+                                <h1 class="title is-4" i18n="remove-data"></h1>
                                 <p class="mb-5" i18n="remove-data-hint"></p>
                                 <p class="mb-5"><strong i18n="remove-data-warning"></strong></p>
                                 <div class="buttons">
@@ -154,7 +154,7 @@ class ProjectModal extends HTMLElement {
                                     </div>
                                     <div class="buttons">
                                         <button class="button is-link" id="user-save-button" onclick="saveUser()" i18n="save"></button>
-                                        <button class="button is-danger" id="user-remove-button" onclick="removeUser()" i18n"remove">Remove</button>
+                                        <button class="button is-danger" id="user-remove-button" onclick="removeUser()" i18n="remove"></button>
                                     </div>
                                 </div>
                             </div>

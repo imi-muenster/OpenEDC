@@ -96,10 +96,14 @@ a.panel-block:hover {
 }
 
 .modal-content.is-large {
-    max-width: 600px;
+    max-width: 800px;
 }
 
 .modal-content.is-medium {
+    max-width: 600px;
+}
+
+.modal-content.is-small {
     max-width: 400px;
 }
 

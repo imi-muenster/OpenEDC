@@ -3,7 +3,7 @@ class StartModal extends HTMLElement {
         this.innerHTML = `
             <div class="modal" id="start-modal">
                 <div class="modal-background"></div>
-                <div class="modal-content is-large">
+                <div class="modal-content is-medium">
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <div id="openedc-title">
@@ -44,7 +44,7 @@ class LoginModal extends HTMLElement {
         this.innerHTML = `
             <div class="modal" id="login-modal">
                 <div class="modal-background"></div>
-                <div class="modal-content is-large">
+                <div class="modal-content is-medium">
                     <div class="box has-text-centered">
                         <div class="width-is-two-thirds">
                             <h2 class="subtitle" id="login-title"></h2>
@@ -105,7 +105,7 @@ class AboutModal extends HTMLElement {
         this.innerHTML = `
             <div class="modal" id="about-modal">
                 <div class="modal-background" onclick="hideAboutModal()"></div>
-                <div class="modal-content is-large">
+                <div class="modal-content is-medium">
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <h1 class="title" i18n="about-openedc"></h1>
@@ -144,7 +144,7 @@ class CloseClinicaldataModal extends HTMLElement {
         this.innerHTML = `
             <div class="modal" id="close-clinicaldata-modal">
                 <div class="modal-background" onclick="hideCloseClinicalDataModal()"></div>
-                <div class="modal-content is-medium">
+                <div class="modal-content is-small">
                     <div class="box has-text-centered">
                         <h2 class="subtitle" id="close-data-title"></h2>
                         <p class="mb-5" id="close-data-text"></p>
@@ -165,7 +165,7 @@ class SubjectModal extends HTMLElement {
         this.innerHTML = `
             <div class="modal" id="subject-modal">
                 <div class="modal-background" onclick="hideSubjectInfo()"></div>
-                <div class="modal-content is-large">
+                <div class="modal-content is-medium">
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <h1 class="title" i18n="options-and-audit-trail"></h1>
@@ -203,7 +203,7 @@ class SurveyCodeModal extends HTMLElement {
         this.innerHTML = `
             <div class="modal" id="survey-code-modal">
                 <div class="modal-background"></div>
-                <div class="modal-content is-large">
+                <div class="modal-content is-medium">
                     <div class="box has-text-centered">
                         <h2 class="subtitle" i18n="survey-finished"></h2>
                         <p i18n="survey-finished-text"></p>
@@ -232,7 +232,7 @@ class MessageModal extends HTMLElement {
         this.innerHTML = `
             <div class="modal is-active" id="message-modal">
                 <div class="modal-background"></div>
-                <div class="modal-content is-medium">
+                <div class="modal-content is-small">
                     <div class="box has-text-centered">
                         <h2 class="subtitle">${this.heading}</h2>
                         <div class="mb-5">${this.message}</div>
