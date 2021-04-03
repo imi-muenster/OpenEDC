@@ -142,7 +142,7 @@ function showDecryptionKeyModal() {
 }
 
 function showCloseExampleButton() {
-    if (metadataHelper.getStudyName() == "Exemplary Project") $("#close-example-button").classList.remove("is-hidden"); 
+    if (metadataHelper.getStudyName() == languageHelper.getTranslation("exemplary-project")) $("#close-example-button").classList.remove("is-hidden"); 
 }
 
 function showLoginModal() {

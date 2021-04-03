@@ -49,7 +49,7 @@ export async function loadUsers() {
     }
 
     const localUserOID = admindataHelper.getCurrentUserOID();
-    $(`#users-options [oid="${localUserOID}"]`).textContent += " (you)";
+    $(`#users-options [oid="${localUserOID}"]`).textContent += " (" + languageHelper.getTranslation("you") + ")";
 
     if (ioHelper.hasServerURL()) $("#add-user-button button").disabled = false;
 }
