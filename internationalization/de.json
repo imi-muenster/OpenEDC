@@ -111,7 +111,7 @@
     "element-options-hint": "Mit den folgenden Einstellungen können Sie weitere Optionen des aktuellen Elements konfigurieren. Neue Ausnahmebedingungen der Erhebung von Elementen und Messeinheiten können über die Reiter oben hinzugefügt werden.",
     "collection-exception-condition": "Ausnahmebedingung der Erhebung",
     "measurement-unit": "Messeinheit",
-    "range-check": "Bereichsüberprüfung",
+    "range-check": "Datenbereiche",
     "check-value": "Prüfwert",
     "alias": "Alias",
     "context": "Kontext",
@@ -164,7 +164,7 @@
     "add-user": "Benutzer hinzufügen",
     "new": "Neuer",
     "user": "Benutzer",
-    "you": "du",
+    "you": "Sie",
     "first-name": "Vorname",
     "last-name": "Nachname",
     "site": "Standort",
@@ -190,7 +190,7 @@
     "about-text-2": "Alle Daten werden offline auf Ihrem lokalen Gerät verarbeitet und gespeichert. Sie können sich mit einem <a target='_blank' href='https://github.com/imi-muenster/OpenEDC-Server'>OpenEDC Server</a> verbinden, um Projekte mit mehreren Benutzern und Standorten zu erstellen.",
     "privacy-policy": "Datenschutzerklärung",
     "start-title": "Wählen Sie einen Startpunkt",
-    "start-text": "Für ein leeres Projekt wählen Sie <strong>Neues Projekt</strong>. Klicken Sie auf <strong>Öffnen</strong>, wenn Sie eine CDISC ODM-XML-Datei auf Ihrem Computer haben. Wenn Sie dieses System noch nicht verwendet haben, wählen Sie <strong>Beispiel</strong>, um ein Beispielprojekt zu laden.",
+    "start-text": "Wählen Sie <strong>Neues Projekt</strong> für ein leeres Projekt. Klicken Sie auf <strong>Öffnen</strong>, wenn Sie eine CDISC ODM-XML Datei auf Ihrem Computer haben. Wenn Sie dieses System noch nicht verwendet haben, wählen Sie <strong>Beispiel</strong>, um ein Beispielprojekt zu laden.",
     "new-project": "Neues Projekt",
     "open": "Öffnen",
     "example": "Beispiel",
@@ -268,10 +268,10 @@
     "metadata-import-encrypted-hint": "Leider ist es aktuell nicht möglich externe Formulare hinzuzufügen, wenn mit verschlüsselten Daten gearbeitet wird.",
     "metadata-import-error": "Externe Formulare konnten nicht geladen werden.",
 
-    "new-project-title": "You created your new project!",
-    "new-project-text": "Start by adding your first event with a click on the <i>Add</i> button below the <i>Events</i> title.<br><br>Events refer to points in time or incidents during your study for which you want to collect data. This could be, for example, <i>Baseline</i> and <i>Follow-up</i> or <i>Patient-reported data</i> and <i>Routine data</i>. It is fine if your study consists of only one event.",
-    "first-event-title": "You added your first event",
-    "first-event-text": "Before you give your event a description, please make sure that the right language for your project is selected at the top.<br><br>You can change the language at any time to add new translations to your project. This lets you create a multilingual study.<br><br>Please note that this mainly changes the language of the forms but only small parts of the user interface. After ensuring that the right language is selected, add a description to your event to proceed with this tutorial.",
-    "first-event-edited-title": "You added your first event description",
-    "first-event-edited-text": "You can now continue by adding a form to the event. Then you can add an item group to the form and then items to that group. When you have created your first few items, you can click on <i>Capture Data</i> to see the form in action.<br><br>Remember to set the data type of items for a better data quality. With the <i>More</i> button you can change additional settings of an item such as allowed data ranges or units. Go to <i>Project Options</i> to see more options for your project.<br><br>Great luck with your study!"
+    "new-project-title": "Sie haben Ihr neues Projekt erstellt!",
+    "new-project-text": "Beginnen Sie damit, Ihr erstes Ereignis mit einem Klick auf die Schaltfläche <i>Hinzufügen</i> unterhalb des Titels <i>Ereignisse</i> hinzuzufügen.<br><br>Ereignisse beziehen sich auf Zeitpunkte oder Visiten während Ihrer Studie, für die Sie Daten erheben möchten. Das könnten zum Beispiel <i>Vorbefragung</i> und <i>Folgebefragung</i> oder <i>Patientenberichtete Daten</i> und <i>Routinedaten</i> sein. Es ist in Ordnung, wenn Ihre Studie nur aus einem Ereignis besteht",
+    "first-event-title": "Sie haben Ihr erster Ereignis hinzugefügt",
+    "first-event-text": "Sie können nun eine Beschreibung zu Ihrem Ereignis hinzufügen. Bitte beachten Sie, dass diese Beschreibung von der Sprache abhängig ist, die Sie aktuell ausgewählt haben.<br><br>Sie können die Sprache jederzeit ändern um neue Übersetzungen zu Ihrem Projekt hinzuzufügen, wodurch Sie eine mehrsprachige Studie erstellen können.",
+    "first-event-edited-title": "Sie haben Ihre erste Ereignisbeschreibung hinzugefügt",
+    "first-event-edited-text": "Sie können nun fortfahren, indem Sie dem Ereignis ein Formular hinzufügen. Dann können Sie dem Formular eine Gruppe und dann Elemente zu dieser Gruppe hinzufügen. Wenn Sie Ihre ersten Elemente erstellt haben, können Sie auf <i>Datenerfassung</i> klicken, um das Formular in Aktion zu sehen.<br><br>Mit der Schaltfläche <i>Mehr</i> können Sie zusätzliche Einstellungen eines Elements ändern, wie zum Beispiel erlaubte Datenbereiche oder Messeinheiten. Gehen Sie auf <i>Projektoptionen</i>, um weitere Einstellungen für Ihr Projekt zu sehen.<br><br>Viel Erfolg mit Ihrer Studie!"
 }

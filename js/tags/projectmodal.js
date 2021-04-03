@@ -97,7 +97,7 @@ class ProjectModal extends HTMLElement {
                                 <p class="mb-5" i18n="remove-data-hint"></p>
                                 <p class="mb-5"><strong i18n="remove-data-warning"></strong></p>
                                 <div class="buttons">
-                                    <button class="button is-danger is-small" onclick="showRemoveDataModal(true)" i18n="remove-data-complete"></button>
+                                    <button class="button is-danger is-small mr-5" onclick="showRemoveDataModal(true)" i18n="remove-data-complete"></button>
                                     <button class="button is-danger is-small" onclick="showRemoveDataModal()" i18n="remove-data-clinicaldata"></button>
                                     <div class="file is-hidden" id="odm-upload-to-server">
                                         <label class="file-label">
