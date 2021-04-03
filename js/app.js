@@ -126,7 +126,7 @@ function showDecryptionKeyModal() {
     $("#login-username-input").parentNode.parentNode.classList.add("is-hidden");
     $("#remove-data-button").classList.remove("is-hidden");
     $("#login-title").textContent = languageHelper.getTranslation("login-encrypted-title");
-    $("#login-text").textContent = languageHelper.getTranslation("login-enrypted-text");
+    $("#login-text").textContent = languageHelper.getTranslation("login-encrypted-text");
     $("#login-incorrect-hint .message-body").textContent = languageHelper.getTranslation("password-incorrect-error");
 
     // Set the click handler when clicking on the Open button
@@ -235,17 +235,12 @@ function adjustUIToUser() {
 }
 
 function showUninitializedHint() {
-    // TODO: i18n (not yet possible, since the start and login modal are rendered before the languageHelper is initialized for performance reasons)
-    ioHelper.showMessage("Server uninitialized", `This OpenEDC Server has not yet been initialized.<br><br>You can either go to <a target="_blank" href="https://openedc.org">openedc.org</a> to initialize this server with data that you have already locally captured there, or, alternatively, close this hint, start a new local project here, and initialize the server from here as well.<br><br>In both cases, use the <i>Project Options</i> button in the top right corner of the app and follow the instructions to initialize this server.`);
+    ioHelper.showMessage(languageHelper.getTranslation("server-uninitialized"), languageHelper.getTranslation("server-uninitialized-hint"));
 }
 
 window.showForgotPasswordModal = function() {
-    // TODO: i18n (not yet possible, since the start and login modal are rendered before the languageHelper is initialized for performance reasons)
-    if (ioHelper.hasServerURL()) {
-        ioHelper.showMessage("Forgot password", "All data within OpenEDC is stored and transferred end-to-end encrypted. Therefore, it is currently not possible to automatically reset a forgotten password, unfortunately.<br><br>If you forgot your password, please contact the person that gave you your login credentials. This person is able to reset your password with a new initial password.");
-    } else {
-        ioHelper.showMessage("Forgot password", "You encrypted all data within OpenEDC. Therefore, the stored data cannot be viewed or edited without your password.<br><br>If you forgot your password, you have to remove all data to use OpenEDC again, unfortunately.");
-    }
+    if (ioHelper.hasServerURL()) ioHelper.showMessage(languageHelper.getTranslation("forgot-password"), languageHelper.getTranslation("forgot-password-server-hint"));
+    else ioHelper.showMessage(languageHelper.getTranslation("forgot-password"), languageHelper.getTranslation("forgot-password-encrypted-hint"));
 }
 
 window.newProject = function() {
