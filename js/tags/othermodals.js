@@ -12,7 +12,7 @@ class StartModal extends HTMLElement {
                                 </figure>
                                 <div>
                                     <h1 class="title">OpenEDC</h1>
-                                    <h2 class="subtitle">Please choose a starting point</h2>
+                                    <h2 class="subtitle" i18n="start-title"></h2>
                                 </div>
                             </div>
                             <hr>

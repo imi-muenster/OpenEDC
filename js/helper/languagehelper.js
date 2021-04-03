@@ -22,6 +22,7 @@ export const untranslatedLocale = "none";
 
 let currentLocale = defaultLocale;
 let currentLocaleSet = false;
+let browserLocale = null;
 
 let localesInODM = [];
 let localesNotInODM = [];
@@ -31,6 +32,9 @@ let defaultTranslations = {};
 
 export async function init() {
     defaultTranslations = await loadTranslations(defaultLocale);
+
+    browserLocale = window.navigator.language.split("-")[0];
+    if (Object.values(locales).includes(browserLocale)) currentLocale = browserLocale;
 }
 
 export async function localize() {
@@ -60,7 +64,7 @@ export function populatePresentLanguages(odm) {
         if (!localesInODM.includes(locale)) {
             localesInODM.push(locale);
         }
-        if (!currentLocaleSet) {
+        if (!currentLocaleSet || locale == browserLocale) {
             currentLocale = locale;
             currentLocaleSet = true;
         }
@@ -95,7 +99,7 @@ export function createLanguageSelect(includeUnavailable) {
     }
     if (includeUnavailable || localesInODM.includes(untranslatedLocale)) localesNotInODM.forEach(locale => addLanguageOptionNavbar(locale));
 
-    $("#current-language").textContent = getTranslation(currentLocale);
+    setLanguageSelectText();
 }
 
 function addLanguageOptionNavbar(locale) {
@@ -113,10 +117,15 @@ function addDividerNavbar() {
     $("#language-dropdown").appendChild(divider);
 }
 
+function setLanguageSelectText() {
+    $("#current-language").textContent = getTranslation(currentLocale);
+    $("#current-language").setAttribute("i18n", currentLocale);
+}
+
 async function changeLanguage(locale) {
     currentLocale = locale;
     currentLocaleSet = true;
     await localize();
-    $("#current-language").textContent = getTranslation(locale);
+    setLanguageSelectText();
     document.dispatchEvent(new CustomEvent("LanguageChanged", { detail: currentLocale }));
 }
