@@ -189,9 +189,9 @@
     "about-text-2": "Alle Daten werden offline auf Ihrem lokalen Gerät verarbeitet und gespeichert. Sie können sich mit einem <a target='_blank' href='https://github.com/imi-muenster/OpenEDC-Server'>OpenEDC Server</a> verbinden, um Projekte mit mehreren Benutzern und Standorten zu erstellen.",
     "privacy-policy": "Datenschutzerklärung",
     "start-text": "Für ein leeres Projekt wählen Sie <strong>Neues Projekt</strong>. Klicken Sie auf <strong>Öffnen</strong>, wenn Sie eine CDISC ODM-XML-Datei auf Ihrem Computer haben. Wenn Sie dieses System noch nicht verwendet haben, wählen Sie <strong>Beispiel</strong>, um ein Beispielprojekt zu laden.",
-    "new-prpject": "Neues Projekt",
+    "new-project": "Neues Projekt",
     "open": "Öffnen",
-    "Example": "Beispiel",
+    "example": "Beispiel",
     "forgot-password-question": "Passwort vergessen?",
     "remove-data-question": "Daten löschen?",
 

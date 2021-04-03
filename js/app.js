@@ -29,6 +29,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.replace(ioHelper.getBaseURL().replace("/index.html", ""));
     }
 
+    // Initialize the language helper and localize the application
+    await languageHelper.init();
+    await languageHelper.localize();
+
     // Check if this app might be served from an OpenEDC Server instance and then show the login modal accordingly
     await ioHelper.init()
         .then(serverStatus => {
@@ -64,9 +68,7 @@ document.addEventListener("LanguageChanged", languageEvent => {
 });
 
 const startApp = async () => {
-    await languageHelper.init();
     languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
-    await languageHelper.internationalize();
     
     metadataModule.init();
     metadataModule.setLanguage(languageHelper.getCurrentLocale());
@@ -89,10 +91,13 @@ const startApp = async () => {
     // If there is at least one study event, automatically open the clinicaldata module
     metadataHelper.getStudyEvents().length > 0 ? metadataModule.hide() : metadataModule.show();
 
-    // For performance purposes, add the remaining modals to the DOM only after the main app has been rendered
+    // For performance purposes, add remaining modals to DOM after main app has been rendered
     addModalsToDOM();
 
-    // After all, check the app version or whether the app is currently offline
+    // Localize application after remaining modals were added to DOM
+    languageHelper.localize();
+
+    // After all, check app version or whether app is currently offline
     checkAppVersion();
 }
 
@@ -552,8 +557,6 @@ function addModalsToDOM() {
     for (let modalName of modalNames) {
         document.body.appendChild(document.createElement(modalName + "-modal"));
     }
-
-    languageHelper.internationalize();
 }
 
 function checkAppVersion() {

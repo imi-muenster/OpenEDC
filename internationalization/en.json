@@ -189,9 +189,9 @@
     "about-text-2": "All data is processed and stored offline on your local device. You can optionally connect to your own <a target='_blank' href='https://github.com/imi-muenster/OpenEDC-Server'>OpenEDC Server</a> to create research studies with multiple users and sites.",
     "privacy-policy": "Privacy Policy",
     "start-text": "For an empty project, choose <strong>New Project</strong>. Click <strong>Open</strong> if you have an CDISC ODM-XML file on your computer. If you have not yet used this EDC system, choose <strong>Example</strong> to load an illustrative project and see how it all works.",
-    "new-prpject": "New Project",
+    "new-project": "New Project",
     "open": "Open",
-    "Example": "Example",
+    "example": "Example",
     "forgot-password-question": "Forgot password?",
     "remove-data-question": "Remove data?",
 

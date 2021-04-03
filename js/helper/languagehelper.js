@@ -33,7 +33,7 @@ export async function init() {
     defaultTranslations = await loadTranslations(defaultLocale);
 }
 
-export async function internationalize() {
+export async function localize() {
     if (currentLocale == defaultLocale) translations = defaultTranslations;
     else translations = await loadTranslations(currentLocale);
     
@@ -116,7 +116,7 @@ function addDividerNavbar() {
 async function changeLanguage(locale) {
     currentLocale = locale;
     currentLocaleSet = true;
-    await internationalize();
+    await localize();
     $("#current-language").textContent = getTranslation(locale);
     document.dispatchEvent(new CustomEvent("LanguageChanged", { detail: currentLocale }));
 }
