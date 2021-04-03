@@ -157,7 +157,7 @@
     "remove-data-hint": "The following option lets you remove all stored data and thereby reset the current project.",
     "remove-data-warning": "Warning: This cannot be undone.",
     "remove-data-complete": "Remove data (complete)",
-    "remove-data-clinicaldata": "Remove data (only clinicaldata)",
+    "remove-data-clinicaldata": "Remove data (only clinical data)",
     "upload-odm": "Upload ODM (removes all current data)",
     "users-hint": "The following panel lets you add users to the current project. Please note that you can only add new users when you are connected to an OpenEDC Server.",
     "no-users-hint": "No users available. Please add a new user with the button below.",
@@ -193,6 +193,7 @@
     "new-project": "New Project",
     "open": "Open",
     "example": "Example",
+    "exemplary-project": "Exemplary Project",
     "forgot-password-question": "Forgot password?",
     "remove-data-question": "Remove data?",
 

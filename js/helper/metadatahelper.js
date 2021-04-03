@@ -35,6 +35,8 @@ export async function init() {
 
 export async function loadEmptyProject() {
     metadata = metadataTemplates.getODMTemplate();
+    setStudyName(languageHelper.getTranslation("new-project"));
+
     await storeMetadata();
 }
 
@@ -52,11 +54,13 @@ export function importMetadata(odmXMLString) {
 }
 
 export async function loadExample() {
-    let exampleResponse = await fetch(ioHelper.getBaseURL() + "/odm/example.xml");
-    let exampleODM = await exampleResponse.text();
+    const exampleResponse = await fetch(ioHelper.getBaseURL() + "/odm/example.xml");
+    const exampleODM = await exampleResponse.text();
 
     metadata = new DOMParser().parseFromString(exampleODM, "text/xml");
-    storeMetadata();
+    setStudyName(languageHelper.getTranslation("exemplary-project"));
+
+    await storeMetadata();
 }
 
 export async function loadStoredMetadata() {
