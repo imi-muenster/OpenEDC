@@ -95,7 +95,10 @@ const startApp = async () => {
     addModalsToDOM();
 
     // Localize application after remaining modals were added to DOM
-    languageHelper.localize();
+    await languageHelper.localize();
+
+    // Only required because of a bug in Safari (selects without a value show a value if the textContent of their option elements is changed -- which happens during localize())
+    if (getCurrentMode() == appModes.METADATA) metadataModule.reloadDetailsPanel();
 
     // After all, check app version or whether app is currently offline
     checkAppVersion();
