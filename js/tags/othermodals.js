@@ -96,7 +96,6 @@ class AboutModal extends HTMLElement {
         const name = "Leonard Greulich";
         const phone = "+49 (251) 83-54730";
         const mail = "leonard.greulich@uni-muenster.de";
-        const dataProtectionPolicy = "https://privacy.openedc.org";
 
         this.innerHTML = `
             <div class="modal" id="about-modal">
@@ -118,7 +117,7 @@ class AboutModal extends HTMLElement {
                                 <p i18n="address_3"></p>
                                 <p i18n="address_4"></p>
                             </div>
-                            <a class="button is-rounded is-small is-link mb-5" target="_blank" href="${dataProtectionPolicy}">
+                            <a class="button is-rounded is-small is-link mb-5" target="_blank" i18n-href="privacy-policy-url">
                                 <span class="icon">
                                     <i class="fas fa-arrow-right"></i>
                                 </span>

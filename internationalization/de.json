@@ -192,6 +192,7 @@
     "about-text-1": "Mit diesem kostenlosen <a target='_blank' href='https://github.com/imi-muenster/OpenEDC'>open-source</a> System zur Datenerfassung können Sie sichere medizinische Forschungsprojekte basierend auf dem <a target='_blank' href='https://www.cdisc.org/standards/data-exchange/odm'>CDISC ODM-XML</a> Standard entwerfen und durchführen.",
     "about-text-2": "Alle Daten werden offline auf Ihrem lokalen Gerät verarbeitet und gespeichert. Sie können sich mit einem <a target='_blank' href='https://github.com/imi-muenster/OpenEDC-Server'>OpenEDC Server</a> verbinden, um Projekte mit mehreren Benutzern und Standorten zu erstellen.",
     "privacy-policy": "Datenschutzerklärung",
+    "privacy-policy-url": "https://privacy.openedc.org/de/",
     "start-title": "Wählen Sie einen Startpunkt",
     "start-text": "Wählen Sie <strong>Neues Projekt</strong> für ein leeres Projekt. Klicken Sie auf <strong>Öffnen</strong>, wenn Sie eine CDISC ODM Datei auf Ihrem Computer haben. Falls Sie dieses System zum ersten Mal verwenden, wählen Sie <strong>Beispiel</strong>, um ein Beispielprojekt zu laden.",
     "new-project": "Neues Projekt",
