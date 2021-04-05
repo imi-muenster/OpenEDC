@@ -328,16 +328,17 @@ export function getSelect(name, isUnique, isFullwidth, values, selectedValue, di
 }
 
 // TODO: Used the DOMParser as alternative to document.createElement. Check if the performance is not significantly worse
+// TODO: Not very legible -- should be edited
 export function getAuditRecord(type, studyEvent, form, dataStatus, user, site, dateTime) {
     return new DOMParser().parseFromString(`
         <div class="notification">
-            <p class="mb-3"><strong>${type}</strong></p>
-            <p>Timestamp: <strong>${dateTime.toLocaleDateString()} – ${dateTime.toLocaleTimeString()}</strong></p>
-            ${form && studyEvent ? '<p>Form: <strong>' + studyEvent + ' – ' + form + '</strong></p>': ''}
-            ${dataStatus ? '<p>Data status: <strong>' + dataStatus + '</strong></p>': ''}
-            ${user ? '<p>User: <strong>' + user + '</strong></p>': ''}
-            ${site ? '<p>Site: <strong>' + site + '</strong></p>': ''}
-            ${form ? '<button class="button is-small mt-3">View Data</button>' : ""}
+            <p class="mb-3"><strong>${languageHelper.getTranslation(type)}</strong></p>
+            <p>${languageHelper.getTranslation("timestamp")}: <strong>${dateTime.toLocaleDateString()} – ${dateTime.toLocaleTimeString()}</strong></p>
+            ${form && studyEvent ? '<p>' + languageHelper.getTranslation('form') + ': <strong>' + studyEvent + ' – ' + form + '</strong></p>': ''}
+            ${dataStatus ? '<p>' + languageHelper.getTranslation('data-status') + ': <strong>' + languageHelper.getTranslation(dataStatus) + '</strong></p>': ''}
+            ${user ? '<p>' + languageHelper.getTranslation('user') + ': <strong>' + user + '</strong></p>': ''}
+            ${site ? '<p>' + languageHelper.getTranslation('site') + ': <strong>' + site + '</strong></p>': ''}
+            ${form ? '<button class="button is-small mt-3">' + languageHelper.getTranslation('view-data') + '</button>' : ''}
         </div>
     `, "text/html").body.firstChild;
 }

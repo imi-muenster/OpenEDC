@@ -42,8 +42,8 @@ export class AuditRecord {
 }
 
 const auditRecordTypes = {
-    SUBJECTCREATED: "Subject Created",
-    FORMEDITED: "Form Edited"
+    SUBJECTCREATED: "subject-created",
+    FORMEDITED: "form-edited"
 };
 
 const $ = query => subjectData.querySelector(query);
@@ -318,7 +318,7 @@ export function getAuditRecords() {
                 auditRecord.querySelector("UserRef").getAttribute("UserOID"),
                 auditRecord.querySelector("LocationRef").getAttribute("LocationOID"),
                 new Date(auditRecord.querySelector("DateTimeStamp").textContent),
-                dataStatusName.charAt(0).toUpperCase() + dataStatusName.slice(1).toLowerCase()
+                dataStatusName.toLowerCase()
             ));
         }
     }
