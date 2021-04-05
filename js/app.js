@@ -108,13 +108,11 @@ const setTitles = () => {
 }
 
 function showStartModal() {
-    metadataModule.removeArrowKeyListener();
     $("#start-modal").classList.add("is-active");
 }
 
 function hideStartModal() {
     $("#start-modal").classList.remove("is-active");
-    metadataModule.setArrowKeyListener();
 }
 
 function showNavbar() {
@@ -450,7 +448,7 @@ window.saveStudyNameDescription = function() {
     metadataHelper.storeMetadata();
     hideProjectModal();
     setTitles();
-    metadataModule.setArrowKeyListener();
+    if (getCurrentMode() == appModes.METADATA) metadataModule.setArrowKeyListener();
 }
 
 window.showRemoveDataModal = function(complete) {
