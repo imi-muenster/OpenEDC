@@ -762,7 +762,7 @@ window.showSubjectInfo = function() {
     }
 
     // Fill inputs to change subject key and site
-    let sites = ["No Site"];
+    let sites = [languageHelper.getTranslation("no-site")];
     admindataHelper.getSites().forEach(site => sites.push(site.getAttribute("Name")));
     ioHelper.safeRemoveElement($("#subject-site-select-outer"));
     const currentSiteName = admindataHelper.getSiteNameByOID(clinicaldataHelper.getSubject().siteOID);

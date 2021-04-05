@@ -62,7 +62,7 @@ function loadUser(userOID) {
     $(`#users-options .panel a[oid="${userOID}"]`).classList.add("is-active");
 
     // Create site select
-    let sites = ["No Site"];
+    let sites = [languageHelper.getTranslation("no-site")];
     admindataHelper.getSites().forEach(site => sites.push(site.getAttribute("Name")));
     ioHelper.safeRemoveElement($("#user-site-select-outer"));
     let currentSiteName = null;

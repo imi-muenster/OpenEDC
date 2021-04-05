@@ -168,6 +168,7 @@
     "first-name": "First Name",
     "last-name": "Last Name",
     "site": "Site",
+    "no-site": "No Site",
     "initial-password": "Initial Password",
     "user-rights": "User Rights",
     "save": "Save",

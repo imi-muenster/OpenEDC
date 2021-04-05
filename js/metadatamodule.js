@@ -25,7 +25,6 @@ let locale = null;
 
 export function init() {
     createDatatypeMandatorySelect();
-    resetDetailsPanel();
 
     metadataHelper.init();
     setIOListeners();
