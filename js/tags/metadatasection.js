@@ -3,8 +3,8 @@ class MetadataSection extends HTMLElement {
         this.innerHTML = `
             <section class="section is-hidden" id="metadata-section">
                 <div class="notification is-link is-light is-hidden-desktop">
-                    <h1 class="title is-4">Mobile Metadata</h1>
-                    <p>You are currently using a small device while editing the metadata (i.e., the forms). While this is absolutely fine and doable, we still suggest switching to a device with a larger screen to benefit from a simplified editing workflow.</p>
+                    <h1 class="title is-4" i18n="mobile-metadata"></h1>
+                    <p i18n="mobile-metadata-hint"></p>
                 </div>
                 <div class="columns is-desktop is-centered" id="details-panel">
                     <div class="column is-one-fifth-desktop">

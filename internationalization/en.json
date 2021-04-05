@@ -59,6 +59,8 @@
     "new-form": "New Form",
     "new-group": "New Group",
     "new-item": "New Item",
+    "mobile-metadata": "Mobile Metadata",
+    "mobile-metadata-hint": "You are currently using a small device to design the forms. While this is fine and doable, we suggest switching to a device with a larger screen to benefit from a simplified editing workflow.",
 
     "subjects": "Subjects",
     "new-subject": "New Subject",
