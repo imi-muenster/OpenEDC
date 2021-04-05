@@ -7,15 +7,15 @@ class MoreModal extends HTMLElement {
                     <div class="box">
                         <div class="tabs is-centered" id="more-tabs">
                             <ul>
-                                <li class="is-active" id="element-options-tab" onclick="moreTabClicked(event)"><a i18n="element-options">Element Options</a></li>
-                                <li id="element-description-tab" onclick="moreTabClicked(event)"><a i18n="description">Description</a></li>
-                                <li id="conditions-tab" onclick="moreTabClicked(event)"><a i18n="conditions">Conditions</a></li>
+                                <li class="is-active" id="element-options-tab" onclick="moreTabClicked(event)"><a i18n="element-options"></a></li>
+                                <li id="element-description-tab" onclick="moreTabClicked(event)"><a i18n="description"></a></li>
+                                <li id="conditions-tab" onclick="moreTabClicked(event)"><a i18n="conditions"></a></li>
                                 <li id="measurement-units-tab" onclick="moreTabClicked(event)"><a i18n="measurement-units"></a></li>
                             </ul>
                         </div>
                         <div class="width-is-three-quarters" id="element-options">
                             <div class="notification is-link is-light">
-                                <h1 class="title is-4">Element Options</h1>
+                                <h1 class="title is-4" i18n="element-options"></h1>
                                 <p i18n="element-options-hint"></p>
                             </div>
                             <div class="field">
