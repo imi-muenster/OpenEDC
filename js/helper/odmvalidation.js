@@ -9,9 +9,9 @@ export function process(odmXMLString) {
 
     // Basic file checks
     // A check against the ODM xsd schema is currently not implemented for flexibility purposes (e.g., for supporting REDCap ODM files)
-    if (!odm.querySelector("ODM")) throw "No ODM file uploaded.";
-    if (!odm.querySelector("Study")) throw "Empty ODM file uploaded.";
-    if (!odm.querySelector("MetaDataVersion")) throw "ODM without metadata uploaded.";
+    if (!odm.querySelector("ODM")) throw languageHelper.getTranslation("upload-error-no-odm");
+    if (!odm.querySelector("Study")) throw languageHelper.getTranslation("upload-error-empty-odm");
+    if (!odm.querySelector("MetaDataVersion")) throw languageHelper.getTranslation("upload-error-no-metadata");
 
     // Add a protocol element if there is no one present (e.g., for supporting the CDISC eCRF Portal)
     // Moreover, add a study event and reference all forms within this event if there is no one available
@@ -19,7 +19,7 @@ export function process(odmXMLString) {
         odm.querySelector("MetaDataVersion").insertAdjacentElement("afterbegin", metadataTemplates.getProtocol());
 
         if (!odm.querySelector("StudyEventDef")) {
-            const studyEventDef = metadataTemplates.getStudyEventDef("SE.1", "First Event")
+            const studyEventDef = metadataTemplates.getStudyEventDef("SE.1", languageHelper.getTranslation("new-event"))
             odm.querySelectorAll("FormDef").forEach(formDef => studyEventDef.appendChild(metadataTemplates.getFormRef(formDef.getAttribute("OID"))));
             odm.querySelector("Protocol").insertAdjacentElement("afterend", studyEventDef);
         }
@@ -34,7 +34,7 @@ export function process(odmXMLString) {
 
     // Check if the uploaded ODM originates from REDCap and show a warning
     const sourceSystem = odm.querySelector("ODM").getAttribute("SourceSystem");
-    if (sourceSystem && sourceSystem.toLowerCase() == "redcap") ioHelper.showMessage("REDCap ODM", "You uploaded a REDCap ODM file. Please note that REDCap currently does not fully adhere to the CDISC ODM standard. There might be hickups in using this file.");
+    if (sourceSystem && sourceSystem.toLowerCase() == "redcap") ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("upload-note-redcap"));
 
     return new XMLSerializer().serializeToString(odm);
 }
