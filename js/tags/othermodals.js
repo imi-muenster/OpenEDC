@@ -23,7 +23,7 @@ class StartModal extends HTMLElement {
                                 <button class="button" onclick="newProject()" i18n="new-project"></button>
                                 <div class="file" id="odm-upload">
                                     <label class="file-label">
-                                        <input class="file-input" type="file" name="resume" onchange="uploadODM()">
+                                        <input class="file-input" type="file" accept=".xml,text/xml" name="odm-xml" onchange="uploadODM()">
                                         <span class="file-cta button">
                                             <span class="file-label" i18n="open"></span>
                                         </span>
