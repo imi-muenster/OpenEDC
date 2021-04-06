@@ -31,12 +31,6 @@
                     <TranslatedText xml:lang="de">Jahre</TranslatedText>
                 </Symbol>
             </MeasurementUnit>
-            <MeasurementUnit OID="MM.5" Name="cm">
-                <Symbol>
-                    <TranslatedText xml:lang="en">cm</TranslatedText>
-                    <TranslatedText xml:lang="de">cm</TranslatedText>
-                </Symbol>
-            </MeasurementUnit>
         </BasicDefinitions>
         <MetaDataVersion OID="MDV.1" Name="MetaDataVersion">
             <Protocol>
@@ -218,7 +212,7 @@
                     <TranslatedText xml:lang="en">What is your height?</TranslatedText>
                     <TranslatedText xml:lang="de">Wie groß sind Sie?</TranslatedText>
                 </Question>
-                <MeasurementUnitRef MeasurementUnitOID="MM.5"/>
+                <MeasurementUnitRef MeasurementUnitOID="MM.2"/>
                 <RangeCheck Comparator="GT" SoftHard="Hard">
                     <CheckValue>1</CheckValue>
                 </RangeCheck>

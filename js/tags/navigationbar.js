@@ -29,6 +29,7 @@ class NavigationBar extends HTMLElement {
                     <div class="navbar-end">
                         <div class="navbar-item">
                             <div class="buttons">
+                                <button class="button is-hidden" id="logout-button" onclick="logout()" i18n="log-out"></button>
                                 <button class="button is-hidden" id="close-example-button" onclick="removeAllData()" i18n="close-example"></button>
                                 <button class="button" id="project-modal-button" onclick="showProjectModal()" i18n="project-options"></button>
                                 <button class="button is-link is-light mr-0" id="clinicaldata-toggle-button">
@@ -42,12 +43,6 @@ class NavigationBar extends HTMLElement {
                                         <i class="fas fa-stop"></i>
                                     </span>
                                     <span i18n="design-forms"></span>
-                                </button>
-                                <button class="button is-hidden ml-2" id="logout-button" onclick="logout()">
-                                    <span class="icon">
-                                        <i class="fas fa-lock"></i>
-                                    </span>
-                                    <span i18n="log-out"></span>
                                 </button>
                             </div>
                         </div>
