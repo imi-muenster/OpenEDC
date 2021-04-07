@@ -8,7 +8,7 @@ import * as odmValidation from "./helper/odmvalidation.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 
-const appVersion = "0.2.7";
+const appVersion = "0.3.0";
 
 const appModes = {
     METADATA: 1,
@@ -474,7 +474,7 @@ window.showRemoveDataModal = function(complete) {
 
 window.showAboutModal = function() {
     metadataModule.removeArrowKeyListener();
-    $("#about-modal h2").textContent = "Version " + appVersion;
+    $("#about-modal h2").textContent = languageHelper.getTranslation("version") + " " + appVersion;
     $("#about-modal").classList.add("is-active");
 
     ioHelper.hideMenu();

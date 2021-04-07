@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.3.0
+
+- Forms from the Portal of Medical Data Models can now be transferred to OpenEDC via a button integrated into the metadata repository to quickly create databases
+- The app is now fully internationalized which means that it can be localized to a new language by simply editing the respective language file (e.g., es.json)
+- Added German localization
+- Various other usability and stability improvements
+
 ## 0.2.7
 
 - Support for the CDISC eCRF Portal
