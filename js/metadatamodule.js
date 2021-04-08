@@ -361,7 +361,7 @@ function fillDetailsPanel(elementOID, elementType) {
     $("#more-button-mobile").disabled = false;
     $("#oid-input").value = elementOID;
 
-    const element = metadataHelper.getElementDefByOID(elementOID);
+    let element = metadataHelper.getElementDefByOID(elementOID);
     const elementRef = metadataHelper.getElementRefByOID(elementOID, elementType, getParentOID(elementType));
     $("#name-input").value = element.getAttribute("Name");
 

@@ -599,7 +599,10 @@ function mergeMetadataModels(models) {
         if (odmXMLString) await metadataHelper.mergeMetadata(odmXMLString);
     });
 
-    if (getCurrentState() == appStates.UNLOCKED) reloadApp();
+    if (getCurrentState() == appStates.UNLOCKED) {
+        reloadApp();
+        reloadLanguageSelect();
+    }
     else if (getCurrentState() == appStates.EMPTY) startApp();
 }
 
@@ -611,6 +614,11 @@ function reloadApp() {
         clinicaldataModule.cacheFormData();
         clinicaldataModule.reloadTree();
     }
+}
+
+function reloadLanguageSelect() {
+    languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
+    languageHelper.createLanguageSelect(getCurrentMode() == appModes.METADATA);
 }
 
 function getCurrentMode() {

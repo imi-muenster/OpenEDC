@@ -278,7 +278,7 @@
     "import-metadata": "Metadaten importieren",
     "import-metadata-merge-hint": "Sie haben bereits Formulare in Ihrem Projekt. Möchten Sie die neuen Formulare hinzufügen, die aktuellen zuerst löschen, oder die neuen Formulare gar nicht hinzufügen?",
     "append-forms": "Formulare hinzufügen",
-    "remove-current-data": "Aktuellen löschen",
+    "remove-current-data": "Aktuelle löschen",
     "metadata-import-encrypted-hint": "Leider ist es aktuell nicht möglich externe Formulare hinzuzufügen, wenn mit verschlüsselten Daten gearbeitet wird.",
     "metadata-import-error": "Externe Formulare konnten nicht geladen werden.",
 
