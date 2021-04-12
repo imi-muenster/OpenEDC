@@ -159,7 +159,6 @@
     "upload-odm": "ODM hochladen",
     "remove-data": "Datenlöschung",
     "remove-data-hint": "Mit der folgenden Option können Sie alle gespeicherten Daten löschen und damit das aktuelle Projekt zurücksetzen.",
-    "remove-data-warning": "Warnung: Dies kann nicht rückgängig gemacht werden.",
     "remove-data-complete": "Daten löschen (vollständig)",
     "remove-data-clinicaldata": "Daten löschen (nur klinische Daten)",
     "users-hint": "Im Folgenden können Sie dem aktuellen Projekt Benutzer hinzufügen. Bitte beachten Sie, dass Sie neue Benutzer nur hinzufügen können, wenn Sie mit einem OpenEDC Server verbunden sind.",
