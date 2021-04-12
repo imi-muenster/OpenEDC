@@ -37,12 +37,9 @@ const staticAssets = [
     "./xsl/odmtohtml.xsl"
 ];
 
-// Cache static assets (use message instead of install event to dynamically prevent caching)
-self.addEventListener("message", messageEvent => {
-    const cacheStaticAssets = messageEvent.data;
-    if (!cacheStaticAssets) return;
-
-    messageEvent.waitUntil(
+// Cache static assets
+self.addEventListener("install", installEvent => {
+    installEvent.waitUntil(
         caches.open(staticCacheName).then(cache => {
             cache.addAll(staticAssets);
         })
