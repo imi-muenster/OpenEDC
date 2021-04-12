@@ -253,7 +253,7 @@
     "open-server": "Zum Server navigieren",
     "server-not-found-error": "Es konnte kein OpenEDC Server für diese URL gefunden werden.",
     "password-not-set": "Passwort nicht gesetzt",
-    "enter-all-fields": "Please enter all fields.",
+    "enter-all-fields": "Bitte alle Felder ausfüllen.",
     "passwords-not-equal": "Das Passwort und das Bestätigungspasswort sind nicht gleich.",
     "password-not-secure": "Das Passwort muss mindestens acht Zeichen lang sein und eine Zahl, einen Klein- sowie einen Großbuchstaben enthalten.",
     "survey-code-error": "Der Umfragecode konnte nicht eingestellt werden. Geben Sie einen 4-stelligen Zahlencode ein.",
