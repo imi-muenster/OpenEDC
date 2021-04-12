@@ -92,21 +92,27 @@ class ProjectModal extends HTMLElement {
                                     <button class="button is-small" onclick="downloadCSV()" i18n="download-csv"></button>
                                 </div>
                             </div>
+                            <div class="notification is-link is-light">
+                                <h1 class="title is-4" i18n="import-data"></h1>
+                                <p class="mb-5" i18n="import-data-hint"></p>
+                                <div class="buttons">
+                                    <div class="file" id="odm-import">
+                                        <label class="file-label">
+                                            <input class="file-input" type="file" accept=".xml,text/xml" name="odm-xml" onchange="importODM()">
+                                            <span class="file-cta button is-link is-small">
+                                                <span class="file-label" i18n="import-odm"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="notification is-danger is-light">
                                 <h1 class="title is-4" i18n="remove-data"></h1>
                                 <p class="mb-5" i18n="remove-data-hint"></p>
                                 <p class="mb-5"><strong i18n="remove-data-warning"></strong></p>
                                 <div class="buttons">
-                                    <button class="button is-danger is-small mr-5" onclick="showRemoveDataModal(true)" i18n="remove-data-complete"></button>
+                                    <button class="button is-danger is-small mr-6" onclick="showRemoveDataModal(true)" i18n="remove-data-complete"></button>
                                     <button class="button is-danger is-small" onclick="showRemoveDataModal()" i18n="remove-data-clinicaldata"></button>
-                                    <div class="file is-hidden" id="odm-upload-to-server">
-                                        <label class="file-label">
-                                            <input class="file-input" type="file" name="resume" onchange="uploadODMToServer()">
-                                            <span class="file-cta button is-danger is-small">
-                                                <span class="file-label" i18n="upload-odm"></span>
-                                            </span>
-                                        </label>
-                                    </div>
                                 </div>
                             </div>
                         </div>

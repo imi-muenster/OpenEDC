@@ -62,22 +62,19 @@ export function populatePresentLanguages(odm) {
 
     for (const translatedText of odm.querySelectorAll("TranslatedText")) {
         const locale = translatedText.getAttribute("xml:lang");
-        if (!localesInODM.includes(locale)) {
-            localesInODM.push(locale);
-        }
+        if (!localesInODM.includes(locale)) localesInODM.push(locale);
+    }
+
+    for (let locale of Object.values(locales)) {
+        if (!localesInODM.includes(locale)) localesNotInODM.push(locale);
+    }
+}
+
+export function setInitialLocale() {
+    for (const locale of localesInODM) {
         if (!currentLocaleSet || locale == browserLocale) {
             currentLocale = locale;
             currentLocaleSet = true;
-        }
-    }
-
-    populateNonPresentLanguages();
-}
-
-function populateNonPresentLanguages() {
-    for (let locale of Object.values(locales)) {
-        if (!localesInODM.includes(locale)) {
-            localesNotInODM.push(locale);
         }
     }
 }

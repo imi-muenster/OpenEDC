@@ -69,6 +69,7 @@ document.addEventListener("LanguageChanged", languageEvent => {
 
 const startApp = async () => {
     languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
+    languageHelper.setInitialLocale();
     
     metadataModule.init();
     metadataModule.setLanguage(languageHelper.getCurrentLocale());
@@ -275,20 +276,18 @@ function validateODM(content) {
     }
 }
 
-// Might be removed in the future for a more generic ODM import and merge function
-window.uploadODMToServer = async function() {
-    const file = $("#odm-upload-to-server .file-input");
+// Currently only adds metadata elements to an existing project but could also be used in the future to add clinical data to an existing project
+window.importODM = async function() {
+    const file = $("#odm-import .file-input");
     const content = await ioHelper.getFileContent(file.files[0]);
     if (!content) return;
 
     const odmXMLString = validateODM(content);
     if (!odmXMLString) return;
 
-    await clinicaldataHelper.removeClinicaldata();
+    mergeMetadataModels([odmXMLString]);
 
-    metadataHelper.importMetadata(odmXMLString);
-    await clinicaldataHelper.importClinicaldata(odmXMLString);
-    reloadApp();
+    hideProjectModal();
 }
 
 window.loadExample = async function() {
@@ -307,7 +306,6 @@ window.showProjectModal = function() {
     if (ioHelper.hasServerURL()) {
         $("#project-modal #server-url-input").parentNode.parentNode.classList.add("is-hidden");
         $("#project-modal #server-connected-hint").classList.remove("is-hidden");
-        $("#odm-upload-to-server").classList.remove("is-hidden");
     }
 
     $("#survey-code-input").value = ioHelper.getSurveyCode();

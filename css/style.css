@@ -176,6 +176,12 @@ a.panel-block:hover {
     color: #fff;
 }
 
+.file-label:hover .file-cta.is-link {
+    background-color: #276cda !important;
+    border-color: transparent;
+    color: #fff;
+}
+
 .is-survey-view {
     max-width: 500px;
     margin: 0 auto;
