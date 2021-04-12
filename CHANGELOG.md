@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.3.1
+
+- Option to upload and merge ODM metadata into an existing project
+
 ## 0.3.0
 
 - Forms from the Portal of Medical Data Models can now be transferred to OpenEDC via a button integrated into the metadata repository to quickly create databases
