@@ -156,7 +156,7 @@
     "download-odm-metadata": "Download ODM (only metadata)",
     "download-csv": "Download CSV (only clinical data)",
     "import-data": "Import Data",
-    "import-data-hint": "With this option you can import an ODM file to your current project. New events and forms will be added. If you want to import an entire project with clinical data, first remove all current data with the subsequent option.",
+    "import-data-hint": "With this option you can import an CDISC ODM-XML file to your current project. New events and forms will be added. If you want to import an entire project with clinical data, first remove all current data with the option below.",
     "upload-odm": "Upload ODM",
     "remove-data": "Remove Data",
     "remove-data-hint": "The following option lets you remove all stored data and thereby reset the current project.",
