@@ -156,7 +156,7 @@
     "download-csv": "CSV herunterladen (nur klinische Daten)",
     "import-data": "Datenimport",
     "import-data-hint": "Mit dieser Option können Sie eine ODM Datei in Ihr aktuelles Projekt importieren. Neue Ereignisse und Formulare werden hinzugefügt. Wenn Sie ein ganzes Projekt mit klinischen Daten importieren möchten, löschen Sie zunächst alle aktuellen Daten mit der nachfolgenden Option.",
-    "import-odm": "ODM importieren",
+    "upload-odm": "ODM hochladen",
     "remove-data": "Datenlöschung",
     "remove-data-hint": "Mit der folgenden Option können Sie alle gespeicherten Daten löschen und damit das aktuelle Projekt zurücksetzen.",
     "remove-data-warning": "Warnung: Dies kann nicht rückgängig gemacht werden.",

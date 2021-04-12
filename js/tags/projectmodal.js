@@ -100,7 +100,7 @@ class ProjectModal extends HTMLElement {
                                         <label class="file-label">
                                             <input class="file-input" type="file" accept=".xml,text/xml" name="odm-xml" onchange="importODM()">
                                             <span class="file-cta button is-link is-small">
-                                                <span class="file-label" i18n="import-odm"></span>
+                                                <span class="file-label" i18n="upload-odm"></span>
                                             </span>
                                         </label>
                                     </div>

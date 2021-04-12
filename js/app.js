@@ -253,8 +253,8 @@ window.newProject = function() {
     setTimeout(() => ioHelper.showMessage(languageHelper.getTranslation("new-project-title"), languageHelper.getTranslation("new-project-text")), 1000);
 }
 
-window.uploadODM = async function() {
-    const file = $("#odm-upload .file-input");
+window.openODM = async function() {
+    const file = $("#odm-open .file-input");
     const content = await ioHelper.getFileContent(file.files[0]);
     if (!content) return;
 
