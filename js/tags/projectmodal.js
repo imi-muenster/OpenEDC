@@ -84,6 +84,15 @@ class ProjectModal extends HTMLElement {
                                 </label>
                             </div>
                             <div class="notification is-link is-light">
+                                <h1 class="title is-4" i18n="export-data"></h1>
+                                <p class="mb-5" i18n="export-data-hint"></p>
+                                <div class="buttons">
+                                    <button class="button is-link is-small" onclick="downloadODM()" i18n="download-odm-complete"></button>
+                                    <button class="button is-small" onclick="downloadODMMetadata()" i18n="download-odm-metadata"></button>
+                                    <button class="button is-small" onclick="downloadCSV()" i18n="download-csv"></button>
+                                </div>
+                            </div>
+                            <div class="notification is-link is-light">
                                 <h1 class="title is-4" i18n="import-data"></h1>
                                 <p class="mb-5" i18n="import-data-hint"></p>
                                 <div class="buttons">
@@ -95,15 +104,6 @@ class ProjectModal extends HTMLElement {
                                             </span>
                                         </label>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="notification is-link is-light">
-                                <h1 class="title is-4" i18n="export-data"></h1>
-                                <p class="mb-5" i18n="export-data-hint"></p>
-                                <div class="buttons">
-                                    <button class="button is-link is-small" onclick="downloadODM()" i18n="download-odm-complete"></button>
-                                    <button class="button is-small" onclick="downloadODMMetadata()" i18n="download-odm-metadata"></button>
-                                    <button class="button is-small" onclick="downloadCSV()" i18n="download-csv"></button>
                                 </div>
                             </div>
                             <div class="notification is-danger is-light">
