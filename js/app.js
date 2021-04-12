@@ -55,7 +55,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Register serviceworker for offline capabilities
     if ("serviceWorker" in window.navigator) {
-        window.navigator.serviceWorker.register("./serviceworker.js");
+        const developmentOrigins = ["dev.openedc.org"];
+        const cacheStaticAssets = !developmentOrigins.some(origin => window.location.origin.includes(origin));
+        window.navigator.serviceWorker.register("./serviceworker.js").then(registration => {
+            if (registration.installing) registration.installing.postMessage(cacheStaticAssets);
+        });
     }
 });
 
