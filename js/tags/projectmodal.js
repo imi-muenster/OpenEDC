@@ -87,9 +87,9 @@ class ProjectModal extends HTMLElement {
                                 <h1 class="title is-4" i18n="export-data"></h1>
                                 <p class="mb-5" i18n="export-data-hint"></p>
                                 <div class="buttons">
-                                    <button class="button is-link is-small" onclick="downloadODM()" i18n="download-odm-complete"></button>
-                                    <button class="button is-small" onclick="downloadODMMetadata()" i18n="download-odm-metadata"></button>
-                                    <button class="button is-small" onclick="downloadCSV()" i18n="download-csv"></button>
+                                    <button class="button is-link is-small" onclick="exportODM()" i18n="export-project"></button>
+                                    <button class="button is-small" onclick="exportODMMetadata()" i18n="export-metadata"></button>
+                                    <button class="button is-small" onclick="exportCSV()" i18n="export-clinicaldata"></button>
                                 </div>
                             </div>
                             <div class="notification is-link is-light">
@@ -100,7 +100,7 @@ class ProjectModal extends HTMLElement {
                                         <label class="file-label">
                                             <input class="file-input" type="file" accept=".xml,text/xml" name="odm-xml" onchange="importODM()">
                                             <span class="file-cta button is-link is-small">
-                                                <span class="file-label" i18n="upload-odm"></span>
+                                                <span class="file-label" i18n="import-metadata"></span>
                                             </span>
                                         </label>
                                     </div>
@@ -110,8 +110,8 @@ class ProjectModal extends HTMLElement {
                                 <h1 class="title is-4" i18n="remove-data"></h1>
                                 <p class="mb-5" i18n="remove-data-hint"></p>
                                 <div class="buttons">
-                                    <button class="button is-danger is-small mr-6" onclick="showRemoveDataModal(true)" i18n="remove-data-complete"></button>
-                                    <button class="button is-danger is-small" onclick="showRemoveDataModal()" i18n="remove-data-clinicaldata"></button>
+                                    <button class="button is-danger is-small" onclick="showRemoveDataModal(true)" i18n="remove-project"></button>
+                                    <button class="button is-danger is-small" onclick="showRemoveDataModal()" i18n="remove-clinicaldata"></button>
                                 </div>
                             </div>
                         </div>

@@ -487,7 +487,7 @@ window.hideAboutModal = function() {
     if (getCurrentMode() == appModes.METADATA) metadataModule.setArrowKeyListener();
 }
 
-window.downloadODM = async function() {
+window.exportODM = async function() {
     let odm = metadataHelper.prepareDownload(clinicaldataHelper.dataStatusTypes);
 
     let admindata = admindataHelper.getAdmindata(metadataHelper.getStudyOID());
@@ -499,12 +499,12 @@ window.downloadODM = async function() {
     ioHelper.download(metadataHelper.getStudyName(), "xml", new XMLSerializer().serializeToString(odm));
 }
 
-window.downloadODMMetadata = function() {
+window.exportODMMetadata = function() {
     const odm = metadataHelper.prepareDownload();
     ioHelper.download(metadataHelper.getStudyName()+"_metadata", "xml", new XMLSerializer().serializeToString(odm));
 }
 
-window.downloadCSV = async function() {
+window.exportCSV = async function() {
     const csvHeaders = metadataHelper.getCSVHeaders();
     const csvData = await clinicaldataHelper.getCSVData(csvHeaders);
     const csvString = ioHelper.getCSVString(csvHeaders, csvData);
@@ -581,7 +581,7 @@ async function handleURLSearchParameters() {
             
             if (getCurrentState() == appStates.EMPTY) mergeMetadataModels(models);
             else if (getCurrentState() == appStates.UNLOCKED) {
-                ioHelper.showMessage(languageHelper.getTranslation("import-metadata"), languageHelper.getTranslation("import-metadata-merge-hint"),
+                ioHelper.showMessage(languageHelper.getTranslation("import-forms"), languageHelper.getTranslation("import-forms-merge-hint"),
                     {
                         [languageHelper.getTranslation("append-forms")]: () => mergeMetadataModels(models),
                         [languageHelper.getTranslation("remove-current-data")]: () => {
@@ -590,9 +590,9 @@ async function handleURLSearchParameters() {
                             mergeMetadataModels(models);
                     }
                 });
-            } else ioHelper.showMessage(languageHelper.getTranslation("Note"), languageHelper.getTranslation("metadata-import-encrypted-hint"));
+            } else ioHelper.showMessage(languageHelper.getTranslation("Note"), languageHelper.getTranslation("forms-import-encrypted-hint"));
         })
-        .catch(error => ioHelper.showMessage(languageHelper.getTranslation("Error"), languageHelper.getTranslation("metadata-import-error")));
+        .catch(error => ioHelper.showMessage(languageHelper.getTranslation("Error"), languageHelper.getTranslation("forms-import-error")));
 }
 
 function mergeMetadataModels(models) {

@@ -32,6 +32,10 @@ a.panel-block {
     padding-bottom: 14px;
 }
 
+.notification {
+    padding: 1.25rem 1.5rem;
+}
+
 #clinicaldata-form-title, #clinicaldata-form-title .level-item {
     flex-shrink: 1;
 }
