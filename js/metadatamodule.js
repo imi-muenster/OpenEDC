@@ -825,7 +825,8 @@ function removeElement() {
 
 function duplicateReference() {
     if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) {
-        let newItemOID = metadataHelper.createItem(currentElementID.itemGroup);
+        const newItemOID = metadataHelper.createItem(currentElementID.itemGroup);
+        metadataHelper.setItemDataType(newItemOID, metadataHelper.getElementDefByOID(currentElementID.item).getAttribute("DataType"));
         metadataHelper.addCodeListRef(newItemOID, currentElementID.codeList);
     } else {
         let elementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), currentElementType, getParentOID(currentElementType));
@@ -851,8 +852,9 @@ function copyElement(deepCopy) {
             metadataHelper.copyItem(currentElementID.item, deepCopy, currentElementID.itemGroup);
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
-            let newItemOID = metadataHelper.createItem(currentElementID.itemGroup);
-            let newCodeListOID = metadataHelper.copyCodeList(currentElementID.codeList);
+            const newItemOID = metadataHelper.createItem(currentElementID.itemGroup);
+            const newCodeListOID = metadataHelper.copyCodeList(currentElementID.codeList);
+            metadataHelper.setItemDataType(newItemOID, metadataHelper.getElementDefByOID(currentElementID.item).getAttribute("DataType"));
             metadataHelper.addCodeListRef(newItemOID, newCodeListOID);
     }
 

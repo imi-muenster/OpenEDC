@@ -43,7 +43,7 @@
     "mandatory": "Pflichtfeld",
     "choices-unique-id": "Wahlmöglichkeiten ID",
     "coded-value": "Kodierter Wert",
-    "multiple-references-hint": "Mehrere Verweise auf Element",
+    "multiple-references-hint": "Mehrere Verweise",
     "save-changes": "Speichern",
     "remove": "Löschen",
     "duplicate": "Duplizieren",
