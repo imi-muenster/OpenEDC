@@ -154,7 +154,7 @@ export function loadSubjectKeys() {
         $("#subject-panel-blocks").appendChild(panelBlock);
     }
 
-    if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
+    if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).activate();
 }
 
 async function loadSubjectData(subjectKey) {
@@ -186,7 +186,7 @@ async function loadSubjectData(subjectKey) {
     });
 
     ioHelper.removeIsActiveFromElement($("#subject-panel-blocks a.is-active"));
-    if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).classList.add("is-active");
+    if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).activate();
     $("#subject-info-button").disabled = currentElementID.subject ? false : true;
     if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.MANAGESUBJECTS)) $("#subject-info-button").disabled = true;
 
@@ -236,7 +236,7 @@ async function loadTree(studyEventOID, formOID) {
 
 async function loadFormsByStudyEvent() {
     ioHelper.removeIsActiveFromElement($("#clinicaldata-study-event-panel-blocks a.is-active"));
-    $(`#clinicaldata-study-event-panel-blocks [oid="${currentElementID.studyEvent}"]`).classList.add("is-active");
+    $(`#clinicaldata-study-event-panel-blocks [oid="${currentElementID.studyEvent}"]`).activate();
 
     const formDefs = metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent);
     for (let formDef of formDefs) {
@@ -271,7 +271,7 @@ async function loadFormData() {
     }
 
     ioHelper.removeIsActiveFromElement($("#clinicaldata-form-panel-blocks a.is-active"));
-    $(`#clinicaldata-form-panel-blocks [oid="${currentElementID.form}"]`).classList.add("is-active");
+    $(`#clinicaldata-form-panel-blocks [oid="${currentElementID.form}"]`).activate();
 
     resetFormUIElements();
 
@@ -631,11 +631,11 @@ function showCloseClinicaldataModal() {
         $("#close-data-text").textContent = languageHelper.getTranslation("close-form-text");
     }
 
-    $("#close-clinicaldata-modal").classList.add("is-active");
+    $("#close-clinicaldata-modal").activate();
 }
 
 function hideCloseClinicaldataModal() {
-    $("#close-clinicaldata-modal").classList.remove("is-active");
+    $("#close-clinicaldata-modal").deactivate();
 }
 
 function showCloseSurveyModal() {
@@ -670,7 +670,7 @@ function showCloseSurveyModal() {
     }
 
     surveyCode = "";
-    $("#survey-code-modal").classList.add("is-active");
+    $("#survey-code-modal").activate();
 }
 
 function surveyCodeButtonPressed(value) {
@@ -689,7 +689,7 @@ function surveyCodeButtonPressed(value) {
     $("#wrong-survey-code-hint").hide();
     if (surveyCode.length == 4) {
         if (surveyCode == ioHelper.getSurveyCode()) {
-            $("#survey-code-modal").classList.remove("is-active");
+            $("#survey-code-modal").deactivate();
         } else {
             $("#wrong-survey-code-hint").show();
             surveyCode = "";
@@ -783,11 +783,11 @@ window.showSubjectInfo = function() {
         $$("#subject-modal button:not([onclick])").forEach(button => button.disabled = true);
     }
 
-    $("#subject-modal").classList.add("is-active");
+    $("#subject-modal").activate();
 }
 
 window.hideSubjectInfo = function() {
-    $("#subject-modal").classList.remove("is-active");
+    $("#subject-modal").deactivate();
 }
 
 async function showAuditRecordFormData(studyEventOID, formOID, date) {

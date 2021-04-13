@@ -481,13 +481,13 @@ export function safeRemoveElement(element) {
 }
 
 export function removeIsActiveFromElement(element) {
-    if (element) element.classList.remove("is-active");
+    if (element) element.deactivate();
 }
 
 export function hideMenu() {
-    $(".navbar-menu").classList.remove("is-active");
-    $(".navbar-burger").classList.remove("is-active");
-    $("#language-navbar-item").classList.remove("is-active");
+    $(".navbar-menu").deactivate();
+    $(".navbar-burger").deactivate();
+    $("#language-navbar-item").deactivate();
     $("#language-dropdown").classList.add("is-hidden-touch");
 }
 

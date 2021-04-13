@@ -112,11 +112,11 @@ const setTitles = () => {
 }
 
 function showStartModal() {
-    $("#start-modal").classList.add("is-active");
+    $("#start-modal").activate();
 }
 
 function hideStartModal() {
-    $("#start-modal").classList.remove("is-active");
+    $("#start-modal").deactivate();
 }
 
 function showNavbar() {
@@ -140,7 +140,7 @@ function showDecryptionKeyModal() {
             .catch(error => loginNotSuccessful(error));
     };
 
-    $("#login-modal").classList.add("is-active");
+    $("#login-modal").activate();
 }
 
 function showCloseExampleButton() {
@@ -179,7 +179,7 @@ function showLoginModal() {
         }
     };
 
-    $("#login-modal").classList.add("is-active");
+    $("#login-modal").activate();
 }
 
 async function loginSuccessful() {
@@ -319,23 +319,23 @@ window.showProjectModal = function() {
 
     ioHelper.hideMenu();
 
-    $("#project-modal").classList.add("is-active");
+    $("#project-modal").activate();
 }
 
 window.hideProjectModal = function() {
     ioHelper.removeIsActiveFromElement($("#project-tabs ul li.is-active"));
-    $("#general-options-tab").classList.add("is-active");
+    $("#general-options-tab").activate();
     $("#general-options").show();
     $("#users-options").hide();
     $("#sites-options").hide();
     $("#name-description").hide();
-    $("#project-modal").classList.remove("is-active");
+    $("#project-modal").deactivate();
     if (getCurrentMode() == appModes.METADATA) metadataModule.setArrowKeyListener();
 }
 
 window.projectTabClicked = function(event) {
     ioHelper.removeIsActiveFromElement($("#project-tabs ul li.is-active"));
-    event.target.parentNode.classList.add("is-active");
+    event.target.parentNode.activate();
 
     switch(event.target.parentNode.id) {
         case "general-options-tab":
@@ -473,13 +473,13 @@ window.showRemoveDataModal = function(complete) {
 window.showAboutModal = function() {
     metadataModule.removeArrowKeyListener();
     $("#about-modal h2").textContent = languageHelper.getTranslation("version") + " " + appVersion;
-    $("#about-modal").classList.add("is-active");
+    $("#about-modal").activate();
 
     ioHelper.hideMenu();
 }
 
 window.hideAboutModal = function() {
-    $("#about-modal").classList.remove("is-active");
+    $("#about-modal").deactivate();
     if (getCurrentMode() == appModes.METADATA) metadataModule.setArrowKeyListener();
 }
 

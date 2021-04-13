@@ -18,3 +18,11 @@ HTMLElement.prototype.show = function() {
 HTMLElement.prototype.hide = function() {
     this.classList.add("is-hidden");
 }
+
+HTMLElement.prototype.activate = function() {
+    this.classList.add("is-active");
+}
+
+HTMLElement.prototype.deactivate = function() {
+    this.classList.remove("is-active");
+}

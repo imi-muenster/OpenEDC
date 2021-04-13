@@ -59,7 +59,7 @@ function loadUser(userOID) {
     if (!user) return;
 
     ioHelper.removeIsActiveFromElement($("#users-options .panel a.is-active"));
-    $(`#users-options .panel a[oid="${userOID}"]`).classList.add("is-active");
+    $(`#users-options .panel a[oid="${userOID}"]`).activate();
 
     // Create site select
     let sites = [languageHelper.getTranslation("no-site")];
@@ -177,7 +177,7 @@ function loadSite(siteOID) {
     if (!site) return;
 
     ioHelper.removeIsActiveFromElement($("#sites-options .panel a.is-active"));
-    $(`#sites-options .panel a[oid="${siteOID}"]`).classList.add("is-active");
+    $(`#sites-options .panel a[oid="${siteOID}"]`).activate();
 
     $("#site-name-input").value = site.getName();
     $("#site-name-input").disabled = false;

@@ -174,7 +174,7 @@ export function loadStudyEvents(hideTree) {
 
 function studyEventClicked(event) {
     ioHelper.removeIsActiveFromElement($("#study-event-panel-blocks a.is-active"));
-    event.target.classList.add("is-active");
+    event.target.activate();
     
     currentElementID.studyEvent = event.target.getOID();
     currentElementType = event.target.getAttribute("element-type");
@@ -198,7 +198,7 @@ function loadFormsByStudyEvent(studyEventOID, hideTree) {
 
 function formClicked(event) {
     ioHelper.removeIsActiveFromElement($("#form-panel-blocks a.is-active"));
-    event.target.classList.add("is-active");
+    event.target.activate();
 
     currentElementID.form = event.target.getOID();
     currentElementType = event.target.getAttribute("element-type");
@@ -222,7 +222,7 @@ function loadItemGroupsByForm(formOID, hideTree) {
 
 function itemGroupClicked(event) {
     ioHelper.removeIsActiveFromElement($("#item-group-panel-blocks a.is-active"));
-    event.target.classList.add("is-active");
+    event.target.activate();
 
     currentElementID.itemGroup = event.target.getOID();
     currentElementType = event.target.getAttribute("element-type");
@@ -247,7 +247,7 @@ function loadItemsByItemGroup(itemGroupOID, hideTree) {
 
 function itemClicked(event) {
     ioHelper.removeIsActiveFromElement($("#item-panel-blocks a.is-active"));
-    event.target.classList.add("is-active");
+    event.target.activate();
 
     currentElementID.item = event.target.getOID();
     currentElementType = event.target.getAttribute("element-type");
@@ -272,7 +272,7 @@ function loadCodeListItemsByItem(itemOID, hideTree) {
 
 function codeListItemClicked(event) {
     ioHelper.removeIsActiveFromElement($("#code-list-item-panel-blocks a.is-active"));
-    event.target.classList.add("is-active");
+    event.target.activate();
 
     currentElementID.codeList = event.target.getOID();
     currentElementID.codeListItem = event.target.getAttribute("coded-value");
@@ -282,34 +282,34 @@ function codeListItemClicked(event) {
 
 function reloadStudyEvents() {
     loadStudyEvents(currentElementID.studyEvent == null);
-    if (currentElementID.studyEvent) $(`[oid="${currentElementID.studyEvent}"]`).classList.add("is-active");
+    if (currentElementID.studyEvent) $(`[oid="${currentElementID.studyEvent}"]`).activate();
 }
 
 function reloadForms() {
     if (currentElementID.studyEvent) {
         loadFormsByStudyEvent(currentElementID.studyEvent, currentElementID.form == null);
-        if (currentElementID.form) $(`[oid="${currentElementID.form}"]`).classList.add("is-active");
+        if (currentElementID.form) $(`[oid="${currentElementID.form}"]`).activate();
     }
 }
 
 function reloadItemGroups() {
     if (currentElementID.form) {
         loadItemGroupsByForm(currentElementID.form, currentElementID.itemGroup == null);
-        if (currentElementID.itemGroup) $(`[oid="${currentElementID.itemGroup}"]`).classList.add("is-active");
+        if (currentElementID.itemGroup) $(`[oid="${currentElementID.itemGroup}"]`).activate();
     }
 }
 
 function reloadItems() {
     if (currentElementID.itemGroup) {
         loadItemsByItemGroup(currentElementID.itemGroup, currentElementID.item == null);
-        if (currentElementID.item) $(`[oid="${currentElementID.item}"]`).classList.add("is-active");
+        if (currentElementID.item) $(`[oid="${currentElementID.item}"]`).activate();
     }
 }
 
 function reloadCodeListItems() {
     if (currentElementID.item) {
         loadCodeListItemsByItem(currentElementID.item, currentElementID.codeList == null);
-        if (currentElementID.codeList) $(`[oid="${currentElementID.codeList}"][coded-value="${currentElementID.codeListItem}"]`).classList.add("is-active");
+        if (currentElementID.codeList) $(`[oid="${currentElementID.codeList}"][coded-value="${currentElementID.codeListItem}"]`).activate();
     }
 }
 
@@ -1095,7 +1095,7 @@ window.showDuplicateModal = function() {
 
 window.showMoreModal = function() {
     removeArrowKeyListener();
-    $("#more-modal").classList.add("is-active");
+    $("#more-modal").activate();
     createConditionSelect();
     createMeasurementUnitSelect();
     fillRangeChecks();
@@ -1105,12 +1105,12 @@ window.showMoreModal = function() {
 
 window.hideMoreModal = function() {
     ioHelper.removeIsActiveFromElement($("#more-tabs ul li.is-active"));
-    $("#element-options-tab").classList.add("is-active");
+    $("#element-options-tab").activate();
     $("#element-options").show();
     $("#element-description").hide();
     $("#measurement-units").hide();
     $("#conditions").hide();
-    $("#more-modal").classList.remove("is-active");
+    $("#more-modal").deactivate();
     setArrowKeyListener();
 }
 
@@ -1136,7 +1136,7 @@ window.addConditionInput = function() {
 
 window.moreTabClicked = function(event) {
     ioHelper.removeIsActiveFromElement($("#more-tabs ul li.is-active"));
-    event.target.parentNode.classList.add("is-active");
+    event.target.parentNode.activate();
 
     switch(event.target.parentNode.id) {
         case "element-options-tab":
