@@ -34,7 +34,7 @@ export async function loadUsers() {
     else $("#no-users-hint").classList.remove("is-hidden");
 
     for (let user of users) {
-        const userOID = user.getAttribute("OID");
+        const userOID = user.getOID();
         const panelBlock = document.createElement("a");
         panelBlock.className = "panel-block has-no-border-left";
         panelBlock.textContent = admindataHelper.getUserFullName(userOID);
@@ -113,7 +113,7 @@ window.addUser = function() {
 }
 
 window.saveUser = function() {
-    const userOID = $("#users-options .panel a.is-active").getAttribute("oid");
+    const userOID = $("#users-options .panel a.is-active").getOID();
     if (!userOID) return;
 
     const firstName = $("#user-first-name-input").value;
@@ -133,7 +133,7 @@ window.saveUser = function() {
 }
 
 window.removeUser = function() {
-    const userOID = $("#users-options .panel a.is-active").getAttribute("oid");
+    const userOID = $("#users-options .panel a.is-active").getOID();
     if (!userOID) return;
 
     if (ioHelper.hasServerURL()) {
@@ -162,7 +162,7 @@ export function loadSites() {
     else $("#no-sites-hint").classList.remove("is-hidden");
 
     for (let site of sites) {
-        const siteOID = site.getAttribute("OID");
+        const siteOID = site.getOID();
         const panelBlock = document.createElement("a");
         panelBlock.className = "panel-block has-no-border-left";
         panelBlock.textContent = site.getAttribute("Name");
@@ -195,7 +195,7 @@ window.addSite = function() {
 }
 
 window.saveSite = function() {
-    const siteOID = $("#sites-options .panel a.is-active").getAttribute("oid");
+    const siteOID = $("#sites-options .panel a.is-active").getOID();
     if (!siteOID) return;
 
     admindataHelper.setSiteName(siteOID, $("#site-name-input").value);
@@ -205,7 +205,7 @@ window.saveSite = function() {
 }
 
 window.removeSite = function() {
-    const siteOID = $("#sites-options .panel a.is-active").getAttribute("oid");
+    const siteOID = $("#sites-options .panel a.is-active").getOID();
     if (!siteOID) return;
 
     admindataHelper.removeSite(siteOID)

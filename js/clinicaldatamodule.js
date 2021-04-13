@@ -174,7 +174,7 @@ async function loadSubjectData(subjectKey) {
     }
 
     // Automatically select the first study event if there is only one (present here as well mainly because of mobile auto survey view function)
-    if (!currentElementID.studyEvent && metadataHelper.getStudyEvents().length == 1) currentElementID.studyEvent = metadataHelper.getStudyEvents()[0].getAttribute("OID");
+    if (!currentElementID.studyEvent && metadataHelper.getStudyEvents().length == 1) currentElementID.studyEvent = metadataHelper.getStudyEvents()[0].getOID();
 
     currentElementID.subject = subjectKey;
     cachedFormData = null;
@@ -197,7 +197,7 @@ export async function reloadTree() {
     // Hide the study event column if there is only one event
     if (metadataHelper.getStudyEvents().length == 1) {
         $("#clinicaldata-study-events-column").classList.add("is-hidden");
-        currentElementID.studyEvent = metadataHelper.getStudyEvents()[0].getAttribute("OID");
+        currentElementID.studyEvent = metadataHelper.getStudyEvents()[0].getOID();
     } else $("#clinicaldata-study-events-column").classList.remove("is-hidden");
 
     skipDataHasChangedCheck = true;
@@ -221,7 +221,7 @@ async function loadTree(studyEventOID, formOID) {
     ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
 
     for (let studyEventDef of metadataHelper.getStudyEvents()) {
-        const studyEventOID = studyEventDef.getAttribute("OID");
+        const studyEventOID = studyEventDef.getOID();
         const translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
         let panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedText, studyEventDef.getAttribute("Name"), null, dataStatus);
@@ -240,7 +240,7 @@ async function loadFormsByStudyEvent() {
 
     const formDefs = metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent);
     for (let formDef of formDefs) {
-        const formOID = formDef.getAttribute("OID");
+        const formOID = formDef.getOID();
         const translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForForm(currentElementID.studyEvent, formOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
         let panelBlock = htmlElements.getClinicaldataPanelBlock(formOID, translatedText, formDef.getAttribute("Name"), null, dataStatus);
@@ -250,7 +250,7 @@ async function loadFormsByStudyEvent() {
 
     // Automatically start the survey view when activated in project options and the current device is a smartphone or tablet
     if (ioHelper.isAutoSurveyView() && ioHelper.isMobile() && currentElementID.subject && formDefs.length > 0 && !currentElementID.form) {
-        currentElementID.form = formDefs[0].getAttribute("OID");
+        currentElementID.form = formDefs[0].getOID();
         showSurveyView();
         adjustMobileUI();
     }
@@ -453,14 +453,14 @@ window.loadPreviousFormData = async function() {
 function getNextFormOID(previousFormOID) {
     let formDefs = metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent);
     for (let i = 0; i < formDefs.length-1; i++) {
-        if (formDefs[i].getAttribute("OID") == previousFormOID) return formDefs[i+1].getAttribute("OID");
+        if (formDefs[i].getOID() == previousFormOID) return formDefs[i+1].getOID();
     }
 }
 
 function getPreviousFormOID(nextFormOID) {
     let formDefs = metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent);
     for (let i = 1; i < formDefs.length; i++) {
-        if (formDefs[i].getAttribute("OID") == nextFormOID) return formDefs[i-1].getAttribute("OID");
+        if (formDefs[i].getOID() == nextFormOID) return formDefs[i-1].getOID();
     }
 }
 

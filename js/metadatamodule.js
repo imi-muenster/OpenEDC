@@ -166,7 +166,7 @@ export function loadStudyEvents(hideTree) {
     let studyEventDefs = metadataHelper.getStudyEvents();
     for (let studyEventDef of studyEventDefs) {
         let translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = createPanelBlock(studyEventDef.getAttribute("OID"), metadataHelper.elementTypes.STUDYEVENT, translatedText, studyEventDef.getAttribute("Name"));
+        let panelBlock = createPanelBlock(studyEventDef.getOID(), metadataHelper.elementTypes.STUDYEVENT, translatedText, studyEventDef.getAttribute("Name"));
         panelBlock.onclick = studyEventClicked;
         $("#study-event-panel-blocks").appendChild(panelBlock);
     }
@@ -176,7 +176,7 @@ function studyEventClicked(event) {
     ioHelper.removeIsActiveFromElement($("#study-event-panel-blocks a.is-active"));
     event.target.classList.add("is-active");
     
-    currentElementID.studyEvent = event.target.getAttribute("oid");
+    currentElementID.studyEvent = event.target.getOID();
     currentElementType = event.target.getAttribute("element-type");
     fillDetailsPanel(currentElementID.studyEvent, currentElementType);
 
@@ -190,7 +190,7 @@ function loadFormsByStudyEvent(studyEventOID, hideTree) {
     let formDefs = metadataHelper.getFormsByStudyEvent(studyEventOID);
     for (let formDef of formDefs) {
         let translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = createPanelBlock(formDef.getAttribute("OID"), metadataHelper.elementTypes.FORM, translatedText, formDef.getAttribute("Name"));
+        let panelBlock = createPanelBlock(formDef.getOID(), metadataHelper.elementTypes.FORM, translatedText, formDef.getAttribute("Name"));
         panelBlock.onclick = formClicked;
         $("#form-panel-blocks").appendChild(panelBlock);
     }
@@ -200,7 +200,7 @@ function formClicked(event) {
     ioHelper.removeIsActiveFromElement($("#form-panel-blocks a.is-active"));
     event.target.classList.add("is-active");
 
-    currentElementID.form = event.target.getAttribute("oid");
+    currentElementID.form = event.target.getOID();
     currentElementType = event.target.getAttribute("element-type");
     fillDetailsPanel(currentElementID.form, currentElementType);
 
@@ -214,7 +214,7 @@ function loadItemGroupsByForm(formOID, hideTree) {
     let itemGroupDefs = metadataHelper.getItemGroupsByForm(formOID);
     for (let itemGroupDef of itemGroupDefs) {
         let translatedText = itemGroupDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = createPanelBlock(itemGroupDef.getAttribute("OID"), metadataHelper.elementTypes.ITEMGROUP, translatedText, itemGroupDef.getAttribute("Name"));
+        let panelBlock = createPanelBlock(itemGroupDef.getOID(), metadataHelper.elementTypes.ITEMGROUP, translatedText, itemGroupDef.getAttribute("Name"));
         panelBlock.onclick = itemGroupClicked;
         $("#item-group-panel-blocks").appendChild(panelBlock);
     }
@@ -224,7 +224,7 @@ function itemGroupClicked(event) {
     ioHelper.removeIsActiveFromElement($("#item-group-panel-blocks a.is-active"));
     event.target.classList.add("is-active");
 
-    currentElementID.itemGroup = event.target.getAttribute("oid");
+    currentElementID.itemGroup = event.target.getOID();
     currentElementType = event.target.getAttribute("element-type");
     fillDetailsPanel(currentElementID.itemGroup, currentElementType);
 
@@ -239,7 +239,7 @@ function loadItemsByItemGroup(itemGroupOID, hideTree) {
     for (let itemDef of itemDefs) {
         let translatedText = itemDef.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
         const dataType = itemDef.querySelector("CodeListRef") ? "codelist" : itemDef.getAttribute("DataType");
-        let panelBlock = createPanelBlock(itemDef.getAttribute("OID"), metadataHelper.elementTypes.ITEM, translatedText, itemDef.getAttribute("Name"), languageHelper.getTranslation(dataType));
+        let panelBlock = createPanelBlock(itemDef.getOID(), metadataHelper.elementTypes.ITEM, translatedText, itemDef.getAttribute("Name"), languageHelper.getTranslation(dataType));
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
     }
@@ -249,7 +249,7 @@ function itemClicked(event) {
     ioHelper.removeIsActiveFromElement($("#item-panel-blocks a.is-active"));
     event.target.classList.add("is-active");
 
-    currentElementID.item = event.target.getAttribute("oid");
+    currentElementID.item = event.target.getOID();
     currentElementType = event.target.getAttribute("element-type");
     fillDetailsPanel(currentElementID.item, currentElementType);
 
@@ -264,7 +264,7 @@ function loadCodeListItemsByItem(itemOID, hideTree) {
     let codeListItems = metadataHelper.getCodeListItemsByItem(itemOID);
     for (let codeListItem of codeListItems) {
         let translatedText = codeListItem.querySelector(`Decode TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = createPanelBlock(codeListItem.parentNode.getAttribute("OID"), metadataHelper.elementTypes.CODELISTITEM, translatedText, codeListItem.getAttribute("CodedValue"), null, codeListItem.getAttribute("CodedValue"));
+        let panelBlock = createPanelBlock(codeListItem.parentNode.getOID(), metadataHelper.elementTypes.CODELISTITEM, translatedText, codeListItem.getAttribute("CodedValue"), null, codeListItem.getAttribute("CodedValue"));
         panelBlock.onclick = codeListItemClicked;
         $("#code-list-item-panel-blocks").appendChild(panelBlock);
     }
@@ -274,7 +274,7 @@ function codeListItemClicked(event) {
     ioHelper.removeIsActiveFromElement($("#code-list-item-panel-blocks a.is-active"));
     event.target.classList.add("is-active");
 
-    currentElementID.codeList = event.target.getAttribute("oid");
+    currentElementID.codeList = event.target.getOID();
     currentElementID.codeListItem = event.target.getAttribute("coded-value");
     currentElementType = event.target.getAttribute("element-type");
     fillDetailsPanel(currentElementID.codeList, currentElementType);
@@ -450,7 +450,7 @@ function fillConditions() {
     
     for (let condition of metadataHelper.getConditions()) {
         let formalExpression = condition.querySelector(`FormalExpression`).textContent;
-        let newInput = htmlElements.getConditionInputElement(condition.getAttribute("OID"), condition.getAttribute("Name"), formalExpression);
+        let newInput = htmlElements.getConditionInputElement(condition.getOID(), condition.getAttribute("Name"), formalExpression);
         $(".empty-condition-field").insertAdjacentElement("beforebegin", newInput);
     }
 }
@@ -463,7 +463,7 @@ function fillMeasurementUnits() {
         let translatedText = measurementUnit.querySelector(`Symbol TranslatedText[*|lang="${locale}"]`);
         let symbol = null;
         if (translatedText) symbol = translatedText.textContent;
-        let newInput = htmlElements.getMeasurementUnitInputElement(measurementUnit.getAttribute("OID"), measurementUnit.getAttribute("Name"), symbol);
+        let newInput = htmlElements.getMeasurementUnitInputElement(measurementUnit.getOID(), measurementUnit.getAttribute("Name"), symbol);
         $(".empty-measurement-unit-field").insertAdjacentElement("beforebegin", newInput);
     }
 }
@@ -579,7 +579,7 @@ function saveDescription() {
 function saveConditions() {
     let conditionInputs = $$(".condition-input");
     for (let conditionInput of conditionInputs) {
-        let oid = conditionInput.getAttribute("oid");
+        let oid = conditionInput.getOID();
         let name = conditionInput.querySelector(".condition-name").value;
         let formalExpression = conditionInput.querySelector(".condition-formex").value;
         if (name && formalExpression) {
@@ -597,7 +597,7 @@ function saveConditions() {
 function saveMeasurementUnits() {
     let measurementUnitInputs = $$(".measurement-unit-input");
     for (let measurementUnitInput of measurementUnitInputs) {
-        let oid = measurementUnitInput.getAttribute("oid");
+        let oid = measurementUnitInput.getOID();
         let name = measurementUnitInput.querySelector(".measurement-unit-name").value;
         let symbol = measurementUnitInput.querySelector(".measurement-unit-symbol").value;
         if (name && symbol) {
@@ -702,7 +702,7 @@ function arrowKeyListener(event) {
     }
 
     if (target && target.tagName == "A") {
-        setCurrentElementOID(target.getAttribute("oid"));
+        setCurrentElementOID(target.getOID());
         if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) currentElementID.codeListItem = target.getAttribute("coded-value");
         
         reloadDetailsPanel();
@@ -862,7 +862,7 @@ function copyElement(deepCopy) {
 
 function dragStart(event) {
     elementTypeOnDrag = event.target.getAttribute("element-type");
-    event.dataTransfer.setData("sourceElementOID", event.target.getAttribute("oid"));
+    event.dataTransfer.setData("sourceElementOID", event.target.getOID());
     event.dataTransfer.setData("sourceParentOID", getParentOID(elementTypeOnDrag));
     if (elementTypeOnDrag == metadataHelper.elementTypes.CODELISTITEM) {
         event.dataTransfer.setData("sourceCodedValue", event.target.getAttribute("coded-value"));
@@ -1008,7 +1008,7 @@ window.elementDrop = async function(event) {
     const sourceElementOID = event.dataTransfer.getData("sourceElementOID");
     const sourceCodedValue = event.dataTransfer.getData("sourceCodedValue");
     const sourceParentOID = event.dataTransfer.getData("sourceParentOID");
-    const targetElementOID = event.target.getAttribute("oid");
+    const targetElementOID = event.target.getOID();
     const targetCodedValue = event.target.getAttribute("coded-value")
     const targetParentOID = getParentOID(elementTypeOnDrag);
 

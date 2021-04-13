@@ -20,11 +20,11 @@ export function process(odmXMLString) {
 
         if (!odm.querySelector("StudyEventDef")) {
             const studyEventDef = metadataTemplates.getStudyEventDef("SE.1", languageHelper.getTranslation("new-event"))
-            odm.querySelectorAll("FormDef").forEach(formDef => studyEventDef.appendChild(metadataTemplates.getFormRef(formDef.getAttribute("OID"))));
+            odm.querySelectorAll("FormDef").forEach(formDef => studyEventDef.appendChild(metadataTemplates.getFormRef(formDef.getOID())));
             odm.querySelector("Protocol").insertAdjacentElement("afterend", studyEventDef);
         }
 
-        odm.querySelectorAll("StudyEventDef").forEach(studyEventDef => odm.querySelector("Protocol").appendChild(metadataTemplates.getStudyEventRef(studyEventDef.getAttribute("OID"))));
+        odm.querySelectorAll("StudyEventDef").forEach(studyEventDef => odm.querySelector("Protocol").appendChild(metadataTemplates.getStudyEventRef(studyEventDef.getOID())));
     }
 
     // Add a lang attribute to translated texts without one

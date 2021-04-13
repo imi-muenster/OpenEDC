@@ -63,7 +63,7 @@ export function getCurrentUserOID() {
     if (ioHelper.getLoggedInUser()) {
         return ioHelper.getLoggedInUser().oid;
     } else {
-        return getUsers()[0].getAttribute("OID");
+        return getUsers()[0].getOID();
     }
 }
 
@@ -113,7 +113,7 @@ export function getSite(siteOID) {
 
 export function getSiteOIDByName(siteName) {
     const site = $(`Location[Name="${siteName}"][LocationType="Site"]`);
-    return site ? site.getAttribute("OID") : null;
+    return site ? site.getOID() : null;
 }
 
 export function getSiteNameByOID(siteOID) {

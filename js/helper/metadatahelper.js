@@ -91,7 +91,7 @@ export async function getFormAsHTML(formOID, textAsTextarea) {
 
     const itemGroupOIDs = [];
     for (const formDef of reducedODM.querySelectorAll("FormDef")) {
-        if (formDef.getAttribute("OID") == formOID) {
+        if (formDef.getOID() == formOID) {
             for (const itemGroupRef of formDef.querySelectorAll("ItemGroupRef")) {
                 itemGroupOIDs.push(itemGroupRef.getAttribute("ItemGroupOID"));
             }
@@ -99,7 +99,7 @@ export async function getFormAsHTML(formOID, textAsTextarea) {
     }
     const itemOIDs = [];
     for (const itemGroupDef of reducedODM.querySelectorAll("ItemGroupDef")) {
-        if (itemGroupOIDs.includes(itemGroupDef.getAttribute("OID"))) {
+        if (itemGroupOIDs.includes(itemGroupDef.getOID())) {
             for (const itemRef of itemGroupDef.querySelectorAll("ItemRef")) {
                 itemOIDs.push(itemRef.getAttribute("ItemOID"));
             }
@@ -107,14 +107,14 @@ export async function getFormAsHTML(formOID, textAsTextarea) {
     }
     const codeListOIDs = [];
     for (const itemDef of reducedODM.querySelectorAll("ItemDef")) {
-        if (itemOIDs.includes(itemDef.getAttribute("OID"))) {
+        if (itemOIDs.includes(itemDef.getOID())) {
             if (itemDef.querySelector("CodeListRef")) {
                 codeListOIDs.push(itemDef.querySelector("CodeListRef").getAttribute("CodeListOID"));
             }
         } else itemDef.remove();
     }
     for (const codeList of reducedODM.querySelectorAll("CodeList")) {
-        if (!codeListOIDs.includes(codeList.getAttribute("OID"))) codeList.remove();
+        if (!codeListOIDs.includes(codeList.getOID())) codeList.remove();
     }
 
     const xsltProcessor = new XSLTProcessor();
@@ -186,11 +186,11 @@ export function setProtocolName(protocolName) {
 }
 
 export function getStudyOID() {
-    return $("Study").getAttribute("OID");
+    return $("Study").getOID();
 }
 
 export function getMetaDataVersionOID() {
-    return $("MetaDataVersion").getAttribute("OID");
+    return $("MetaDataVersion").getOID();
 }
 
 // TODO: This could be used within getStudyEvents()
@@ -559,7 +559,7 @@ export function setItemCondition(itemOID, itemGroupOID, conditionName) {
     let conditionRef = $(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[ItemOID="${itemOID}"][CollectionExceptionConditionOID]`);
 
     if (conditionName) {
-        let conditionOID = $(`ConditionDef[Name="${conditionName}"]`).getAttribute("OID");
+        let conditionOID = $(`ConditionDef[Name="${conditionName}"]`).getOID();
         $(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[ItemOID="${itemOID}"]`).setAttribute("CollectionExceptionConditionOID", conditionOID);
     } else {
         if (conditionRef) $(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[ItemOID="${itemOID}"]`).removeAttribute("CollectionExceptionConditionOID");
@@ -570,7 +570,7 @@ export function setItemMeasurementUnit(itemOID, measurementUnitName) {
     let measurementUnitRef = $(`[OID="${itemOID}"] MeasurementUnitRef`);
 
     if (measurementUnitName) {
-        let measurementUnitOID = $(`MeasurementUnit[Name="${measurementUnitName}"]`).getAttribute("OID");
+        let measurementUnitOID = $(`MeasurementUnit[Name="${measurementUnitName}"]`).getOID();
         if (measurementUnitRef) {
             measurementUnitRef.setAttribute("MeasurementUnitOID", measurementUnitOID);
         } else {
@@ -1008,7 +1008,7 @@ export async function mergeMetadata(odmXMLString) {
         // RegExp to get all OIDs does not work as Safari currently does not support lookbehind (odmXMLString.match(/(?<= OID\=\")(.*?)(?=\")/g).forEach ... )
         const odmCandidate = new DOMParser().parseFromString(odmXMLString, "text/xml");
         odmCandidate.querySelectorAll("[OID]").forEach(element => {
-            const oid = element.getAttribute("OID");
+            const oid = element.getOID();
             if (getElementDefByOID(oid) || Object.values(replaceOIDs).includes(oid)) {
                 const oidPrefix = oid.split(".")[0] + ".";
                 let count = 1;
