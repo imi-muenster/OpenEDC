@@ -12,8 +12,8 @@ export async function init() {
 }
 
 export async function loadUsers() {
-    ioHelper.removeElements($$("#users-options .panel a"));
-    ioHelper.removeElements($$("#user-rights .checkbox"));
+    $$("#users-options .panel a").removeElements();
+    $$("#user-rights .checkbox").removeElements();
     ioHelper.safeRemoveElement($("#user-site-select-outer"));
 
     $("#user-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("user-site-select", true, true, [], null));
@@ -150,7 +150,7 @@ window.removeUser = function() {
 }
 
 export function loadSites() {
-    ioHelper.removeElements($$("#sites-options .panel a"));
+    $$("#sites-options .panel a").removeElements();
 
     $("#site-name-input").value = "";
     $("#site-name-input").disabled = true;

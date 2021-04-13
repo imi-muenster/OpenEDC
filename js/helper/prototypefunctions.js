@@ -11,6 +11,10 @@ NodeList.prototype.getLastElement = function() {
     else return null;
 }
 
+NodeList.prototype.removeElements = function() {
+    for (const element of this) element.remove();
+}
+
 HTMLElement.prototype.show = function() {
     this.classList.remove("is-hidden");
 }

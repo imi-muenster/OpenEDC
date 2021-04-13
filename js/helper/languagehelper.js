@@ -88,8 +88,8 @@ export function getCurrentLocale() {
 }
 
 export function createLanguageSelect(includeUnavailable) {
-    ioHelper.removeElements($$("#language-dropdown a"));
-    ioHelper.removeElements($$("#language-dropdown hr"));
+    $$("#language-dropdown a").removeElements();
+    $$("#language-dropdown hr").removeElements();
 
     if (localesInODM.length > 0) {
         localesInODM.forEach(locale => addLanguageOptionNavbar(locale));

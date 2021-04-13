@@ -140,7 +140,7 @@ window.addSubject = function() {
 }
 
 export function loadSubjectKeys() {
-    ioHelper.removeElements($$("#subject-panel-blocks a"));
+    $$("#subject-panel-blocks a").removeElements();
 
     const selectedSite = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
     const sortOrder = $("#sort-subject-select-inner").value;
@@ -217,8 +217,8 @@ async function loadTree(studyEventOID, formOID) {
     currentElementID.studyEvent = studyEventOID;
     currentElementID.form = formOID;
 
-    ioHelper.removeElements($$("#clinicaldata-study-event-panel-blocks a"));
-    ioHelper.removeElements($$("#clinicaldata-form-panel-blocks a"));
+    $$("#clinicaldata-study-event-panel-blocks a").removeElements();
+    $$("#clinicaldata-form-panel-blocks a").removeElements();
 
     for (let studyEventDef of metadataHelper.getStudyEvents()) {
         const studyEventOID = studyEventDef.getOID();
@@ -664,7 +664,7 @@ function showCloseSurveyModal() {
     }
 
     // Create or reset status dots that indicates how many digits have been pressed
-    ioHelper.removeElements($$(".numpad .status span"));
+    $$(".numpad .status span").removeElements();
     for (let i = 0; i < 4; i++) {
         $(".numpad .status").insertAdjacentHTML("beforeend", '<span class="icon empty-dot"><i class="far fa-circle"></i></span>');
     }
@@ -752,7 +752,7 @@ function dataHasChanged() {
 
 window.showSubjectInfo = function() {
     // Create audit record entries
-    ioHelper.removeElements($$("#audit-records .notification"));
+    $$("#audit-records .notification").removeElements();
     for (let auditRecord of clinicaldataHelper.getAuditRecords()) {
         const studyEventName = auditRecord.studyEventOID ? metadataHelper.getElementDefByOID(auditRecord.studyEventOID).getName() : null;
         const formName = auditRecord.formOID ? metadataHelper.getElementDefByOID(auditRecord.formOID).getName() : null;

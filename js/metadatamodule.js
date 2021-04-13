@@ -71,7 +71,7 @@ function createDatatypeMandatorySelect() {
 }
 
 function createConditionSelect() {
-    ioHelper.removeElements($$("#condition-select-outer"));
+    $$("#condition-select-outer").removeElements();
 
     let conditions = [""];
     let selectedCondition = "";
@@ -94,7 +94,7 @@ function createConditionSelect() {
 }
 
 function createMeasurementUnitSelect() {
-    ioHelper.removeElements($$("#measurement-unit-select-outer"));
+    $$("#measurement-unit-select-outer").removeElements();
 
     let measurementUnits = [""];
     let selectedMeasurementUnit = "";
@@ -117,7 +117,7 @@ function createMeasurementUnitSelect() {
 }
 
 function hideStudyEvents(hideTree) {
-    ioHelper.removeElements($$("#study-event-panel-blocks a"));
+    $$("#study-event-panel-blocks a").removeElements();
     if (hideTree) {
         currentElementID.studyEvent = null;
         hideForms(true);
@@ -125,7 +125,7 @@ function hideStudyEvents(hideTree) {
 }
 
 function hideForms(hideTree) {
-    ioHelper.removeElements($$("#form-panel-blocks a"));
+    $$("#form-panel-blocks a").removeElements();
     $("#forms-add-button button").disabled = true;
     if (hideTree) {
         currentElementID.form = null;
@@ -134,7 +134,7 @@ function hideForms(hideTree) {
 }
 
 function hideItemGroups(hideTree) {
-    ioHelper.removeElements($$("#item-group-panel-blocks a"));
+    $$("#item-group-panel-blocks a").removeElements();
     $("#item-groups-add-button button").disabled = true;
     if (hideTree) {
         currentElementID.itemGroup = null;
@@ -143,7 +143,7 @@ function hideItemGroups(hideTree) {
 }
 
 function hideItems(hideTree) {
-    ioHelper.removeElements($$("#item-panel-blocks a"));
+    $$("#item-panel-blocks a").removeElements();
     $("#items-add-button button").disabled = true;
     if (hideTree) {
         currentElementID.item = null;
@@ -152,7 +152,7 @@ function hideItems(hideTree) {
 }
 
 function hideCodeListItems(hideTree) {
-    ioHelper.removeElements($$("#code-list-item-panel-blocks a"));
+    $$("#code-list-item-panel-blocks a").removeElements();
     $("#code-list-items-add-button button").disabled = true;
     if (hideTree) {
         currentElementID.codeList = null;
@@ -405,7 +405,7 @@ export function reloadDetailsPanel() {
 }
 
 function fillAliases() {
-    ioHelper.removeElements($$(".alias-input"));
+    $$(".alias-input").removeElements();
     $("#alias-label").insertAdjacentElement("afterend", htmlElements.getEmptyAliasInputElement());
 
     let aliases = metadataHelper.getAliasesByElement(getCurrentElementOID(), currentElementID.codeListItem);
@@ -416,7 +416,7 @@ function fillAliases() {
 }
 
 function fillRangeChecks() {
-    ioHelper.removeElements($$(".range-check-input"));
+    $$(".range-check-input").removeElements();
     $("#range-check-label").insertAdjacentElement("afterend", htmlElements.getEmptyRangeCheckInputElement());
 
     let rangeChecks = metadataHelper.getRangeChecksByItem(currentElementID.item);
@@ -445,7 +445,7 @@ function fillElementDescription() {
 }
 
 function fillConditions() {
-    ioHelper.removeElements($$(".condition-input"));
+    $$(".condition-input").removeElements();
     $("#conditions-label").insertAdjacentElement("afterend", htmlElements.getEmptyConditionInputElement());
     
     for (let condition of metadataHelper.getConditions()) {
@@ -456,7 +456,7 @@ function fillConditions() {
 }
 
 function fillMeasurementUnits() {
-    ioHelper.removeElements($$(".measurement-unit-input"));
+    $$(".measurement-unit-input").removeElements();
     $("#measurement-units-label").insertAdjacentElement("afterend", htmlElements.getEmptyMeasurementUnitInputElement());
 
     for (let measurementUnit of metadataHelper.getMeasurementUnits()) {
@@ -591,7 +591,7 @@ function saveConditions() {
             }
         }
     }
-    ioHelper.removeElements($$(".condition-input"));
+    $$(".condition-input").removeElements();
 }
 
 function saveMeasurementUnits() {
@@ -609,7 +609,7 @@ function saveMeasurementUnits() {
             }
         }
     }
-    ioHelper.removeElements($$(".measurement-unit-input"));
+    $$(".measurement-unit-input").removeElements();
 }
 
 function handleItemDataType(itemOID, dataType) {

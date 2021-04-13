@@ -470,16 +470,12 @@ export async function getAppVersion() {
     return versionObject.version; 
 }
 
-export function removeElements(elements) {
-    for (let element of elements) {
-        element.remove();
-    }
-}
-
+// TODO: Should be removed and then replaced in the future by element?.remove();
 export function safeRemoveElement(element) {
     if (element) element.remove();
 }
 
+// TODO: Should be removed and then replaced in the future by element?.deactivate();
 export function removeIsActiveFromElement(element) {
     if (element) element.deactivate();
 }
@@ -601,8 +597,6 @@ export function setTreeMaxHeight() {
         treePanelBlock.style.maxHeight = `${remainingSpace}px`;
     }
 }
-
-// TODO: Create a prototype function show, hide, activate, and deactivate
 
 export function isMobile() {
     return window.innerWidth < 1024;
