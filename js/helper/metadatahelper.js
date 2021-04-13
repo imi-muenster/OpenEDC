@@ -141,7 +141,7 @@ export function prepareDownload(dataStatusTypes) {
     // Add a code list with all data status types but only when downloading the ODM with clinical data
     if (dataStatusTypes) {
         const dataStatusCodeList = getDataStatusCodeList(dataStatusTypes);
-        const insertPosition = ioHelper.getLastElement(odmCopy.querySelectorAll("ItemDef"));
+        const insertPosition = odmCopy.querySelectorAll("ItemDef").getLastElement();
         if (insertPosition) insertPosition.insertAdjacentElement("afterend", dataStatusCodeList);
     }
     
@@ -544,7 +544,7 @@ export function setElementAlias(elementOID, codeListItemCodedValue, context, nam
 }
 
 export function setItemRangeCheck(itemOID, comparator, checkValue) {
-    let insertPosition = ioHelper.getLastElement($$(`[OID="${itemOID}"] RangeCheck`));
+    let insertPosition = $$(`[OID="${itemOID}"] RangeCheck`).getLastElement();
     if (!insertPosition) {
         insertPosition = $(`[OID="${itemOID}"] MeasurementUnitRef`);
     }
@@ -613,7 +613,7 @@ export function insertStudyEventRef(studyEventRef) {
 }
 
 function insertElementDef(definitionName, studyEventDef) {
-    const insertPositionDef = ioHelper.getLastElement($$(definitionName));
+    const insertPositionDef = $$(definitionName).getLastElement();
     if (insertPositionDef) {
         insertPositionDef.insertAdjacentElement("afterend", studyEventDef);
     } else {
@@ -630,7 +630,7 @@ export function createForm(studyEventOID) {
 }
 
 export function insertFormRef(formRef, studyEventOID) {
-    let insertPositionRef = ioHelper.getLastElement($$(`[OID="${studyEventOID}"] FormRef`));
+    let insertPositionRef = $$(`[OID="${studyEventOID}"] FormRef`).getLastElement();
     if (insertPositionRef) {
         insertPositionRef.insertAdjacentElement("afterend", formRef);
     } else {
@@ -652,7 +652,7 @@ export function createItemGroup(formOID) {
 }
 
 export function insertItemGroupRef(itemGroupRef, formOID) {
-    let insertPositionRef = ioHelper.getLastElement($$(`[OID="${formOID}"] ItemGroupRef`));
+    let insertPositionRef = $$(`[OID="${formOID}"] ItemGroupRef`).getLastElement();
     if (insertPositionRef) {
         insertPositionRef.insertAdjacentElement("afterend", itemGroupRef);
     } else {
@@ -674,7 +674,7 @@ export function createItem(itemGroupOID) {
 }
 
 export function insertItemRef(itemRef, itemGroupOID) {
-    let insertPositionRef = ioHelper.getLastElement($$(`[OID="${itemGroupOID}"] ItemRef`));
+    let insertPositionRef = $$(`[OID="${itemGroupOID}"] ItemRef`).getLastElement();
     if (insertPositionRef) {
         insertPositionRef.insertAdjacentElement("afterend", itemRef);
     } else {
@@ -696,7 +696,7 @@ export function createCodeList(itemOID) {
 }
 
 export function insertCodeListRef(codeListRef, itemOID) {
-    let insertPositionRef = ioHelper.getLastElement($$(`[OID="${itemOID}"] Question`));
+    let insertPositionRef = $$(`[OID="${itemOID}"] Question`).getLastElement();
     if (insertPositionRef) {
         insertPositionRef.insertAdjacentElement("afterend", codeListRef);
     } else {

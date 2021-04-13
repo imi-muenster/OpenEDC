@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Register serviceworker for offline capabilities
     if (window.navigator.serviceWorker) {
-        window.navigator.serviceWorker.register("./serviceworker.js");
+        // window.navigator.serviceWorker.register("./serviceworker.js");
     }
 });
 

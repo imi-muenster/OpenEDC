@@ -604,6 +604,7 @@ export function setTreeMaxHeight() {
 
 // TODO: Create a prototype function lastElement() (together with getOID, show, hide, activate, and deactivate)
 export function getLastElement(elements) {
+    console.trace(elements);
     if (elements.length >= 1) {
         return elements[elements.length - 1];
     } else {

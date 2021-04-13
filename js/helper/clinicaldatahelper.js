@@ -267,7 +267,7 @@ function escapeXML(value) {
 
 // TODO: Assumes that the data is ordered chronologically -- should be ensured during import
 function getCurrentFormData(studyEventOID, formOID) {
-    return ioHelper.getLastElement($$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`));
+    return $$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`).getLastElement();
 }
 
 export function getSubjectFormData(studyEventOID, formOID) {
@@ -435,7 +435,7 @@ export async function getCSVData(csvHeaders) {
 
             // Ensures that the form data is not loaded for every item again
             if (!currentStudyEventOID || !currentFormOID || currentStudyEventOID != studyEventOID || currentFormOID != formOID) {
-                formData = ioHelper.getLastElement(subjectData.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`));
+                formData = subjectData.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`).getLastElement();
                 currentStudyEventOID = studyEventOID;
                 currentFormOID = formOID;
             }
