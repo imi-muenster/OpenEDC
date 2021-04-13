@@ -63,7 +63,7 @@ function loadUser(userOID) {
 
     // Create site select
     let sites = [languageHelper.getTranslation("no-site")];
-    admindataHelper.getSites().forEach(site => sites.push(site.getAttribute("Name")));
+    admindataHelper.getSites().forEach(site => sites.push(site.getName()));
     ioHelper.safeRemoveElement($("#user-site-select-outer"));
     let currentSiteName = null;
     const locationRef = user.querySelector("LocationRef");
@@ -165,7 +165,7 @@ export function loadSites() {
         const siteOID = site.getOID();
         const panelBlock = document.createElement("a");
         panelBlock.className = "panel-block has-no-border-left";
-        panelBlock.textContent = site.getAttribute("Name");
+        panelBlock.textContent = site.getName();
         panelBlock.setAttribute("oid", siteOID);
         panelBlock.onclick = () => loadSite(siteOID);
         $("#add-site-button").insertAdjacentElement("beforebegin", panelBlock);
@@ -179,7 +179,7 @@ function loadSite(siteOID) {
     ioHelper.removeIsActiveFromElement($("#sites-options .panel a.is-active"));
     $(`#sites-options .panel a[oid="${siteOID}"]`).classList.add("is-active");
 
-    $("#site-name-input").value = site.getAttribute("Name");
+    $("#site-name-input").value = site.getName();
     $("#site-name-input").disabled = false;
     $("#site-save-button").disabled = false;
     $("#site-remove-button").disabled = false;

@@ -118,7 +118,7 @@ export function getSiteOIDByName(siteName) {
 
 export function getSiteNameByOID(siteOID) {
     const site = getSite(siteOID);
-    return site ? site.getAttribute("Name") : null;
+    return site ? site.getName() : null;
 }
 
 export function getSites() {

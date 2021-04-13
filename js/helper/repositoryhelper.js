@@ -62,7 +62,7 @@ const prepareODM = (repository, modelParameter, odmXMLString) => {
 
         const studyEventDefs = odm.querySelectorAll("MetaDataVersion StudyEventDef");
         if (studyEventDefs.length == 1) studyEventDefs[0].setAttribute("Name", studyName);
-        else studyEventDefs.forEach(studyEventDef => studyEventDef.setAttribute("Name", studyEventDef.getAttribute("Name") + " - " + studyName));
+        else studyEventDefs.forEach(studyEventDef => studyEventDef.setAttribute("Name", studyEventDef.getName() + " - " + studyName));
 
         odmXMLString = new XMLSerializer().serializeToString(odm);
     }

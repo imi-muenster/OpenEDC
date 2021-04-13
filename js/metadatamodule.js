@@ -78,11 +78,11 @@ function createConditionSelect() {
 
     if (currentElementType == metadataHelper.elementTypes.ITEM) {
         for (let condition of metadataHelper.getConditions()) {
-            conditions.push(condition.getAttribute("Name"));
+            conditions.push(condition.getName());
         }
     
         let itemCondition = metadataHelper.getConditionByItem(currentElementID.item, currentElementID.itemGroup);   
-        if (itemCondition) selectedCondition = itemCondition.getAttribute("Name");
+        if (itemCondition) selectedCondition = itemCondition.getName();
     }
 
     let select = htmlElements.getSelect("condition-select", true, true, conditions, selectedCondition);
@@ -101,11 +101,11 @@ function createMeasurementUnitSelect() {
 
     if (currentElementType == metadataHelper.elementTypes.ITEM) {
         for (let measurementUnit of metadataHelper.getMeasurementUnits()) {
-            measurementUnits.push(measurementUnit.getAttribute("Name"));
+            measurementUnits.push(measurementUnit.getName());
         }
     
         let itemMeasurementUnit = metadataHelper.getMeasurementUnitByItem(currentElementID.item);   
-        if (itemMeasurementUnit) selectedMeasurementUnit = itemMeasurementUnit.getAttribute("Name");
+        if (itemMeasurementUnit) selectedMeasurementUnit = itemMeasurementUnit.getName();
     }
 
     let select = htmlElements.getSelect("measurement-unit-select", true, true, measurementUnits, selectedMeasurementUnit);
@@ -166,7 +166,7 @@ export function loadStudyEvents(hideTree) {
     let studyEventDefs = metadataHelper.getStudyEvents();
     for (let studyEventDef of studyEventDefs) {
         let translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = createPanelBlock(studyEventDef.getOID(), metadataHelper.elementTypes.STUDYEVENT, translatedText, studyEventDef.getAttribute("Name"));
+        let panelBlock = createPanelBlock(studyEventDef.getOID(), metadataHelper.elementTypes.STUDYEVENT, translatedText, studyEventDef.getName());
         panelBlock.onclick = studyEventClicked;
         $("#study-event-panel-blocks").appendChild(panelBlock);
     }
@@ -190,7 +190,7 @@ function loadFormsByStudyEvent(studyEventOID, hideTree) {
     let formDefs = metadataHelper.getFormsByStudyEvent(studyEventOID);
     for (let formDef of formDefs) {
         let translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = createPanelBlock(formDef.getOID(), metadataHelper.elementTypes.FORM, translatedText, formDef.getAttribute("Name"));
+        let panelBlock = createPanelBlock(formDef.getOID(), metadataHelper.elementTypes.FORM, translatedText, formDef.getName());
         panelBlock.onclick = formClicked;
         $("#form-panel-blocks").appendChild(panelBlock);
     }
@@ -214,7 +214,7 @@ function loadItemGroupsByForm(formOID, hideTree) {
     let itemGroupDefs = metadataHelper.getItemGroupsByForm(formOID);
     for (let itemGroupDef of itemGroupDefs) {
         let translatedText = itemGroupDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = createPanelBlock(itemGroupDef.getOID(), metadataHelper.elementTypes.ITEMGROUP, translatedText, itemGroupDef.getAttribute("Name"));
+        let panelBlock = createPanelBlock(itemGroupDef.getOID(), metadataHelper.elementTypes.ITEMGROUP, translatedText, itemGroupDef.getName());
         panelBlock.onclick = itemGroupClicked;
         $("#item-group-panel-blocks").appendChild(panelBlock);
     }
@@ -239,7 +239,7 @@ function loadItemsByItemGroup(itemGroupOID, hideTree) {
     for (let itemDef of itemDefs) {
         let translatedText = itemDef.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
         const dataType = itemDef.querySelector("CodeListRef") ? "codelist" : itemDef.getAttribute("DataType");
-        let panelBlock = createPanelBlock(itemDef.getOID(), metadataHelper.elementTypes.ITEM, translatedText, itemDef.getAttribute("Name"), languageHelper.getTranslation(dataType));
+        let panelBlock = createPanelBlock(itemDef.getOID(), metadataHelper.elementTypes.ITEM, translatedText, itemDef.getName(), languageHelper.getTranslation(dataType));
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
     }
@@ -363,7 +363,7 @@ function fillDetailsPanel(elementOID, elementType) {
 
     let element = metadataHelper.getElementDefByOID(elementOID);
     const elementRef = metadataHelper.getElementRefByOID(elementOID, elementType, getParentOID(elementType));
-    $("#name-input").value = element.getAttribute("Name");
+    $("#name-input").value = element.getName();
 
     const numberOfReferences = metadataHelper.getNumberOfRefs(elementOID, elementType);
     if (numberOfReferences > 1) {
@@ -410,7 +410,7 @@ function fillAliases() {
 
     let aliases = metadataHelper.getAliasesByElement(getCurrentElementOID(), currentElementID.codeListItem);
     for (let alias of aliases) {
-        let newInput = htmlElements.getAliasInputElement(alias.getAttribute("Context"), alias.getAttribute("Name"));
+        let newInput = htmlElements.getAliasInputElement(alias.getAttribute("Context"), alias.getName());
         $(".empty-alias-field").insertAdjacentElement("beforebegin", newInput);
     }
 }
@@ -450,7 +450,7 @@ function fillConditions() {
     
     for (let condition of metadataHelper.getConditions()) {
         let formalExpression = condition.querySelector(`FormalExpression`).textContent;
-        let newInput = htmlElements.getConditionInputElement(condition.getOID(), condition.getAttribute("Name"), formalExpression);
+        let newInput = htmlElements.getConditionInputElement(condition.getOID(), condition.getName(), formalExpression);
         $(".empty-condition-field").insertAdjacentElement("beforebegin", newInput);
     }
 }
@@ -463,7 +463,7 @@ function fillMeasurementUnits() {
         let translatedText = measurementUnit.querySelector(`Symbol TranslatedText[*|lang="${locale}"]`);
         let symbol = null;
         if (translatedText) symbol = translatedText.textContent;
-        let newInput = htmlElements.getMeasurementUnitInputElement(measurementUnit.getOID(), measurementUnit.getAttribute("Name"), symbol);
+        let newInput = htmlElements.getMeasurementUnitInputElement(measurementUnit.getOID(), measurementUnit.getName(), symbol);
         $(".empty-measurement-unit-field").insertAdjacentElement("beforebegin", newInput);
     }
 }

@@ -75,7 +75,7 @@ export function setLanguage(newLocale) {
 
 export function createSiteFilterSelect() {
     let sites = [languageHelper.getTranslation("all-sites")];
-    admindataHelper.getSites().forEach(site => sites.push(site.getAttribute("Name")));
+    admindataHelper.getSites().forEach(site => sites.push(site.getName()));
 
     let currentSelection = null;
     if ($("#filter-site-select-inner")) currentSelection = $("#filter-site-select-inner").value;
@@ -224,7 +224,7 @@ async function loadTree(studyEventOID, formOID) {
         const studyEventOID = studyEventDef.getOID();
         const translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
-        let panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedText, studyEventDef.getAttribute("Name"), null, dataStatus);
+        let panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedText, studyEventDef.getName(), null, dataStatus);
         panelBlock.onclick = () => loadTree(studyEventOID, null);
         $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
     }
@@ -243,7 +243,7 @@ async function loadFormsByStudyEvent() {
         const formOID = formDef.getOID();
         const translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
         const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForForm(currentElementID.studyEvent, formOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
-        let panelBlock = htmlElements.getClinicaldataPanelBlock(formOID, translatedText, formDef.getAttribute("Name"), null, dataStatus);
+        let panelBlock = htmlElements.getClinicaldataPanelBlock(formOID, translatedText, formDef.getName(), null, dataStatus);
         panelBlock.onclick = () => loadTree(currentElementID.studyEvent, formOID);
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
     }
@@ -313,7 +313,7 @@ async function loadFormMetadata() {
     const formDef = metadataHelper.getElementDefByOID(currentElementID.form);
     const translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
     const formTitle = translatedText ? translatedText : formDef.querySelector(`Description TranslatedText[*|lang="${languageHelper.untranslatedLocale}"]`);
-    $("#clinicaldata-form-title .subtitle").textContent = formTitle ? formTitle.textContent : formDef.getAttribute("Name");
+    $("#clinicaldata-form-title .subtitle").textContent = formTitle ? formTitle.textContent : formDef.getName();
 
     // Add the form skeleton
     let form = await metadataHelper.getFormAsHTML(currentElementID.form, ioHelper.isTextAsTextarea());
@@ -754,8 +754,8 @@ window.showSubjectInfo = function() {
     // Create audit record entries
     ioHelper.removeElements($$("#audit-records .notification"));
     for (let auditRecord of clinicaldataHelper.getAuditRecords()) {
-        const studyEventName = auditRecord.studyEventOID ? metadataHelper.getElementDefByOID(auditRecord.studyEventOID).getAttribute("Name") : null;
-        const formName = auditRecord.formOID ? metadataHelper.getElementDefByOID(auditRecord.formOID).getAttribute("Name") : null;
+        const studyEventName = auditRecord.studyEventOID ? metadataHelper.getElementDefByOID(auditRecord.studyEventOID).getName() : null;
+        const formName = auditRecord.formOID ? metadataHelper.getElementDefByOID(auditRecord.formOID).getName() : null;
         const userName = admindataHelper.getUserFullName(auditRecord.userOID);
         const siteName = admindataHelper.getSiteNameByOID(auditRecord.locationOID);
         let auditRecordElement = htmlElements.getAuditRecord(auditRecord.type, studyEventName, formName, auditRecord.dataStatus, userName, siteName, auditRecord.date);
@@ -765,7 +765,7 @@ window.showSubjectInfo = function() {
 
     // Fill inputs to change subject key and site
     let sites = [languageHelper.getTranslation("no-site")];
-    admindataHelper.getSites().forEach(site => sites.push(site.getAttribute("Name")));
+    admindataHelper.getSites().forEach(site => sites.push(site.getName()));
     ioHelper.safeRemoveElement($("#subject-site-select-outer"));
     const currentSiteName = admindataHelper.getSiteNameByOID(clinicaldataHelper.getSubject().siteOID);
     $("#subject-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("subject-site-select", true, true, sites, currentSiteName));
