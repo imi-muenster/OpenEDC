@@ -30,8 +30,8 @@ export async function loadUsers() {
     $("#user-remove-button").disabled = true;
 
     const users = admindataHelper.getUsers();
-    if (users.length > 0) $("#no-users-hint").classList.add("is-hidden");
-    else $("#no-users-hint").classList.remove("is-hidden");
+    if (users.length > 0) $("#no-users-hint").hide();
+    else $("#no-users-hint").show();
 
     for (let user of users) {
         const userOID = user.getOID();
@@ -158,8 +158,8 @@ export function loadSites() {
     $("#site-remove-button").disabled = true;
 
     const sites = admindataHelper.getSites();
-    if (sites.length > 0) $("#no-sites-hint").classList.add("is-hidden");
-    else $("#no-sites-hint").classList.remove("is-hidden");
+    if (sites.length > 0) $("#no-sites-hint").hide();
+    else $("#no-sites-hint").show();
 
     for (let site of sites) {
         const siteOID = site.getOID();

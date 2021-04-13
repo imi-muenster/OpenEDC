@@ -35,8 +35,8 @@ export function show() {
     reloadDetailsPanel();
     setArrowKeyListener();
 
-    $("#metadata-section").classList.remove("is-hidden");
-    $("#metadata-toggle-button").classList.add("is-hidden");
+    $("#metadata-section").show();
+    $("#metadata-toggle-button").hide();
 
     languageHelper.createLanguageSelect(true);
     ioHelper.setTreeMaxHeight();
@@ -45,8 +45,8 @@ export function show() {
 export function hide() {
     removeArrowKeyListener();
 
-    $("#metadata-section").classList.add("is-hidden");
-    $("#metadata-toggle-button").classList.remove("is-hidden");
+    $("#metadata-section").hide();
+    $("#metadata-toggle-button").show();
 
     clinicaldataModule.show();
     ioHelper.hideMenu();
@@ -341,7 +341,7 @@ function resetDetailsPanel() {
     $("#question-textarea").value = "";
     $("#datatype-select-inner").value = "";
     $("#mandatory-select-inner").value = "";
-    $("#references-tag").classList.add("is-hidden");
+    $("#references-tag").hide();
     $("#element-oid-label").textContent = languageHelper.getTranslation("unique-id");
     $("#element-short-label").textContent = languageHelper.getTranslation("name");
     $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
@@ -367,7 +367,7 @@ function fillDetailsPanel(elementOID, elementType) {
 
     const numberOfReferences = metadataHelper.getNumberOfRefs(elementOID, elementType);
     if (numberOfReferences > 1) {
-        $("#references-tag").classList.remove("is-hidden");
+        $("#references-tag").show();
         $("#number-of-references").textContent = numberOfReferences;
     }
 
@@ -1106,10 +1106,10 @@ window.showMoreModal = function() {
 window.hideMoreModal = function() {
     ioHelper.removeIsActiveFromElement($("#more-tabs ul li.is-active"));
     $("#element-options-tab").classList.add("is-active");
-    $("#element-options").classList.remove("is-hidden");
-    $("#element-description").classList.add("is-hidden");
-    $("#measurement-units").classList.add("is-hidden");
-    $("#conditions").classList.add("is-hidden");
+    $("#element-options").show();
+    $("#element-description").hide();
+    $("#measurement-units").hide();
+    $("#conditions").hide();
     $("#more-modal").classList.remove("is-active");
     setArrowKeyListener();
 }
@@ -1144,32 +1144,32 @@ window.moreTabClicked = function(event) {
             saveMeasurementUnits();
             createConditionSelect();
             createMeasurementUnitSelect();
-            $("#element-options").classList.remove("is-hidden");
-            $("#element-description").classList.add("is-hidden");
-            $("#measurement-units").classList.add("is-hidden");
-            $("#conditions").classList.add("is-hidden");
+            $("#element-options").show();
+            $("#element-description").hide();
+            $("#measurement-units").hide();
+            $("#conditions").hide();
             break;
         case "element-description-tab":
-            $("#element-options").classList.add("is-hidden");
-            $("#element-description").classList.remove("is-hidden");
-            $("#measurement-units").classList.add("is-hidden");
-            $("#conditions").classList.add("is-hidden");
+            $("#element-options").hide();
+            $("#element-description").show();
+            $("#measurement-units").hide();
+            $("#conditions").hide();
             break;
         case "conditions-tab":
             saveCondition();
             fillConditions();
-            $("#element-options").classList.add("is-hidden");
-            $("#element-description").classList.add("is-hidden");
-            $("#measurement-units").classList.add("is-hidden");
-            $("#conditions").classList.remove("is-hidden");
+            $("#element-options").hide();
+            $("#element-description").hide();
+            $("#measurement-units").hide();
+            $("#conditions").show();
             break;
         case "measurement-units-tab":
             saveMeasurementUnit();
             fillMeasurementUnits();
-            $("#element-options").classList.add("is-hidden");
-            $("#element-description").classList.add("is-hidden");
-            $("#measurement-units").classList.remove("is-hidden");
-            $("#conditions").classList.add("is-hidden");
+            $("#element-options").hide();
+            $("#element-description").hide();
+            $("#measurement-units").show();
+            $("#conditions").hide();
     }
 }
 

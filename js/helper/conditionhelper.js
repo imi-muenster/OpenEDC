@@ -12,7 +12,7 @@ export function process(itemsWithCondition) {
         const target = formalExpressionParts[2].replace(/['"]/g, "");
 
         if (operator == "!=") {
-            $(`[preview-field-oid="${conditionalItem}"]`).classList.add("is-hidden");
+            $(`[preview-field-oid="${conditionalItem}"]`).hide();
         }
 
         const previewFieldInput = $(`[preview-oid="${determinant}"]`);
@@ -52,10 +52,10 @@ function respondToInputChange(event, conditionalItem, operator, target) {
 
 function showOrHideConditionalItem(previewOID, hide) {
     if (hide) {
-        $(`[preview-field-oid="${previewOID}"]`).classList.add("is-hidden");
+        $(`[preview-field-oid="${previewOID}"]`).hide();
         emptyConditionalItem(previewOID);
     } else {
-        $(`[preview-field-oid="${previewOID}"]`).classList.remove("is-hidden");
+        $(`[preview-field-oid="${previewOID}"]`).show();
     }
 }
 

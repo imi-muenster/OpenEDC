@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Register serviceworker for offline capabilities
     if (window.navigator.serviceWorker) {
-        // window.navigator.serviceWorker.register("./serviceworker.js");
+        window.navigator.serviceWorker.register("./serviceworker.js");
     }
 });
 
@@ -120,13 +120,13 @@ function hideStartModal() {
 }
 
 function showNavbar() {
-    $(".navbar").classList.remove("is-hidden");
+    $(".navbar").show();
 }
 
 function showDecryptionKeyModal() {
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
-    $("#login-username-input").parentNode.parentNode.classList.add("is-hidden");
-    $("#remove-data-button").classList.remove("is-hidden");
+    $("#login-username-input").parentNode.parentNode.hide();
+    $("#remove-data-button").show();
     $("#login-title").textContent = languageHelper.getTranslation("login-encrypted-title");
     $("#login-text").textContent = languageHelper.getTranslation("login-encrypted-text");
     $("#login-incorrect-hint .message-body").textContent = languageHelper.getTranslation("password-incorrect-error");
@@ -144,7 +144,7 @@ function showDecryptionKeyModal() {
 }
 
 function showCloseExampleButton() {
-    if (metadataHelper.getStudyName() == languageHelper.getTranslation("exemplary-project")) $("#close-example-button").classList.remove("is-hidden"); 
+    if (metadataHelper.getStudyName() == languageHelper.getTranslation("exemplary-project")) $("#close-example-button").show(); 
 }
 
 function showLoginModal() {
@@ -195,11 +195,11 @@ function loginNotSuccessful(error) {
     switch (error) {
         case ioHelper.loginStatus.USERHASINITIALPASSWORD:
             $("#login-text").textContent = "This is the first time you log in to the OpenEDC Server. Please choose a new secure password.";
-            $("#login-confirm-password-input").parentNode.parentNode.classList.remove("is-hidden");
+            $("#login-confirm-password-input").parentNode.parentNode.show();
             $("#login-username-input").disabled = true;
             break;
         default:
-            $("#login-incorrect-hint").classList.remove("is-hidden");
+            $("#login-incorrect-hint").show();
     }
 }
 
@@ -217,7 +217,7 @@ function adjustUIToUser() {
             $("#subject-info-button").disabled = true;
         }
         if (!user.rights.includes(admindataHelper.userRights.VALIDATEFORMS)) {
-            $("#form-validate-level").classList.add("is-hidden");
+            $("#form-validate-level").hide();
         }
         if (!user.rights.includes(admindataHelper.userRights.ADDSUBJECTDATA)) {
             $("#add-subject-input").disabled = true;
@@ -233,7 +233,7 @@ function adjustUIToUser() {
         if (locationRef) $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(locationRef.getAttribute("LocationOID"));
     }
 
-    if (ioHelper.hasDecryptionKey()) $("#logout-button").classList.remove("is-hidden");
+    if (ioHelper.hasDecryptionKey()) $("#logout-button").show();
 }
 
 function showUninitializedHint() {
@@ -299,13 +299,13 @@ window.showProjectModal = function() {
     metadataModule.removeArrowKeyListener();
 
     if (ioHelper.hasDecryptionKey()) {
-        $("#project-modal #encryption-password-input").parentNode.parentNode.classList.add("is-hidden");
-        $("#project-modal #data-encryption-warning").classList.add("is-hidden");
-        $("#project-modal #data-encrypted-hint").classList.remove("is-hidden");
+        $("#project-modal #encryption-password-input").parentNode.parentNode.hide();
+        $("#project-modal #data-encryption-warning").hide();
+        $("#project-modal #data-encrypted-hint").show();
     }
     if (ioHelper.hasServerURL()) {
-        $("#project-modal #server-url-input").parentNode.parentNode.classList.add("is-hidden");
-        $("#project-modal #server-connected-hint").classList.remove("is-hidden");
+        $("#project-modal #server-url-input").parentNode.parentNode.hide();
+        $("#project-modal #server-connected-hint").show();
     }
 
     $("#survey-code-input").value = ioHelper.getSurveyCode();
@@ -325,10 +325,10 @@ window.showProjectModal = function() {
 window.hideProjectModal = function() {
     ioHelper.removeIsActiveFromElement($("#project-tabs ul li.is-active"));
     $("#general-options-tab").classList.add("is-active");
-    $("#general-options").classList.remove("is-hidden");
-    $("#users-options").classList.add("is-hidden");
-    $("#sites-options").classList.add("is-hidden");
-    $("#name-description").classList.add("is-hidden");
+    $("#general-options").show();
+    $("#users-options").hide();
+    $("#sites-options").hide();
+    $("#name-description").hide();
     $("#project-modal").classList.remove("is-active");
     if (getCurrentMode() == appModes.METADATA) metadataModule.setArrowKeyListener();
 }
@@ -339,28 +339,28 @@ window.projectTabClicked = function(event) {
 
     switch(event.target.parentNode.id) {
         case "general-options-tab":
-            $("#general-options").classList.remove("is-hidden");
-            $("#users-options").classList.add("is-hidden");
-            $("#sites-options").classList.add("is-hidden");
-            $("#name-description").classList.add("is-hidden");
+            $("#general-options").show();
+            $("#users-options").hide();
+            $("#sites-options").hide();
+            $("#name-description").hide();
             break;
         case "users-options-tab":
-            $("#general-options").classList.add("is-hidden");
-            $("#users-options").classList.remove("is-hidden");
-            $("#sites-options").classList.add("is-hidden");
-            $("#name-description").classList.add("is-hidden");
+            $("#general-options").hide();
+            $("#users-options").show();
+            $("#sites-options").hide();
+            $("#name-description").hide();
             break;
         case "sites-options-tab":
-            $("#general-options").classList.add("is-hidden");
-            $("#users-options").classList.add("is-hidden");
-            $("#sites-options").classList.remove("is-hidden");
-            $("#name-description").classList.add("is-hidden");
+            $("#general-options").hide();
+            $("#users-options").hide();
+            $("#sites-options").show();
+            $("#name-description").hide();
             break;
         case "name-description-tab":
-            $("#general-options").classList.add("is-hidden");
-            $("#users-options").classList.add("is-hidden");
-            $("#sites-options").classList.add("is-hidden");
-            $("#name-description").classList.remove("is-hidden");
+            $("#general-options").hide();
+            $("#users-options").hide();
+            $("#sites-options").hide();
+            $("#name-description").show();
     }
 }
 
@@ -370,8 +370,8 @@ window.connectToServer = function() {
         .then(serverStatus => {
             switch (serverStatus) {
                 case ioHelper.serverStatus.SERVERNOTINITIALIZED:
-                    $("#initialize-server-form").classList.remove("is-hidden");
-                    $("#server-url-input").parentNode.parentNode.classList.add("is-hidden");
+                    $("#initialize-server-form").show();
+                    $("#server-url-input").parentNode.parentNode.hide();
                     break;
                 case ioHelper.serverStatus.SERVERINITIALIZED:
                     ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("server-initialized-hint"),
@@ -408,7 +408,7 @@ window.initializeServer = function(event) {
 
 window.encryptData = function() {
     if ($("#confirm-encryption-password-input").parentNode.parentNode.classList.contains("is-hidden")) {
-        $("#confirm-encryption-password-input").parentNode.parentNode.classList.remove("is-hidden");
+        $("#confirm-encryption-password-input").parentNode.parentNode.show();
         return;
     }
 
