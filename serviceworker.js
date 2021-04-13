@@ -21,6 +21,7 @@ const staticAssets = [
     "./js/helper/languagehelper.js",
     "./js/helper/odmvalidation.js",
     "./js/helper/validationhelper.js",
+    "./js/helper/prototypefunctions.js",
     "./js/odmtemplates/metadatatemplates.js",
     "./js/odmtemplates/admindatatemplates.js",
     "./js/odmtemplates/clinicaldatatemplates.js",
@@ -34,7 +35,8 @@ const staticAssets = [
     "./lib/fontawesome.js",
     "./lib/crypto-js.js",
     "./odm/example.xml",
-    "./xsl/odmtohtml.xsl"
+    "./xsl/odmtohtml.xsl",
+    "./img/title-logo.png"
 ];
 
 // Cache static assets

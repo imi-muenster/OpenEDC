@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Handle URL search / query parameters (e.g., for metadata repository integration)
     handleURLSearchParameters();
 
-    // Register serviceworker for offline capabilities
+    // Register service worker for offline capabilities
     if (window.navigator.serviceWorker) {
         window.navigator.serviceWorker.register("./serviceworker.js");
     }
