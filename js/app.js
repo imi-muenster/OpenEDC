@@ -8,7 +8,7 @@ import * as odmValidation from "./helper/odmvalidation.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 
-const appVersion = "0.3.1";
+const appVersion = "0.3.2";
 
 const appModes = {
     METADATA: 1,

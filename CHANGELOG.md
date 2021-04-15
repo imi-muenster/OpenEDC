@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.3.2
+
+- Show the study event and form name instead of the OID in the audit trail
+- Various stability and performance improvements
+
 ## 0.3.1
 
 - Option to upload and merge ODM metadata into an existing project
