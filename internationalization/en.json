@@ -239,6 +239,8 @@
     "enter-subject-key-text": "Please enter a key for the subject first.",
     "subject-key-existent": "Subject key existent",
     "subject-key-existent-text": "The entered subject key already exists. Please enter another one.",
+    "subject-key-existent-open-text": "The entered subject key already exists. Do you want to open the associated data?",
+    "subject-key-existent-other-site-text": "The entered subject key already exists at another site. Please enter another key.",
     "id-not-changed": "Unique ID not changed",
     "id-not-changed-error-used": "The entered unique ID is already in use.",
     "id-not-changed-error-data": "The unique ID could not be changed since there is clinical data assigned to this element. You can try to remove the element to see a list of subjects that contain data for this element.",

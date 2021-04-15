@@ -67,6 +67,11 @@ export function getCurrentUserOID() {
     }
 }
 
+export function getCurrentUserSiteOID() {
+    const user = getUser(getCurrentUserOID());
+    return user.querySelector("LocationRef") ? user.querySelector("LocationRef").getAttribute("LocationOID") : null;
+}
+
 export function addUser() {
     const newUserOID = generateUniqueOID("U.");
     const newUser = admindataTemplates.getUser(newUserOID, languageHelper.getTranslation("new"), languageHelper.getTranslation("user"));

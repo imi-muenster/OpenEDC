@@ -66,7 +66,8 @@ export const dataStatusTypes = {
 // TODO: Could implement other enums with ints as well if there is no string representation needed
 export const errors = {
     SUBJECTKEYEMPTY: 1,
-    SUBJECTKEYEXISTENT: 2
+    SUBJECTKEYEXISTENT: 2,
+    SUBJECTKEYEXISTENTOTHERSITE: 3
 }
 
 const fileNameSeparator = "__";
@@ -125,9 +126,16 @@ export async function loadSubjects() {
 }
 
 export async function addSubject(subjectKey, siteOID) {
+    // If no key was provided, return an error
     if (subjectKey.length == 0) return Promise.reject(errors.SUBJECTKEYEMPTY);
-    if (subjects.map(subject => subject.key).includes(subjectKey)) return Promise.reject(errors.SUBJECTKEYEXISTENT);
 
+    // Test whether a subject with the key already exists and if the current user is eligible to see the existing subject data
+    const existingSubject = subjects.find(subject => subject.key == subjectKey);
+    if (existingSubject) {
+        if (admindataHelper.getCurrentUserSiteOID() == existingSubject.siteOID || !admindataHelper.getCurrentUserSiteOID()) return Promise.reject(errors.SUBJECTKEYEXISTENT);
+        else return Promise.reject(errors.SUBJECTKEYEXISTENTOTHERSITE);
+    }
+    
     subjectData = clinicaldataTemplates.getSubjectData(subjectKey);
     if (siteOID) subjectData.insertAdjacentElement("afterbegin", clinicaldataTemplates.getSiteRef(siteOID));
 

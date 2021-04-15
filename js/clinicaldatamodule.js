@@ -134,7 +134,17 @@ window.addSubject = function() {
                     ioHelper.showMessage(languageHelper.getTranslation("enter-subject-key"), languageHelper.getTranslation("enter-subject-key-text"));
                     break;
                 case clinicaldataHelper.errors.SUBJECTKEYEXISTENT:
-                    ioHelper.showMessage(languageHelper.getTranslation("subject-key-existent"), languageHelper.getTranslation("subject-key-existent-text"));
+                    ioHelper.showMessage(languageHelper.getTranslation("subject-key-existent"), languageHelper.getTranslation("subject-key-existent-open-text"),
+                        {
+                            [languageHelper.getTranslation("open")]: () => {
+                                if (subjectKey == currentElementID.subject) currentElementID.subject = null;
+                                loadSubjectData(subjectKey);
+                            }
+                        }
+                    );
+                    break;
+                case clinicaldataHelper.errors.SUBJECTKEYEXISTENTOTHERSITE:
+                    ioHelper.showMessage(languageHelper.getTranslation("subject-key-existent"), languageHelper.getTranslation("subject-key-existent-other-site-text"));
             }
         });
 }
@@ -168,6 +178,8 @@ async function loadSubjectData(subjectKey) {
 
     // Option to deselect a subject by clicking on the same subject again
     // If the currently logged in user has no metadata edit rights, then disable the form preview as well
+    // TODO: Should be moved to a function before called subjectClicked, together with the dataHasChangedCheck. The SUBJECTKEYEXISTENT prompt can then be shortened
+    // TODO: The EDITMETADATA check could also be moved outside this if-clause
     if (subjectKey == currentElementID.subject) {
         subjectKey = null;
         if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.EDITMETADATA)) currentElementID.form = null;
