@@ -136,10 +136,7 @@ window.addSubject = function() {
                 case clinicaldataHelper.errors.SUBJECTKEYEXISTENT:
                     ioHelper.showMessage(languageHelper.getTranslation("subject-key-existent"), languageHelper.getTranslation("subject-key-existent-open-text"),
                         {
-                            [languageHelper.getTranslation("open")]: () => {
-                                if (subjectKey == currentElementID.subject) currentElementID.subject = null;
-                                loadSubjectData(subjectKey);
-                            }
+                            [languageHelper.getTranslation("open")]: () => loadSubjectData(subjectKey)
                         }
                     );
                     break;
@@ -160,31 +157,33 @@ export function loadSubjectKeys() {
     for (let subject of subjects) {
         const siteSubtitle = subject.siteOID && !selectedSite ? admindataHelper.getSiteNameByOID(subject.siteOID) : null;
         let panelBlock = htmlElements.getClinicaldataPanelBlock(subject.uniqueKey, subject.key, null, siteSubtitle, subject.status);
-        panelBlock.onclick = () => loadSubjectData(subject.uniqueKey);
+        panelBlock.onclick = () => subjectClicked(subject.uniqueKey);
         $("#subject-panel-blocks").appendChild(panelBlock);
     }
 
     if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).activate();
 }
 
-async function loadSubjectData(subjectKey) {
+function subjectClicked(subjectKey) {
     // Check if the data has changed / new data has been entered and show a prompt first
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
-        deferredFunction = async () => await loadSubjectData(subjectKey);
+        deferredFunction = () => subjectClicked(subjectKey);
         showCloseClinicaldataModal();
         return;
     }
 
     // Option to deselect a subject by clicking on the same subject again
     // If the currently logged in user has no metadata edit rights, then disable the form preview as well
-    // TODO: Should be moved to a function before called subjectClicked, together with the dataHasChangedCheck. The SUBJECTKEYEXISTENT prompt can then be shortened
-    // TODO: The EDITMETADATA check could also be moved outside this if-clause
     if (subjectKey == currentElementID.subject) {
         subjectKey = null;
         if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.EDITMETADATA)) currentElementID.form = null;
     }
 
+    loadSubjectData(subjectKey);
+}
+
+async function loadSubjectData(subjectKey) {
     // Automatically select the first study event if there is only one (present here as well mainly because of mobile auto survey view function)
     if (!currentElementID.studyEvent && metadataHelper.getStudyEvents().length == 1) currentElementID.studyEvent = metadataHelper.getStudyEvents()[0].getOID();
 
