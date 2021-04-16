@@ -219,14 +219,16 @@ async function loadSubjectData(subjectKey) {
     // Automatically select the first study event if there is only one (present here as well mainly because of mobile auto survey view function)
     if (!currentElementID.studyEvent && metadataHelper.getStudyEvents().length == 1) currentElementID.studyEvent = metadataHelper.getStudyEvents()[0].getOID();
 
-    currentElementID.subject = subjectKey;
-    cachedFormData = null;
-
-    await clinicaldataHelper.loadSubject(currentElementID.subject).catch(() => {
-        currentElementID.subject = null;
-        clinicaldataHelper.clearSubject();
-        ioHelper.showMessage(languageHelper.getTranslation("subject-not-loaded-title"), languageHelper.getTranslation("subject-not-loaded-error"));
-    });
+    await clinicaldataHelper.loadSubject(subjectKey)
+        .then(subject => {
+            currentElementID.subject = subject ? subject.uniqueKey : null;
+            cachedFormData = null;
+        })
+        .catch(() => {
+            currentElementID.subject = null;
+            clinicaldataHelper.clearSubject();
+            ioHelper.showMessage(languageHelper.getTranslation("subject-not-loaded-title"), languageHelper.getTranslation("subject-not-loaded-error"));
+        });
 
     ioHelper.removeIsActiveFromElement($("#subject-panel-blocks a.is-active"));
     if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).activate();
@@ -931,7 +933,7 @@ function setIOListeners() {
     $("#metadata-toggle-button").onclick = () => hide();
     $("#add-subject-input").onkeydown = keyEvent => {
         if (["/", "#", "<", ">", "\\", "{", "}", "&", "?", "ä", "ö", "ü"].includes(keyEvent.key)) keyEvent.preventDefault();
-        if (keyEvent.code == "Enter") addSubject();
+        if (keyEvent.code == "Enter") addSubjectInput();
     };
     $("#search-subject-input").oninput = inputEvent => filterSubjects(inputEvent.target.value);
 }

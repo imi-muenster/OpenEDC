@@ -13,7 +13,7 @@ class Subject {
         this.status = status;
 
         // Used since a subject's key can be ambigous when data conflicts are present (i.e., multiple users edited the same subject at the same)
-        this.uniqueKey = key;
+        this.uniqueKey = key.toLowerCase();
     }
 
     get fileName() {
@@ -130,7 +130,7 @@ export async function addSubject(subjectKey, siteOID) {
     if (subjectKey.length == 0) return Promise.reject(errors.SUBJECTKEYEMPTY);
 
     // Test whether a subject with the key already exists and if the current user is eligible to see the existing subject data
-    const existingSubject = subjects.find(subject => subject.key == subjectKey);
+    const existingSubject = subjects.find(subject => subject.uniqueKey == subjectKey.toLowerCase());
     if (existingSubject) {
         if (admindataHelper.getCurrentUserSiteOID() == existingSubject.siteOID || !admindataHelper.getCurrentUserSiteOID()) return Promise.reject(errors.SUBJECTKEYEXISTENT);
         else return Promise.reject(errors.SUBJECTKEYEXISTENTOTHERSITE);
@@ -169,13 +169,17 @@ function sortSubjects(subjects, sortOrder) {
 }
 
 export async function loadSubject(subjectKey) {
-    subject = subjects.find(subject => subject.uniqueKey == subjectKey);
-    
-    if (subject) {
-        subjectData = await ioHelper.getSubjectData(subject.fileName);
-    } else {
+    if (!subjectKey) {
+        subject = null;
         subjectData = null;
+        return;
     }
+
+    subject = subjects.find(subject => subject.uniqueKey == subjectKey.toLowerCase());
+    if (subject) subjectData = await ioHelper.getSubjectData(subject.fileName);
+    else subjectData = null;
+    
+    return subject;
 }
 
 export async function storeSubject() {
