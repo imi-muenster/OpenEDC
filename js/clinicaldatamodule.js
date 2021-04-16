@@ -146,7 +146,7 @@ window.addSubjectBarcode = async function() {
     barcodeModal.setButtonText(languageHelper.getTranslation("add"));
     document.body.appendChild(barcodeModal);
 
-    document.addEventListener("BarcodeScanned", barcodeEvent => {
+    document.addEventListener("BarcodeFound", barcodeEvent => {
         const siteOID = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
         const subjectKey = barcodeEvent.detail;
         addSubject(subjectKey, siteOID);

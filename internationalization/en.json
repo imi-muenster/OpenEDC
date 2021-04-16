@@ -274,7 +274,7 @@
     "password-incorrect-error": "The password is incorrect. Please try again.",
     "username-password-incorrect-error": "The username or password is incorrect. Please try again.",
     "barcode": "Barcode",
-    "barcode-help-text": "If your device does not provide a camera or the barcode scan does not work, you can add manually enter a barcode value below.",
+    "barcode-help-text": "If your device does not provide a camera or the barcode scan does not work, you can manually enter the barcode value below.",
     "server-uninitialized": "Server uninitialized",
     "server-uninitialized-hint": "This OpenEDC Server has not yet been initialized.<br><br>You can either go to <a target='_blank' href='https://openedc.org'>openedc.org</a> to initialize this server with data that you have already locally captured there, or, alternatively, close this hint, start a new local project here, and initialize the server from here as well.<br><br>In both cases, use the <i>Project Options</i> button in the top right corner of the app and follow the instructions to initialize this server.",
     "forgot-password": "Forgot password",

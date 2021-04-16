@@ -19,10 +19,10 @@ class BarcodeModal extends HTMLElement {
                             <div id="barcode-video-stream" class="mb-4"></div>
                             <div class="field is-grouped is-fullwidth">
                                 <div class="control is-expanded">
-                                    <input class="input" type="text" placeholder="${this.inputPlaceholder}">
+                                    <input class="input" id="barcode-fallback-input" type="text" placeholder="${this.inputPlaceholder}">
                                 </div>
                                 <div class="control">
-                                    <button class="button">${this.buttonText}</button>
+                                    <button class="button" id="barcode-fallback-button">${this.buttonText}</button>
                                 </div>
                             </div>
                         </div>
@@ -46,7 +46,7 @@ class BarcodeModal extends HTMLElement {
             },
             error => {
                 if (error) {
-                    console.log(err);
+                    this.querySelector("#barcode-video-stream").remove();
                     return;
                 }
                 Quagga.start();
@@ -55,10 +55,15 @@ class BarcodeModal extends HTMLElement {
         );
 
         // Allow the manual entry of a barcode value
-        this.querySelector(".button.is-link").onclick = () => {
-            const barcodeValue = this.querySelector("input").value;
-            document.dispatchEvent(new CustomEvent("BarcodeScanned", { detail: barcodeValue }));
-            this.finish();
+        this.querySelector("#barcode-fallback-button").onclick = () => {
+            const barcodeValue = this.querySelector("#barcode-fallback-input").value;
+            this.dispatchBarcodeFoundEvent(barcodeValue);
+        }
+        this.querySelector("#barcode-fallback-input").onkeydown = keyEvent => {
+            if (keyEvent.code == "Enter") {
+                const barcodeValue = this.querySelector("#barcode-fallback-input").value;
+                this.dispatchBarcodeFoundEvent(barcodeValue);
+            }
         }
 
         // Stop the barcode scan whe clicking on the top right close button or the modal background
@@ -73,10 +78,12 @@ class BarcodeModal extends HTMLElement {
         else this.foundBarcodeNumber = 0;
         this.foundBarcode = barcode;
 
-        if (this.foundBarcodeNumber == 5) {
-            document.dispatchEvent(new CustomEvent("BarcodeScanned", { detail: barcode }));
-            this.finish();
-        }
+        if (this.foundBarcodeNumber == 5) this.dispatchBarcodeFoundEvent(this.foundBarcode);
+    }
+
+    dispatchBarcodeFoundEvent = barcodeValue => {
+        document.dispatchEvent(new CustomEvent("BarcodeFound", { detail: barcodeValue }));
+        this.finish();
     }
 
     finish = () => {
