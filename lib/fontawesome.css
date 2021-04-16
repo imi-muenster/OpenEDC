@@ -252,7 +252,7 @@ readers do not read off random characters that represent icons */
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url("./fontawesome-regular.woff") format("woff"); }
+  src: url("./fontawesome-regular.woff2") format("woff2"); }
 
 .far {
   font-family: 'Font Awesome 5 Pro';
@@ -262,7 +262,7 @@ readers do not read off random characters that represent icons */
   font-style: normal;
   font-weight: 900;
   font-display: block;
-  src: url("./fontawesome-solid.woff") format("woff"); }
+  src: url("./fontawesome-solid.woff2") format("woff2"); }
 
 .fa,
 .fas {
