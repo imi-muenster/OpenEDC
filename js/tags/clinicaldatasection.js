@@ -15,7 +15,7 @@ class ClinicaldataSection extends HTMLElement {
                                         </span>
                                     </div>
                                     <div class="control">
-                                        <button class="button is-link is-light" id="add-subject-button" onclick="addSubjectInput()" i18n="add"></button>
+                                        <button class="button is-link is-light" id="add-subject-button" onclick="addSubjectManual()" i18n="add"></button>
                                     </div>
                                 </div>
                             </div>

@@ -29,25 +29,25 @@ export class Credentials {
 }
 
 export const loadXMLExceptionCodes = {
-    NODATAFOUND: 0,
-    DATAENCRYPTED: 1,
-    NOTDECRYPTABLE: 2
+    NODATAFOUND: 1,
+    DATAENCRYPTED: 2,
+    NOTDECRYPTABLE: 3
 }
 
 export const serverStatus = {
-    SERVERNOTFOUND: 0,
-    SERVERINITIALIZED: 1,
-    SERVERNOTINITIALIZED: 2
+    SERVERNOTFOUND: 1,
+    SERVERINITIALIZED: 2,
+    SERVERNOTINITIALIZED: 3
 }
 
 export const loginStatus = {
-    WRONGCREDENTIALS: 0,
-    USERHASINITIALPASSWORD: 1
+    WRONGCREDENTIALS: 1,
+    USERHASINITIALPASSWORD: 2
 }
 
 export const callbackTypes = {
-    DEFAULT: 0,
-    DANGER: 1
+    DEFAULT: 1,
+    DANGER: 2
 }
 
 const $ = query => document.querySelector(query);
@@ -63,10 +63,17 @@ let decryptionKey = null;
 let serverURL = null;
 
 // Keeps app options that are equal for all users of the app
+const subjectKeyModes = {
+    MANUAL: 1,
+    AUTO: 2,
+    BARCODE: 3
+}
+
 let settings = {
     surveyCode: null,
     textAsTextarea: false,
-    autoSurveyView: false
+    autoSurveyView: false,
+    subjectKeyMode: subjectKeyModes.MANUAL
 };
 
 export async function init() {

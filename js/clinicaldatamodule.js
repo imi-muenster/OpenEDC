@@ -108,11 +108,11 @@ function createSortTypeSelect() {
     };
 }
 
-window.addSubjectInput = function() {
+window.addSubjectManual = function() {
     // Check if the data has changed / new data has been entered and show a prompt first
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
-        deferredFunction = () => addSubjectInput();
+        deferredFunction = () => addSubjectManual();
         showCloseClinicaldataModal();
         return;
     }
@@ -933,7 +933,7 @@ function setIOListeners() {
     $("#metadata-toggle-button").onclick = () => hide();
     $("#add-subject-input").onkeydown = keyEvent => {
         if (["/", "#", "<", ">", "\\", "{", "}", "&", "?", "ä", "ö", "ü"].includes(keyEvent.key)) keyEvent.preventDefault();
-        if (keyEvent.code == "Enter") addSubjectInput();
+        if (keyEvent.code == "Enter") addSubjectManual();
     };
     $("#search-subject-input").oninput = inputEvent => filterSubjects(inputEvent.target.value);
 }
