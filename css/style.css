@@ -242,6 +242,10 @@ a.panel-block:hover {
     display: none;
 }
 
+#barcode-video-stream canvas {
+    display: none;
+}
+
 @media only screen and (max-width: 768px)  {
     #start-modal .modal-content, #about-modal .modal-content, #survey-code-modal .modal-content {
         max-height: none;

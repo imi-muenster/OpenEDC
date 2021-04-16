@@ -146,6 +146,13 @@ window.addSubject = function() {
         });
 }
 
+window.addSubjectBarcode = async function() {
+    await import("./tags/barcodemodal.js");
+    const barcodeModal = document.createElement("barcode-modal");
+    barcodeModal.setHeading(languageHelper.getTranslation("barcode"));
+    document.body.appendChild(barcodeModal);
+}
+
 export function loadSubjectKeys() {
     $$("#subject-panel-blocks a").removeElements();
 

@@ -19,6 +19,22 @@ class ClinicaldataSection extends HTMLElement {
                                     </div>
                                 </div>
                             </div>
+                            <div class="panel-block has-no-padding-bottom has-no-border-bottom is-hidden">
+                                <button class="button is-link is-light is-fullwidth" id="add-subject-auto-button" onclick="addSubject()">
+                                    <span class="icon">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                    <span i18n="add"></span>
+                                </button>
+                            </div>
+                            <div class="panel-block has-no-padding-bottom has-no-border-bottom">
+                                <button class="button is-link is-light is-fullwidth" id="add-subject-barcode-button" onclick="addSubjectBarcode()">
+                                    <span class="icon">
+                                        <i class="fas fa-barcode-read"></i>
+                                    </span>
+                                    <span i18n="barcode"></span>
+                                </button>
+                            </div>
                             <div class="panel-block has-no-padding-bottom has-no-border-bottom">
                                 <div class="field is-fullwidth">
                                     <div class="control has-icons-left is-fullwidth" id="filter-site-control">
