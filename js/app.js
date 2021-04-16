@@ -22,6 +22,7 @@ const appStates = {
 }
 
 const $ = query => document.querySelector(query);
+const $$ = query => document.querySelectorAll(query);
 
 document.addEventListener("DOMContentLoaded", async () => {
     // If index.html is requested, redirect to the base url
@@ -88,6 +89,7 @@ const startApp = async () => {
     hideStartModal();
     showNavbar();
     showCloseExampleButton();
+    showSubjectKeyModeElement();
     adjustUIToUser();
     setIOListeners();
 
@@ -223,7 +225,7 @@ function adjustUIToUser() {
         }
         if (!user.rights.includes(admindataHelper.userRights.ADDSUBJECTDATA)) {
             $("#add-subject-input").disabled = true;
-            $("#add-subject-button").disabled = true;
+            $$(".subject-key-mode-element .button").forEach(button => button.disabled = true);
         }
         if (user.site) {
             $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(user.site);
@@ -309,6 +311,10 @@ window.showProjectModal = function() {
         $("#project-modal #server-url-input").parentNode.parentNode.hide();
         $("#project-modal #server-connected-hint").show();
     }
+
+    // TODO: Use optional chaining instead
+    const subjectKeyModeRadio =  $(`#${ioHelper.getSubjectKeyMode()}`);
+    if (subjectKeyModeRadio) subjectKeyModeRadio.checked = true;
 
     $("#survey-code-input").value = ioHelper.getSurveyCode();
     $("#text-as-textarea-checkbox").checked = ioHelper.isTextAsTextarea();
@@ -442,6 +448,19 @@ window.miscOptionClicked = function(event) {
         case "auto-survey-view-checkbox":
             ioHelper.setAutoSurveyView(event.target.checked);
     }
+}
+
+window.subjectKeyModeClicked = function(event) {
+    ioHelper.setSubjectKeyMode(event.target.id);
+    showSubjectKeyModeElement();
+}
+
+function showSubjectKeyModeElement() {
+    $$(".subject-key-mode-element").forEach(button => button.hide());
+
+    // TODO: Use optional chaining instead
+    const subjectKeyModeElement =  $(`#${ioHelper.getSubjectKeyMode()}-element`);
+    if (subjectKeyModeElement) subjectKeyModeElement.parentNode.show();
 }
 
 window.saveStudyNameDescription = function() {

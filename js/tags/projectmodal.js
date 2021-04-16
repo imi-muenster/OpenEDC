@@ -60,6 +60,24 @@ class ProjectModal extends HTMLElement {
                                 </form>
                             </div>
                             <div class="notification is-link is-light">
+                                <h1 class="title is-4" i18n="subject-key"></h1>
+                                <p class="mb-5" i18n="subject-key-hint"></p>
+                                <div class="control">
+                                    <label class="radio">
+                                        <input type="radio" name="subject-key-mode" id="subject-key-mode-manual" oninput="subjectKeyModeClicked(event)">
+                                        <span i18n="subject-key-mode-manual"></span>
+                                    </label><br>
+                                    <label class="radio">
+                                        <input type="radio" name="subject-key-mode" id="subject-key-mode-auto" oninput="subjectKeyModeClicked(event)">
+                                        <span i18n="subject-key-mode-auto"></span>
+                                    </label><br>
+                                    <label class="radio">
+                                        <input type="radio" name="subject-key-mode" id="subject-key-mode-barcode" oninput="subjectKeyModeClicked(event)">
+                                        <span i18n="subject-key-mode-barcode"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="notification is-link is-light">
                                 <h1 class="title is-4" i18n="survey-code"></h1>
                                 <p class="mb-5" i18n-html="survey-code-hint"></p>
                                 <div class="field has-addons">

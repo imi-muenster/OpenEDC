@@ -63,10 +63,10 @@ let decryptionKey = null;
 let serverURL = null;
 
 // Keeps app options that are equal for all users of the app
-const subjectKeyModes = {
-    MANUAL: 1,
-    AUTO: 2,
-    BARCODE: 3
+export const subjectKeyModes = {
+    MANUAL: "subject-key-mode-manual",
+    AUTO: "subject-key-mode-auto",
+    BARCODE: "subject-key-mode-barcode"
 }
 
 let settings = {
@@ -257,6 +257,7 @@ export function getLoggedInUser() {
     return user;
 }
 
+// TODO: Setting and getting project settings should be more generic
 export function setSurveyCode(surveyCode) {
     if (surveyCode.length == 0 || (parseInt(surveyCode) == surveyCode && surveyCode.length == 4)) {
         settings.surveyCode = surveyCode;
@@ -287,6 +288,15 @@ export function setAutoSurveyView(enable) {
 
 export function isAutoSurveyView() {
     return settings.autoSurveyView;
+}
+
+export function setSubjectKeyMode(subjectKeyMode) {
+    settings.subjectKeyMode = subjectKeyMode;
+    storeSettings();
+}
+
+export function getSubjectKeyMode() {
+    return settings.subjectKeyMode;
 }
 
 export async function getServerStatus(url, storeServerURL) {

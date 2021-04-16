@@ -6,8 +6,8 @@ class ClinicaldataSection extends HTMLElement {
                     <div class="column" id="subjects-column">
                         <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" i18n="subjects"></p>
-                            <div class="panel-block has-no-padding-bottom has-no-border-bottom">
-                                <div class="field is-grouped is-fullwidth">
+                            <div class="panel-block has-no-padding-bottom has-no-border-bottom subject-key-mode-element">
+                                <div class="field is-grouped is-fullwidth" id="subject-key-mode-manual-element">
                                     <div class="control is-expanded has-icons-left">
                                         <input class="input" id="add-subject-input" type="text" i18n-ph="new-subject">
                                         <span class="icon is-left">
@@ -15,20 +15,20 @@ class ClinicaldataSection extends HTMLElement {
                                         </span>
                                     </div>
                                     <div class="control">
-                                        <button class="button is-link is-light" id="add-subject-button" onclick="addSubjectManual()" i18n="add"></button>
+                                        <button class="button is-link is-light" onclick="addSubjectManual()" i18n="add"></button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel-block has-no-padding-bottom has-no-border-bottom is-hidden">
-                                <button class="button is-link is-light is-fullwidth" id="add-subject-auto-button" onclick="addSubjectAuto()">
+                            <div class="panel-block has-no-padding-bottom has-no-border-bottom subject-key-mode-element">
+                                <button class="button is-link is-light is-fullwidth" id="subject-key-mode-auto-element" onclick="addSubjectAuto()">
                                     <span class="icon">
                                         <i class="fas fa-plus"></i>
                                     </span>
                                     <span i18n="add"></span>
                                 </button>
                             </div>
-                            <div class="panel-block has-no-padding-bottom has-no-border-bottom">
-                                <button class="button is-link is-light is-fullwidth" id="add-subject-barcode-button" onclick="addSubjectBarcode()">
+                            <div class="panel-block has-no-padding-bottom has-no-border-bottom subject-key-mode-element">
+                                <button class="button is-link is-light is-fullwidth" id="subject-key-mode-barcode-element" onclick="addSubjectBarcode()">
                                     <span class="icon">
                                         <i class="fas fa-barcode-read"></i>
                                     </span>
