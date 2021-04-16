@@ -3,7 +3,7 @@ class StartModal extends HTMLElement {
         this.innerHTML = `
             <div class="modal" id="start-modal">
                 <div class="modal-background"></div>
-                <div class="modal-content is-medium">
+                <div class="modal-content is-medium is-fullheight-mobile">
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <div id="openedc-title">
@@ -100,7 +100,7 @@ class AboutModal extends HTMLElement {
         this.innerHTML = `
             <div class="modal" id="about-modal">
                 <div class="modal-background" onclick="hideAboutModal()"></div>
-                <div class="modal-content is-medium">
+                <div class="modal-content is-medium is-fullheight-mobile">
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <h1 class="title" i18n="about-openedc"></h1>
@@ -198,7 +198,7 @@ class SurveyCodeModal extends HTMLElement {
         this.innerHTML = `
             <div class="modal" id="survey-code-modal">
                 <div class="modal-background"></div>
-                <div class="modal-content is-medium">
+                <div class="modal-content is-medium is-fullheight-mobile">
                     <div class="box has-text-centered">
                         <h2 class="subtitle" i18n="survey-finished"></h2>
                         <p i18n="survey-finished-text"></p>

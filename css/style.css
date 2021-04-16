@@ -247,7 +247,7 @@ a.panel-block:hover {
 }
 
 @media only screen and (max-width: 768px)  {
-    #start-modal .modal-content, #about-modal .modal-content, #survey-code-modal .modal-content {
+    .modal-content.is-fullheight-mobile {
         max-height: none;
     }
 

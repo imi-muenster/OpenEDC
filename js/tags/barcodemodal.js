@@ -5,11 +5,10 @@ class BarcodeModal extends HTMLElement {
         this.innerHTML = `
             <div class="modal is-active" id="barcode-modal">
                 <div class="modal-background"></div>
-                <div class="modal-content is-medium">
+                <div class="modal-content is-medium is-fullheight-mobile">
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <h1 class="title">${this.heading}</h1>
-                            <hr>
                             <div id="barcode-video-stream"></div>
                         </div>
                     </div>

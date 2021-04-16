@@ -238,7 +238,7 @@
     "deep-copy": "Deep Copy",
     "enter-subject-key": "Enter subject key",
     "enter-subject-key-text": "Please enter a key for the subject first.",
-    "subject-key-existent": "Subject key existent",
+    "subject-key-existent": "Subject exists",
     "subject-key-existent-text": "The entered subject key already exists. Please enter another one.",
     "subject-key-existent-open-text": "This subject already exists. Do you want to open the associated data?",
     "subject-key-existent-other-site-text": "This subject already exists at another site. Please enter another key.",

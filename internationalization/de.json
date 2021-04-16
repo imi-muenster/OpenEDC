@@ -237,7 +237,7 @@
     "deep-copy": "Tiefe Kopie",
     "enter-subject-key": "Name des Probanden eingeben",
     "enter-subject-key-text": "Bitte geben Sie zuerst einen Namen für den Probanden ein.",
-    "subject-key-existent": "Name des Probanden vergeben",
+    "subject-key-existent": "Proband existiert",
     "subject-key-existent-text": "Der eingegebene Name existiert bereits. Bitte geben Sie einen anderen ein.",
     "subject-key-existent-open-text": "Dieser Proband existiert bereits. Möchten Sie die zugehörigen Daten öffnen?",
     "subject-key-existent-other-site-text": "Dieser Proband existiert bereits an einem anderen Standort. Bitte geben Sie einen anderen Namen ein.",
