@@ -108,21 +108,35 @@ function createSortTypeSelect() {
     };
 }
 
-window.addSubject = function() {
+window.addSubjectInput = function() {
     // Check if the data has changed / new data has been entered and show a prompt first
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
-        deferredFunction = () => addSubject();
+        deferredFunction = () => addSubjectInput();
         showCloseClinicaldataModal();
         return;
     }
 
-    const site = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
+    const siteOID = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
     const subjectKey = $("#add-subject-input").value;
     $("#add-subject-input").value = "";
-    
-    // TODO: Good practice? Problem: .then() and .catch() are executed async, which must be considered
-    clinicaldataHelper.addSubject(subjectKey, site)
+
+    addSubject(subjectKey, siteOID);
+}
+
+window.addSubjectAuto = function() {
+    // TODO: implement
+}
+
+window.addSubjectBarcode = async function() {
+    await import("./tags/barcodemodal.js");
+    const barcodeModal = document.createElement("barcode-modal");
+    barcodeModal.setHeading(languageHelper.getTranslation("barcode"));
+    document.body.appendChild(barcodeModal);
+}
+
+function addSubject(subjectKey, siteOID) {
+    clinicaldataHelper.addSubject(subjectKey, siteOID)
         .then(() => {
             loadSubjectKeys();
             skipDataHasChangedCheck = true;
@@ -144,13 +158,6 @@ window.addSubject = function() {
                     ioHelper.showMessage(languageHelper.getTranslation("subject-key-existent"), languageHelper.getTranslation("subject-key-existent-other-site-text"));
             }
         });
-}
-
-window.addSubjectBarcode = async function() {
-    await import("./tags/barcodemodal.js");
-    const barcodeModal = document.createElement("barcode-modal");
-    barcodeModal.setHeading(languageHelper.getTranslation("barcode"));
-    document.body.appendChild(barcodeModal);
 }
 
 export function loadSubjectKeys() {

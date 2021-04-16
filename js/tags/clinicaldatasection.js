@@ -15,12 +15,12 @@ class ClinicaldataSection extends HTMLElement {
                                         </span>
                                     </div>
                                     <div class="control">
-                                        <button class="button is-link is-light" id="add-subject-button" onclick="addSubject()" i18n="add"></button>
+                                        <button class="button is-link is-light" id="add-subject-button" onclick="addSubjectInput()" i18n="add"></button>
                                     </div>
                                 </div>
                             </div>
                             <div class="panel-block has-no-padding-bottom has-no-border-bottom is-hidden">
-                                <button class="button is-link is-light is-fullwidth" id="add-subject-auto-button" onclick="addSubject()">
+                                <button class="button is-link is-light is-fullwidth" id="add-subject-auto-button" onclick="addSubjectAuto()">
                                     <span class="icon">
                                         <i class="fas fa-plus"></i>
                                     </span>
