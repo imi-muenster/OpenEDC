@@ -130,9 +130,24 @@ window.addSubjectAuto = function() {
 
 window.addSubjectBarcode = async function() {
     await import("./tags/barcodemodal.js");
+
+    // Check if the data has changed / new data has been entered and show a prompt first
+    if (dataHasChanged()) {
+        skipDataHasChangedCheck = true;
+        deferredFunction = () => addSubjectBarcode();
+        showCloseClinicaldataModal();
+        return;
+    }
+    
     const barcodeModal = document.createElement("barcode-modal");
     barcodeModal.setHeading(languageHelper.getTranslation("barcode"));
     document.body.appendChild(barcodeModal);
+
+    document.addEventListener("BarcodeScanned", barcodeEvent => {
+        const siteOID = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
+        const subjectKey = barcodeEvent.detail;
+        addSubject(subjectKey, siteOID);
+    });
 }
 
 function addSubject(subjectKey, siteOID) {

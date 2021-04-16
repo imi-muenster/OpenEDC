@@ -39,10 +39,7 @@ class BarcodeModal extends HTMLElement {
             }
         );
 
-        this.querySelector(".modal-background").onclick = () => {
-            Quagga.stop();
-            this.remove();
-        }
+        this.querySelector(".modal-background").onclick = () => this.finish();
     }
 
     foundBarcode;
@@ -53,9 +50,14 @@ class BarcodeModal extends HTMLElement {
         this.foundBarcode = barcode;
 
         if (this.foundBarcodeNumber == 5) {
-            document.dispatchEvent(new CustomEvent("BarcodeRead", { detail: barcode }));
-            Quagga.stop();
+            document.dispatchEvent(new CustomEvent("BarcodeScanned", { detail: barcode }));
+            this.finish();
         }
+    }
+
+    finish = () => {
+        Quagga.stop();
+        this.remove();
     }
 }
 

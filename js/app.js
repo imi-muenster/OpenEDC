@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Register service worker for offline capabilities
     const developmentOrigins = ["localhost", "127.0.0.1", "dev.openedc.org"];
-    const enableServiceWorker = !developmentOrigins.some(origin => navigator.location.origin.includes(origin));
+    const enableServiceWorker = !developmentOrigins.some(origin => window.location.origin.includes(origin));
     if (enableServiceWorker && window.navigator.serviceWorker) {
         window.navigator.serviceWorker.register("./serviceworker.js");
     }
