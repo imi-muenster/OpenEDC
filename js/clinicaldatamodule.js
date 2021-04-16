@@ -150,7 +150,11 @@ window.addSubjectBarcode = async function() {
         showCloseClinicaldataModal();
         return;
     }
+
+    // Deselect the currently selected subject
+    if (currentElementID.subject) loadSubjectData(null);
     
+    // Open the barcode scan modal
     const barcodeModal = document.createElement("barcode-modal");
     barcodeModal.setHeading(languageHelper.getTranslation("barcode"));
     barcodeModal.setHelpText(languageHelper.getTranslation("barcode-help-text"));
@@ -158,6 +162,7 @@ window.addSubjectBarcode = async function() {
     barcodeModal.setButtonText(languageHelper.getTranslation("add"));
     document.body.appendChild(barcodeModal);
 
+    // Wait until a barcode has been found or manually entered
     document.addEventListener("BarcodeFound", barcodeEvent => {
         const siteOID = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
         const subjectKey = barcodeEvent.detail;
