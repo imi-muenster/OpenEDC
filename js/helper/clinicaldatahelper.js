@@ -393,6 +393,7 @@ export async function setSubjectInfo(subjectKey, siteOID) {
 export function getAutoNumberedSubjectKey() {
     // TODO: Performance should be improved in the future. Sorting is expensive and needs to be reduced
     // TODO: Moreover, when connected to a server, the server should be consulted to generate the next auto-numbered key
+    // TODO: Alternatively, load the subject list from the server before the auto-numbered key is generated (also for the manual model)
     const subjectsWithIntKeys = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY).filter(subject => subject.keyInt);
     const highestNumber = subjectsWithIntKeys.length > 0 ? subjectsWithIntKeys[subjectsWithIntKeys.length - 1].key : 0;
     const subjectKey = parseInt(highestNumber) + 1;
