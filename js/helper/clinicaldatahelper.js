@@ -130,6 +130,7 @@ export async function addSubject(subjectKey, siteOID) {
     if (subjectKey.length == 0) return Promise.reject(errors.SUBJECTKEYEMPTY);
 
     // Test whether a subject with the key already exists and if the current user is eligible to see the existing subject data
+    // TODO: When connected to a server, the server should be consulted to verify that a subject key is available
     const existingSubject = subjects.find(subject => subject.uniqueKey == subjectKey.toLowerCase());
     if (existingSubject) {
         if (admindataHelper.getCurrentUserSiteOID() == existingSubject.siteOID || !admindataHelper.getCurrentUserSiteOID()) return Promise.reject(errors.SUBJECTKEYEXISTENT);
