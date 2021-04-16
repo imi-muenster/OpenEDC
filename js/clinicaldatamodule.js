@@ -110,6 +110,7 @@ function createSortTypeSelect() {
 
 window.addSubjectManual = function() {
     // Check if the data has changed / new data has been entered and show a prompt first
+    // TODO: This pattern is used frequently and should be made more concise by means of a function
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => addSubjectManual();
@@ -125,7 +126,18 @@ window.addSubjectManual = function() {
 }
 
 window.addSubjectAuto = function() {
-    // TODO: implement
+    // Check if the data has changed / new data has been entered and show a prompt first
+    if (dataHasChanged()) {
+        skipDataHasChangedCheck = true;
+        deferredFunction = () => addSubjectAuto();
+        showCloseClinicaldataModal();
+        return;
+    }
+
+    const siteOID = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
+    const subjectKey = clinicaldataHelper.getAutoNumberedSubjectKey();
+
+    addSubject(subjectKey, siteOID);
 }
 
 window.addSubjectBarcode = async function() {

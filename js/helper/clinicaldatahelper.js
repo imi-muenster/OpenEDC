@@ -19,6 +19,10 @@ class Subject {
     get fileName() {
         return this.key + fileNameSeparator + (this.siteOID || "") + fileNameSeparator + this.createdDate.getTime() + fileNameSeparator + this.modifiedDate.getTime() + fileNameSeparator + this.status;
     }
+
+    get keyInt() {
+        return parseInt(this.key);
+    }
 }
 
 export class FormItemData {
@@ -163,7 +167,8 @@ function sortSubjects(subjects, sortOrder) {
             subjects.sort((a, b) => a.createdDate > b.createdDate ? 1 : (a.createdDate < b.createdDate ? -1 : 0));
             break;
         case sortOrderTypes.ALPHANUMERICALLY:
-            subjects.sort((a, b) => a.key > b.key ? 1 : (a.key < b.key ? -1 : 0));
+            if (ioHelper.getSubjectKeyMode() == ioHelper.subjectKeyModes.AUTO) subjects.sort((a, b) => a.keyInt > b.keyInt ? 1 : (a.keyInt < b.keyInt ? -1 : 0));
+            else subjects.sort((a, b) => a.key > b.key ? 1 : (a.key < b.key ? -1 : 0));
     }
 
     return subjects;
@@ -383,6 +388,16 @@ export async function setSubjectInfo(subjectKey, siteOID) {
     await loadSubjects();
 
     return Promise.resolve();
+}
+
+export function getAutoNumberedSubjectKey() {
+    // TODO: Performance should be improved in the future. Sorting is expensive and needs to be reduced
+    // TODO: Moreover, when connected to a server, the server should be consulted to generate the next auto-numbered key
+    const subjectsWithIntKeys = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY).filter(subject => subject.keyInt);
+    const highestNumber = subjectsWithIntKeys.length > 0 ? subjectsWithIntKeys[subjectsWithIntKeys.length - 1].key : 0;
+    const subjectKey = parseInt(highestNumber) + 1;
+
+    return subjectKey.toString();
 }
 
 export function getDataStatus() {
