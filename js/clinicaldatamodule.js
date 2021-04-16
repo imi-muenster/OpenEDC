@@ -141,6 +141,9 @@ window.addSubjectBarcode = async function() {
     
     const barcodeModal = document.createElement("barcode-modal");
     barcodeModal.setHeading(languageHelper.getTranslation("barcode"));
+    barcodeModal.setHelpText(languageHelper.getTranslation("barcode-help-text"));
+    barcodeModal.setInputPlaceholder(languageHelper.getTranslation("new-subject"));
+    barcodeModal.setButtonText(languageHelper.getTranslation("add"));
     document.body.appendChild(barcodeModal);
 
     document.addEventListener("BarcodeScanned", barcodeEvent => {

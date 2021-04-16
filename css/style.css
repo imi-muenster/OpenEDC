@@ -23,6 +23,14 @@ html, body {
     margin-bottom: 20px;
 }
 
+.title-has-delete {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
 .section {
     padding: 30px 20px;
 }

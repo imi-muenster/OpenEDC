@@ -63,7 +63,6 @@
 
     "subjects": "Probanden",
     "new-subject": "Neuer Proband",
-    "barcode": "Strichcode",
     "all-sites": "Alle Standorte",
     "creation-date": "Erstellungsdatum",
     "alphanumerical": "Alphabetisch",
@@ -273,6 +272,8 @@
     "login-encrypted-text": "Bitte geben Sie das Passwort ein, das Sie für die Datenverschlüsselung verwendet haben.",
     "password-incorrect-error": "Das Passwort ist falsch. Bitte versuchen Sie es erneut.",
     "username-password-incorrect-error": "Der Benutzername oder das Passwort ist falsch. Bitte versuchen Sie es erneut.",
+    "barcode": "Strichcode",
+    "barcode-help-text": "Wenn Ihr Gerät nicht über eine Kamera verfügt oder das Lesen des Strichcodes nicht funktioniert, können Sie unten manuell den Wert des Strichcodes eingeben.",
     "server-uninitialized": "Server uninitialisiert",
     "server-uninitialized-hint": "Dieser OpenEDC Server wurde noch nicht initialisiert.<br><br>Sie können entweder zu <a target='_blank' href='https://openedc.org'>openedc.org</a> gehen, um diesen Server mit Daten zu initialisieren, die Sie dort bereits lokal erfasst haben, oder alternativ diesen Hinweis schließen, hier ein neues lokales Projekt starten und den Server auch von hier aus initialisieren.<br><br>Verwenden Sie bitte in beiden Fällen die Schaltfläche <i>Projektoptionen</i> oben rechts in der App und folgen Sie den Anweisungen, um diesen Server zu initialisieren.",
     "forgot-password": "Passwort vergessen",
