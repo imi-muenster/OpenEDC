@@ -260,10 +260,16 @@ a.panel-block:hover {
     }
 
     .width-is-three-quarters, .width-is-two-thirds {
-        width: 100%;
+        width: 80%;
     }
 
     #survey-view-button {
         margin-left: 0px !important;
+    }
+}
+
+@media only screen and (max-width: 640px)  {
+    .width-is-three-quarters, .width-is-two-thirds {
+        width: 100%;
     }
 }
