@@ -152,7 +152,7 @@ window.addSubjectBarcode = async function() {
     }
 
     // Deselect the currently selected subject
-    if (currentElementID.subject) loadSubjectData(null);
+    if (currentElementID.subject) loadSubjectData();
     
     // Open the barcode scan modal
     const barcodeModal = document.createElement("barcode-modal");
@@ -161,13 +161,6 @@ window.addSubjectBarcode = async function() {
     barcodeModal.setInputPlaceholder(languageHelper.getTranslation("new-subject"));
     barcodeModal.setButtonText(languageHelper.getTranslation("add"));
     document.body.appendChild(barcodeModal);
-
-    // Wait until a barcode has been found or manually entered
-    document.addEventListener("BarcodeFound", barcodeEvent => {
-        const siteOID = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
-        const subjectKey = barcodeEvent.detail;
-        addSubject(subjectKey, siteOID);
-    });
 }
 
 function addSubject(subjectKey, siteOID) {
@@ -953,6 +946,12 @@ function setIOListeners() {
         if (keyEvent.code == "Enter") addSubjectManual();
     };
     $("#search-subject-input").oninput = inputEvent => filterSubjects(inputEvent.target.value);
+
+    document.addEventListener("BarcodeFound", barcodeEvent => {
+        const siteOID = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
+        const subjectKey = barcodeEvent.detail;
+        addSubject(subjectKey, siteOID);
+    });
 }
 
 function filterSubjects(searchString) {
