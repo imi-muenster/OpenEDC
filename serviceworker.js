@@ -34,8 +34,8 @@ const staticAssets = [
     "./js/tags/othermodals.js",
     "./lib/bulma.css",
     "./lib/fontawesome.css",
-    "./lib/fontawesome-regular.woff2",
-    "./lib/fontawesome-solid.woff2",
+    "./lib/webfonts/fontawesome-regular.woff2",
+    "./lib/webfonts/fontawesome-solid.woff2",
     "./odm/example.xml",
     "./xsl/odmtohtml.xsl",
     "./img/title-logo.png"
