@@ -1,3 +1,4 @@
+import { AES, RSA, SHA } from "./cryptohelper.js";
 import * as languageHelper from "./languagehelper.js";
 
 class LoadXMLException {
@@ -21,10 +22,6 @@ export class Credentials {
 
         this.username = username;
         this.password = password;
-    }
-
-    get hashedPassword() {
-        return CryptoJS.SHA1(this.password).toString();
     }
 }
 
@@ -55,7 +52,8 @@ const $ = query => document.querySelector(query);
 const fileNames = {
     metadata: "metadata",
     admindata: "admindata",
-    settings: "settings"
+    settings: "settings",
+    localkey: "localkey"
 }
 
 let user = null;
@@ -88,7 +86,7 @@ async function getStoredXMLData(fileName) {
     let xmlString = null;
 
     if (serverURL) {
-        const xmlResponse = await fetch(getApiUrlFromFileName(fileName), { headers: getHeaders(true) });
+        const xmlResponse = await fetch(getApiUrlFromFileName(fileName), { headers: await getHeaders(true) });
         if (!xmlResponse.ok) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
         xmlString = await xmlResponse.text();
     } else {
@@ -98,7 +96,7 @@ async function getStoredXMLData(fileName) {
 
     if (decryptionKey) {
         try {
-            xmlString = CryptoJS.AES.decrypt(xmlString, decryptionKey).toString(CryptoJS.enc.Utf8);
+            xmlString = await AES.decrypt.withKey(xmlString, decryptionKey);
         } catch (error) {
             throw new LoadXMLException(loadXMLExceptionCodes.NOTDECRYPTABLE);
         }
@@ -118,14 +116,14 @@ async function getStoredXMLData(fileName) {
 
 async function storeXMLData(fileName, xmlDocument) {
     let xmlString = new XMLSerializer().serializeToString(xmlDocument);
-    if (decryptionKey) xmlString = CryptoJS.AES.encrypt(xmlString, decryptionKey).toString();
+    if (decryptionKey) xmlString = await AES.encrypt.withKey(xmlString, decryptionKey);
 
     if (serverURL) {
         // TODO: Error handling
         // TODO: Consider that this function is async -- adjust the callers when needed
         await fetch(getApiUrlFromFileName(fileName), {
             method: "PUT",
-            headers: getHeaders(true),
+            headers: await getHeaders(true),
             body: xmlString
         });
     } else {
@@ -146,7 +144,7 @@ export async function getSubjectFileNames() {
     let subjectFileNames = [];
 
     if (serverURL) {
-        const response = await fetch(serverURL + "/api/clinicaldata", { headers: getHeaders(true) });
+        const response = await fetch(serverURL + "/api/clinicaldata", { headers: await getHeaders(true) });
         subjectFileNames = await response.json();
     } else {
         for (let fileName of Object.keys(localStorage)) {
@@ -157,29 +155,35 @@ export async function getSubjectFileNames() {
     return subjectFileNames;
 }
 
-export function encryptXMLData(key) {
+// Only for local encryption
+export async function encryptXMLData(password) {
+    // Generate new AES encryption/decryption key
+    decryptionKey = await AES.generateKey();
+
     for (const fileName of Object.keys(localStorage)) {
         if (fileName == fileNames.settings) continue;
 
+        // Encrypt all locally stored xml files
         let xmlString = localStorage.getItem(fileName);
         const xmlDocument = new DOMParser().parseFromString(xmlString, "text/xml");
         if (!xmlDocument.querySelector("parsererror")) {
             xmlString = new XMLSerializer().serializeToString(xmlDocument);
-            xmlString = CryptoJS.AES.encrypt(xmlString, key).toString();
+            xmlString = await AES.encrypt.withKey(xmlString, decryptionKey);
             localStorage.setItem(fileName, xmlString);
         }
     }
 
-    decryptionKey = key;
+    // Store encrypted decryption key
+    const encryptedDecryptionKey = await AES.encrypt.withPassword(decryptionKey, password);
+    localStorage.setItem(fileNames.localkey, encryptedDecryptionKey)
 }
 
-// TODO: Have a look if this is okay -- only valid for local encryption
-export function setDecryptionKey(key) {
-    const xmlString = localStorage.getItem("metadata");
+// Only for local encryption
+export async function setDecryptionKey(password) {
+    const encryptedDecryptionKey = localStorage.getItem(fileNames.localkey);
 
     try {
-        CryptoJS.AES.decrypt(xmlString, key).toString(CryptoJS.enc.Utf8);
-        decryptionKey = key;
+        decryptionKey = await AES.decrypt.withPassword(encryptedDecryptionKey, password);
         return Promise.resolve();
     } catch (error) {
         return Promise.reject(error);
@@ -216,7 +220,7 @@ export async function removeSubjectData(fileName) {
     if (serverURL) {
         await fetch(getApiUrlFromFileName(fileName), {
             method: "DELETE",
-            headers: getHeaders(true)
+            headers: await getHeaders(true)
         });
     } else {
         localStorage.removeItem(fileName);
@@ -225,7 +229,7 @@ export async function removeSubjectData(fileName) {
 
 export async function loadSettings() {
     if (serverURL) {
-        const settingsResponse = await fetch(getApiUrlFromFileName(fileNames.settings), { headers: getHeaders(true) });
+        const settingsResponse = await fetch(getApiUrlFromFileName(fileNames.settings), { headers: await getHeaders(true) });
         if (settingsResponse.ok && settingsResponse.status != 204) settings = await settingsResponse.json();
     } else {
         const settingsString = localStorage.getItem(fileNames.settings);
@@ -237,7 +241,7 @@ async function storeSettings() {
     if (serverURL) {
         await fetch(getApiUrlFromFileName(fileNames.settings), {
             method: "PUT",
-            headers: getHeaders(true),
+            headers: await getHeaders(true),
             body: JSON.stringify(settings)
         });
     } else {
@@ -319,14 +323,15 @@ export async function initializeServer(url, userOID, credentials) {
     if (!url.includes("http") && !url.includes("https")) url = "https://" + url;
     
     // Create a random key that is used for data encryption and encrypt it with the password of the user
-    const decryptionKey = CryptoJS.lib.WordArray.random(32).toString();
-    const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, credentials.password).toString();
-    const userRequest = { username: credentials.username, hashedPassword: credentials.hashedPassword, encryptedDecryptionKey };
+    decryptionKey = await AES.generateKey();
+    const encryptedDecryptionKey = await AES.encrypt.withPassword(decryptionKey, credentials.password);
+    const hashedPassword = await SHA.hashData(credentials.password);
+    const userRequest = { username: credentials.username, hashedPassword, encryptedDecryptionKey};
 
     // Create the owner user on the server
     const userResponse = await fetch(url + "/api/users/initialize/" + userOID, {
             method: "PUT",
-            headers: getHeaders(false, true),
+            headers: await getHeaders(false, true),
             body: JSON.stringify(userRequest)
         });
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
@@ -334,20 +339,20 @@ export async function initializeServer(url, userOID, credentials) {
 
     // Send all existing metadata encrypted to the server
     let metadataString = new XMLSerializer().serializeToString(await getMetadata());
-    metadataString = CryptoJS.AES.encrypt(metadataString, decryptionKey).toString();
+    metadataString = await AES.encrypt.withKey(metadataString, decryptionKey);
     const metadataResponse = await fetch(url + "/api/metadata", {
         method: "PUT",
-        headers: getHeaders(true),
+        headers: await getHeaders(true),
         body: metadataString
     });
     if (!metadataResponse.ok) return Promise.reject(await metadataResponse.text());
 
     // Send all existing metadata encrypted to the server
     let admindataString = new XMLSerializer().serializeToString(await getAdmindata());
-    admindataString = CryptoJS.AES.encrypt(admindataString, decryptionKey).toString();
+    admindataString = await AES.encrypt.withKey(admindataString, decryptionKey);
     const admindataResponse = await fetch(url + "/api/admindata", {
         method: "PUT",
-        headers: getHeaders(true),
+        headers: await getHeaders(true),
         body: admindataString
     });
     if (!admindataResponse.ok) return Promise.reject(await admindataResponse.text());
@@ -357,10 +362,10 @@ export async function initializeServer(url, userOID, credentials) {
     const subjectFileNames = await getSubjectFileNames();
     for (const subjectFileName of subjectFileNames) {
         let subjectDataString = new XMLSerializer().serializeToString(await getSubjectData(subjectFileName));
-        subjectDataString = CryptoJS.AES.encrypt(subjectDataString, decryptionKey).toString();
+        subjectDataString = await AES.encrypt.withKey(subjectDataString, decryptionKey);
         const clinicaldataResponse = await fetch(url + "/api/clinicaldata/" + subjectFileName, {
             method: "PUT",
-            headers: getHeaders(true),
+            headers: await getHeaders(true),
             body: subjectDataString
         });
         if (!clinicaldataResponse.ok) return Promise.reject(await admindataResponse.text());
@@ -371,15 +376,16 @@ export async function initializeServer(url, userOID, credentials) {
 }
 
 export async function loginToServer(credentials) {
+    const hashedPassword = await SHA.hashData(credentials.password);
     const userResponse = await fetch(serverURL + "/api/users/me", {
-        headers: { "Authorization" : `Basic ${btoa(credentials.username + ":" + credentials.hashedPassword)}` }
+        headers: { "Authorization" : `Basic ${btoa(credentials.username + ":" + hashedPassword)}` }
     });
     if (!userResponse.ok) return Promise.reject(loginStatus.WRONGCREDENTIALS);
     user = await userResponse.json();
 
     // Get the encryptedDecryptionKey of the user, decrypt it and store it in the decryptionKey variable
     try {
-        decryptionKey = CryptoJS.AES.decrypt(user.encryptedDecryptionKey, credentials.password).toString(CryptoJS.enc.Utf8);
+        decryptionKey = AES.decrypt.withPassword(user.encryptedDecryptionKey, credentials.password);
     } catch (error) {
         console.log(error);
     }
@@ -391,12 +397,13 @@ export async function loginToServer(credentials) {
 }
 
 export async function setOwnPassword(credentials) {
-    const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, credentials.password).toString();
-    const userRequest = { username: credentials.username, hashedPassword: credentials.hashedPassword, encryptedDecryptionKey };
+    const encryptedDecryptionKey = AES.encrypt.withPassword(decryptionKey, credentials.password);
+    const hashedPassword = await SHA.hashData(credentials.password);
+    const userRequest = { username: credentials.username, hashedPassword, encryptedDecryptionKey };
     
     const userResponse = await fetch(serverURL + "/api/users/me", {
         method: "PUT",
-        headers: getHeaders(true, true),
+        headers: await getHeaders(true, true),
         body: JSON.stringify(userRequest)
     });
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
@@ -409,22 +416,23 @@ export async function setOwnPassword(credentials) {
 export async function setUserOnServer(oid, credentials, rights, site) {
     let userRequest = null;
     if (credentials.username && credentials.password) {
-        const encryptedDecryptionKey = CryptoJS.AES.encrypt(decryptionKey, credentials.password).toString();
-        userRequest = { username: credentials.username, hashedPassword: credentials.hashedPassword, encryptedDecryptionKey, rights, site };
+        const encryptedDecryptionKey = AES.encrypt.withPassword(decryptionKey, credentials.password);
+        const hashedPassword = await SHA.hashData(credentials.password);
+        userRequest = { username: credentials.username, hashedPassword, encryptedDecryptionKey, rights, site };
     } else {
         userRequest = { rights, site };
     }
 
     const userResponse = await fetch(serverURL + "/api/users/" + oid, {
         method: "PUT",
-        headers: getHeaders(true, true),
+        headers: await getHeaders(true, true),
         body: JSON.stringify(userRequest)
     });
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
 }
 
 export async function getUserOnServer(oid) {
-    const userResponse = await fetch(serverURL + "/api/users/" + oid, { headers: getHeaders(true) });
+    const userResponse = await fetch(serverURL + "/api/users/" + oid, { headers: await getHeaders(true) });
     if (!userResponse.ok) return Promise.reject();
 
     const user = await userResponse.json();
@@ -434,15 +442,16 @@ export async function getUserOnServer(oid) {
 export async function deleteUserOnServer(oid) {
     await fetch(serverURL + "/api/users/" + oid, {
         method: "DELETE",
-        headers: getHeaders(true)
+        headers: await getHeaders(true)
     }).catch(() => Promise.reject());
 
     return Promise.resolve();
 }
 
-function getHeaders(authorization, contentTypeJSON) {
+async function getHeaders(authorization, contentTypeJSON) {
     let headers = {};
-    if (authorization) headers["Authorization"] = `Basic ${btoa(user.username + ":" + user.hashedPassword)}`;
+    const hashedPassword = await SHA.hashData(user.password);
+    if (authorization) headers["Authorization"] = `Basic ${btoa(user.username + ":" + hashedPassword)}`;
     if (contentTypeJSON) headers["Content-Type"] = "application/json";
 
     return headers;
@@ -459,7 +468,7 @@ export async function emptyMessageQueue() {
         const requestBody = await cacheResponse.text();
         await fetch(messageQueueEntry.url, {
             method: "PUT",
-            headers: getHeaders(true),
+            headers: await getHeaders(true),
             body: requestBody
         });
 
@@ -473,7 +482,7 @@ export async function emptyMessageQueue() {
             if (dynamicCacheEntry.url.includes("/" + subjectKey + "__")) {
                 await fetch(dynamicCacheEntry.url, {
                     method: "DELETE",
-                    headers: getHeaders(true)
+                    headers: await getHeaders(true)
                 });
             }
         }

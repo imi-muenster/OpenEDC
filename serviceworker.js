@@ -21,6 +21,7 @@ const staticAssets = [
     "./js/helper/languagehelper.js",
     "./js/helper/odmvalidation.js",
     "./js/helper/validationhelper.js",
+    "./js/helper/cryptohelper.js",
     "./js/helper/prototypefunctions.js",
     "./js/odmtemplates/metadatatemplates.js",
     "./js/odmtemplates/admindatatemplates.js",
@@ -35,7 +36,6 @@ const staticAssets = [
     "./lib/fontawesome.css",
     "./lib/fontawesome-regular.woff2",
     "./lib/fontawesome-solid.woff2",
-    "./lib/crypto-js.js",
     "./odm/example.xml",
     "./xsl/odmtohtml.xsl",
     "./img/title-logo.png"

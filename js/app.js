@@ -138,8 +138,8 @@ function showDecryptionKeyModal() {
     // Set the click handler when clicking on the Open button
     $("#login-modal #open-button").onclick = clickEvent => {
         clickEvent.preventDefault();
-        const decryptionKey = $("#login-password-input").value;
-        ioHelper.setDecryptionKey(decryptionKey)
+        const password = $("#login-password-input").value;
+        ioHelper.setDecryptionKey(password)
             .then(() => loginSuccessful())
             .catch(error => loginNotSuccessful(error));
     };
@@ -414,7 +414,7 @@ window.initializeServer = function(event) {
         .catch(error => ioHelper.showMessage(languageHelper.getTranslation("Error"), error));
 }
 
-window.encryptData = function() {
+window.encryptData = async function() {
     if ($("#confirm-encryption-password-input").parentNode.parentNode.classList.contains("is-hidden")) {
         $("#confirm-encryption-password-input").parentNode.parentNode.show();
         return;
@@ -430,7 +430,7 @@ window.encryptData = function() {
         return;
     }
 
-    ioHelper.encryptXMLData(credentials.password);
+    await ioHelper.encryptXMLData(credentials.password);
     logout();
 }
 
