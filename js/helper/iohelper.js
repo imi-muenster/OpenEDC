@@ -385,9 +385,9 @@ export async function loginToServer(credentials) {
 
     // Get the encryptedDecryptionKey of the user, decrypt it and store it in the decryptionKey variable
     try {
-        decryptionKey = AES.decrypt.withPassword(user.encryptedDecryptionKey, credentials.password);
+        decryptionKey = await AES.decrypt.withPassword(user.encryptedDecryptionKey, credentials.password);
     } catch (error) {
-        console.log(error);
+        return Promise.reject(loginStatus.WRONGCREDENTIALS);
     }
 
     // Test if the user has an initial password
@@ -397,7 +397,7 @@ export async function loginToServer(credentials) {
 }
 
 export async function setOwnPassword(credentials) {
-    const encryptedDecryptionKey = AES.encrypt.withPassword(decryptionKey, credentials.password);
+    const encryptedDecryptionKey = await AES.encrypt.withPassword(decryptionKey, credentials.password);
     const hashedPassword = await SHA.hashData(credentials.password);
     const userRequest = { username: credentials.username, hashedPassword, encryptedDecryptionKey };
     
@@ -416,7 +416,7 @@ export async function setOwnPassword(credentials) {
 export async function setUserOnServer(oid, credentials, rights, site) {
     let userRequest = null;
     if (credentials.username && credentials.password) {
-        const encryptedDecryptionKey = AES.encrypt.withPassword(decryptionKey, credentials.password);
+        const encryptedDecryptionKey = await AES.encrypt.withPassword(decryptionKey, credentials.password);
         const hashedPassword = await SHA.hashData(credentials.password);
         userRequest = { username: credentials.username, hashedPassword, encryptedDecryptionKey, rights, site };
     } else {
