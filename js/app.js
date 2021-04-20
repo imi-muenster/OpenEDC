@@ -153,8 +153,8 @@ function showCloseExampleButton() {
 
 function showLoginModal() {
     // The login modal is used both for authenicating against an OpenEDC Server and for getting the local decryption password
-    $("#login-title").textContent = languageHelper.getTranslation("login-server-title");
-    $("#login-text").textContent = languageHelper.getTranslation("login-server-text");
+    $("#login-title").textContent = languageHelper.getTranslation("please-login");
+    $("#login-text").textContent = languageHelper.getTranslation("please-login-text");
     $("#login-incorrect-hint .message-body").textContent = languageHelper.getTranslation("username-password-incorrect-error");
 
     // Set the click handler when clicking on the open button
@@ -414,7 +414,7 @@ window.initializeServer = function(event) {
         .catch(error => ioHelper.showMessage(languageHelper.getTranslation("Error"), error));
 }
 
-window.encryptData = async function() {
+window.encryptData = function() {
     if ($("#confirm-encryption-password-input").parentNode.parentNode.classList.contains("is-hidden")) {
         $("#confirm-encryption-password-input").parentNode.parentNode.show();
         return;
@@ -430,8 +430,7 @@ window.encryptData = async function() {
         return;
     }
 
-    await ioHelper.encryptXMLData(credentials.password);
-    logout();
+    ioHelper.encryptXMLData(credentials.password).then(() => logout());
 }
 
 window.setSurveyCode = function() {

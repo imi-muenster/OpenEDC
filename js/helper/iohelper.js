@@ -158,7 +158,7 @@ export async function getSubjectFileNames() {
 // Only for local encryption
 export async function encryptXMLData(password) {
     // Generate new AES encryption/decryption key
-    decryptionKey = await AES.generateKey();
+    const decryptionKey = await AES.generateKey();
 
     for (const fileName of Object.keys(localStorage)) {
         if (fileName == fileNames.settings) continue;
@@ -323,7 +323,7 @@ export async function initializeServer(url, userOID, credentials) {
     if (!url.includes("http") && !url.includes("https")) url = "https://" + url;
     
     // Create a random key that is used for data encryption and encrypt it with the password of the user
-    decryptionKey = await AES.generateKey();
+    const decryptionKey = await AES.generateKey();
     const encryptedDecryptionKey = await AES.encrypt.withPassword(decryptionKey, credentials.password);
     const hashedPassword = await SHA.hashData(credentials.password);
     const userRequest = { username: credentials.username, hashedPassword, encryptedDecryptionKey};
@@ -450,8 +450,7 @@ export async function deleteUserOnServer(oid) {
 
 async function getHeaders(authorization, contentTypeJSON) {
     let headers = {};
-    const hashedPassword = await SHA.hashData(user.password);
-    if (authorization) headers["Authorization"] = `Basic ${btoa(user.username + ":" + hashedPassword)}`;
+    if (authorization) headers["Authorization"] = `Basic ${btoa(user.username + ":" + user.hashedPassword)}`;
     if (contentTypeJSON) headers["Content-Type"] = "application/json";
 
     return headers;
