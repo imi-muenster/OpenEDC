@@ -561,8 +561,8 @@ export function setIOListeners() {
         $("#language-navbar-item").classList.toggle("is-active");
         $("#language-dropdown").classList.toggle("is-hidden-touch");
     });
-    $("#language-navbar-item").addEventListener("mouseenter", () => $("#language-navbar-item").classList.add("is-active"));
-    $("#language-navbar-item").addEventListener("mouseleave", () => $("#language-navbar-item").classList.remove("is-active"));
+    $("#language-navbar-item").addEventListener("mouseenter", () => $("#language-navbar-item").activate());
+    $("#language-navbar-item").addEventListener("mouseleave", () => $("#language-navbar-item").deactivate());
 }
 
 function addModalsToDOM() {

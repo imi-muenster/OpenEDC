@@ -194,7 +194,7 @@ export function loadSubjectKeys() {
     const selectedSite = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
     const sortOrder = $("#sort-subject-select-inner").value;
     const subjects = clinicaldataHelper.getSubjects(selectedSite, sortOrder);
-    subjects.length > 0 ? $("#no-subjects-hint").classList.add("is-hidden") : $("#no-subjects-hint").show();
+    subjects.length > 0 ? $("#no-subjects-hint").hide() : $("#no-subjects-hint").show();
 
     for (let subject of subjects) {
         const siteSubtitle = subject.siteOID && !selectedSite ? admindataHelper.getSiteNameByOID(subject.siteOID) : null;
