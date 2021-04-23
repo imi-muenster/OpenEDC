@@ -34,3 +34,7 @@ HTMLElement.prototype.activate = function() {
 HTMLElement.prototype.deactivate = function() {
     this.classList.remove("is-active");
 }
+
+HTMLElement.prototype.isActive = function() {
+    return this.classList.contains("is-active");
+}

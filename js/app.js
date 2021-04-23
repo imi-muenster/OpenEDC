@@ -644,7 +644,7 @@ function getCurrentMode() {
 }
 
 function getCurrentState() {
-    if ($("#start-modal").classList.contains("is-active")) return appStates.EMPTY;
-    else if ($("#login-modal").classList.contains("is-active")) return appStates.LOCKED;
+    if ($("#start-modal").isActive()) return appStates.EMPTY;
+    else if ($("#login-modal").isActive()) return appStates.LOCKED;
     else return appStates.UNLOCKED;
 }
