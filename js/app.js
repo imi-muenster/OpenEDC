@@ -415,7 +415,7 @@ window.initializeServer = function(event) {
 }
 
 window.encryptData = function() {
-    if ($("#confirm-encryption-password-input").parentNode.parentNode.classList.contains("is-hidden")) {
+    if (!$("#confirm-encryption-password-input").parentNode.parentNode.isVisible()) {
         $("#confirm-encryption-password-input").parentNode.parentNode.show();
         return;
     }
@@ -640,7 +640,7 @@ function reloadLanguageSelect() {
 }
 
 function getCurrentMode() {
-    return $("#metadata-section").classList.contains("is-hidden") ? appModes.CLINICALDATA : appModes.METADATA;
+    return $("#metadata-section").isVisible() ? appModes.METADATA : appModes.CLINICALDATA;
 }
 
 function getCurrentState() {

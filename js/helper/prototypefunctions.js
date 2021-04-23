@@ -23,6 +23,10 @@ HTMLElement.prototype.hide = function() {
     this.classList.add("is-hidden");
 }
 
+HTMLElement.prototype.isVisible = function() {
+    return !this.classList.contains("is-hidden");
+}
+
 HTMLElement.prototype.activate = function() {
     this.classList.add("is-active");
 }

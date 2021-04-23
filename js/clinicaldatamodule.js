@@ -432,7 +432,7 @@ function loadFormClinicaldata() {
             case "date":
             case "select":
                 inputElement.value = formItemData.value;
-                if (!fieldElement.classList.contains("is-hidden")) inputElement.dispatchEvent(new Event("input"));
+                if (fieldElement.isVisible()) inputElement.dispatchEvent(new Event("input"));
                 break;
             case "textarea":
                 inputElement.value = formItemData.value.replace(/\\n/g, "\n");
@@ -444,9 +444,9 @@ function loadFormClinicaldata() {
                     continue;
                 }
                 inputElement.checked = true;
-                if (!fieldElement.classList.contains("is-hidden")) inputElement.dispatchEvent(new Event("input"));
+                if (fieldElement.isVisible()) inputElement.dispatchEvent(new Event("input"));
         }
-        if (fieldElement.classList.contains("is-hidden") && formItemData.value) {
+        if (!fieldElement.isVisible() && formItemData.value) {
             fieldElement.show();
             fieldElement.classList.add("is-highlighted");
             hiddenFieldWithValueError = true;
@@ -798,7 +798,7 @@ function enableInputElements() {
 }
 
 function surveyViewIsActive() {
-    return $(".navbar").classList.contains("is-hidden");
+    return !$(".navbar").isVisible();
 }
 
 function dataHasChanged() {
@@ -970,7 +970,7 @@ function setLoadSubjectsTimer() {
     if (!ioHelper.hasServerURL()) return;
      
     setInterval(async () => {
-        if ($("#clinicaldata-section").classList.contains("is-hidden")) return;
+        if (!$("#clinicaldata-section").isVisible()) return;
         
         await ioHelper.emptyMessageQueue();
         if (!clinicaldataHelper.getSubject()) {
