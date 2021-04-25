@@ -169,10 +169,10 @@
         <xsl:variable name="value" select="$translatedText/odm:TranslatedText[@xml:lang=$locale]"/>
         <xsl:choose>
             <xsl:when test="$value">
-                <xsl:value-of select="$value"/>
+                <xsl:value-of select="$value" disable-output-escaping="yes"/>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:value-of select="$translatedText/odm:TranslatedText[@xml:lang=$defaultLocale]"/>
+                <xsl:value-of select="$translatedText/odm:TranslatedText[@xml:lang=$defaultLocale]" disable-output-escaping="yes"/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>

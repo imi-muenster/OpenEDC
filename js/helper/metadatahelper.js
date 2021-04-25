@@ -117,6 +117,13 @@ export async function getFormAsHTML(formOID, textAsTextarea) {
         if (!codeListOIDs.includes(codeList.getOID())) codeList.remove();
     }
 
+    // Transform markdown to html (bold, italic, and underline)
+    reducedODM.querySelectorAll("ItemGroupDef TranslatedText, ItemDef TranslatedText").forEach(translatedText => {
+        translatedText.textContent = translatedText.textContent.replace(/\*\*(.+)\*\*/g, "<b>$1</b>");
+        translatedText.textContent = translatedText.textContent.replace(/\*(.+)\*/g, "<i>$1</i>");
+        translatedText.textContent = translatedText.textContent.replace(/\_(.+)\_/g, "<u>$1</u>");
+    });
+
     const xsltProcessor = new XSLTProcessor();
     xsltProcessor.importStylesheet(new DOMParser().parseFromString(xsltStylesheet, "text/xml"));
     xsltProcessor.setParameter(null, "formOID", formOID);
