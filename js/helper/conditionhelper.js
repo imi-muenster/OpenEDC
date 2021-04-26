@@ -1,7 +1,6 @@
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-// TODO: Rename preview ... to metadata
 export function process(itemsWithCondition) {
     for (const itemWithCondition of itemsWithCondition) {
         const conditionalItem = itemWithCondition.itemOID;
@@ -12,17 +11,17 @@ export function process(itemsWithCondition) {
         const target = formalExpressionParts[2].replace(/['"]/g, "");
 
         if (operator == "!=") {
-            $(`[preview-field-oid="${conditionalItem}"]`).hide();
+            $(`[item-field-oid="${conditionalItem}"]`).hide();
         }
 
-        const previewFieldInput = $(`[preview-oid="${determinant}"]`);
-        if (!previewFieldInput) continue;
-        if (previewFieldInput.getAttribute("type") == "text" || previewFieldInput.getAttribute("type") == "select") {
-            previewFieldInput.addEventListener("input", function(event) {
+        const inputElement = $(`[item-oid="${determinant}"]`);
+        if (!inputElement) continue;
+        if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "select") {
+            inputElement.addEventListener("input", function(event) {
                 respondToInputChange(event, conditionalItem, operator, target);
             });
-        } else if (previewFieldInput.getAttribute("type") == "radio") {
-            const radioItems = $$(`[preview-oid="${determinant}"]`);
+        } else if (inputElement.getAttribute("type") == "radio") {
+            const radioItems = $$(`[item-oid="${determinant}"]`);
             for (const radioItem of radioItems) {
                 radioItem.addEventListener("input", function(event) {
                     respondToInputChange(event, conditionalItem, operator, target);
@@ -50,25 +49,25 @@ function respondToInputChange(event, conditionalItem, operator, target) {
     }
 }
 
-function showOrHideConditionalItem(previewOID, hide) {
+function showOrHideConditionalItem(itemOID, hide) {
     if (hide) {
-        $(`[preview-field-oid="${previewOID}"]`).hide();
-        emptyConditionalItem(previewOID);
+        $(`[item-field-oid="${itemOID}"]`).hide();
+        emptyConditionalItem(itemOID);
     } else {
-        $(`[preview-field-oid="${previewOID}"]`).show();
+        $(`[item-field-oid="${itemOID}"]`).show();
     }
 }
 
-function emptyConditionalItem(previewOID) {
-    const previewFieldInput = $(`[preview-oid="${previewOID}"]`);
-    if (previewFieldInput.getAttribute("type") == "text" || previewFieldInput.getAttribute("type") == "textarea" || previewFieldInput.getAttribute("type") == "date") {
-        previewFieldInput.value = "";
-        previewFieldInput.dispatchEvent(new Event("input"));
-    } else if (previewFieldInput.getAttribute("type") == "select") {
-        previewFieldInput.selectedIndex = 0;
-        previewFieldInput.dispatchEvent(new Event("input"));
-    } else if (previewFieldInput.getAttribute("type") == "radio") {
-        const radioItems = $$(`[preview-oid="${previewOID}"]`);
+function emptyConditionalItem(itemOID) {
+    const inputElement = $(`[item-oid="${itemOID}"]`);
+    if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "textarea" || inputElement.getAttribute("type") == "date") {
+        inputElement.value = "";
+        inputElement.dispatchEvent(new Event("input"));
+    } else if (inputElement.getAttribute("type") == "select") {
+        inputElement.selectedIndex = 0;
+        inputElement.dispatchEvent(new Event("input"));
+    } else if (inputElement.getAttribute("type") == "radio") {
+        const radioItems = $$(`[item-oid="${itemOID}"]`);
         let radioItem;
         for (radioItem of radioItems) {
             radioItem.checked = false;

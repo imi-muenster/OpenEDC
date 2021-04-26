@@ -46,7 +46,7 @@ export function process(itemsWithRangeChecks) {
 
     // Second, handle range checks
     for (let item of itemsWithRangeChecks) {
-        let input = $(`#clinicaldata-content [preview-oid='${item.itemOID}']`);
+        let input = $(`#clinicaldata-content [item-oid='${item.itemOID}']`);
         input.addEventListener("focusout", event => {
             for (let rangeCheck of item.rangeChecks) {
                 switch (rangeCheck.comparator) {

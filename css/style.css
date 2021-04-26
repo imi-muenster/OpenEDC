@@ -139,11 +139,11 @@ a.panel-block:hover {
     border-top: 1px solid #ededed;
 }
 
-.preview-field {
+.item-field {
     margin-bottom: 20px;
 }
 
-.preview-field label {
+.item-field label {
     white-space: pre-line;
 }
 
