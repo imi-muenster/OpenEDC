@@ -182,12 +182,6 @@ a.panel-block:hover {
     border-color: #b5b5b5;
 }
 
-.file-label:hover .file-cta.is-danger {
-    background-color: #f03a5f !important;
-    border-color: transparent;
-    color: #fff;
-}
-
 .file-label:hover .file-cta.is-link {
     background-color: #276cda !important;
     border-color: transparent;

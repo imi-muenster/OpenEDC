@@ -24,9 +24,7 @@ class StartModal extends HTMLElement {
                                 <div class="file" id="odm-open">
                                     <label class="file-label">
                                         <input class="file-input" type="file" accept=".xml,text/xml" name="odm-xml" onchange="openODM()">
-                                        <span class="file-cta button">
-                                            <span class="file-label" i18n="open"></span>
-                                        </span>
+                                        <span class="file-cta button" i18n="open"></span>
                                     </label>
                                 </div>
                                 <button class="button is-link" onclick="loadExample()" i18n="example"></button>
