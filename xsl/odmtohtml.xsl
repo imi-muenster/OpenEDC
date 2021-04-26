@@ -126,7 +126,7 @@
     <xsl:template name="booleanField">
         <xsl:param name="item"/>
         <label class="radio"><input type="radio" name="{$item/@OID}" item-oid="{$item/@OID}" value="1"/>&#160;<xsl:value-of select="$yes"/></label><br/>
-        <label class="radio"><input type="radio" name="{$item/@OID}" item-oid="{$item/@OID}" value="0"/>&#160;<xsl:value-of select="$no"/></label>            
+        <label class="radio"><input type="radio" name="{$item/@OID}" item-oid="{$item/@OID}" value="0"/>&#160;<xsl:value-of select="$no"/></label>
     </xsl:template>
     <xsl:template name="measurementUnit">
         <xsl:param name="measurementUnit"/>

@@ -81,7 +81,7 @@ function createConditionSelect() {
             conditions.push(condition.getName());
         }
     
-        let itemCondition = metadataHelper.getConditionByItem(currentElementID.item, currentElementID.itemGroup);   
+        let itemCondition = metadataHelper.getConditionByItem(currentElementID.item, currentElementID.itemGroup);
         if (itemCondition) selectedCondition = itemCondition.getName();
     }
 
@@ -104,7 +104,7 @@ function createMeasurementUnitSelect() {
             measurementUnits.push(measurementUnit.getName());
         }
     
-        let itemMeasurementUnit = metadataHelper.getMeasurementUnitByItem(currentElementID.item);   
+        let itemMeasurementUnit = metadataHelper.getMeasurementUnitByItem(currentElementID.item);
         if (itemMeasurementUnit) selectedMeasurementUnit = itemMeasurementUnit.getName();
     }
 
@@ -698,7 +698,7 @@ function arrowKeyListener(event) {
 
     if (!currentElementType && (event.code == "ArrowDown" || event.code == "ArrowRight")) {
         target = $(`a[element-type="studyevent"]`);
-        currentElementType = metadataHelper.elementTypes.STUDYEVENT;        
+        currentElementType = metadataHelper.elementTypes.STUDYEVENT;
     }
 
     if (target && target.tagName == "A") {
@@ -1128,12 +1128,12 @@ window.addRangeCheckInput = function() {
 
 window.addMeasurementUnitInput = function() {
     let emptyMeasurementUnitFields = $$(".empty-measurement-unit-field");
-    emptyMeasurementUnitFields[emptyMeasurementUnitFields.length-1].insertAdjacentElement("afterend", htmlElements.getEmptyMeasurementUnitInputElement());    
+    emptyMeasurementUnitFields[emptyMeasurementUnitFields.length-1].insertAdjacentElement("afterend", htmlElements.getEmptyMeasurementUnitInputElement());
 }
 
 window.addConditionInput = function() {
     let emptyConditionFields = $$(".empty-condition-field");
-    emptyConditionFields[emptyConditionFields.length-1].insertAdjacentElement("afterend", htmlElements.getEmptyConditionInputElement());    
+    emptyConditionFields[emptyConditionFields.length-1].insertAdjacentElement("afterend", htmlElements.getEmptyConditionInputElement());
 }
 
 window.moreTabClicked = function(event) {

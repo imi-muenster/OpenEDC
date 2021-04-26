@@ -248,7 +248,7 @@ a.panel-block:hover {
     display: none;
 }
 
-@media only screen and (max-width: 768px)  {
+@media only screen and (max-width: 768px) {
     .modal-content.is-fullheight-mobile {
         max-height: none;
     }
@@ -262,7 +262,7 @@ a.panel-block:hover {
     }
 }
 
-@media only screen and (max-width: 640px)  {
+@media only screen and (max-width: 640px) {
     .width-is-three-quarters, .width-is-two-thirds {
         width: 100%;
     }

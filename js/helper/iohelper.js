@@ -570,7 +570,7 @@ export function getCSVString(csvHeaders, csvData) {
 }
 
 export function shortenText(text, places) {
-    return text.length > places ? text.substr(0, places) + " ..." :  text;
+    return text.length > places ? text.substr(0, places) + " ..." : text;
 }
 
 export async function getFileContent(file) {

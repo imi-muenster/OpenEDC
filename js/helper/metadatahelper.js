@@ -143,7 +143,7 @@ export function prepareDownload(dataStatusTypes) {
     odmCopy.querySelector("ODM").setAttribute("CreationDateTime", new Date().toISOString());
 
     // Remove the default/untranslated locale that might have been added during odmValidation / preparation
-    odmCopy.querySelectorAll(`TranslatedText[*|lang="${languageHelper.untranslatedLocale}"]`).forEach(translatedText =>  translatedText.removeAttribute("xml:lang"));
+    odmCopy.querySelectorAll(`TranslatedText[*|lang="${languageHelper.untranslatedLocale}"]`).forEach(translatedText => translatedText.removeAttribute("xml:lang"));
 
     // Add a code list with all data status types but only when downloading the ODM with clinical data
     if (dataStatusTypes) {
@@ -752,7 +752,7 @@ export function insertCodeListItem(codeListItem, codeListOID) {
 }
 
 export function addCodeListRef(itemOID, codeListOID) {
-    getElementDefByOID(itemOID).appendChild(metadataTemplates.getCodeListRef(codeListOID));    
+    getElementDefByOID(itemOID).appendChild(metadataTemplates.getCodeListRef(codeListOID));
 }
 
 export function removeStudyEventRef(studyEventOID) {

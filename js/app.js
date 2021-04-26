@@ -110,7 +110,7 @@ const startApp = async () => {
 }
 
 const setTitles = () => {
-    const studyName =  ioHelper.shortenText(metadataHelper.getStudyName(), 25);
+    const studyName = ioHelper.shortenText(metadataHelper.getStudyName(), 25);
     $("#study-title").textContent = studyName;
     $("head title").textContent = "OpenEDC – " + studyName;
 }
@@ -313,7 +313,7 @@ window.showProjectModal = function() {
     }
 
     // TODO: Use optional chaining instead
-    const subjectKeyModeRadio =  $(`#${ioHelper.getSubjectKeyMode()}`);
+    const subjectKeyModeRadio = $(`#${ioHelper.getSubjectKeyMode()}`);
     if (subjectKeyModeRadio) subjectKeyModeRadio.checked = true;
 
     $("#survey-code-input").value = ioHelper.getSurveyCode();
@@ -458,7 +458,7 @@ function showSubjectKeyModeElement() {
     $$(".subject-key-mode-element").forEach(button => button.hide());
 
     // TODO: Use optional chaining instead
-    const subjectKeyModeElement =  $(`#${ioHelper.getSubjectKeyMode()}-element`);
+    const subjectKeyModeElement = $(`#${ioHelper.getSubjectKeyMode()}-element`);
     if (subjectKeyModeElement) subjectKeyModeElement.parentNode.show();
 }
 

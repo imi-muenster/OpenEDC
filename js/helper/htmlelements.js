@@ -247,7 +247,7 @@ export function getRangeCheckInputElement(selectedComparator, checkValue) {
     let field = document.createElement("div");
     field.className = "field range-check-input is-grouped";
 
-    let select =  getSelect("range-check-comparator", false, false, rangeCheckComparators, selectedComparator, rangeCheckComparatorsDisplay);
+    let select = getSelect("range-check-comparator", false, false, rangeCheckComparators, selectedComparator, rangeCheckComparatorsDisplay);
     field.appendChild(select);
     
     field.insertAdjacentHTML("beforeend", "&nbsp;&nbsp;");
@@ -303,7 +303,7 @@ export function getSelect(name, isUnique, isFullwidth, values, selectedValue, di
             select.className = `select is-fullwidth ${name}-outer`;
         } else {
             select.className = `select ${name}-outer`;
-        }        
+        }
     }
 
     let innerSelect = document.createElement("select");
