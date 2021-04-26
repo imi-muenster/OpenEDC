@@ -15,44 +15,51 @@ export const elementTypes = {
     CONDITION: "CONDITION"
 }
 
-// TODO: Might be used to refactor large parts of this file
-const elementProperties = {
+// TODO: Might be used to refactor large parts of this file and the metadata module (especially switch statements)
+export const elementProperties = {
     STUDYEVENT: {
         definitionName: "StudyEventDef",
         referenceName: "StudyEventRef",
         oidName: "StudyEventOID",
-        getChild: () => elementProperties.FORM
+        elementType: elementTypes.STUDYEVENT,
+        get child() { return elementProperties.FORM }
     },
     FORM: {
         definitionName: "FormDef",
         referenceName: "FormRef",
         oidName: "FormOID",
-        getParent: () => elementProperties.STUDYEVENT,
-        getChild: () => elementProperties.ITEMGROUP
+        elementType: elementTypes.FORM,
+        get parent() { return elementProperties.STUDYEVENT },
+        get child() { return elementProperties.ITEMGROUP }
     },
     ITEMGROUP: {
         definitionName: "ItemGroupDef",
         referenceName: "ItemGroupRef",
         oidName: "ItemGroupOID",
-        getParent: () => elementProperties.FORM,
-        getChild: () => elementProperties.ITEM
+        elementType: elementTypes.ITEMGROUP,
+        get parent() { return elementProperties.FORM },
+        get child() { return elementProperties.ITEM }
     },
     ITEM: {
         definitionName: "ItemDef",
         referenceName: "ItemRef",
         oidName: "ItemOID",
-        getParent: () => elementProperties.ITEMGROUP
+        elementType: elementTypes.ITEM,
+        get parent() { return elementProperties.ITEMGROUP }
     },
     CODELIST: {
         definitionName: "CodeList",
-        referenceName: "CodeListRef"
+        referenceName: "CodeListRef",
+        elementType: elementTypes.CODELIST
     },
     CODELISTITEM: {
-        definitionName: "CodeListItem"
+        definitionName: "CodeListItem",
+        elementType: elementTypes.CODELISTITEM
     },
     CONDITION: {
         definitionName: "ConditionDef",
-        referenceName: "CollectionExceptionConditionOID"
+        referenceName: "CollectionExceptionConditionOID",
+        elementType: elementTypes.CONDITION
     }
 }
 
@@ -403,7 +410,7 @@ export function getMeasurementUnits() {
 
 export function getElementCondition(elementType, elementOID, parentElementOID) {
     const element = elementProperties[elementType];
-    let conditionRef = $(`${element.getParent().definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.oidName}="${elementOID}"][CollectionExceptionConditionOID]`);
+    let conditionRef = $(`${element.parent.definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.oidName}="${elementOID}"][CollectionExceptionConditionOID]`);
 
     if (conditionRef) {
         let oid = conditionRef.getAttribute("CollectionExceptionConditionOID");
@@ -608,9 +615,9 @@ export function setElementCondition(elementType, elementOID, parentElementOID, c
     const element = elementProperties[elementType];
     if (conditionName) {
         const conditionOID = $(`ConditionDef[Name="${conditionName}"]`).getOID();
-        if (conditionOID) $(`${element.getParent().definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.oidName}="${elementOID}"]`).setAttribute("CollectionExceptionConditionOID", conditionOID);
+        if (conditionOID) $(`${element.parent.definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.oidName}="${elementOID}"]`).setAttribute("CollectionExceptionConditionOID", conditionOID);
     } else {
-        $(`${element.getParent().definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.oidName}="${elementOID}"]`).removeAttribute("CollectionExceptionConditionOID");
+        $(`${element.parent.definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.oidName}="${elementOID}"]`).removeAttribute("CollectionExceptionConditionOID");
     }
 }
 
