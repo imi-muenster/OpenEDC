@@ -421,8 +421,8 @@ function loadFormClinicaldata() {
 
     let formItemDataList = cachedFormData || clinicaldataHelper.getSubjectFormData(currentElementID.studyEvent, currentElementID.form);
     for (let formItemData of formItemDataList) {
-        let fieldElement = $(`#clinicaldata-content [preview-field-oid="${formItemData.itemOID}"][preview-field-group-oid="${formItemData.itemGroupOID}"]`);
-        let inputElement = $(`#clinicaldata-content [preview-oid="${formItemData.itemOID}"][preview-group-oid="${formItemData.itemGroupOID}"]`);
+        let fieldElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [preview-field-oid="${formItemData.itemOID}"]`);
+        let inputElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [preview-oid="${formItemData.itemOID}"]`);
         if (!inputElement) {
             metadataNotFoundErrors.push({type: metadataHelper.elementTypes.ITEM, oid: formItemData.itemOID});
             continue;
@@ -438,7 +438,7 @@ function loadFormClinicaldata() {
                 inputElement.value = formItemData.value.replace(/\\n/g, "\n");
                 break;
             case "radio":
-                inputElement = $(`#clinicaldata-content [preview-oid="${formItemData.itemOID}"][preview-group-oid="${formItemData.itemGroupOID}"][value="${formItemData.value}"]`);
+                inputElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [preview-oid="${formItemData.itemOID}"][value="${formItemData.value}"]`);
                 if (!inputElement) {
                     metadataNotFoundErrors.push({type: metadataHelper.elementTypes.CODELISTITEM, oid: formItemData.itemOID, value: formItemData.value});
                     continue;
@@ -563,21 +563,24 @@ async function saveFormData() {
 
 function getFormData() {
     // TODO: Rename preview to metadata or something and also preview-group-id to something else
-    let formItemDataList = [];
-    for (let inputElement of $$("#clinicaldata-content [preview-oid]")) {
-        let value = inputElement.value;
-        let itemOID = inputElement.getAttribute("preview-oid");
-        let itemGroupOID = inputElement.getAttribute("preview-group-oid");
-        switch (inputElement.getAttribute("type")) {
-            case "text":
-            case "date":
-            case "select":
-                if (value) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
-                break;
-            case "textarea":
-                if (value) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value.replace(/\n/g, "\\n")));
-            case "radio":
-                if (inputElement.checked) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
+    const formItemDataList = [];
+    for (const itemGroupContent of $$("#clinicaldata-content .item-group-content")) {
+        const itemGroupOID = itemGroupContent.getAttribute("item-group-content-oid");
+        for (const inputElement of itemGroupContent.querySelectorAll("[preview-oid]")) {
+            const value = inputElement.value;
+            const itemOID = inputElement.getAttribute("preview-oid");
+            switch (inputElement.getAttribute("type")) {
+                case "text":
+                case "date":
+                case "select":
+                    if (value) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
+                    break;
+                case "radio":
+                    if (inputElement.checked) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
+                    break;
+                case "textarea":
+                    if (value) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value.replace(/\n/g, "\\n")));
+            }
         }
     }
 
@@ -589,7 +592,7 @@ function checkMandatoryFields(formItemDataList) {
 
     let mandatoryFieldsAnswered = true;
     for (let mandatoryField of $$(".preview-field[mandatory='Yes']:not(.is-hidden)")) {
-        if (!formItemDataList.find(formItemData => formItemData.itemGroupOID == mandatoryField.getAttribute("preview-field-group-oid") && formItemData.itemOID == mandatoryField.getAttribute("preview-field-oid"))) {
+        if (!formItemDataList.find(formItemData => formItemData.itemGroupOID == mandatoryField.parentNode.getAttribute("item-group-content-oid") && formItemData.itemOID == mandatoryField.getAttribute("preview-field-oid"))) {
             mandatoryField.classList.add("is-highlighted");
             mandatoryFieldsAnswered = false;
         }
