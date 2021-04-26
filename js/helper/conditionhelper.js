@@ -1,30 +1,28 @@
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-export function process(itemsWithCondition) {
-    for (const itemWithCondition of itemsWithCondition) {
-        const conditionalItem = itemWithCondition.itemOID;
-
-        const formalExpressionParts = itemWithCondition.formalExpression.split(" ");
+export function process(elementsWithCondition) {
+    for (const elementWithCondition of elementsWithCondition) {
+        const formalExpressionParts = elementWithCondition.formalExpression.split(" ");
         const determinant = formalExpressionParts[0];
         const operator = formalExpressionParts[1];
         const target = formalExpressionParts[2].replace(/['"]/g, "");
 
         if (operator == "!=") {
-            $(`[item-field-oid="${conditionalItem}"]`).hide();
+            $(`[item-field-oid="${elementWithCondition.oid}"]`).hide();
         }
 
         const inputElement = $(`[item-oid="${determinant}"]`);
         if (!inputElement) continue;
         if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "select") {
             inputElement.addEventListener("input", function(event) {
-                respondToInputChange(event, conditionalItem, operator, target);
+                respondToInputChange(event, elementWithCondition.oid, operator, target);
             });
         } else if (inputElement.getAttribute("type") == "radio") {
             const radioItems = $$(`[item-oid="${determinant}"]`);
             for (const radioItem of radioItems) {
                 radioItem.addEventListener("input", function(event) {
-                    respondToInputChange(event, conditionalItem, operator, target);
+                    respondToInputChange(event, elementWithCondition.oid, operator, target);
                 });
             }
         }

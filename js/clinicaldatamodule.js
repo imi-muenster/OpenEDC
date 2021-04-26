@@ -389,10 +389,10 @@ async function loadFormMetadata() {
 
 async function addDynamicFormLogic() {
     // First, add real-time logic to process conditional items
-    conditionHelper.process(metadataHelper.getItemOIDSWithConditionByForm(currentElementID.form));
+    conditionHelper.process(metadataHelper.getElementsWithCondition(currentElementID.form));
 
     // Second, add real-time logic to validate fields by data type and/or allowed ranges
-    validationHelper.process(metadataHelper.getItemOIDSWithRangeChecksByForm(currentElementID.form));
+    validationHelper.process(metadataHelper.getItemsWithRangeChecks(currentElementID.form));
     
     // Third, allow the user to uncheck an already checked group of radio items
     document.querySelectorAll("#clinicaldata-content label.radio").forEach(radioItem => {
@@ -562,7 +562,7 @@ async function saveFormData() {
 }
 
 function getFormData() {
-    const formItemDataList = [];
+    let formItemDataList = [];
     for (const itemGroupContent of $$("#clinicaldata-content .item-group-content")) {
         const itemGroupOID = itemGroupContent.getAttribute("item-group-content-oid");
         for (const inputElement of itemGroupContent.querySelectorAll("[item-oid]")) {

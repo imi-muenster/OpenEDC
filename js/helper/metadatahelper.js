@@ -308,29 +308,37 @@ export function getConditions() {
     return $$("ConditionDef");
 }
 
-export function getItemOIDSWithConditionByForm(formOID) {
-    let itemOIDSWithCondition = [];
-    for (let itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
-        let itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
-        for (let itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[CollectionExceptionConditionOID]`)) {
-            let itemOID = itemRef.getAttribute("ItemOID");
-            let conditionOID = itemRef.getAttribute("CollectionExceptionConditionOID");
-            let formalExpression = $(`ConditionDef[OID="${conditionOID}"] FormalExpression`);
-            if (formalExpression) {
-                itemOIDSWithCondition.push({
-                    itemOID: itemOID,
-                    formalExpression: formalExpression.textContent
-                });
-            }
+export function getElementsWithCondition(formOID) {
+    let elementsWithCondition = [];
+    for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
+        const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
+        const conditionOID = itemGroupRef.getAttribute("CollectionExceptionConditionOID");
+        if (conditionOID) elementsWithCondition = addElementWithCondition(elementsWithCondition, itemGroupOID, conditionOID);
+        for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[CollectionExceptionConditionOID]`)) {
+            const itemOID = itemRef.getAttribute("ItemOID");
+            const conditionOID = itemRef.getAttribute("CollectionExceptionConditionOID");
+            elementsWithCondition = addElementWithCondition(elementsWithCondition, itemOID, conditionOID);
         }
     }
 
-    return itemOIDSWithCondition;
+    return elementsWithCondition;
 }
 
-// TODO: Introduce own class for the two arrays? If yes, implement it for getItemOIDSWithConditionByForm as well
+function addElementWithCondition(elementList, elementOID, conditionOID) {
+    const formalExpression = $(`ConditionDef[OID="${conditionOID}"] FormalExpression`);
+    if (formalExpression) {
+        elementList.push({
+            oid: elementOID,
+            formalExpression: formalExpression.textContent
+        });
+    }
+
+    return elementList;
+}
+
+// TODO: Introduce own class for the two arrays? If yes, implement it for getElementsWithCondition as well
 // TODO: Could also handle soft and hard RangeChecks
-export function getItemOIDSWithRangeChecksByForm(formOID) {
+export function getItemsWithRangeChecks(formOID) {
     let itemOIDSWithRangeCheck = [];
     for (let itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
         let itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
