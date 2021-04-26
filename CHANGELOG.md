@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.4.0
+
+- Option to auto-number the subject key of new clinical data
+- Create and open clinical subject data by scanning a barcode
+- Replaced CryptoJS library with native Web Crypto API and comprehensive security improvements
+- Possibility to use markdown in item group descriptions and item questions
+- Major performance improvements for large projects
+
 ## 0.3.2
 
 - Show the study event and form name instead of the OID in the audit trail
