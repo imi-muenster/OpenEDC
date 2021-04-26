@@ -20,14 +20,14 @@ export const elementProperties = {
     STUDYEVENT: {
         definitionName: "StudyEventDef",
         referenceName: "StudyEventRef",
-        oidName: "StudyEventOID",
+        referenceOID: "StudyEventOID",
         elementType: elementTypes.STUDYEVENT,
         get child() { return elementProperties.FORM }
     },
     FORM: {
         definitionName: "FormDef",
         referenceName: "FormRef",
-        oidName: "FormOID",
+        referenceOID: "FormOID",
         elementType: elementTypes.FORM,
         get parent() { return elementProperties.STUDYEVENT },
         get child() { return elementProperties.ITEMGROUP }
@@ -35,7 +35,7 @@ export const elementProperties = {
     ITEMGROUP: {
         definitionName: "ItemGroupDef",
         referenceName: "ItemGroupRef",
-        oidName: "ItemGroupOID",
+        referenceOID: "ItemGroupOID",
         elementType: elementTypes.ITEMGROUP,
         get parent() { return elementProperties.FORM },
         get child() { return elementProperties.ITEM }
@@ -43,13 +43,14 @@ export const elementProperties = {
     ITEM: {
         definitionName: "ItemDef",
         referenceName: "ItemRef",
-        oidName: "ItemOID",
+        referenceOID: "ItemOID",
         elementType: elementTypes.ITEM,
         get parent() { return elementProperties.ITEMGROUP }
     },
     CODELIST: {
         definitionName: "CodeList",
         referenceName: "CodeListRef",
+        referenceOID: "CodeListOID",
         elementType: elementTypes.CODELIST
     },
     CODELISTITEM: {
@@ -58,7 +59,7 @@ export const elementProperties = {
     },
     CONDITION: {
         definitionName: "ConditionDef",
-        referenceName: "CollectionExceptionConditionOID",
+        referenceOID: "CollectionExceptionConditionOID",
         elementType: elementTypes.CONDITION
     }
 }
@@ -410,7 +411,7 @@ export function getMeasurementUnits() {
 
 export function getElementCondition(elementType, elementOID, parentElementOID) {
     const element = elementProperties[elementType];
-    let conditionRef = $(`${element.parent.definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.oidName}="${elementOID}"][CollectionExceptionConditionOID]`);
+    let conditionRef = $(`${element.parent.definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.referenceOID}="${elementOID}"][${elementProperties.CONDITION.referenceOID}]`);
 
     if (conditionRef) {
         let oid = conditionRef.getAttribute("CollectionExceptionConditionOID");
@@ -615,9 +616,9 @@ export function setElementCondition(elementType, elementOID, parentElementOID, c
     const element = elementProperties[elementType];
     if (conditionName) {
         const conditionOID = $(`ConditionDef[Name="${conditionName}"]`).getOID();
-        if (conditionOID) $(`${element.parent.definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.oidName}="${elementOID}"]`).setAttribute("CollectionExceptionConditionOID", conditionOID);
+        if (conditionOID) $(`${element.parent.definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.referenceOID}="${elementOID}"]`).setAttribute(elementProperties.CONDITION.referenceOID, conditionOID);
     } else {
-        $(`${element.parent.definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.oidName}="${elementOID}"]`).removeAttribute("CollectionExceptionConditionOID");
+        $(`${element.parent.definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.referenceOID}="${elementOID}"]`).removeAttribute(elementProperties.CONDITION.referenceOID);
     }
 }
 
