@@ -20,23 +20,27 @@ const elementProperties = {
     STUDYEVENT: {
         definitionName: "StudyEventDef",
         referenceName: "StudyEventRef",
+        oidName: "StudyEventOID",
         getChild: () => elementProperties.FORM
     },
     FORM: {
         definitionName: "FormDef",
         referenceName: "FormRef",
+        oidName: "FormOID",
         getParent: () => elementProperties.STUDYEVENT,
         getChild: () => elementProperties.ITEMGROUP
     },
     ITEMGROUP: {
         definitionName: "ItemGroupDef",
         referenceName: "ItemGroupRef",
+        oidName: "ItemGroupOID",
         getParent: () => elementProperties.FORM,
         getChild: () => elementProperties.ITEM
     },
     ITEM: {
         definitionName: "ItemDef",
         referenceName: "ItemRef",
+        oidName: "ItemOID",
         getParent: () => elementProperties.ITEMGROUP
     },
     CODELIST: {
@@ -397,8 +401,9 @@ export function getMeasurementUnits() {
     return $$("BasicDefinitions MeasurementUnit");
 }
 
-export function getConditionByItem(itemOID, itemGroupOID) {
-    let conditionRef = $(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[ItemOID="${itemOID}"][CollectionExceptionConditionOID]`);
+export function getElementCondition(elementType, elementOID, parentElementOID) {
+    const element = elementProperties[elementType];
+    let conditionRef = $(`${element.getParent().definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.oidName}="${elementOID}"][CollectionExceptionConditionOID]`);
 
     if (conditionRef) {
         let oid = conditionRef.getAttribute("CollectionExceptionConditionOID");
@@ -599,12 +604,13 @@ export function setItemRangeCheck(itemOID, comparator, checkValue) {
     insertPosition.insertAdjacentElement("afterend", metadataTemplates.getRangeCheck(comparator, checkValue));
 }
 
-export function setItemCondition(itemOID, itemGroupOID, conditionName) {
+export function setElementCondition(elementType, elementOID, parentElementOID, conditionName) {
+    const element = elementProperties[elementType];
     if (conditionName) {
         const conditionOID = $(`ConditionDef[Name="${conditionName}"]`).getOID();
-        if (conditionOID) $(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[ItemOID="${itemOID}"]`).setAttribute("CollectionExceptionConditionOID", conditionOID);
+        if (conditionOID) $(`${element.getParent().definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.oidName}="${elementOID}"]`).setAttribute("CollectionExceptionConditionOID", conditionOID);
     } else {
-        $(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[ItemOID="${itemOID}"]`).removeAttribute("CollectionExceptionConditionOID");
+        $(`${element.getParent().definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.oidName}="${elementOID}"]`).removeAttribute("CollectionExceptionConditionOID");
     }
 }
 

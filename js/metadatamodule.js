@@ -76,19 +76,19 @@ function createConditionSelect() {
     let conditions = [""];
     let selectedCondition = "";
 
-    if (currentElementType == metadataHelper.elementTypes.ITEM) {
+    if (currentElementType == metadataHelper.elementTypes.ITEMGROUP || currentElementType == metadataHelper.elementTypes.ITEM) {
         for (let condition of metadataHelper.getConditions()) {
             conditions.push(condition.getName());
         }
     
-        let itemCondition = metadataHelper.getConditionByItem(currentElementID.item, currentElementID.itemGroup);
-        if (itemCondition) selectedCondition = itemCondition.getName();
+        let elementCondition = metadataHelper.getElementCondition(currentElementType, getCurrentElementOID(), getParentOID(currentElementType));
+        if (elementCondition) selectedCondition = elementCondition.getName();
     }
 
     let select = htmlElements.getSelect("condition-select", true, true, conditions, selectedCondition);
     $("#condition-label").insertAdjacentElement("afterend", select);
 
-    if (currentElementType != metadataHelper.elementTypes.ITEM) {
+    if (currentElementType != metadataHelper.elementTypes.ITEMGROUP && currentElementType != metadataHelper.elementTypes.ITEM) {
         $("#condition-select-inner").disabled = true;
     }
 }
@@ -522,8 +522,10 @@ window.saveElement = async function() {
 }
 
 window.saveMoreModal = function() {
-    if (currentElementType == metadataHelper.elementTypes.ITEM) {
+    if (currentElementType == metadataHelper.elementTypes.ITEMGROUP || currentElementType == metadataHelper.elementTypes.ITEM) {
         saveCondition();
+    }
+    if (currentElementType == metadataHelper.elementTypes.ITEM) {
         saveMeasurementUnit();
         saveRangeChecks();
         saveDescription();
@@ -540,7 +542,7 @@ window.saveMoreModal = function() {
 
 function saveCondition() {
     let conditionName = $("#condition-select-inner").value;
-    metadataHelper.setItemCondition(currentElementID.item, currentElementID.itemGroup, conditionName);
+    metadataHelper.setElementCondition(currentElementType, getCurrentElementOID(), getParentOID(currentElementType), conditionName);
 }
 
 function saveMeasurementUnit() {
