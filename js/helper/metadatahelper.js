@@ -6,62 +6,12 @@ const $ = query => metadata.querySelector(query);
 const $$ = query => metadata.querySelectorAll(query);
 
 export const elementTypes = {
-    STUDYEVENT: "STUDYEVENT",
-    FORM: "FORM",
-    ITEMGROUP: "ITEMGROUP",
-    ITEM: "ITEM",
-    CODELIST: "CODELIST",
-    CODELISTITEM: "CODELISTITEM",
-    CONDITION: "CONDITION"
-}
-
-// TODO: Might be used to refactor large parts of this file and the metadata module (especially switch statements)
-export const elementProperties = {
-    STUDYEVENT: {
-        definitionName: "StudyEventDef",
-        referenceName: "StudyEventRef",
-        referenceOID: "StudyEventOID",
-        elementType: elementTypes.STUDYEVENT,
-        get child() { return elementProperties.FORM }
-    },
-    FORM: {
-        definitionName: "FormDef",
-        referenceName: "FormRef",
-        referenceOID: "FormOID",
-        elementType: elementTypes.FORM,
-        get parent() { return elementProperties.STUDYEVENT },
-        get child() { return elementProperties.ITEMGROUP }
-    },
-    ITEMGROUP: {
-        definitionName: "ItemGroupDef",
-        referenceName: "ItemGroupRef",
-        referenceOID: "ItemGroupOID",
-        elementType: elementTypes.ITEMGROUP,
-        get parent() { return elementProperties.FORM },
-        get child() { return elementProperties.ITEM }
-    },
-    ITEM: {
-        definitionName: "ItemDef",
-        referenceName: "ItemRef",
-        referenceOID: "ItemOID",
-        elementType: elementTypes.ITEM,
-        get parent() { return elementProperties.ITEMGROUP }
-    },
-    CODELIST: {
-        definitionName: "CodeList",
-        referenceName: "CodeListRef",
-        referenceOID: "CodeListOID",
-        elementType: elementTypes.CODELIST
-    },
-    CODELISTITEM: {
-        definitionName: "CodeListItem",
-        elementType: elementTypes.CODELISTITEM
-    },
-    CONDITION: {
-        definitionName: "ConditionDef",
-        referenceOID: "CollectionExceptionConditionOID",
-        elementType: elementTypes.CONDITION
-    }
+    STUDYEVENT: "studyevent",
+    FORM: "form",
+    ITEMGROUP: "itemgroup",
+    ITEM: "item",
+    CODELIST: "codelist",
+    CODELISTITEM: "codelistitem"
 }
 
 export const dataStatusCodeListOID = "OpenEDC.DataStatus";
@@ -410,8 +360,14 @@ export function getMeasurementUnits() {
 }
 
 export function getElementCondition(elementType, elementOID, parentElementOID) {
-    const element = elementProperties[elementType];
-    let conditionRef = $(`${element.parent.definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.referenceOID}="${elementOID}"][${elementProperties.CONDITION.referenceOID}]`);
+    let conditionRef;
+    switch (elementType) {
+        case elementTypes.ITEMGROUP:
+            conditionRef = $(`FormDef[OID="${parentElementOID}"] ItemGroupRef[ItemGroupOID="${elementOID}"][CollectionExceptionConditionOID]`);
+            break;
+        case elementTypes.ITEM:
+            conditionRef = $(`ItemGroupDef[OID="${parentElementOID}"] ItemRef[ItemOID="${elementOID}"][CollectionExceptionConditionOID]`);
+    }
 
     if (conditionRef) {
         let oid = conditionRef.getAttribute("CollectionExceptionConditionOID");
@@ -613,12 +569,14 @@ export function setItemRangeCheck(itemOID, comparator, checkValue) {
 }
 
 export function setElementCondition(elementType, elementOID, parentElementOID, conditionName) {
-    const element = elementProperties[elementType];
-    if (conditionName) {
-        const conditionOID = $(`ConditionDef[Name="${conditionName}"]`).getOID();
-        if (conditionOID) $(`${element.parent.definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.referenceOID}="${elementOID}"]`).setAttribute(elementProperties.CONDITION.referenceOID, conditionOID);
-    } else {
-        $(`${element.parent.definitionName}[OID="${parentElementOID}"] ${element.referenceName}[${element.referenceOID}="${elementOID}"]`).removeAttribute(elementProperties.CONDITION.referenceOID);
+    const conditionOID = conditionName ? $(`ConditionDef[Name="${conditionName}"]`).getOID() : null;
+    switch (elementType) {
+        case elementTypes.ITEMGROUP:
+            if (conditionOID) $(`FormDef[OID="${parentElementOID}"] ItemGroupRef[ItemGroupOID="${elementOID}"]`).setAttribute(CollectionExceptionConditionOID, conditionOID);
+            else $(`FormDef[OID="${parentElementOID}"] ItemGroupRef[ItemGroupOID="${elementOID}"]`).removeAttribute(CollectionExceptionConditionOID);
+        case elementTypes.ITEM:
+            if (conditionOID) $(`ItemGroupDef[OID="${parentElementOID}"] ItemRef[ItemOID="${elementOID}"]`).setAttribute(CollectionExceptionConditionOID, conditionOID);
+            else $(`ItemGroupDef[OID="${parentElementOID}"] ItemRef[ItemOID="${elementOID}"]`).removeAttribute(CollectionExceptionConditionOID);
     }
 }
 
@@ -659,7 +617,7 @@ function generateUniqueCodedValue(codeListOID) {
 export function createStudyEvent() {
     const newStudyEventOID = generateUniqueOID("SE.");
     insertStudyEventRef(metadataTemplates.getStudyEventRef(newStudyEventOID));
-    insertElementDef(elementProperties.STUDYEVENT.definitionName, metadataTemplates.getStudyEventDef(newStudyEventOID, languageHelper.getTranslation("new-event")));
+    insertElementDef(metadataTemplates.getStudyEventDef(newStudyEventOID, languageHelper.getTranslation("new-event")));
     
     return newStudyEventOID;
 }
@@ -668,19 +626,20 @@ export function insertStudyEventRef(studyEventRef) {
     $("Protocol").appendChild(studyEventRef);
 }
 
-function insertElementDef(definitionName, studyEventDef) {
-    const insertPositionDef = $$(definitionName).getLastElement();
+// TODO: .tagName approach could also be used for insertElementRef
+function insertElementDef(elementDef) {
+    const insertPositionDef = $$(elementDef.tagName).getLastElement();
     if (insertPositionDef) {
-        insertPositionDef.insertAdjacentElement("afterend", studyEventDef);
+        insertPositionDef.insertAdjacentElement("afterend", elementDef);
     } else {
-        $("MetaDataVersion").appendChild(studyEventDef);
+        $("MetaDataVersion").appendChild(elementDef);
     }
 }
 
 export function createForm(studyEventOID) {
     const newFormOID = generateUniqueOID("F.");
     insertFormRef(metadataTemplates.getFormRef(newFormOID), studyEventOID);
-    insertElementDef(elementProperties.FORM.definitionName, metadataTemplates.getFormDef(newFormOID, languageHelper.getTranslation("new-form")));
+    insertElementDef(metadataTemplates.getFormDef(newFormOID, languageHelper.getTranslation("new-form")));
 
     return newFormOID;
 }
@@ -702,7 +661,7 @@ export function insertFormRef(formRef, studyEventOID) {
 export function createItemGroup(formOID) {
     const newItemGroupOID = generateUniqueOID("IG.");
     insertItemGroupRef(metadataTemplates.getItemGroupRef(newItemGroupOID), formOID);
-    insertElementDef(elementProperties.ITEMGROUP.definitionName, metadataTemplates.getItemGroupDef(newItemGroupOID, languageHelper.getTranslation("new-group")));
+    insertElementDef(metadataTemplates.getItemGroupDef(newItemGroupOID, languageHelper.getTranslation("new-group")));
 
     return newItemGroupOID;
 }
@@ -724,7 +683,7 @@ export function insertItemGroupRef(itemGroupRef, formOID) {
 export function createItem(itemGroupOID) {
     const newItemOID = generateUniqueOID("I.");
     insertItemRef(metadataTemplates.getItemRef(newItemOID), itemGroupOID);
-    insertElementDef(elementProperties.ITEM.definitionName, metadataTemplates.getItemDef(newItemOID, languageHelper.getTranslation("new-item")));
+    insertElementDef(metadataTemplates.getItemDef(newItemOID, languageHelper.getTranslation("new-item")));
 
     return newItemOID;
 }
@@ -746,7 +705,7 @@ export function insertItemRef(itemRef, itemGroupOID) {
 export function createCodeList(itemOID) {
     const newCodeListOID = generateUniqueOID("CL.");
     insertCodeListRef(metadataTemplates.getCodeListRef(newCodeListOID), itemOID);
-    insertElementDef(elementProperties.CODELIST.definitionName, metadataTemplates.getCodeListDef(newCodeListOID));
+    insertElementDef(metadataTemplates.getCodeListDef(newCodeListOID));
 
     return newCodeListOID;
 }
@@ -762,7 +721,7 @@ export function insertCodeListRef(codeListRef, itemOID) {
 
 export function createCondition(name, formalExpression, locale) {
     const newConditionOID = generateUniqueOID("C.");
-    insertElementDef(elementProperties.CONDITION.definitionName, metadataTemplates.getConditionDef(newConditionOID, name, formalExpression, locale));
+    insertElementDef(metadataTemplates.getConditionDef(newConditionOID, name, formalExpression, locale));
     
     return newConditionOID;
 }
@@ -1080,12 +1039,12 @@ export async function mergeMetadata(odmXMLString) {
         // Merge the new model into the old one
         odm.querySelectorAll("MeasurementUnit").forEach(measurementUnit => insertMeasurementUnit(measurementUnit));
         odm.querySelectorAll("StudyEventRef").forEach(studyEventRef => insertStudyEventRef(studyEventRef));
-        odm.querySelectorAll("StudyEventDef").forEach(studyEventDef => insertElementDef(elementProperties.STUDYEVENT.definitionName, studyEventDef));
-        odm.querySelectorAll("FormDef").forEach(formDef => insertElementDef(elementProperties.FORM.definitionName, formDef));
-        odm.querySelectorAll("ItemGroupDef").forEach(itemGroupDef => insertElementDef(elementProperties.ITEMGROUP.definitionName, itemGroupDef));
-        odm.querySelectorAll("ItemDef").forEach(itemDef => insertElementDef(elementProperties.ITEM.definitionName, itemDef));
-        odm.querySelectorAll("CodeList").forEach(codeList => insertElementDef(elementProperties.CODELIST.definitionName, codeList));
-        odm.querySelectorAll("ConditionDef").forEach(conditionDef => insertElementDef(elementProperties.CONDITION.definitionName, conditionDef));
+        odm.querySelectorAll("StudyEventDef").forEach(studyEventDef => insertElementDef(studyEventDef));
+        odm.querySelectorAll("FormDef").forEach(formDef => insertElementDef(formDef));
+        odm.querySelectorAll("ItemGroupDef").forEach(itemGroupDef => insertElementDef(itemGroupDef));
+        odm.querySelectorAll("ItemDef").forEach(itemDef => insertElementDef(itemDef));
+        odm.querySelectorAll("CodeList").forEach(codeList => insertElementDef(codeList));
+        odm.querySelectorAll("ConditionDef").forEach(conditionDef => insertElementDef(conditionDef));
     }
 
     await storeMetadata();

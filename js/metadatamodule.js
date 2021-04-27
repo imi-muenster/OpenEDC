@@ -238,7 +238,7 @@ function loadItemsByItemGroup(itemGroupOID, hideTree) {
     let itemDefs = metadataHelper.getItemsByItemGroup(itemGroupOID);
     for (let itemDef of itemDefs) {
         let translatedText = itemDef.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
-        const dataType = itemDef.querySelector("CodeListRef") ? "codelist" : itemDef.getAttribute("DataType");
+        const dataType = itemDef.querySelector("CodeListRef") ? metadataHelper.elementTypes.CODELIST : itemDef.getAttribute("DataType");
         let panelBlock = createPanelBlock(itemDef.getOID(), metadataHelper.elementTypes.ITEM, translatedText, itemDef.getName(), languageHelper.getTranslation(dataType));
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
@@ -384,7 +384,7 @@ function fillDetailsPanel(elementOID, elementType) {
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-question");
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             translatedText = element.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
-            $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(elementOID) ? "codelist-" + element.getAttribute("DataType") : element.getAttribute("DataType");
+            $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(elementOID) ? metadataHelper.elementTypes.CODELIST + "-" + element.getAttribute("DataType") : element.getAttribute("DataType");
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             $("#mandatory-select-inner").disabled = true;
@@ -615,7 +615,7 @@ function saveMeasurementUnits() {
 }
 
 function handleItemDataType(itemOID, dataType) {
-    let dataTypeIsCodelist = dataType.startsWith("codelist");
+    let dataTypeIsCodelist = dataType.startsWith(metadataHelper.elementTypes.CODELIST);
     let codeListType = dataTypeIsCodelist ? dataType.split("-")[1] : null;
 
     let codeListRef = metadataHelper.getElementDefByOID(itemOID).querySelector("CodeListRef");
