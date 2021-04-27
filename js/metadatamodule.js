@@ -372,7 +372,7 @@ function fillDetailsPanel(elementOID, elementType) {
     }
 
     let translatedText;
-    switch(elementType) {
+    switch (elementType) {
         case metadataHelper.elementTypes.STUDYEVENT:
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
@@ -882,7 +882,7 @@ window.allowDrop = function(event) {
 function dragEnter(event) {
     if (event.clientX+75 < event.target.getBoundingClientRect().right) {
         if (metadataHelper.getHierarchyLevelOfElementType(elementTypeOnDrag) > metadataHelper.getHierarchyLevelOfElementType(event.target.getAttribute("element-type"))) {
-            switch(event.target.getAttribute("element-type")) {
+            switch (event.target.getAttribute("element-type")) {
                 case metadataHelper.elementTypes.STUDYEVENT:
                     studyEventClicked(event);
                     break;
@@ -1048,7 +1048,7 @@ window.elementDrop = async function(event) {
         }
     } else {
         // Allows the movement of an element into an empty parent element by dropping it on the column title
-        switch(elementTypeOnDrag) {
+        switch (elementTypeOnDrag) {
             case metadataHelper.elementTypes.STUDYEVENT:
                 metadataHelper.insertStudyEventRef(sourceElementRef);
                 break;
@@ -1142,7 +1142,7 @@ window.moreTabClicked = function(event) {
     ioHelper.removeIsActiveFromElement($("#more-tabs ul li.is-active"));
     event.target.parentNode.activate();
 
-    switch(event.target.parentNode.id) {
+    switch (event.target.parentNode.id) {
         case "element-options-tab":
             saveConditions();
             saveMeasurementUnits();

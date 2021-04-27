@@ -345,7 +345,7 @@ window.projectTabClicked = function(event) {
     ioHelper.removeIsActiveFromElement($("#project-tabs ul li.is-active"));
     event.target.parentNode.activate();
 
-    switch(event.target.parentNode.id) {
+    switch (event.target.parentNode.id) {
         case "general-options-tab":
             $("#general-options").show();
             $("#users-options").hide();

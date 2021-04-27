@@ -162,7 +162,7 @@ export function getSubjects(siteOID, sortOrder) {
 }
 
 function sortSubjects(subjects, sortOrder) {
-    switch(sortOrder) {
+    switch (sortOrder) {
         case sortOrderTypes.CREATEDDATE:
             subjects.sort((a, b) => a.createdDate > b.createdDate ? 1 : (a.createdDate < b.createdDate ? -1 : 0));
             break;
@@ -273,7 +273,7 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
 
 function escapeXML(value) {
     return value.replace(/[&<>'"]/g, function(character) {
-        switch(character) {
+        switch (character) {
             case "&": return "&#38;";
             case "<": return "&#60;";
             case ">": return "&#62;";
