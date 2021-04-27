@@ -432,7 +432,7 @@ function loadFormClinicaldata() {
             case "date":
             case "select":
                 inputElement.value = formItemData.value;
-                if (fieldElement.isVisible()) inputElement.dispatchEvent(new Event("input"));
+                if (fieldElement.isVisible() && fieldElement.parentNode.isVisible()) inputElement.dispatchEvent(new Event("input"));
                 break;
             case "textarea":
                 inputElement.value = formItemData.value.replace(/\\n/g, "\n");
@@ -444,10 +444,12 @@ function loadFormClinicaldata() {
                     continue;
                 }
                 inputElement.checked = true;
-                if (fieldElement.isVisible()) inputElement.dispatchEvent(new Event("input"));
+                if (fieldElement.isVisible() && fieldElement.parentNode.isVisible()) inputElement.dispatchEvent(new Event("input"));
         }
-        if (!fieldElement.isVisible() && formItemData.value) {
+        // TODO: Could be slightly performance improved in the future: if (!formItemData.value) continue; and new if -> dispatchEvent else -> highlight above
+        if (formItemData.value && (!fieldElement.isVisible() || !fieldElement.parentNode.isVisible())) {
             fieldElement.show();
+            fieldElement.parentNode.show();
             fieldElement.classList.add("is-highlighted");
             hiddenFieldWithValueError = true;
         }
@@ -459,6 +461,7 @@ function loadFormClinicaldata() {
     if (clinicaldataHelper.getDataStatusForForm(currentElementID.studyEvent, currentElementID.form) == clinicaldataHelper.dataStatusTypes.VALIDATED) showValidatedFormHint();
 }
 
+// TODO: Localize error messages
 function showErrors(metadataNotFoundErrors, hiddenFieldWithValueError) {
     let errorMessage = "";
 
@@ -574,11 +577,11 @@ function getFormData() {
                 case "select":
                     if (value) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
                     break;
-                case "radio":
-                    if (inputElement.checked) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
-                    break;
                 case "textarea":
                     if (value) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value.replace(/\n/g, "\\n")));
+                    break;
+                case "radio":
+                    if (inputElement.checked) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
             }
         }
     }
@@ -590,7 +593,7 @@ function checkMandatoryFields(formItemDataList) {
     if (isFormValidated()) return true;
 
     let mandatoryFieldsAnswered = true;
-    for (let mandatoryField of $$(".item-field[mandatory='Yes']:not(.is-hidden)")) {
+    for (let mandatoryField of $$(".item-group-content:not(.is-hidden) .item-field[mandatory='Yes']:not(.is-hidden)")) {
         if (!formItemDataList.find(formItemData => formItemData.itemGroupOID == mandatoryField.parentNode.getAttribute("item-group-content-oid") && formItemData.itemOID == mandatoryField.getAttribute("item-field-oid"))) {
             mandatoryField.classList.add("is-highlighted");
             mandatoryFieldsAnswered = false;
