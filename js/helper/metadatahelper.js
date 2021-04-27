@@ -304,21 +304,22 @@ export function getElementsWithCondition(formOID) {
     for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
         const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
         const conditionOID = itemGroupRef.getAttribute("CollectionExceptionConditionOID");
-        if (conditionOID) elementsWithCondition = addElementWithCondition(elementsWithCondition, itemGroupOID, conditionOID);
+        if (conditionOID) elementsWithCondition = addElementWithCondition(elementsWithCondition, elementTypes.ITEMGROUP, itemGroupOID, conditionOID);
         for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[CollectionExceptionConditionOID]`)) {
             const itemOID = itemRef.getAttribute("ItemOID");
             const conditionOID = itemRef.getAttribute("CollectionExceptionConditionOID");
-            elementsWithCondition = addElementWithCondition(elementsWithCondition, itemOID, conditionOID);
+            elementsWithCondition = addElementWithCondition(elementsWithCondition, elementTypes.ITEM, itemOID, conditionOID);
         }
     }
 
     return elementsWithCondition;
 }
 
-function addElementWithCondition(elementList, elementOID, conditionOID) {
+function addElementWithCondition(elementList, elementType, elementOID, conditionOID) {
     const formalExpression = $(`ConditionDef[OID="${conditionOID}"] FormalExpression`);
     if (formalExpression) {
         elementList.push({
+            type: elementType,
             oid: elementOID,
             formalExpression: formalExpression.textContent
         });
@@ -572,11 +573,12 @@ export function setElementCondition(elementType, elementOID, parentElementOID, c
     const conditionOID = conditionName ? $(`ConditionDef[Name="${conditionName}"]`).getOID() : null;
     switch (elementType) {
         case elementTypes.ITEMGROUP:
-            if (conditionOID) $(`FormDef[OID="${parentElementOID}"] ItemGroupRef[ItemGroupOID="${elementOID}"]`).setAttribute(CollectionExceptionConditionOID, conditionOID);
-            else $(`FormDef[OID="${parentElementOID}"] ItemGroupRef[ItemGroupOID="${elementOID}"]`).removeAttribute(CollectionExceptionConditionOID);
+            if (conditionOID) $(`FormDef[OID="${parentElementOID}"] ItemGroupRef[ItemGroupOID="${elementOID}"]`).setAttribute("CollectionExceptionConditionOID", conditionOID);
+            else $(`FormDef[OID="${parentElementOID}"] ItemGroupRef[ItemGroupOID="${elementOID}"]`).removeAttribute("CollectionExceptionConditionOID");
+            break;
         case elementTypes.ITEM:
-            if (conditionOID) $(`ItemGroupDef[OID="${parentElementOID}"] ItemRef[ItemOID="${elementOID}"]`).setAttribute(CollectionExceptionConditionOID, conditionOID);
-            else $(`ItemGroupDef[OID="${parentElementOID}"] ItemRef[ItemOID="${elementOID}"]`).removeAttribute(CollectionExceptionConditionOID);
+            if (conditionOID) $(`ItemGroupDef[OID="${parentElementOID}"] ItemRef[ItemOID="${elementOID}"]`).setAttribute("CollectionExceptionConditionOID", conditionOID);
+            else $(`ItemGroupDef[OID="${parentElementOID}"] ItemRef[ItemOID="${elementOID}"]`).removeAttribute("CollectionExceptionConditionOID");
     }
 }
 
