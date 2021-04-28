@@ -285,6 +285,9 @@
     "forgot-password-server-hint": "Alle Daten innerhalb von OpenEDC werden Ende-zu-Ende-verschlüsselt gespeichert und übertragen. Daher ist es derzeit leider nicht möglich, ein vergessenes Passwort automatisch zurückzusetzen.<br><br>Wenn Sie Ihr Passwort vergessen haben, wenden Sie sich bitte an die Person, die Ihnen Ihre Anmeldedaten gegeben hat. Diese Person ist in der Lage, Ihr Passwort mit einem neuen Initialpasswort zurückzusetzen.",
     "forgot-password-encrypted-hint": "Sie haben alle Daten innerhalb von OpenEDC verschlüsselt. Daher können die gespeicherten Daten ohne Ihr Passwort nicht eingesehen oder bearbeitet werden.<br><br>Wenn Sie Ihr Passwort vergessen haben, müssen Sie leider alle Daten löschen, um OpenEDC wieder zu verwenden.",
 
+    "metadata-not-found-error": "Ein oder mehrere Elemente in den klinischen Daten konnten nicht in den Metadaten gefunden werden. Dies bedeutet, dass Ihre klinischen Daten und Metadaten möglicherweise nicht synchron sind oder eine importierte ODM-Datei (teilweise) defekt ist. Im Folgenden finden Sie eine Liste aller klinischen Datenelemente, die nicht in den Metadaten gefunden werden konnten.",
+    "hidden-field-with-value-error": "Basierend auf den Bedingungen sollten ein oder mehrere Elemente in den klinischen Daten ausgeblendet werden, denen jedoch Werte zugewiesen sind. Diese Felder wurden hervorgehoben und können von Ihnen überprüft und geleert werden.",
+
     "import-forms": "Formulare importieren",
     "import-forms-merge-hint": "Sie haben bereits Formulare in Ihrem Projekt. Möchten Sie die neuen Formulare hinzufügen, die aktuellen zuerst löschen, oder die neuen Formulare gar nicht hinzufügen?",
     "append-forms": "Formulare hinzufügen",

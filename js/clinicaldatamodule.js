@@ -463,16 +463,19 @@ function showErrors(metadataNotFoundErrors, hiddenFieldWithValueErrors) {
     // Compose and show the error message
     let errorMessage = "";
     if (metadataNotFoundErrors.length > 0) {
-        errorMessage += "<p>One or multiple items in the clinical data could not be found in the metadata. This means that your clinical data and metadata might be out of sync or an imported ODM file is (partially) broken. You can find a list of all clinical data items that could not be found in the metadata below.</p><br>";
+        errorMessage += "<p>" + languageHelper.getTranslation("metadata-not-found-error") + "</p><br>";
         for (let error of metadataNotFoundErrors) {
-            errorMessage += error.type == metadataHelper.elementTypes.ITEM ? "<p>ItemOID: " + error.oid + "</p>" : "<p>CodeListItemOID: " + error.oid + ", CodedValue:" + error.value + "</p>";
+            errorMessage += "<p>";
+            if (error.type == metadataHelper.elementTypes.ITEM) errorMessage += languageHelper.getTranslation("unique-id") + ": " + error.oid;
+            else errorMessage += languageHelper.getTranslation("choices-unique-id") + ": " + error.oid + ", " + languageHelper.getTranslation("coded-value") + ": " + error.value;
+            errorMessage += "</p>"
         }
         if (hiddenFieldWithValueErrors.length > 0) errorMessage += "<br><hr>";
     }
-    if (hiddenFieldWithValueErrors.length > 0) errorMessage += "Based on the conditions, one or multiple items in the clinical data should be hidden but have values assigned to them. These fields were highlighted and can be reviewed and removed by you.";
+    if (hiddenFieldWithValueErrors.length > 0) errorMessage += languageHelper.getTranslation("hidden-field-with-value-error");
     if (errorMessage.length > 0) ioHelper.showMessage(languageHelper.getTranslation("error"), errorMessage);
 
-    // Highlight fields with values that are conditionally hidden
+    // Highlight conditionally hidden fields that contain values
     for (let error of hiddenFieldWithValueErrors) {
         let fieldElement = $(`#clinicaldata-content [item-group-content-oid="${error.itemGroupOID}"] [item-field-oid="${error.itemOID}"]`);
         fieldElement.show();
