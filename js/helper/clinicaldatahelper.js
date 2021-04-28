@@ -313,7 +313,9 @@ function getFormItemDataList(formData) {
 
 export function dataHasChanged(formItemDataList, studyEventOID, formOID) {
     console.log("Check if data has changed ...");
-    return JSON.stringify(formItemDataList) != JSON.stringify(getSubjectFormData(studyEventOID, formOID));
+    const sortedNewData = formItemDataList.sort((a, b) => a.itemOID < b.itemOID ? 1 : (a.itemOID > b.itemOID ? -1 : 0));
+    const sortedOldData = getSubjectFormData(studyEventOID, formOID).sort((a, b) => a.itemOID < b.itemOID ? 1 : (a.itemOID > b.itemOID ? -1 : 0));
+    return JSON.stringify(sortedNewData) != JSON.stringify(sortedOldData);
 }
 
 export function getAuditRecords() {
