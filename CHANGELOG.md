@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.4.1
+
+- Ability to use collection exception conditions with item groups
+
 ## 0.4.0
 
 - Option to auto-number the subject key of new clinical data
