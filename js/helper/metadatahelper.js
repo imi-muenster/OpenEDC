@@ -464,7 +464,7 @@ export function setElementDescription(elementOID, description, locale) {
         translatedText.textContent = description;
     } else if (translatedText && !description) {
         translatedText.remove();
-        if ($$(`[OID="${elementOID}"] Description TranslatedText`).length == 0) $(`[OID="${elementOID}"] Description`).remove();
+        if (!$(`[OID="${elementOID}"] Description TranslatedText`)) $(`[OID="${elementOID}"] Description`).remove();
     } else if (!translatedText && description) {
         let elementDescription = $(`[OID="${elementOID}"] Description`);
         if (!elementDescription) $(`[OID="${elementOID}"]`).insertAdjacentElement("afterbegin", metadataTemplates.getDescription());
@@ -478,9 +478,7 @@ export function setItemQuestion(itemOID, question, locale) {
         translatedText.textContent = question;
     } else if (translatedText && !question) {
         translatedText.remove();
-        if ($$(`[OID="${itemOID}"] Question TranslatedText`).length == 0) {
-            $(`[OID="${itemOID}"] Question`).remove();
-        }
+        if (!$(`[OID="${itemOID}"] Question TranslatedText`)) $(`[OID="${itemOID}"] Question`).remove();
     } else if (translatedText == null && question) {
         let itemQuestion = $(`ItemDef[OID="${itemOID}"] Question`);
         if (!itemQuestion) {
@@ -537,7 +535,7 @@ export function setCodeListItemDecodedText(codeListOID, codedValue, decodedText,
         translatedText.textContent = decodedText;
     } else if (translatedText && !decodedText) {
         translatedText.remove();
-        if ($$(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"] Decode TranslatedText`).length == 0) {
+        if (!$(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"] Decode TranslatedText`)) {
             $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"] Decode`).remove();
         }
     } else if (!translatedText && decodedText) {

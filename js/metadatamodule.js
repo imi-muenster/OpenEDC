@@ -1202,7 +1202,7 @@ window.saveCodelistModal = function() {
 
         const codedValue = parts.shift();
         const translatedDecode = parts.join(",").trim();
-        codedValues.push(coded);
+        codedValues.push(codedValue);
 
         if (!metadataHelper.getCodeListItem(codeListOID, codedValue)) metadataHelper.addCodeListItem(codeListOID, codedValue);
         metadataHelper.setCodeListItemDecodedText(codeListOID, codedValue, translatedDecode, locale);
