@@ -21,8 +21,8 @@ class CodelistModal extends HTMLElement {
                                 </div>
                             </div>
                             <div class="field">
-                                <label class="label">Edit choices</label>
-                                <textarea class="textarea" id="codelist-textlist"></textarea>
+                                <label class="label" i18n="textitems-hint"></label>
+                                <textarea class="textarea" id="textitems-textarea"></textarea>
                             </div>
                             <div class="buttons">
                                 <button class="button is-link" i18n="save-changes" onclick="saveCodelistModal()"></button>

@@ -123,6 +123,8 @@
     "measurement-units-hint": "Messeinheiten, die hier definiert werden, sind für jedes Element verfügbar. Das Symbol ist eine übersetzte Einheit und entspricht der aktuell ausgewählten Sprache.",
     "symbol": "Symbol",
 
+    "textitems-hint": "Wahlmöglichkeiten mit Text bearbeiten:",
+
     "general-options":"Allgemeine Optionen",
     "users": "Benutzer",
     "sites": "Standorte",

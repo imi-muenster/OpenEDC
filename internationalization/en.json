@@ -124,6 +124,8 @@
     "measurement-units-hint": "Measurement units defined here are available for every item. The symbol is a translated unit and corresponds to the current selected language.",
     "symbol": "Symbol",
 
+    "textitems-hint": "Edit choices with text:",
+
     "general-options":"General Options",
     "users": "Users",
     "sites": "Sites",

@@ -1189,14 +1189,14 @@ window.showCodelistModal = function() {
         return string += `${item.getCodedValue()}, ${translatedDecode ? translatedDecode.textContent : ""}\n`;
     }, "");
 
-    $("#codelist-textlist").value = codeListItemsString;
+    $("#textitems-textarea").value = codeListItemsString;
     $("#codelist-modal").activate();
 }
 
 window.saveCodelistModal = function() {
     let codedValues = [];
     const codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
-    for (const line of $("#codelist-textlist").value.split("\n")) {
+    for (const line of $("#textitems-textarea").value.split("\n")) {
         const parts = line.split(",");
         if (parts.length < 2) continue;
 
