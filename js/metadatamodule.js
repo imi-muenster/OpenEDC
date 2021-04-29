@@ -153,7 +153,7 @@ function hideItems(hideTree) {
 
 function hideCodeListItems(hideTree) {
     $$("#code-list-item-panel-blocks a").removeElements();
-    $("#code-list-items-add-button button").disabled = true;
+    $$("#code-list-items-add-buttons button").forEach(button => button.disabled = true);
     if (hideTree) {
         currentElementID.codeList = null;
         currentElementID.codeListItem = null;
@@ -259,7 +259,7 @@ function itemClicked(event) {
 function loadCodeListItemsByItem(itemOID, hideTree) {
     hideCodeListItems(hideTree);
 
-    if (metadataHelper.itemHasCodeList(itemOID)) $("#code-list-items-add-button button").disabled = false;
+    if (metadataHelper.itemHasCodeList(itemOID)) $$("#code-list-items-add-buttons button").forEach(button => button.disabled = false);
 
     let codeListItems = metadataHelper.getCodeListItemsByItem(itemOID);
     for (let codeListItem of codeListItems) {
@@ -1175,6 +1175,14 @@ window.moreTabClicked = function(event) {
             $("#measurement-units").show();
             $("#conditions").hide();
     }
+}
+
+window.showCodelistModal = function() {
+    $("#codelist-modal").activate();
+}
+
+window.hideCodelistModal = function() {
+    $("#codelist-modal").deactivate();
 }
 
 function showFirstEventEditedHelp() {

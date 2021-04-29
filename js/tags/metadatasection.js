@@ -94,8 +94,19 @@ class MetadataSection extends HTMLElement {
                         <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" i18n="choices"></p>
                             <div class="tree-panel-blocks" id="code-list-item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
-                            <div class="panel-block has-light-border-top" id="code-list-items-add-button">
-                                <button class="button is-link is-light is-fullwidth" onclick="addCodeListItem(event)" element-type="codelistitem" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)" i18n="add" disabled></button>
+                            <div class="panel-block has-light-border-top" id="code-list-items-add-buttons">
+                                <div class="field is-grouped is-fullwidth" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)">
+                                    <div class="control is-expanded">
+                                        <button class="button is-link is-light is-fullwidth" onclick="addCodeListItem(event)" element-type="codelistitem" i18n="add" disabled></button>
+                                    </div>
+                                    <div class="control">
+                                        <button class="button is-white" onclick="showCodelistModal()" disabled>
+                                            <span class="icon">
+                                                <i class="fas fa-bars"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </nav>
                     </div>
