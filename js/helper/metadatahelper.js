@@ -740,8 +740,8 @@ function insertMeasurementUnit(measurementUnit) {
     $("BasicDefinitions").appendChild(measurementUnit);
 }
 
-export function addCodeListItem(codeListOID) {
-    let codedValue = generateUniqueCodedValue(codeListOID);
+export function addCodeListItem(codeListOID, codedValue) {
+    if (!codedValue) codedValue = generateUniqueCodedValue(codeListOID);
     let codeList = getElementDefByOID(codeListOID);
     
     codeList.appendChild(metadataTemplates.getCodeListItem(codedValue));

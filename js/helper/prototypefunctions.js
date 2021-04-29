@@ -6,6 +6,10 @@ Element.prototype.getName = function() {
     return this.getAttribute("Name");
 }
 
+Element.prototype.getCodedValue = function() {
+    return this.getAttribute("CodedValue");
+}
+
 NodeList.prototype.getLastElement = function() {
     if (this.length > 0) return this[this.length - 1];
     else return null;

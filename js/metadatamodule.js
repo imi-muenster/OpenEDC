@@ -264,7 +264,7 @@ function loadCodeListItemsByItem(itemOID, hideTree) {
     let codeListItems = metadataHelper.getCodeListItemsByItem(itemOID);
     for (let codeListItem of codeListItems) {
         let translatedText = codeListItem.querySelector(`Decode TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = createPanelBlock(codeListItem.parentNode.getOID(), metadataHelper.elementTypes.CODELISTITEM, translatedText, codeListItem.getAttribute("CodedValue"), null, codeListItem.getAttribute("CodedValue"));
+        let panelBlock = createPanelBlock(codeListItem.parentNode.getOID(), metadataHelper.elementTypes.CODELISTITEM, translatedText, codeListItem.getCodedValue(), null, codeListItem.getCodedValue());
         panelBlock.onclick = codeListItemClicked;
         $("#code-list-item-panel-blocks").appendChild(panelBlock);
     }
@@ -392,7 +392,7 @@ function fillDetailsPanel(elementOID, elementType) {
             $("#element-short-label").textContent = languageHelper.getTranslation("coded-value");
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-choice");
             element = metadataHelper.getCodeListItem(currentElementID.codeList, currentElementID.codeListItem);
-            $("#name-input").value = element.getAttribute("CodedValue");
+            $("#name-input").value = element.getCodedValue();
             translatedText = element.querySelector(`Decode TranslatedText[*|lang="${locale}"]`);
     }
 
@@ -1177,12 +1177,43 @@ window.moreTabClicked = function(event) {
     }
 }
 
+// TODO: Reorder other modal functions in this order (show -> save -> hide)
 window.showCodelistModal = function() {
+    removeArrowKeyListener();
+
+    // TODO: New prototype functions getTranslatedDescription, getTranslatedQuestion, and getTranslatedDecode
+    $("#codelist-modal h2").textContent = metadataHelper.getElementDefByOID(currentElementID.item).querySelector(`Question TranslatedText[*|lang="${locale}"]`).textContent;
+
+    const codeListItemsString = metadataHelper.getCodeListItemsByItem(currentElementID.item).reduce((string, item) => {
+        const translatedDecode = item.querySelector(`Decode TranslatedText[*|lang="${locale}"]`)
+        return string += `${item.getCodedValue()}, ${translatedDecode ? translatedDecode.textContent : ""}\n`;
+    }, "");
+
+    $("#codelist-textlist").value = codeListItemsString;
     $("#codelist-modal").activate();
+}
+
+window.saveCodelistModal = function() {
+    const codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
+    const lines = $("#codelist-textlist").value.split("\n");
+    for (const line of lines) {
+        const parts = line.split(",");
+        if (parts.length < 2) continue;
+
+        const codedValue = parts.shift();
+        const translatedDecode = parts.join(",").trim();
+
+        if (!metadataHelper.getCodeListItem(codeListOID, codedValue)) metadataHelper.addCodeListItem(codeListOID, codedValue);
+        metadataHelper.setCodeListItemDecodedText(codeListOID, codedValue, translatedDecode, locale);
+    }
+
+    hideCodelistModal();
+    reloadTree();
 }
 
 window.hideCodelistModal = function() {
     $("#codelist-modal").deactivate();
+    setArrowKeyListener();
 }
 
 function showFirstEventEditedHelp() {
