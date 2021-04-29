@@ -26,11 +26,11 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-The OpenEDC functionality is built with vanilla JavaScript and HTML and hence does not rely on a third-party JavaScript framework. However, <a target="_blank" href="https://github.com/brix/crypto-js">crypto-js</a>, a JavaScript library of crypto standards, is needed for the local AES encryption or end-to-end encryption when connected to a server. A build step is not required.
+OpenEDC is built with native HTML, CSS, and JavaScript and hence does not rely on a third-party JavaScript framework. A build step is not required.
 
 ### Installing
 
-To get a development environment running, simply clone the repository and open the folder with a code editor of your choice. If you are using [Visual Studio Code](https://code.visualstudio.com/), we recommend the extension [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer). This extension starts a simple web server for you, opens the application in a new tab, and refrehes the pages after changes automatically. Without Visual Studio Code and Live Server you need to deploy the folder on a web server of your choice.
+To get a development environment running, simply clone the repository and open the folder with a code editor of your choice. If you are using [Visual Studio Code](https://code.visualstudio.com/), we recommend the extension [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer). This extension starts a simple web server, opens the application in a new tab, and refrehes the pages after changes automatically. Without Visual Studio Code and Live Server you need to deploy the folder on a web server of your choice.
 
 ### Deployment
 
