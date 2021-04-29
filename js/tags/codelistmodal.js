@@ -8,6 +8,7 @@ class CodelistModal extends HTMLElement {
                         <div class="width-is-two-thirds">
                             <h1 class="title" i18n="choices"></h1>
                             <h2 class="subtitle"></h2>
+                            <hr>
                             <div class="notification is-danger is-light is-hidden">
                                 <strong>Hint:</strong> These choices are also used in the following items: ...
                             </div>
@@ -22,10 +23,10 @@ class CodelistModal extends HTMLElement {
                             </div>
                             <div class="field">
                                 <label class="label" i18n="textitems-hint"></label>
-                                <textarea class="textarea" id="textitems-textarea"></textarea>
+                                <textarea class="textarea" id="textitems-textarea" i18n-ph="coded-value-translated-choice"></textarea>
                             </div>
                             <div class="buttons">
-                                <button class="button is-link" i18n="save-changes" onclick="saveCodelistModal()"></button>
+                                <button class="button is-link" i18n="save" onclick="saveCodelistModal()"></button>
                                 <button class="button" i18n="cancel" onclick="hideCodelistModal()"></button>
                             </div>
                         </div>
