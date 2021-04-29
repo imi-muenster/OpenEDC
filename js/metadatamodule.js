@@ -1181,8 +1181,10 @@ window.moreTabClicked = function(event) {
 window.showCodelistModal = function() {
     removeArrowKeyListener();
 
-    // TODO: New prototype functions getTranslatedDescription, getTranslatedQuestion, and getTranslatedDecode
-    $("#codelist-modal h2").textContent = metadataHelper.getElementDefByOID(currentElementID.item).querySelector(`Question TranslatedText[*|lang="${locale}"]`).textContent;
+    // TODO: Quite a frequent pattern -- prototype function for this?
+    const item = metadataHelper.getElementDefByOID(currentElementID.item);
+    const translatedQuestion = item.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
+    $("#codelist-modal h2").textContent = translatedQuestion ? translatedQuestion.textContent : item.getName();
 
     const codeListItemsString = metadataHelper.getCodeListItemsByItem(currentElementID.item).reduce((string, item) => {
         const translatedDecode = item.querySelector(`Decode TranslatedText[*|lang="${locale}"]`)
@@ -1216,6 +1218,7 @@ window.saveCodelistModal = function() {
 
     hideCodelistModal();
     reloadTree();
+    metadataHelper.storeMetadata();
 }
 
 window.hideCodelistModal = function() {
