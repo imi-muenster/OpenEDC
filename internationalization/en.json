@@ -236,7 +236,7 @@
     "please-confirm": "Please confirm",
     "element-remove-hint": "The reference to the element will be removed. The element definition will be removed as well if there is no other reference to it.",
     "mode-of-duplication": "Mode of duplication",
-    "duplication-hint": "It possible to either duplicate the reference to the elements definition, to create a new shallow copy with the same children references, or to recursively deep copy the element and all its descendants.<br><br>Hint: If you create a reference, the original element and its descendants are updated if you make changes in the new element. A shallow or deep copy lets you make changes that do not affect the original element (shallow) and its descendants (deep). In a shallow copy you can still rearrange, remove, or add direct children references without affecting the original element.<br><br>In most cases, a new reference is the best choice.",
+    "duplication-hint": "It possible to either duplicate the reference to the elements definition, to create a new shallow copy with the same children references, or to recursively deep copy the element and all its descendants.<br><br>Hint: If you create a reference, the original element and its descendants are updated if you make changes in the new element. A shallow or deep copy lets you make changes that do not affect the original element (shallow) and its descendants (deep). In a shallow copy you can still rearrange, remove, or add direct children references without affecting the original element.",
     "reference": "Reference",
     "shallow-copy": "Shallow Copy",
     "deep-copy": "Deep Copy",

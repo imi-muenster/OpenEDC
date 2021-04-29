@@ -44,6 +44,14 @@ a.panel-block {
     padding: 1.25rem 1.5rem;
 }
 
+#question-textarea {
+    min-height: 7.75em;
+}
+
+#references-tag {
+    margin-top: 1.25em;
+}
+
 #clinicaldata-form-title, #clinicaldata-form-title .level-item {
     flex-shrink: 1;
 }
@@ -162,10 +170,6 @@ a.panel-block:hover {
 
 .input[disabled], .select select[disabled], .textarea[disabled] {
     color: #4a4a4a;
-}
-
-.is-clickable {
-    cursor: pointer; 
 }
 
 .message {
