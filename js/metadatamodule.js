@@ -1194,17 +1194,24 @@ window.showCodelistModal = function() {
 }
 
 window.saveCodelistModal = function() {
+    let codedValues = [];
     const codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
-    const lines = $("#codelist-textlist").value.split("\n");
-    for (const line of lines) {
+    for (const line of $("#codelist-textlist").value.split("\n")) {
         const parts = line.split(",");
         if (parts.length < 2) continue;
 
         const codedValue = parts.shift();
         const translatedDecode = parts.join(",").trim();
+        codedValues.push(coded);
 
         if (!metadataHelper.getCodeListItem(codeListOID, codedValue)) metadataHelper.addCodeListItem(codeListOID, codedValue);
         metadataHelper.setCodeListItemDecodedText(codeListOID, codedValue, translatedDecode, locale);
+    }
+
+    for (const codeListItem of metadataHelper.getCodeListItemsByItem(currentElementID.item)) {
+        const codedValue = codeListItem.getCodedValue();
+        if (!codedValues.includes(codedValue)) metadataHelper.setCodeListItemDecodedText(codeListOID, codedValue, null, locale);
+        if (!codeListItem.querySelector("Decode TranslatedText")) codeListItem.remove();
     }
 
     hideCodelistModal();
