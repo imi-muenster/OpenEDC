@@ -14,6 +14,7 @@ class CodeListModal extends HTMLElement {
                                 <p class="mt-3">
                                     <strong id="codelist-references-list"></strong>
                                 </p>
+                                <button class="button is-danger is-small mt-5" onclick="removeCodeListRef()" i18n="cancel-link-option"></button>
                             </div>
                             <div class="field">
                                 <label class="label" i18n="textitems-hint"></label>

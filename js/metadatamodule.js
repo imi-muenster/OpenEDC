@@ -617,7 +617,7 @@ function handleItemDataType(itemOID, dataType) {
     if (codeListRef && !dataTypeIsCodeList) {
         metadataHelper.removeCodeListRef(itemOID, codeListRef.getAttribute("CodeListOID"));
         reloadCodeListItems();
-    } else if (codeListRef == null && dataTypeIsCodeList) {
+    } else if (!codeListRef && dataTypeIsCodeList) {
         metadataHelper.createCodeList(itemOID);
         reloadCodeListItems();
     }
@@ -1198,7 +1198,8 @@ window.showCodeListModal = function() {
         return string += `${item.getCodedValue()}, ${item.getTranslatedDecode(locale) || ""}\n`;
     }, "");
 
-    $("#textitems-textarea").value = codeListItemsString;
+    $("#codelist-modal #textitems-textarea").value = codeListItemsString;
+    $("#codelist-modal #codelist-reference-input").value = null;
     $("#codelist-modal").activate();
 }
 
@@ -1240,13 +1241,23 @@ window.addCodeListRef = function() {
 
     const externalCodeListOID = metadataHelper.getCodeListOIDByItem(externalItemOID);
     if (!externalCodeListOID) {
-        ioHelper.showMessage("Blabla", "Blabla");
+        ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("codelist-not-found-error"));
         return;
     };
 
     const currentCodeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
     if (currentCodeListOID) metadataHelper.removeCodeListRef(currentElementID.item, currentCodeListOID);
     metadataHelper.addCodeListRef(currentElementID.item, externalCodeListOID);
+
+    hideCodeListModal();
+    reloadTree();
+    metadataHelper.storeMetadata();
+}
+
+window.removeCodeListRef = function() {
+    const currentCodeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
+    if (currentCodeListOID) metadataHelper.removeCodeListRef(currentElementID.item, currentCodeListOID);
+    metadataHelper.createCodeList(currentElementID.item);
 
     showCodeListModal();
     reloadTree();
