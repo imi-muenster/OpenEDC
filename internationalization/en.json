@@ -126,10 +126,11 @@
 
     "choices-for-element": "Choices for Element",
     "choices-references-hint": "Editing the choices affects the following elements:",
-    "textitems-hint": "Edit choices with text",
+    "textitems-hint": "Choices as Text",
     "coded-value-translated-choice": "Coded Value, Translated Choice",
-    "choices-reference-hint": "Use choices from other item",
+    "choices-reference-hint": "Choices from Item",
     "item-with-choices": "Item with Choices",
+    "use": "Use",
 
     "general-options":"General Options",
     "users": "Users",

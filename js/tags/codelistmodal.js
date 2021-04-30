@@ -26,7 +26,7 @@ class CodelistModal extends HTMLElement {
                                         <input class="input" id="codelist-reference-input" type="text" i18n-ph="item-with-choices">
                                     </div>
                                     <div class="control">
-                                        <button class="button" i18n="reference"></button>
+                                        <button class="button" i18n="use"></button>
                                     </div>
                                 </div>
                             </div>
