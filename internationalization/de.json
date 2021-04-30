@@ -123,8 +123,12 @@
     "measurement-units-hint": "Messeinheiten, die hier definiert werden, sind für jedes Element verfügbar. Das Symbol ist eine übersetzte Einheit und entspricht der aktuell ausgewählten Sprache.",
     "symbol": "Symbol",
 
+    "choices-references-hint": "Wenn Sie die Wahlmöglichkeiten bearbeiten, werden sie für die folgenden Elemente bearbeitet:",
     "textitems-hint": "Wahlmöglichkeiten mit Text bearbeiten",
     "coded-value-translated-choice": "Kodierter Wert, Übersetzte Auswahlmöglichkeit",
+    "choices-reuse-hint": "Nutze Wahlmöglichkeiten von anderem Element",
+    "item-with-codelist": "Element mit Wahlmöglichkeiten",
+    "unlink": "Trennen",
 
     "general-options":"Allgemeine Optionen",
     "users": "Benutzer",

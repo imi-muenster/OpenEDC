@@ -124,10 +124,11 @@
     "measurement-units-hint": "Measurement units defined here are available for every item. The symbol is a translated unit and corresponds to the current selected language.",
     "symbol": "Symbol",
 
+    "choices-references-hint": "If you edit the choices, they will be edited for the following items:",
     "textitems-hint": "Edit choices with text",
     "coded-value-translated-choice": "Coded Value, Translated Choice",
-    "item-with-codelist": "Item with Codelist",
-    "link": "Link",
+    "choices-reuse-hint": "Use choices from other item",
+    "item-with-codelist": "Item with Choices",
     "unlink": "Unlink",
 
     "general-options":"General Options",

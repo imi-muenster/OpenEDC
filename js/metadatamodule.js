@@ -1181,12 +1181,20 @@ window.moreTabClicked = function(event) {
 window.showCodelistModal = function() {
     removeArrowKeyListener();
 
-    // TODO: Quite a frequent pattern -- prototype function for this?
+    // TODO: Quite a frequent pattern -- prototype function for this? With parameter nameFallback
     const item = metadataHelper.getElementDefByOID(currentElementID.item);
     const translatedQuestion = item.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
     $("#codelist-modal h2").textContent = translatedQuestion ? translatedQuestion.textContent : item.getName();
 
-
+    const codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
+    const codeListReferences = metadataHelper.getReferences(codeListOID, metadataHelper.elementTypes.CODELISTITEM);
+    if (codeListReferences.length > 1) {
+        const itemNames = Array.from(codeListReferences).map(reference => reference.parentNode.getName());
+        $("#codelist-modal #codelist-references-list").innerHTML = itemNames.join("<br>");
+        $("#codelist-modal #codelist-reference-input").disabled = true;
+        $("#codelist-modal #codelist-reference-button").textContent = languageHelper.getTranslation("unlink");
+        $("#codelist-modal .notification").show();
+    }
 
     const codeListItemsString = metadataHelper.getCodeListItemsByItem(currentElementID.item).reduce((string, item) => {
         const translatedDecode = item.querySelector(`Decode TranslatedText[*|lang="${locale}"]`)
