@@ -382,18 +382,18 @@ export function getMeasurementUnitByItem(itemOID) {
     }
 }
 
-export function getNumberOfRefs(elementOID, elementType) {
+export function getReferences(elementOID, elementType) {
     switch (elementType) {
         case elementTypes.STUDYEVENT:
-            return $$(`StudyEventRef[StudyEventOID="${elementOID}"]`).length;
+            return $$(`StudyEventRef[StudyEventOID="${elementOID}"]`);
         case elementTypes.FORM:
-            return $$(`FormRef[FormOID="${elementOID}"]`).length;
+            return $$(`FormRef[FormOID="${elementOID}"]`);
         case elementTypes.ITEMGROUP:
-            return $$(`ItemGroupRef[ItemGroupOID="${elementOID}"]`).length;
+            return $$(`ItemGroupRef[ItemGroupOID="${elementOID}"]`);
         case elementTypes.ITEM:
-            return $$(`ItemRef[ItemOID="${elementOID}"]`).length;
+            return $$(`ItemRef[ItemOID="${elementOID}"]`);
         case elementTypes.CODELISTITEM:
-            return $$(`CodeListRef[CodeListOID="${elementOID}"]`).length;
+            return $$(`CodeListRef[CodeListOID="${elementOID}"]`);
     }
 }
 

@@ -126,6 +126,9 @@
 
     "textitems-hint": "Edit choices with text",
     "coded-value-translated-choice": "Coded Value, Translated Choice",
+    "item-with-codelist": "Item with Codelist",
+    "link": "Link",
+    "unlink": "Unlink",
 
     "general-options":"General Options",
     "users": "Users",

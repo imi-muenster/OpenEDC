@@ -365,10 +365,10 @@ function fillDetailsPanel(elementOID, elementType) {
     const elementRef = metadataHelper.getElementRefByOID(elementOID, elementType, getParentOID(elementType));
     $("#name-input").value = element.getName();
 
-    const numberOfReferences = metadataHelper.getNumberOfRefs(elementOID, elementType);
-    if (numberOfReferences > 1) {
+    const references = metadataHelper.getReferences(elementOID, elementType);
+    if (references.length > 1) {
         $("#references-tag").show();
-        $("#number-of-references").textContent = numberOfReferences;
+        $("#number-of-references").textContent = references.length;
     }
 
     let translatedText;
@@ -1185,6 +1185,8 @@ window.showCodelistModal = function() {
     const item = metadataHelper.getElementDefByOID(currentElementID.item);
     const translatedQuestion = item.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
     $("#codelist-modal h2").textContent = translatedQuestion ? translatedQuestion.textContent : item.getName();
+
+
 
     const codeListItemsString = metadataHelper.getCodeListItemsByItem(currentElementID.item).reduce((string, item) => {
         const translatedDecode = item.querySelector(`Decode TranslatedText[*|lang="${locale}"]`)
