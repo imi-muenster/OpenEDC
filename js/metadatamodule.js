@@ -1184,8 +1184,8 @@ window.showCodelistModal = function() {
     const codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
     const codeListReferences = metadataHelper.getReferences(codeListOID, metadataHelper.elementTypes.CODELISTITEM);
     if (codeListReferences.length > 1) {
-        const itemNames = Array.from(codeListReferences).map(reference => reference.parentNode.getName());
-        $("#codelist-modal #codelist-references-list").innerHTML = itemNames.join("<br>");
+        const translatedQuestions = Array.from(codeListReferences).map(reference => reference.parentNode.getTranslatedQuestion(locale, true));
+        $("#codelist-modal #codelist-references-list").innerHTML = translatedQuestions.join("<br>");
         $("#codelist-modal #codelist-reference-input").disabled = true;
         $("#codelist-modal #codelist-reference-button").textContent = languageHelper.getTranslation("unlink");
         $("#codelist-modal .notification").show();

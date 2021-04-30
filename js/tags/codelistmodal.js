@@ -10,8 +10,7 @@ class CodelistModal extends HTMLElement {
                             <h2 class="subtitle"></h2>
                             <hr>
                             <div class="notification is-link is-light is-hidden">
-                                <h1 class="title is-4" i18n="note"></h1>
-                                <p class="mt-3" i18n="choices-references-hint"></p>
+                                <p i18n="choices-references-hint"></p>
                                 <p class="mt-3">
                                     <strong id="codelist-references-list"></strong>
                                 </p>
