@@ -365,7 +365,7 @@ function fillDetailsPanel(elementOID, elementType) {
     const elementRef = metadataHelper.getElementRefByOID(elementOID, elementType, getParentOID(elementType));
     $("#name-input").value = element.getName();
 
-    const references = metadataHelper.getReferences(elementOID, elementType);
+    const references = metadataHelper.getElementRefs(elementOID, elementType);
     if (references.length > 1) {
         $("#references-tag").show();
         $("#number-of-references").textContent = references.length;
@@ -610,19 +610,19 @@ function saveMeasurementUnits() {
 }
 
 function handleItemDataType(itemOID, dataType) {
-    let dataTypeIsCodelist = dataType.startsWith(metadataHelper.elementTypes.CODELIST);
-    let codeListType = dataTypeIsCodelist ? dataType.split("-")[1] : null;
+    let dataTypeIsCodeList = dataType.startsWith(metadataHelper.elementTypes.CODELIST);
+    let codeListType = dataTypeIsCodeList ? dataType.split("-")[1] : null;
 
     let codeListRef = metadataHelper.getElementDefByOID(itemOID).querySelector("CodeListRef");
-    if (codeListRef && !dataTypeIsCodelist) {
+    if (codeListRef && !dataTypeIsCodeList) {
         metadataHelper.removeCodeListRef(itemOID, codeListRef.getAttribute("CodeListOID"));
         reloadCodeListItems();
-    } else if (codeListRef == null && dataTypeIsCodelist) {
+    } else if (codeListRef == null && dataTypeIsCodeList) {
         metadataHelper.createCodeList(itemOID);
         reloadCodeListItems();
     }
 
-    if (dataTypeIsCodelist) {
+    if (dataTypeIsCodeList) {
         metadataHelper.setItemDataType(itemOID, codeListType);
         metadataHelper.setCodeListDataType(metadataHelper.getCodeListOIDByItem(itemOID), codeListType);
     } else {
@@ -1173,7 +1173,7 @@ window.moreTabClicked = function(event) {
 }
 
 // TODO: Reorder other modal functions in this order (show -> save -> hide)
-window.showCodelistModal = function() {
+window.showCodeListModal = function() {
     removeArrowKeyListener();
 
     // Add the item question and use the name as fallback
@@ -1182,7 +1182,7 @@ window.showCodelistModal = function() {
 
     // Render the notification when the codelist is used for more than one item
     const codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
-    const codeListReferences = metadataHelper.getReferences(codeListOID, metadataHelper.elementTypes.CODELISTITEM);
+    const codeListReferences = metadataHelper.getElementRefs(codeListOID, metadataHelper.elementTypes.CODELISTITEM);
     if (codeListReferences.length > 1) {
         const translatedQuestions = Array.from(codeListReferences).map(reference => reference.parentNode.getTranslatedQuestion(locale, true));
         $("#codelist-modal #codelist-references-list").innerHTML = translatedQuestions.join("<br>");
@@ -1202,7 +1202,7 @@ window.showCodelistModal = function() {
     $("#codelist-modal").activate();
 }
 
-window.saveCodelistModal = function() {
+window.saveCodeListModal = function() {
     // Create a temporary element and move all code list items to that element
     const codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
     const currentItems = document.createElement("current-items");
@@ -1224,14 +1224,33 @@ window.saveCodelistModal = function() {
         metadataHelper.setCodeListItemDecodedText(codeListOID, codedValue, translatedDecode, locale);
     }
 
-    hideCodelistModal();
+    hideCodeListModal();
     reloadTree();
     metadataHelper.storeMetadata();
 }
 
-window.hideCodelistModal = function() {
+window.hideCodeListModal = function() {
     $("#codelist-modal").deactivate();
     setArrowKeyListener();
+}
+
+window.addCodeListRef = function() {
+    const externalItemOID = $("#codelist-modal #codelist-reference-input").value;
+    if (!externalItemOID) return;
+
+    const externalCodeListOID = metadataHelper.getCodeListOIDByItem(externalItemOID);
+    if (!externalCodeListOID) {
+        ioHelper.showMessage("Blabla", "Blabla");
+        return;
+    };
+
+    const currentCodeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
+    if (currentCodeListOID) metadataHelper.removeCodeListRef(currentElementID.item, currentCodeListOID);
+    metadataHelper.addCodeListRef(currentElementID.item, externalCodeListOID);
+
+    showCodeListModal();
+    reloadTree();
+    metadataHelper.storeMetadata();
 }
 
 function showFirstEventEditedHelp() {

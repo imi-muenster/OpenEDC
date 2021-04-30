@@ -1,8 +1,8 @@
-class CodelistModal extends HTMLElement {
+class CodeListModal extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
             <div class="modal" id="codelist-modal">
-                <div class="modal-background" onclick="hideCodelistModal()"></div>
+                <div class="modal-background" onclick="hideCodeListModal()"></div>
                 <div class="modal-content is-medium">
                     <div class="box">
                         <div class="width-is-two-thirds">
@@ -26,13 +26,13 @@ class CodelistModal extends HTMLElement {
                                         <input class="input" id="codelist-reference-input" type="text" i18n-ph="item-with-choices">
                                     </div>
                                     <div class="control">
-                                        <button class="button" i18n="use"></button>
+                                        <button class="button" i18n="use" onclick="addCodeListRef()"></button>
                                     </div>
                                 </div>
                             </div>
                             <div class="buttons mt-5">
-                                <button class="button is-link" i18n="save" onclick="saveCodelistModal()"></button>
-                                <button class="button" i18n="cancel" onclick="hideCodelistModal()"></button>
+                                <button class="button is-link" i18n="save" onclick="saveCodeListModal()"></button>
+                                <button class="button" i18n="cancel" onclick="hideCodeListModal()"></button>
                             </div>
                         </div>
                     </div>
@@ -42,4 +42,4 @@ class CodelistModal extends HTMLElement {
     }
 }
 
-window.customElements.define("codelist-modal", CodelistModal);
+window.customElements.define("codelist-modal", CodeListModal);

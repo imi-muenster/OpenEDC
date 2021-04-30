@@ -256,7 +256,8 @@ export function getCodeListItemsByItem(itemOID) {
 }
 
 export function getCodeListOIDByItem(itemOID) {
-    return $(`[OID="${itemOID}"] CodeListRef`).getAttribute("CodeListOID");
+    const codeListRef = $(`[OID="${itemOID}"] CodeListRef`);
+    return codeListRef ? codeListRef.getAttribute("CodeListOID") : null;
 }
 
 export function getCodeListItem(codeListOID, codedValue) {
@@ -382,7 +383,7 @@ export function getMeasurementUnitByItem(itemOID) {
     }
 }
 
-export function getReferences(elementOID, elementType) {
+export function getElementRefs(elementOID, elementType) {
     switch (elementType) {
         case elementTypes.STUDYEVENT:
             return $$(`StudyEventRef[StudyEventOID="${elementOID}"]`);

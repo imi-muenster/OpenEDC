@@ -100,7 +100,7 @@ class MetadataSection extends HTMLElement {
                                         <button class="button is-link is-light is-fullwidth" onclick="addCodeListItem(event)" element-type="codelistitem" i18n="add" disabled></button>
                                     </div>
                                     <div class="control">
-                                        <button class="button is-white" onclick="showCodelistModal()" disabled>
+                                        <button class="button is-white" onclick="showCodeListModal()" disabled>
                                             <span class="icon">
                                                 <i class="fas fa-bars"></i>
                                             </span>
