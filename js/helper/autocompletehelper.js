@@ -1,4 +1,5 @@
 import { getItemsWithCodeList } from "./metadatahelper.js";
+import { getCurrentLocale } from "./languagehelper.js";
 
 class AutocompleteElement {
     constructor(value, label) {
@@ -11,7 +12,7 @@ class AutocompleteElement {
     }
 
     get label() {
-        return this._label ? `${this._value} (${this._label})` : this._value;
+        return this._label ? `${this._label} (${this._value})` : this._value;
     }
 }
 
@@ -158,6 +159,6 @@ const getItemElements = () => {
     const items = currentMode == modes.ITEMWITHCODELIST ? getItemsWithCodeList() : null;
     return items.map(item => new AutocompleteElement(
         item.getOID(),
-        item.getName()
+        item.getTranslatedQuestion(getCurrentLocale(), true)
     ));
 }
