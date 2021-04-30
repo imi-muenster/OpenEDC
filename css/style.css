@@ -256,6 +256,28 @@ a.panel-block:hover {
     margin-right: 0.5rem;
 }
 
+.autocomplete-list {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    z-index: 1;
+    left: 0;
+    right: 0;
+}
+
+.autocomplete-list .autocomplete-option {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.autocomplete-list .autocomplete-option:not(:last-child) {
+    border-bottom: 1px solid #d4d4d4;
+}
+  
+.autocomplete-list .autocomplete-option:hover {
+    background-color: #e9e9e9;
+}
+
 @media only screen and (max-width: 768px) {
     .modal-content.is-fullheight-mobile {
         max-height: none;

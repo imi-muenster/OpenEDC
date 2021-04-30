@@ -4,6 +4,7 @@ import * as metadataHelper from "./helper/metadatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 import * as htmlElements from "./helper/htmlelements.js";
+import * as autocompleteHelper from "./helper/autocompletehelper.js";
 
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
@@ -1191,6 +1192,7 @@ window.showCodeListModal = function() {
     } else {
         $("#codelist-modal .notification").hide();
         $("#codelist-modal #codelist-reference-field").show();
+        autocompleteHelper.enableAutocomplete($("#codelist-modal #codelist-reference-input"), autocompleteHelper.modes.ITEMWITHCODELIST);
     }
 
     // Generate the string containing all coded values and translated decodes
@@ -1232,6 +1234,7 @@ window.saveCodeListModal = function() {
 
 window.hideCodeListModal = function() {
     $("#codelist-modal").deactivate();
+    autocompleteHelper.disableAutocomplete($("#codelist-modal #codelist-reference-input"));
     setArrowKeyListener();
 }
 

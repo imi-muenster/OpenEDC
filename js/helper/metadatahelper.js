@@ -383,6 +383,15 @@ export function getMeasurementUnitByItem(itemOID) {
     }
 }
 
+export function getItemsWithCodeList() {
+    const itemDefs = [];
+    for (const itemDef of $$("ItemDef")) {
+        if (itemDef.querySelector("CodeListRef")) itemDefs.push(itemDef);
+    }
+
+    return itemDefs;
+}
+
 export function getElementRefs(elementOID, elementType) {
     switch (elementType) {
         case elementTypes.STUDYEVENT:
