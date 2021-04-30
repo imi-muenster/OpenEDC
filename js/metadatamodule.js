@@ -1196,24 +1196,23 @@ window.showCodelistModal = function() {
 }
 
 window.saveCodelistModal = function() {
-    let codedValues = [];
     const codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
-    for (const line of $("#textitems-textarea").value.split("\n")) {
+    const currentItems = document.createElement("current-items");
+    metadataHelper.getCodeListItemsByItem(currentElementID.item).forEach(item => currentItems.appendChild(item));
+
+    const lines = $("#textitems-textarea").value.split("\n");
+    for (const line of lines) {
         const parts = line.split(",");
         if (parts.length < 2) continue;
 
         const codedValue = parts.shift();
         const translatedDecode = parts.join(",").trim();
-        codedValues.push(codedValue);
 
-        if (!metadataHelper.getCodeListItem(codeListOID, codedValue)) metadataHelper.addCodeListItem(codeListOID, codedValue);
+        const currentItem = Array.from(currentItems.childNodes).find(item => item.getCodedValue() == codedValue);
+        if (currentItem) metadataHelper.insertCodeListItem(currentItem, codeListOID);
+        else metadataHelper.addCodeListItem(codeListOID, codedValue);
+
         metadataHelper.setCodeListItemDecodedText(codeListOID, codedValue, translatedDecode, locale);
-    }
-
-    for (const codeListItem of metadataHelper.getCodeListItemsByItem(currentElementID.item)) {
-        const codedValue = codeListItem.getCodedValue();
-        if (!codedValues.includes(codedValue)) metadataHelper.setCodeListItemDecodedText(codeListOID, codedValue, null, locale);
-        if (!codeListItem.querySelector("Decode TranslatedText")) codeListItem.remove();
     }
 
     hideCodelistModal();

@@ -246,16 +246,13 @@ export function getItemsByItemGroup(itemGroupOID) {
 }
 
 export function getCodeListItemsByItem(itemOID) {
-    let codeListItems = []
-    let codeListRef = $(`[OID="${itemOID}"] CodeListRef`)
+    const codeListRef = $(`[OID="${itemOID}"] CodeListRef`)
     if (codeListRef) {
-        let codeListOID = codeListRef.getAttribute("CodeListOID");
-        for (let codeListItem of $$(`[OID="${codeListOID}"] CodeListItem`)) {
-            codeListItems.push(codeListItem);
-        }
+        const codeListOID = codeListRef.getAttribute("CodeListOID");
+        return Array.from($$(`[OID="${codeListOID}"] CodeListItem`));
     }
 
-    return codeListItems;
+    return [];
 }
 
 export function getCodeListOIDByItem(itemOID) {
