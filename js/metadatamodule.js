@@ -1186,9 +1186,11 @@ window.showCodelistModal = function() {
     if (codeListReferences.length > 1) {
         const translatedQuestions = Array.from(codeListReferences).map(reference => reference.parentNode.getTranslatedQuestion(locale, true));
         $("#codelist-modal #codelist-references-list").innerHTML = translatedQuestions.join("<br>");
-        $("#codelist-modal #codelist-reference-input").disabled = true;
-        $("#codelist-modal #codelist-reference-button").textContent = languageHelper.getTranslation("unlink");
         $("#codelist-modal .notification").show();
+        $("#codelist-modal #codelist-reference-field").hide();
+    } else {
+        $("#codelist-modal .notification").hide();
+        $("#codelist-modal #codelist-reference-field").show();
     }
 
     // Generate the string containing all coded values and translated decodes
