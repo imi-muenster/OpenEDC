@@ -165,8 +165,8 @@ export function loadStudyEvents(hideTree) {
 
     let studyEventDefs = metadataHelper.getStudyEvents();
     for (let studyEventDef of studyEventDefs) {
-        let translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = createPanelBlock(studyEventDef.getOID(), metadataHelper.elementTypes.STUDYEVENT, translatedText, studyEventDef.getName());
+        let translatedDescription = studyEventDef.getTranslatedDescription(locale);
+        let panelBlock = createPanelBlock(studyEventDef.getOID(), metadataHelper.elementTypes.STUDYEVENT, translatedDescription, studyEventDef.getName());
         panelBlock.onclick = studyEventClicked;
         $("#study-event-panel-blocks").appendChild(panelBlock);
     }
@@ -189,8 +189,8 @@ function loadFormsByStudyEvent(studyEventOID, hideTree) {
 
     let formDefs = metadataHelper.getFormsByStudyEvent(studyEventOID);
     for (let formDef of formDefs) {
-        let translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = createPanelBlock(formDef.getOID(), metadataHelper.elementTypes.FORM, translatedText, formDef.getName());
+        let translatedDescription = formDef.getTranslatedDescription(locale);
+        let panelBlock = createPanelBlock(formDef.getOID(), metadataHelper.elementTypes.FORM, translatedDescription, formDef.getName());
         panelBlock.onclick = formClicked;
         $("#form-panel-blocks").appendChild(panelBlock);
     }
@@ -213,8 +213,8 @@ function loadItemGroupsByForm(formOID, hideTree) {
 
     let itemGroupDefs = metadataHelper.getItemGroupsByForm(formOID);
     for (let itemGroupDef of itemGroupDefs) {
-        let translatedText = itemGroupDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = createPanelBlock(itemGroupDef.getOID(), metadataHelper.elementTypes.ITEMGROUP, translatedText, itemGroupDef.getName());
+        let translatedDescription = itemGroupDef.getTranslatedDescription(locale);
+        let panelBlock = createPanelBlock(itemGroupDef.getOID(), metadataHelper.elementTypes.ITEMGROUP, translatedDescription, itemGroupDef.getName());
         panelBlock.onclick = itemGroupClicked;
         $("#item-group-panel-blocks").appendChild(panelBlock);
     }
@@ -237,9 +237,9 @@ function loadItemsByItemGroup(itemGroupOID, hideTree) {
 
     let itemDefs = metadataHelper.getItemsByItemGroup(itemGroupOID);
     for (let itemDef of itemDefs) {
-        let translatedText = itemDef.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
+        let translatedQuestion = itemDef.getTranslatedQuestion(locale);
         const dataType = itemDef.querySelector("CodeListRef") ? metadataHelper.elementTypes.CODELIST : itemDef.getAttribute("DataType");
-        let panelBlock = createPanelBlock(itemDef.getOID(), metadataHelper.elementTypes.ITEM, translatedText, itemDef.getName(), languageHelper.getTranslation(dataType));
+        let panelBlock = createPanelBlock(itemDef.getOID(), metadataHelper.elementTypes.ITEM, translatedQuestion, itemDef.getName(), languageHelper.getTranslation(dataType));
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
     }
@@ -263,8 +263,8 @@ function loadCodeListItemsByItem(itemOID, hideTree) {
 
     let codeListItems = metadataHelper.getCodeListItemsByItem(itemOID);
     for (let codeListItem of codeListItems) {
-        let translatedText = codeListItem.querySelector(`Decode TranslatedText[*|lang="${locale}"]`);
-        let panelBlock = createPanelBlock(codeListItem.parentNode.getOID(), metadataHelper.elementTypes.CODELISTITEM, translatedText, codeListItem.getCodedValue(), null, codeListItem.getCodedValue());
+        let translatedDecode = codeListItem.getTranslatedDecode(locale);
+        let panelBlock = createPanelBlock(codeListItem.parentNode.getOID(), metadataHelper.elementTypes.CODELISTITEM, translatedDecode, codeListItem.getCodedValue(), null, codeListItem.getCodedValue());
         panelBlock.onclick = codeListItemClicked;
         $("#code-list-item-panel-blocks").appendChild(panelBlock);
     }
@@ -377,13 +377,13 @@ function fillDetailsPanel(elementOID, elementType) {
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
-            translatedText = element.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
+            $("#question-textarea").value = element.getTranslatedDescription(locale);
             break;
         case metadataHelper.elementTypes.ITEM:
             $("#datatype-select-inner").disabled = false;
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-question");
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
-            translatedText = element.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
+            $("#question-textarea").value = element.getTranslatedQuestion(locale);
             $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(elementOID) ? metadataHelper.elementTypes.CODELIST + "-" + element.getAttribute("DataType") : element.getAttribute("DataType");
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
@@ -393,10 +393,8 @@ function fillDetailsPanel(elementOID, elementType) {
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-choice");
             element = metadataHelper.getCodeListItem(currentElementID.codeList, currentElementID.codeListItem);
             $("#name-input").value = element.getCodedValue();
-            translatedText = element.querySelector(`Decode TranslatedText[*|lang="${locale}"]`);
+            $("#question-textarea").value = element.getTranslatedDecode(locale);
     }
-
-    if (translatedText) $("#question-textarea").value = translatedText.textContent;
 }
 
 export function reloadDetailsPanel() {
@@ -438,8 +436,7 @@ function fillElementDescription() {
     $("#element-description-textarea").disabled = true;
     if (currentElementType == metadataHelper.elementTypes.ITEM) {
         let element = metadataHelper.getElementDefByOID(currentElementID.item);
-        let translatedText = element.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-        if (translatedText) $("#element-description-textarea").value = translatedText.textContent;
+        $("#element-description-textarea").value = element.getTranslatedDescription(locale);
         $("#element-description-textarea").disabled = false;
     }
 }
@@ -460,10 +457,8 @@ function fillMeasurementUnits() {
     $("#measurement-units-label").insertAdjacentElement("afterend", htmlElements.getEmptyMeasurementUnitInputElement());
 
     for (let measurementUnit of metadataHelper.getMeasurementUnits()) {
-        let translatedText = measurementUnit.querySelector(`Symbol TranslatedText[*|lang="${locale}"]`);
-        let symbol = null;
-        if (translatedText) symbol = translatedText.textContent;
-        let newInput = htmlElements.getMeasurementUnitInputElement(measurementUnit.getOID(), measurementUnit.getName(), symbol);
+        let translatedSymbol = measurementUnit.getTranslatedSymbol(locale);
+        let newInput = htmlElements.getMeasurementUnitInputElement(measurementUnit.getOID(), measurementUnit.getName(), translatedSymbol);
         $(".empty-measurement-unit-field").insertAdjacentElement("beforebegin", newInput);
     }
 }
@@ -1181,11 +1176,11 @@ window.moreTabClicked = function(event) {
 window.showCodelistModal = function() {
     removeArrowKeyListener();
 
-    // TODO: Quite a frequent pattern -- prototype function for this? With parameter nameFallback
-    const item = metadataHelper.getElementDefByOID(currentElementID.item);
-    const translatedQuestion = item.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
-    $("#codelist-modal h2").textContent = translatedQuestion ? translatedQuestion.textContent : item.getName();
+    // Add the item question and use the name as fallback
+    const itemDef = metadataHelper.getElementDefByOID(currentElementID.item);
+    $("#codelist-modal h2").textContent = itemDef.getTranslatedQuestion(locale, true);
 
+    // Render the notification when the codelist is used for more than one item
     const codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
     const codeListReferences = metadataHelper.getReferences(codeListOID, metadataHelper.elementTypes.CODELISTITEM);
     if (codeListReferences.length > 1) {
@@ -1196,9 +1191,9 @@ window.showCodelistModal = function() {
         $("#codelist-modal .notification").show();
     }
 
+    // Generate the string containing all coded values and translated decodes
     const codeListItemsString = metadataHelper.getCodeListItemsByItem(currentElementID.item).reduce((string, item) => {
-        const translatedDecode = item.querySelector(`Decode TranslatedText[*|lang="${locale}"]`)
-        return string += `${item.getCodedValue()}, ${translatedDecode ? translatedDecode.textContent : ""}\n`;
+        return string += `${item.getCodedValue()}, ${item.getTranslatedDecode(locale) || ""}\n`;
     }, "");
 
     $("#textitems-textarea").value = codeListItemsString;
@@ -1206,10 +1201,12 @@ window.showCodelistModal = function() {
 }
 
 window.saveCodelistModal = function() {
+    // Create a temporary element and move all code list items to that element
     const codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
     const currentItems = document.createElement("current-items");
     metadataHelper.getCodeListItemsByItem(currentElementID.item).forEach(item => currentItems.appendChild(item));
 
+    // Iterate over the text input and move existing items from the temporary element to the code list to preserve translations
     const lines = $("#textitems-textarea").value.split("\n");
     for (const line of lines) {
         const parts = line.split(",");
@@ -1237,8 +1234,7 @@ window.hideCodelistModal = function() {
 
 function showFirstEventEditedHelp() {
     const element = metadataHelper.getElementDefByOID(getCurrentElementOID());
-    const translatedText = element.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-    if (!translatedText && $("#question-textarea").value && metadataHelper.getStudyEvents().length == 1) {
+    if (!element.getTranslatedDescription() && $("#question-textarea").value && metadataHelper.getStudyEvents().length == 1) {
         // Show the first event edited help message
         setTimeout(() => ioHelper.showMessage(languageHelper.getTranslation("first-event-edited-title"), languageHelper.getTranslation("first-event-edited-text")), 1000);
     }

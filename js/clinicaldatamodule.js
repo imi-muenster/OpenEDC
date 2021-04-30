@@ -277,9 +277,9 @@ async function loadTree(studyEventOID, formOID) {
 
     for (let studyEventDef of metadataHelper.getStudyEvents()) {
         const studyEventOID = studyEventDef.getOID();
-        const translatedText = studyEventDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
+        const translatedDescription = studyEventDef.getTranslatedDescription(locale);
         const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
-        let panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedText, studyEventDef.getName(), null, dataStatus);
+        let panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedDescription, studyEventDef.getName(), null, dataStatus);
         panelBlock.onclick = () => loadTree(studyEventOID, null);
         $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
     }
@@ -296,9 +296,9 @@ async function loadFormsByStudyEvent() {
     const formDefs = metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent);
     for (let formDef of formDefs) {
         const formOID = formDef.getOID();
-        const translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
+        const translatedDescription = formDef.getTranslatedDescription(locale);
         const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForForm(currentElementID.studyEvent, formOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
-        let panelBlock = htmlElements.getClinicaldataPanelBlock(formOID, translatedText, formDef.getName(), null, dataStatus);
+        let panelBlock = htmlElements.getClinicaldataPanelBlock(formOID, translatedDescription, formDef.getName(), null, dataStatus);
         panelBlock.onclick = () => loadTree(currentElementID.studyEvent, formOID);
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
     }
@@ -366,9 +366,7 @@ async function loadFormMetadata() {
 
     // Add the form title and use the name as fallback
     const formDef = metadataHelper.getElementDefByOID(currentElementID.form);
-    const translatedText = formDef.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-    const formTitle = translatedText ? translatedText : formDef.querySelector(`Description TranslatedText[*|lang="${languageHelper.untranslatedLocale}"]`);
-    $("#clinicaldata-form-title .subtitle").textContent = formTitle ? formTitle.textContent : formDef.getName();
+    $("#clinicaldata-form-title .subtitle").textContent = formDef.getTranslatedDescription(locale, true);
 
     // Add the form skeleton
     let form = await metadataHelper.getFormAsHTML(currentElementID.form, ioHelper.isTextAsTextarea());

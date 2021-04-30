@@ -24,10 +24,7 @@ export function getMetadataPanelBlock(elementOID, elementType, titleText, fallba
     let title = document.createElement("div");
     title.className = "panel-block-title";
 
-    if (typeof titleText === "object" && titleText) {
-        // TODO: Needed?
-        title.textContent = titleText.textContent;
-    } else if (titleText) {
+    if (titleText) {
         title.textContent = titleText;
     } else {
         let dot = document.createElement("span");
@@ -94,10 +91,7 @@ export function getClinicaldataPanelBlock(elementOID, titleText, fallbackText, s
     let title = document.createElement("div");
     title.className = "panel-block-title";
 
-    if (typeof titleText === "object" && titleText) {
-        // TODO: Needed?
-        title.textContent = titleText.textContent;
-    } else if (titleText) {
+    if (titleText) {
         title.textContent = titleText;
     } else if (fallbackText) {
         title.textContent = fallbackText;

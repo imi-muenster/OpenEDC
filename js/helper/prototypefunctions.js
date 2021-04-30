@@ -10,6 +10,26 @@ Element.prototype.getCodedValue = function() {
     return this.getAttribute("CodedValue");
 }
 
+Element.prototype.getTranslatedDescription = function(locale, nameFallback) {
+    const translatedText = this.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
+    return translatedText ? translatedText.textContent : (nameFallback ? this.getName() : null);
+}
+
+Element.prototype.getTranslatedQuestion = function(locale, nameFallback) {
+    const translatedText = this.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
+    return translatedText ? translatedText.textContent : (nameFallback ? this.getName() : null);
+}
+
+Element.prototype.getTranslatedSymbol = function(locale, nameFallback) {
+    const translatedText = this.querySelector(`Symbol TranslatedText[*|lang="${locale}"]`);
+    return translatedText ? translatedText.textContent : (nameFallback ? this.getName() : null);
+}
+
+Element.prototype.getTranslatedDecode = function(locale, codedValueFallback) {
+    const translatedText = this.querySelector(`Decode TranslatedText[*|lang="${locale}"]`);
+    return translatedText ? translatedText.textContent : (codedValueFallback ? this.getCodedValue() : null);
+}
+
 NodeList.prototype.getLastElement = function() {
     if (this.length > 0) return this[this.length - 1];
     else return null;
