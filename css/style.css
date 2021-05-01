@@ -258,20 +258,14 @@ a.panel-block:hover {
 
 .autocomplete-list {
     position: absolute;
-    border: 1px solid #d4d4d4;
-    border-radius: 4px 4px 0px 0px;
-    z-index: 1;
-    bottom: 100%;
     left: 0;
     right: 0;
+    bottom: 100%;
+    z-index: 1;
+    border: 1px solid #d4d4d4;
+    border-radius: 4px 4px 0px 0px;
     max-height: 200px;
     overflow-x: auto;
-}
-
-.autocomplete-list .autocomplete-option {
-    padding: 12px;
-    cursor: pointer;
-    background-color: #fcfcfc;
 }
 
 .autocomplete-list .autocomplete-option:not(:last-child) {

@@ -74,14 +74,14 @@ const inputEventListener = event => {
     const value = getExpressionParts(event.target.value)[currentPart-1];
 
     const list = document.createElement("div");
-    list.className = "autocomplete-list";
+    list.className = "autocomplete-list has-background-white-bis";
     event.target.parentNode.appendChild(list);
 
     setElements();
     const matchingElements = elements.filter(element => element.label.toLowerCase().includes(value.toLowerCase()));
     for (const element of matchingElements) {
         const option = document.createElement("div");
-        option.className = "autocomplete-option";
+        option.className = "autocomplete-option is-clickable p-3";
         option.textContent = element.label;
         option.onclick = () => elementSelected(element, event.target);
         list.appendChild(option);
