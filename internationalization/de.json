@@ -125,12 +125,11 @@
 
     "choices-for-element": "Wahlmöglichkeiten",
     "choices-references-hint": "Bearbeiten der Wahlmöglichkeiten wirkt sich auf folgende Elemente aus:",
-    "cancel-link-option": "Verbindung zu anderen Elementen aufheben",
+    "cancel-reference-option": "Verweis zu anderen Elementen aufheben",
     "textitems-hint": "Wahlmöglichkeiten als Text",
     "coded-value-translated-choice": "Kodierter Wert, Übersetzte Auswahlmöglichkeit",
     "choices-reference-hint": "Wahlmöglichkeiten von anderem Element",
     "item-with-choices": "Element mit Wahlmöglichkeiten",
-    "use": "Nutzen",
     "codelist-not-found-error": "Es konnten keine Wahlmöglichkeiten für dieses Element gefunden werden.",
 
     "general-options":"Allgemeine Optionen",

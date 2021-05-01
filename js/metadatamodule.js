@@ -1239,7 +1239,7 @@ window.hideCodeListModal = function() {
     setArrowKeyListener();
 }
 
-window.linkCodeList = function() {
+window.referenceCodeList = function() {
     const externalItemOID = $("#codelist-modal #codelist-reference-input").value;
     if (!externalItemOID) return;
 
@@ -1254,13 +1254,13 @@ window.linkCodeList = function() {
     metadataHelper.addCodeListRef(currentElementID.item, externalCodeListOID);
     if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) currentElementID.codeList = externalCodeListOID;
 
-    showCodeListModal();
+    hideCodeListModal();
     reloadTree();
     reloadDetailsPanel();
     metadataHelper.storeMetadata();
 }
 
-window.unlinkCodeList = function() {
+window.unreferenceCodeList = function() {
     const currentCodeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
     const newCodeListOID = metadataHelper.copyCodeList(currentCodeListOID);
     metadataHelper.removeCodeListRef(currentElementID.item, currentCodeListOID);
