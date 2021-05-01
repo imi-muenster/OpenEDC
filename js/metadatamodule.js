@@ -20,6 +20,7 @@ let currentElementID = {
 }
 
 // Further auxiliary variables
+// TODO: Should be replaced with a function getCurrentElementType() that uses the currentElementID
 let currentElementType = null;
 let elementTypeOnDrag = null;
 let locale = null;
@@ -1238,7 +1239,7 @@ window.hideCodeListModal = function() {
     setArrowKeyListener();
 }
 
-window.addCodeListRef = function() {
+window.linkCodeList = function() {
     const externalItemOID = $("#codelist-modal #codelist-reference-input").value;
     if (!externalItemOID) return;
 
@@ -1249,21 +1250,26 @@ window.addCodeListRef = function() {
     };
 
     const currentCodeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
-    if (currentCodeListOID) metadataHelper.removeCodeListRef(currentElementID.item, currentCodeListOID);
+    metadataHelper.removeCodeListRef(currentElementID.item, currentCodeListOID);
     metadataHelper.addCodeListRef(currentElementID.item, externalCodeListOID);
-
-    hideCodeListModal();
-    reloadTree();
-    metadataHelper.storeMetadata();
-}
-
-window.removeCodeListRef = function() {
-    const currentCodeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
-    if (currentCodeListOID) metadataHelper.removeCodeListRef(currentElementID.item, currentCodeListOID);
-    metadataHelper.createCodeList(currentElementID.item);
+    if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) currentElementID.codeList = externalCodeListOID;
 
     showCodeListModal();
     reloadTree();
+    reloadDetailsPanel();
+    metadataHelper.storeMetadata();
+}
+
+window.unlinkCodeList = function() {
+    const currentCodeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
+    const newCodeListOID = metadataHelper.copyCodeList(currentCodeListOID);
+    metadataHelper.removeCodeListRef(currentElementID.item, currentCodeListOID);
+    metadataHelper.addCodeListRef(currentElementID.item, newCodeListOID);
+    if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) currentElementID.codeList = newCodeListOID;
+
+    showCodeListModal();
+    reloadTree();
+    reloadDetailsPanel();
     metadataHelper.storeMetadata();
 }
 

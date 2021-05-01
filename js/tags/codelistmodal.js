@@ -14,7 +14,7 @@ class CodeListModal extends HTMLElement {
                                 <p class="mt-3">
                                     <strong id="codelist-references-list"></strong>
                                 </p>
-                                <button class="button is-link is-small is-outlined mt-5" onclick="removeCodeListRef()" i18n="cancel-link-option"></button>
+                                <button class="button is-link is-small is-outlined mt-5" onclick="unlinkCodeList()" i18n="cancel-link-option"></button>
                             </div>
                             <div class="field">
                                 <label class="label" i18n="textitems-hint"></label>
@@ -27,7 +27,7 @@ class CodeListModal extends HTMLElement {
                                         <input class="input" id="codelist-reference-input" type="text" autocomplete="off" i18n-ph="item-with-choices">
                                     </div>
                                     <div class="control">
-                                        <button class="button" i18n="use" onclick="addCodeListRef()"></button>
+                                        <button class="button" i18n="use" onclick="linkCodeList()"></button>
                                     </div>
                                 </div>
                             </div>
