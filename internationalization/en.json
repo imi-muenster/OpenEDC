@@ -126,11 +126,12 @@
 
     "choices-for-element": "Choices for Element",
     "choices-references-hint": "Editing the choices affects the following elements:",
-    "cancel-reference-option": "Cancel link to other elements",
+    "cancel-reference-option": "Cancel reference to other elements",
     "textitems-hint": "Choices as Text",
     "coded-value-translated-choice": "Coded Value, Translated Choice",
     "choices-reference-hint": "Choices from other Item",
     "item-with-choices": "Item with Choices",
+    "same-item-referenced-error": "You referenced the same item that you are currently editing.",
     "codelist-not-found-error": "There could be no choices found for this item.",
 
     "general-options":"General Options",

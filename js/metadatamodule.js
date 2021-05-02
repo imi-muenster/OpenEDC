@@ -1243,9 +1243,14 @@ window.referenceCodeList = function() {
     const externalItemOID = $("#codelist-modal #codelist-reference-input").value;
     if (!externalItemOID) return;
 
+    if (externalItemOID == currentElementID.item) {
+        ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("same-item-referenced-error"));
+        return;
+    }
+
     const externalCodeListOID = metadataHelper.getCodeListOIDByItem(externalItemOID);
     if (!externalCodeListOID) {
-        ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("codelist-not-found-error"));
+        ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("codelist-not-found-error"));
         return;
     };
 

@@ -52,6 +52,7 @@ export const disableAutocomplete = input => {
     input.removeEventListener("click", inputEventListener);
     input.removeEventListener("keydown", keydownEventListener);
     document.removeEventListener("click", closeLists);
+    elements = null;
 }
 
 const setParts = () => {
