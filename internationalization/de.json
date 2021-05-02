@@ -77,7 +77,7 @@
     "survey-view": "Umfrageansicht",
     "survey-finished": "Umfrage beendet",
     "survey-finished-text": "Danke, dass Sie an der Umfrage teilgenommen haben.",
-    "survey-finished-code-text": "Bitte geben sie den Umfragecode ein um dieses Fenster zu schließen.",
+    "survey-finished-code-text": "Bitte geben Sie den Umfragecode ein um dieses Fenster zu schließen.",
     "wrong-survey-code-hint": "Falscher Code. Bitte versuchen Sie es erneut.",
     "close": "Schließen",
     "back": "Zurück",
@@ -130,7 +130,7 @@
     "coded-value-translated-choice": "Kodierter Wert, Übersetzte Auswahlmöglichkeit",
     "choices-reference-hint": "Wahlmöglichkeiten von anderem Element",
     "item-with-choices": "Element mit Wahlmöglichkeiten",
-    "same-item-referenced-error": "Sie haben dasselbe Element referenziert, welches sie gerade bearbeiten.",
+    "same-item-referenced-error": "Sie haben dasselbe Element referenziert, welches Sie gerade bearbeiten.",
     "codelist-not-found-error": "Es konnten keine Wahlmöglichkeiten für dieses Element gefunden werden.",
 
     "general-options":"Allgemeine Optionen",
