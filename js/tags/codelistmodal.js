@@ -18,9 +18,10 @@ class CodeListModal extends HTMLElement {
                             </div>
                             <div class="field">
                                 <label class="label" i18n="textitems-hint"></label>
-                                <textarea class="textarea" id="textitems-textarea" i18n-ph="coded-value-translated-choice"></textarea>
+                                <textarea class="textarea" id="textitems-textarea" rows="8" i18n-ph="coded-value-translated-choice"></textarea>
                             </div>
                             <div id="codelist-reference-field">
+                                <div class="text-divider" i18n-content="or-capitalized"></div>
                                 <label class="label" i18n="choices-reference-hint"></label>
                                 <div class="field is-grouped is-fullwidth">
                                     <div class="control is-expanded">

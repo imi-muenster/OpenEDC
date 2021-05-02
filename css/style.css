@@ -276,6 +276,23 @@ a.panel-block:hover {
     background-color: #e9e9e9;
 }
 
+.text-divider {
+    border-top: 0.1rem solid #dbdbdb;
+    height: 0.1rem;
+    margin: 2.5rem 0 2rem 0;
+    text-align: center;
+}
+
+.text-divider::after {
+    background: #fff;
+    color: #7a7a7a;
+    content: attr(content);
+    display: inline-block;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+    transform: translateY(-1.1rem);
+}
+
 @media only screen and (max-width: 768px) {
     .modal-content.is-fullheight-mobile {
         max-height: none;
