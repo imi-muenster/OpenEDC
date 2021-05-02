@@ -45,7 +45,6 @@ export async function localize() {
     document.querySelectorAll("[i18n-html]").forEach(element => element.innerHTML = getTranslation(element.getAttribute("i18n-html")));
     document.querySelectorAll("[i18n-ph]").forEach(element => element.placeholder = getTranslation(element.getAttribute("i18n-ph")));
     document.querySelectorAll("[i18n-href]").forEach(element => element.href = getTranslation(element.getAttribute("i18n-href")));
-    document.querySelectorAll("[i18n-content]").forEach(element => element.setAttribute("content", getTranslation(element.getAttribute("i18n-content"))));
 }
 
 export function getTranslation(key) {

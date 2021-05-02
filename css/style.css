@@ -277,20 +277,27 @@ a.panel-block:hover {
 }
 
 .text-divider {
-    border-top: 0.1rem solid #dbdbdb;
-    height: 0.1rem;
-    margin: 2.5rem 0 2rem 0;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    color: #7a7a7a;
+    font-size: 0.8rem;
+    margin: 2rem 0 1.5rem 0;
+}
+
+.text-divider::before, .text-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: #c2c2c2;
+}
+
+.text-divider::before {
+    margin-right: 15px;
 }
 
 .text-divider::after {
-    background: #fff;
-    color: #7a7a7a;
-    content: attr(content);
-    display: inline-block;
-    font-size: 0.8rem;
-    padding: 0.4rem 0.8rem;
-    transform: translateY(-1.1rem);
+    margin-left: 15px;
 }
 
 @media only screen and (max-width: 768px) {

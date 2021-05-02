@@ -128,7 +128,7 @@
     "cancel-reference-option": "Verweis zu anderen Elementen aufheben",
     "textitems-hint": "Wahlmöglichkeiten als Text",
     "coded-value-translated-choice": "Kodierter Wert, Übersetzte Auswahlmöglichkeit",
-    "or-capitalized": "ODER",
+    "or": "Oder",
     "choices-reference-hint": "Wahlmöglichkeiten von anderem Element",
     "item-with-choices": "Element mit Wahlmöglichkeiten",
     "same-item-referenced-error": "Sie haben dasselbe Element referenziert, welches Sie gerade bearbeiten.",
