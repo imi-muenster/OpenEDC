@@ -134,6 +134,7 @@
     "item-with-choices": "Item with Choices",
     "same-item-referenced-error": "You referenced the same item that you are currently editing.",
     "codelist-not-found-error": "There could be no choices found for this item.",
+    "no-codelist-hint": "The data type of the current item is not <i>Choices</i>. If you want to add predefined choices, first set the according data type at the top.",
 
     "general-options":"General Options",
     "users": "Users",

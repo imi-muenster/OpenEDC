@@ -128,7 +128,7 @@ function hideStudyEvents(hideTree) {
 
 function hideForms(hideTree) {
     $$("#form-panel-blocks a").removeElements();
-    $("#forms-add-button button").disabled = true;
+    $("#forms-add-button").disabled = true;
     if (hideTree) {
         currentElementID.form = null;
         hideItemGroups(true);
@@ -137,7 +137,7 @@ function hideForms(hideTree) {
 
 function hideItemGroups(hideTree) {
     $$("#item-group-panel-blocks a").removeElements();
-    $("#item-groups-add-button button").disabled = true;
+    $("#item-groups-add-button").disabled = true;
     if (hideTree) {
         currentElementID.itemGroup = null;
         hideItems(true);
@@ -146,7 +146,7 @@ function hideItemGroups(hideTree) {
 
 function hideItems(hideTree) {
     $$("#item-panel-blocks a").removeElements();
-    $("#items-add-button button").disabled = true;
+    $("#items-add-button").disabled = true;
     if (hideTree) {
         currentElementID.item = null;
         hideCodeListItems(true);
@@ -155,7 +155,8 @@ function hideItems(hideTree) {
 
 function hideCodeListItems(hideTree) {
     $$("#code-list-item-panel-blocks a").removeElements();
-    $$("#code-list-items-add-buttons button").forEach(button => button.disabled = true);
+    $("#code-list-items-add-button").disabled = true;
+    $("#code-list-items-opt-button").disabled = true;
     if (hideTree) {
         currentElementID.codeList = null;
         currentElementID.codeListItem = null;
@@ -187,7 +188,7 @@ function studyEventClicked(event) {
 
 function loadFormsByStudyEvent(studyEventOID, hideTree) {
     hideForms(hideTree);
-    $("#forms-add-button button").disabled = false;
+    $("#forms-add-button").disabled = false;
 
     let formDefs = metadataHelper.getFormsByStudyEvent(studyEventOID);
     for (let formDef of formDefs) {
@@ -211,7 +212,7 @@ function formClicked(event) {
 
 function loadItemGroupsByForm(formOID, hideTree) {
     hideItemGroups(hideTree);
-    $("#item-groups-add-button button").disabled = false;
+    $("#item-groups-add-button").disabled = false;
 
     let itemGroupDefs = metadataHelper.getItemGroupsByForm(formOID);
     for (let itemGroupDef of itemGroupDefs) {
@@ -235,7 +236,7 @@ function itemGroupClicked(event) {
 
 function loadItemsByItemGroup(itemGroupOID, hideTree) {
     hideItems(hideTree);
-    $("#items-add-button button").disabled = false;
+    $("#items-add-button").disabled = false;
 
     let itemDefs = metadataHelper.getItemsByItemGroup(itemGroupOID);
     for (let itemDef of itemDefs) {
@@ -261,7 +262,8 @@ function itemClicked(event) {
 function loadCodeListItemsByItem(itemOID, hideTree) {
     hideCodeListItems(hideTree);
 
-    if (metadataHelper.itemHasCodeList(itemOID)) $$("#code-list-items-add-buttons button").forEach(button => button.disabled = false);
+    if (metadataHelper.itemHasCodeList(itemOID)) $("#code-list-items-add-button").disabled = false;
+    $("#code-list-items-opt-button").disabled = false;
 
     let codeListItems = metadataHelper.getCodeListItemsByItem(itemOID);
     for (let codeListItem of codeListItems) {
@@ -1176,6 +1178,11 @@ window.moreTabClicked = function(event) {
 
 // TODO: Reorder other modal functions in this order (show -> save -> hide)
 window.showCodeListModal = function() {
+    if (!metadataHelper.itemHasCodeList(currentElementID.item)) {
+        ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("no-codelist-hint"));
+        return;
+    }
+
     removeArrowKeyListener();
 
     // Add the item question and use the name as fallback
