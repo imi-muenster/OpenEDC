@@ -1183,8 +1183,6 @@ window.showCodeListModal = function() {
         return;
     }
 
-    removeArrowKeyListener();
-
     // Add the item question and use the name as fallback
     const itemDef = metadataHelper.getElementDefByOID(currentElementID.item);
     $("#codelist-modal h2").textContent = itemDef.getTranslatedQuestion(locale, true);
@@ -1211,6 +1209,7 @@ window.showCodeListModal = function() {
     $("#codelist-modal #textitems-textarea").value = codeListItemsString;
     $("#codelist-modal #codelist-reference-input").value = null;
     $("#codelist-modal").activate();
+    removeArrowKeyListener();
 }
 
 window.saveCodeListModal = function() {
@@ -1241,8 +1240,8 @@ window.saveCodeListModal = function() {
 }
 
 window.hideCodeListModal = function() {
-    $("#codelist-modal").deactivate();
     autocompleteHelper.disableAutocomplete($("#codelist-modal #codelist-reference-input"));
+    $("#codelist-modal").deactivate();
     setArrowKeyListener();
 }
 
