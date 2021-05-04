@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.4.2
+
+- New option to add long lists of code list items using copy and paste
+- Simplified reuse of existing code lists for new items
+
 ## 0.4.1
 
 - Ability to use collection exception conditions with item groups
