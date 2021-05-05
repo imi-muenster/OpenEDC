@@ -1,4 +1,4 @@
-import { getItemsWithCodeList } from "./metadatahelper.js";
+import { getItemsWithCodeList, getCodeListItemsByItem } from "./metadatahelper.js";
 import { getCurrentLocale } from "./languagehelper.js";
 
 class AutocompleteElement {
@@ -17,14 +17,16 @@ class AutocompleteElement {
 }
 
 export const modes = {
-    FORMALEXPRESSION: 1,
+    CONDITION: 1,
     ITEM: 2,
     ITEMWITHCODELIST: 3
 }
 
+const comparators = ["<", "<=", ">", ">=", "==", "!="];
+
 let parts = {
     ITEM: 1,
-    OPERATOR: 2,
+    COMPARATOR: 2,
     VALUE: 3
 }
 
@@ -57,12 +59,13 @@ export const disableAutocomplete = input => {
 
 const setParts = () => {
     switch (currentMode) {
-        case modes.FORMALEXPRESSION:
+        case modes.CONDITION:
             // Keep all parts
             break;
         case modes.ITEM:
+            // Remove comparator and code list values
         case modes.ITEMWITHCODELIST:
-            delete parts.OPERATOR;
+            delete parts.COMPARATOR;
             delete parts.VALUE;
     }
 }
@@ -72,7 +75,7 @@ const inputEventListener = event => {
     if (!event.target.value) return;
 
     setCurrentPartAndInput(event.target);
-    const value = getExpressionParts(event.target.value)[currentPart-1];
+    const value = getExpressionParts(currentInput.value)[currentPart-1];
 
     const list = document.createElement("div");
     list.className = "autocomplete-list has-background-white-bis";
@@ -84,7 +87,7 @@ const inputEventListener = event => {
         const option = document.createElement("div");
         option.className = "autocomplete-option is-clickable p-3";
         option.textContent = element.label;
-        option.onclick = () => elementSelected(element, event.target);
+        option.onclick = () => elementSelected(element);
         list.appendChild(option);
     }
 }
@@ -104,18 +107,18 @@ const setCurrentPartAndInput = input => {
     currentInput = input;
 }
 
-const elementSelected = (element, input) => {
-    let expressionParts = getExpressionParts(input.value);
+const elementSelected = element => {
+    let expressionParts = getExpressionParts(currentInput.value);
     expressionParts[currentPart-1] = element.value;
 
     let existingParts = expressionParts.filter(part => part);
-    input.value = existingParts.join(" ");
+    currentInput.value = existingParts.join(" ");
 
     closeLists();
     if (existingParts.length < Object.keys(parts).length) {
-        input.value += " ";
-        input.focus();
-        input.click();
+        currentInput.value += " ";
+        currentInput.focus();
+        currentInput.click();
     }
 }
 
@@ -142,13 +145,11 @@ const setElements = () => {
         case parts.ITEM:
             elements = getItemElements();
             break;
-        case parts.OPERATOR:
-            // TODO: Adjust for formal expression autocomplete
-            elements = [];
+        case parts.COMPARATOR:
+            elements = comparators;
             break;
         case parts.VALUE:
-            // TODO: Adjust for formal expression autocomplete
-            elements = [];
+            elements = getCodeListValues();
             break;
         default:
             elements = [];
@@ -156,10 +157,18 @@ const setElements = () => {
 }
 
 const getItemElements = () => {
-    // TODO: null ...
-    const items = currentMode == modes.ITEMWITHCODELIST ? getItemsWithCodeList() : null;
+    const items = currentMode == modes.ITEMWITHCODELIST ? getItemsWithCodeList() : getItems();
     return items.map(item => new AutocompleteElement(
         item.getOID(),
-        item.getTranslatedQuestion(getCurrentLocale(), true)
+        item.getTranslatedQuestion(getCurrentLocale())
+    ));
+}
+
+const getCodeListValues = () => {
+    const itemOID = getExpressionParts(currentInput.value)[0];
+    const codeListItems = getCodeListItemsByItem(itemOID);
+    return codeListItems.map(item => new AutocompleteElement(
+        item.getCodedValue(),
+        item.getTranslatedDecode(getCurrentLocale())
     ));
 }

@@ -383,6 +383,10 @@ export function getMeasurementUnitByItem(itemOID) {
     }
 }
 
+export function getItems() {
+    return Array.from($$("ItemDef"));
+}
+
 export function getItemsWithCodeList() {
     const itemDefs = [];
     for (const itemDef of $$("ItemDef")) {
@@ -407,6 +411,7 @@ export function getElementRefs(elementOID, elementType) {
     }
 }
 
+// TODO: Could be removed -- getCodeListOIDByItem allows the same
 export function itemHasCodeList(itemOID) {
     let codeListRef = $(`[OID="${itemOID}"] CodeListRef`)
 
