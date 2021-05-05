@@ -450,10 +450,12 @@ function fillConditions() {
     $("#conditions-label").insertAdjacentElement("afterend", htmlElements.getEmptyConditionInputElement());
     
     for (let condition of metadataHelper.getConditions()) {
-        let formalExpression = condition.querySelector(`FormalExpression`).textContent;
-        let newInput = htmlElements.getConditionInputElement(condition.getOID(), condition.getName(), formalExpression);
-        $(".empty-condition-field").insertAdjacentElement("beforebegin", newInput);
+        let formalExpression = condition.querySelector("FormalExpression").textContent;
+        let conditionInput = htmlElements.getConditionInputElement(condition.getOID(), condition.getName(), formalExpression);
+        $(".empty-condition-field").insertAdjacentElement("beforebegin", conditionInput);
     }
+
+    $$("input.condition-formex").forEach(input => autocompleteHelper.enableAutocomplete(input, autocompleteHelper.modes.CONDITION));
 }
 
 function fillMeasurementUnits() {
@@ -462,8 +464,8 @@ function fillMeasurementUnits() {
 
     for (let measurementUnit of metadataHelper.getMeasurementUnits()) {
         let translatedSymbol = measurementUnit.getTranslatedSymbol(locale);
-        let newInput = htmlElements.getMeasurementUnitInputElement(measurementUnit.getOID(), measurementUnit.getName(), translatedSymbol);
-        $(".empty-measurement-unit-field").insertAdjacentElement("beforebegin", newInput);
+        let unitInput = htmlElements.getMeasurementUnitInputElement(measurementUnit.getOID(), measurementUnit.getName(), translatedSymbol);
+        $(".empty-measurement-unit-field").insertAdjacentElement("beforebegin", unitInput);
     }
 }
 
@@ -1108,6 +1110,7 @@ window.showMoreModal = function() {
 
 window.hideMoreModal = function() {
     ioHelper.removeIsActiveFromElement($("#more-tabs ul li.is-active"));
+    $$("input.condition-formex").forEach(input => autocompleteHelper.disableAutocomplete(input));
     $("#element-options-tab").activate();
     $("#element-options").show();
     $("#element-description").hide();
@@ -1118,23 +1121,21 @@ window.hideMoreModal = function() {
 }
 
 window.addAliasInput = function() {
-    let emptyAliasFields = $$(".empty-alias-field");
-    emptyAliasFields[emptyAliasFields.length-1].insertAdjacentElement("afterend", htmlElements.getEmptyAliasInputElement());
+    $$(".empty-alias-field").getLastElement().insertAdjacentElement("afterend", htmlElements.getEmptyAliasInputElement());
 }
 
 window.addRangeCheckInput = function() {
-    let emptyRangeCheckFields = $$(".empty-range-check-field");
-    emptyRangeCheckFields[emptyRangeCheckFields.length-1].insertAdjacentElement("afterend", htmlElements.getEmptyRangeCheckInputElement());
+    $$(".empty-range-check-field").getLastElement().insertAdjacentElement("afterend", htmlElements.getEmptyRangeCheckInputElement());
 }
 
 window.addMeasurementUnitInput = function() {
-    let emptyMeasurementUnitFields = $$(".empty-measurement-unit-field");
-    emptyMeasurementUnitFields[emptyMeasurementUnitFields.length-1].insertAdjacentElement("afterend", htmlElements.getEmptyMeasurementUnitInputElement());
+    $$(".empty-measurement-unit-field").getLastElement().insertAdjacentElement("afterend", htmlElements.getEmptyMeasurementUnitInputElement());
 }
 
 window.addConditionInput = function() {
-    let emptyConditionFields = $$(".empty-condition-field");
-    emptyConditionFields[emptyConditionFields.length-1].insertAdjacentElement("afterend", htmlElements.getEmptyConditionInputElement());
+    const conditionInput = htmlElements.getEmptyConditionInputElement();
+    autocompleteHelper.enableAutocomplete(conditionInput, autocompleteHelper.modes.CONDITION);
+    $$(".empty-condition-field").getLastElement().insertAdjacentElement("afterend", conditionInput);
 }
 
 window.moreTabClicked = function(event) {

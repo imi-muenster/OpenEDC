@@ -1,4 +1,4 @@
-import { getItemsWithCodeList, getCodeListItemsByItem } from "./metadatahelper.js";
+import { getItems, getItemsWithCodeList, getCodeListItemsByItem } from "./metadatahelper.js";
 import { getCurrentLocale } from "./languagehelper.js";
 
 class AutocompleteElement {
@@ -146,7 +146,7 @@ const setElements = () => {
             elements = getItemElements();
             break;
         case parts.COMPARATOR:
-            elements = comparators;
+            elements = getComparators();
             break;
         case parts.VALUE:
             elements = getCodeListValues();
@@ -164,11 +164,17 @@ const getItemElements = () => {
     ));
 }
 
+const getComparators = () => {
+    return comparators.map(comparator => new AutocompleteElement(
+        comparator
+    ));
+}
+
 const getCodeListValues = () => {
     const itemOID = getExpressionParts(currentInput.value)[0];
     const codeListItems = getCodeListItemsByItem(itemOID);
-    return codeListItems.map(item => new AutocompleteElement(
-        item.getCodedValue(),
-        item.getTranslatedDecode(getCurrentLocale())
+    return codeListItems.map(codeListItem => new AutocompleteElement(
+        codeListItem.getCodedValue(),
+        codeListItem.getTranslatedDecode(getCurrentLocale())
     ));
 }
