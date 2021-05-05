@@ -22,7 +22,7 @@ export const modes = {
     ITEMWITHCODELIST: 3
 }
 
-const comparators = ["<", "<=", ">", ">=", "==", "!="];
+const comparators = ["==", "!=", "<", "<=", ">", ">="];
 
 let parts = {
     ITEM: 1,
@@ -79,7 +79,7 @@ const inputEventListener = event => {
 
     const list = document.createElement("div");
     list.className = "autocomplete-list has-background-white-bis";
-    event.target.parentNode.appendChild(list);
+    currentInput.parentNode.appendChild(list);
 
     setElements();
     const matchingElements = elements.filter(element => element.label.toLowerCase().includes(value.toLowerCase()));
@@ -132,7 +132,7 @@ const getExpressionParts = expression => {
 
 const closeLists = event => {
     document.querySelectorAll(".autocomplete-list").forEach(list => {
-        if (event && event.target && (event.target == currentInput || event.target.className == "autocomplete-option")) return;
+        if (event && event.target && (event.target == currentInput || event.target.classList.contains("autocomplete-option"))) return;
         list.remove();
     });
 }

@@ -210,9 +210,14 @@ export function getConditionInputElement(oid, name, formaleExpression) {
     
     field.insertAdjacentHTML("beforeend", "&nbsp;&nbsp;");
 
+    // TODO: Remove as soon as possible -- workaround until the conditions tab gets replaced with a single Collection Condition input on the Element Options tab
+    let autocompleteContainer = document.createElement("div");
+    autocompleteContainer.style = "position: relative; width: 150%;";
+
     input.value = formaleExpression;
     input.className = "input condition-formex";
-    field.appendChild(input.cloneNode());
+    autocompleteContainer.appendChild(input);
+    field.appendChild(autocompleteContainer);
 
     return field;
 }
@@ -230,9 +235,14 @@ export function getEmptyConditionInputElement() {
     
     field.insertAdjacentHTML("beforeend", "&nbsp;&nbsp;");
 
+    // TODO: Remove as soon as possible -- workaround until the conditions tab gets replaced with a single Collection Condition input on the Element Options tab
+    let autocompleteContainer = document.createElement("div");
+    autocompleteContainer.style = "position: relative; width: 150%;";
+
     input.className = "input condition-formex";
     input.setAttribute("placeholder", languageHelper.getTranslation("formal-expression"));
-    field.appendChild(input.cloneNode());
+    autocompleteContainer.appendChild(input);
+    field.appendChild(autocompleteContainer);
 
     return field;
 }
