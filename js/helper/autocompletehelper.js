@@ -146,10 +146,10 @@ const setElements = () => {
             elements = getItemElements();
             break;
         case parts.COMPARATOR:
-            elements = getComparators();
+            elements = getComparatorElements();
             break;
         case parts.VALUE:
-            elements = getCodeListValues();
+            elements = getValueElements();
             break;
         default:
             elements = [];
@@ -164,13 +164,13 @@ const getItemElements = () => {
     ));
 }
 
-const getComparators = () => {
+const getComparatorElements = () => {
     return comparators.map(comparator => new AutocompleteElement(
         comparator
     ));
 }
 
-const getCodeListValues = () => {
+const getValueElements = () => {
     const itemOID = getExpressionParts(currentInput.value)[0];
     const codeListItems = getCodeListItemsByItem(itemOID);
     return codeListItems.map(codeListItem => new AutocompleteElement(

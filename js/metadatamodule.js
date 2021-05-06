@@ -241,7 +241,7 @@ function loadItemsByItemGroup(itemGroupOID, hideTree) {
     let itemDefs = metadataHelper.getItemsByItemGroup(itemGroupOID);
     for (let itemDef of itemDefs) {
         let translatedQuestion = itemDef.getTranslatedQuestion(locale);
-        const dataType = itemDef.querySelector("CodeListRef") ? metadataHelper.elementTypes.CODELIST : itemDef.getAttribute("DataType");
+        const dataType = itemDef.querySelector("CodeListRef") ? metadataHelper.elementTypes.CODELIST : itemDef.getDataType();
         let panelBlock = createPanelBlock(itemDef.getOID(), metadataHelper.elementTypes.ITEM, translatedQuestion, itemDef.getName(), languageHelper.getTranslation(dataType));
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
@@ -388,7 +388,7 @@ function fillDetailsPanel(elementOID, elementType) {
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-question");
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             $("#question-textarea").value = element.getTranslatedQuestion(locale);
-            $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(elementOID) ? metadataHelper.elementTypes.CODELIST + "-" + element.getAttribute("DataType") : element.getAttribute("DataType");
+            $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(elementOID) ? metadataHelper.elementTypes.CODELIST + "-" + element.getDataType() : element.getDataType();
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             $("#mandatory-select-inner").disabled = true;
@@ -829,7 +829,7 @@ function removeElement() {
 function duplicateReference() {
     if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) {
         const newItemOID = metadataHelper.createItem(currentElementID.itemGroup);
-        metadataHelper.setItemDataType(newItemOID, metadataHelper.getElementDefByOID(currentElementID.item).getAttribute("DataType"));
+        metadataHelper.setItemDataType(newItemOID, metadataHelper.getElementDefByOID(currentElementID.item).getDataType());
         metadataHelper.addCodeListRef(newItemOID, currentElementID.codeList);
     } else {
         let elementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), currentElementType, getParentOID(currentElementType));
@@ -857,7 +857,7 @@ function copyElement(deepCopy) {
         case metadataHelper.elementTypes.CODELISTITEM:
             const newItemOID = metadataHelper.createItem(currentElementID.itemGroup);
             const newCodeListOID = metadataHelper.copyCodeList(currentElementID.codeList);
-            metadataHelper.setItemDataType(newItemOID, metadataHelper.getElementDefByOID(currentElementID.item).getAttribute("DataType"));
+            metadataHelper.setItemDataType(newItemOID, metadataHelper.getElementDefByOID(currentElementID.item).getDataType());
             metadataHelper.addCodeListRef(newItemOID, newCodeListOID);
     }
 

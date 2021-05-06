@@ -10,6 +10,10 @@ Element.prototype.getCodedValue = function() {
     return this.getAttribute("CodedValue");
 }
 
+Element.prototype.getDataType = function() {
+    return this.getAttribute("DataType");
+}
+
 Element.prototype.getTranslatedDescription = function(locale, nameFallback) {
     const translatedText = this.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
     return translatedText ? translatedText.textContent : (nameFallback ? this.getName() : null);
