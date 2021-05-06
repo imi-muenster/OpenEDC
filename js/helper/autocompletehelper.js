@@ -1,5 +1,5 @@
-import { getItems, getItemsWithCodeList, getCodeListItemsByItem } from "./metadatahelper.js";
-import { getCurrentLocale } from "./languagehelper.js";
+import * as metadataHelper from "./metadatahelper.js";
+import * as languageHelper from "./languagehelper.js";
 
 class AutocompleteElement {
     constructor(value, label) {
@@ -157,10 +157,10 @@ const setElements = () => {
 }
 
 const getItemElements = () => {
-    const items = currentMode == modes.ITEMWITHCODELIST ? getItemsWithCodeList() : getItems();
+    const items = currentMode == modes.ITEMWITHCODELIST ? metadataHelper.getItemsWithCodeList() : metadataHelper.getItems();
     return items.map(item => new AutocompleteElement(
         item.getOID(),
-        item.getTranslatedQuestion(getCurrentLocale())
+        item.getTranslatedQuestion(languageHelper.getCurrentLocale())
     ));
 }
 
@@ -172,9 +172,23 @@ const getComparatorElements = () => {
 
 const getValueElements = () => {
     const itemOID = getExpressionParts(currentInput.value)[0];
-    const codeListItems = getCodeListItemsByItem(itemOID);
-    return codeListItems.map(codeListItem => new AutocompleteElement(
-        codeListItem.getCodedValue(),
-        codeListItem.getTranslatedDecode(getCurrentLocale())
-    ));
+    const item = metadataHelper.getElementDefByOID(itemOID);
+    if (item.getDataType() == "boolean") {
+        return [
+            new AutocompleteElement(
+                "1",
+                languageHelper.getTranslation("yes")
+            ),
+            new AutocompleteElement(
+                "0",
+                languageHelper.getTranslation("no")
+            )
+        ];
+    } else {
+        const codeListItems = metadataHelper.getCodeListItemsByItem(itemOID);
+        return codeListItems.map(codeListItem => new AutocompleteElement(
+            codeListItem.getCodedValue(),
+            codeListItem.getTranslatedDecode(languageHelper.getCurrentLocale())
+        ));
+    }
 }
