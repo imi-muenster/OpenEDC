@@ -260,19 +260,25 @@ a.panel-block:hover {
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 100%;
+    bottom: 120%;
     z-index: 1;
-    border: 1px solid #d4d4d4;
-    border-radius: 4px 4px 0px 0px;
+    border-radius: 6px;
     max-height: 200px;
     overflow-x: auto;
+    box-shadow: 0px 0px 10px 5px #d4d4d4;
+    background-color: white;
 }
 
-.autocomplete-list .autocomplete-option:not(:last-child) {
+.autocomplete-option {
+    padding: 0.75rem;
+    cursor: pointer;
+}
+
+.autocomplete-option:not(:last-child) {
     border-bottom: 1px solid #d4d4d4;
 }
   
-.autocomplete-list .autocomplete-option:hover {
+.autocomplete-option:hover {
     background-color: #e9e9e9;
 }
 
