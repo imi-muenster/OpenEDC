@@ -79,7 +79,6 @@ const inputEventListener = event => {
 
     const list = document.createElement("div");
     list.className = "autocomplete-list";
-    currentInput.parentNode.appendChild(list);
 
     setElements();
     const matchingElements = elements.filter(element => element.label.toLowerCase().includes(value.toLowerCase()));
@@ -90,6 +89,8 @@ const inputEventListener = event => {
         option.onclick = () => elementSelected(element);
         list.appendChild(option);
     }
+
+    if (list.hasChildNodes()) currentInput.parentNode.appendChild(list);
 }
 
 const keydownEventListener = event => {
