@@ -1,4 +1,4 @@
-import { AES, RSA, SHA } from "./cryptohelper.js";
+import * as cryptoHelper from "./cryptohelper.js";
 import * as languageHelper from "./languagehelper.js";
 
 class LoadXMLException {
@@ -96,7 +96,7 @@ async function getStoredXMLData(fileName) {
 
     if (decryptionKey) {
         try {
-            xmlString = await AES.decrypt.withKey(xmlString, decryptionKey);
+            xmlString = await cryptoHelper.AES.decrypt.withKey(xmlString, decryptionKey);
         } catch (error) {
             throw new LoadXMLException(loadXMLExceptionCodes.NOTDECRYPTABLE);
         }
@@ -116,7 +116,7 @@ async function getStoredXMLData(fileName) {
 
 async function storeXMLData(fileName, xmlDocument) {
     let xmlString = new XMLSerializer().serializeToString(xmlDocument);
-    if (decryptionKey) xmlString = await AES.encrypt.withKey(xmlString, decryptionKey);
+    if (decryptionKey) xmlString = await cryptoHelper.AES.encrypt.withKey(xmlString, decryptionKey);
 
     if (serverURL) {
         // TODO: Error handling
@@ -157,8 +157,8 @@ export async function getSubjectFileNames() {
 
 // Only for local encryption
 export async function encryptXMLData(password) {
-    // Generate new AES encryption/decryption key
-    const decryptionKey = await AES.generateKey();
+    // Generate new cryptoHelper.AES encryption/decryption key
+    const decryptionKey = await cryptoHelper.AES.generateKey();
 
     for (const fileName of Object.keys(localStorage)) {
         if (fileName == fileNames.settings) continue;
@@ -168,13 +168,13 @@ export async function encryptXMLData(password) {
         const xmlDocument = new DOMParser().parseFromString(xmlString, "text/xml");
         if (!xmlDocument.querySelector("parsererror")) {
             xmlString = new XMLSerializer().serializeToString(xmlDocument);
-            xmlString = await AES.encrypt.withKey(xmlString, decryptionKey);
+            xmlString = await cryptoHelper.AES.encrypt.withKey(xmlString, decryptionKey);
             localStorage.setItem(fileName, xmlString);
         }
     }
 
     // Store encrypted decryption key
-    const encryptedDecryptionKey = await AES.encrypt.withPassword(decryptionKey, password);
+    const encryptedDecryptionKey = await cryptoHelper.AES.encrypt.withPassword(decryptionKey, password);
     localStorage.setItem(fileNames.localkey, encryptedDecryptionKey)
 }
 
@@ -183,7 +183,7 @@ export async function setDecryptionKey(password) {
     const encryptedDecryptionKey = localStorage.getItem(fileNames.localkey);
 
     try {
-        decryptionKey = await AES.decrypt.withPassword(encryptedDecryptionKey, password);
+        decryptionKey = await cryptoHelper.AES.decrypt.withPassword(encryptedDecryptionKey, password);
         return Promise.resolve();
     } catch (error) {
         return Promise.reject(error);
@@ -323,9 +323,9 @@ export async function initializeServer(url, userOID, credentials) {
     if (!url.includes("http") && !url.includes("https")) url = "https://" + url;
     
     // Create a random key that is used for data encryption and encrypt it with the password of the user
-    const decryptionKey = await AES.generateKey();
-    const encryptedDecryptionKey = await AES.encrypt.withPassword(decryptionKey, credentials.password);
-    const hashedPassword = await SHA.hashData(credentials.password);
+    const decryptionKey = await cryptoHelper.AES.generateKey();
+    const encryptedDecryptionKey = await cryptoHelper.AES.encrypt.withPassword(decryptionKey, credentials.password);
+    const hashedPassword = await cryptoHelper.SHA.hash(credentials.password);
     const userRequest = { username: credentials.username, hashedPassword, encryptedDecryptionKey};
 
     // Create the owner user on the server
@@ -339,7 +339,7 @@ export async function initializeServer(url, userOID, credentials) {
 
     // Send all existing metadata encrypted to the server
     let metadataString = new XMLSerializer().serializeToString(await getMetadata());
-    metadataString = await AES.encrypt.withKey(metadataString, decryptionKey);
+    metadataString = await cryptoHelper.AES.encrypt.withKey(metadataString, decryptionKey);
     const metadataResponse = await fetch(url + "/api/metadata", {
         method: "PUT",
         headers: await getHeaders(true),
@@ -349,7 +349,7 @@ export async function initializeServer(url, userOID, credentials) {
 
     // Send all existing metadata encrypted to the server
     let admindataString = new XMLSerializer().serializeToString(await getAdmindata());
-    admindataString = await AES.encrypt.withKey(admindataString, decryptionKey);
+    admindataString = await cryptoHelper.AES.encrypt.withKey(admindataString, decryptionKey);
     const admindataResponse = await fetch(url + "/api/admindata", {
         method: "PUT",
         headers: await getHeaders(true),
@@ -362,7 +362,7 @@ export async function initializeServer(url, userOID, credentials) {
     const subjectFileNames = await getSubjectFileNames();
     for (const subjectFileName of subjectFileNames) {
         let subjectDataString = new XMLSerializer().serializeToString(await getSubjectData(subjectFileName));
-        subjectDataString = await AES.encrypt.withKey(subjectDataString, decryptionKey);
+        subjectDataString = await cryptoHelper.AES.encrypt.withKey(subjectDataString, decryptionKey);
         const clinicaldataResponse = await fetch(url + "/api/clinicaldata/" + subjectFileName, {
             method: "PUT",
             headers: await getHeaders(true),
@@ -376,7 +376,7 @@ export async function initializeServer(url, userOID, credentials) {
 }
 
 export async function loginToServer(credentials) {
-    const hashedPassword = await SHA.hashData(credentials.password);
+    const hashedPassword = await cryptoHelper.SHA.hash(credentials.password);
     const userResponse = await fetch(serverURL + "/api/users/me", {
         headers: { "Authorization" : `Basic ${btoa(credentials.username + ":" + hashedPassword)}` }
     });
@@ -385,7 +385,7 @@ export async function loginToServer(credentials) {
 
     // Get the encryptedDecryptionKey of the user, decrypt it and store it in the decryptionKey variable
     try {
-        decryptionKey = await AES.decrypt.withPassword(user.encryptedDecryptionKey, credentials.password);
+        decryptionKey = await cryptoHelper.AES.decrypt.withPassword(user.encryptedDecryptionKey, credentials.password);
     } catch (error) {
         return Promise.reject(loginStatus.WRONGCREDENTIALS);
     }
@@ -397,8 +397,8 @@ export async function loginToServer(credentials) {
 }
 
 export async function setOwnPassword(credentials) {
-    const encryptedDecryptionKey = await AES.encrypt.withPassword(decryptionKey, credentials.password);
-    const hashedPassword = await SHA.hashData(credentials.password);
+    const encryptedDecryptionKey = await cryptoHelper.AES.encrypt.withPassword(decryptionKey, credentials.password);
+    const hashedPassword = await cryptoHelper.SHA.hash(credentials.password);
     const userRequest = { username: credentials.username, hashedPassword, encryptedDecryptionKey };
     
     const userResponse = await fetch(serverURL + "/api/users/me", {
@@ -416,8 +416,8 @@ export async function setOwnPassword(credentials) {
 export async function setUserOnServer(oid, credentials, rights, site) {
     let userRequest = null;
     if (credentials.username && credentials.password) {
-        const encryptedDecryptionKey = await AES.encrypt.withPassword(decryptionKey, credentials.password);
-        const hashedPassword = await SHA.hashData(credentials.password);
+        const encryptedDecryptionKey = await cryptoHelper.AES.encrypt.withPassword(decryptionKey, credentials.password);
+        const hashedPassword = await cryptoHelper.SHA.hash(credentials.password);
         userRequest = { username: credentials.username, hashedPassword, encryptedDecryptionKey, rights, site };
     } else {
         userRequest = { rights, site };

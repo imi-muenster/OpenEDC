@@ -23,7 +23,7 @@ export const RSA = {
 }
 
 export const SHA = {
-    hashData: async data => await shaHashData(data)
+    hash: async data => await shaHashData(data)
 }
 
 //

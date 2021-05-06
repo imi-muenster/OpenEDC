@@ -1134,7 +1134,7 @@ window.addMeasurementUnitInput = function() {
 
 window.addConditionInput = function() {
     const conditionInput = htmlElements.getEmptyConditionInputElement();
-    autocompleteHelper.enableAutocomplete(conditionInput, autocompleteHelper.modes.CONDITION);
+    autocompleteHelper.enableAutocomplete(conditionInput.querySelector("input.condition-formex"), autocompleteHelper.modes.CONDITION);
     $$(".empty-condition-field").getLastElement().insertAdjacentElement("afterend", conditionInput);
 }
 
