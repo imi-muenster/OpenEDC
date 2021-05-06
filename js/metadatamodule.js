@@ -584,7 +584,7 @@ function saveConditions() {
     for (let conditionInput of conditionInputs) {
         let oid = conditionInput.getOID();
         let name = conditionInput.querySelector(".condition-name").value;
-        let formalExpression = conditionInput.querySelector(".condition-formex").value;
+        let formalExpression = conditionInput.querySelector(".condition-formex").value.escapeXML();
         if (name && formalExpression) {
             if (!oid) {
                 metadataHelper.createCondition(name, formalExpression, locale);

@@ -260,7 +260,7 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
             if (itemGroupData) formData.appendChild(itemGroupData);
             itemGroupData = clinicaldataTemplates.getItemGroupData(formItemData.itemGroupOID);
         };
-        itemGroupData.appendChild(clinicaldataTemplates.getItemData(formItemData.itemOID, escapeXML(formItemData.value)));
+        itemGroupData.appendChild(clinicaldataTemplates.getItemData(formItemData.itemOID, formItemData.value.escapeXML()));
     }
     if (itemGroupData) formData.appendChild(itemGroupData);
 
@@ -269,18 +269,6 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
     subjectData.appendChild(studyEventData);
 
     await storeSubject();
-}
-
-function escapeXML(value) {
-    return value.replace(/[&<>'"]/g, function(character) {
-        switch (character) {
-            case "&": return "&#38;";
-            case "<": return "&#60;";
-            case ">": return "&#62;";
-            case "'": return "&#39;";
-            case '"': return "&#34;";
-        }
-    });
 }
 
 // TODO: Assumes that the data is ordered chronologically -- should be ensured during import

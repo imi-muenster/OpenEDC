@@ -34,6 +34,18 @@ Element.prototype.getTranslatedDecode = function(locale, codedValueFallback) {
     return translatedText ? translatedText.textContent : (codedValueFallback ? this.getCodedValue() : null);
 }
 
+String.prototype.escapeXML = function() {
+    return this.replace(/[&<>'"]/g, function(character) {
+        switch (character) {
+            case "&": return "&#38;";
+            case "<": return "&#60;";
+            case ">": return "&#62;";
+            case "'": return "&#39;";
+            case '"': return "&#34;";
+        }
+    });
+}
+
 NodeList.prototype.getLastElement = function() {
     if (this.length > 0) return this[this.length - 1];
     else return null;
