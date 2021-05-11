@@ -35,6 +35,9 @@
     "design-forms": "Design Forms",
     "log-out":"Log Out",
 
+    "element-options": "Element Options",
+    "basic": "Basic",
+    "extended": "Extended",
     "unique-id": "Unique ID",
     "name": "Name",
     "translated-description": "Translated Description",

@@ -57,29 +57,29 @@ class MetadataSection extends HTMLElement {
                                 <ul class="sidebar-options">
                                     <li class="sidebar-option is-activable">
                                         <i class="fal fa-text"></i>
-                                        <span>Basic</span>
+                                        <span i18n="basic"></span>
                                     </li>
                                     <li class="sidebar-option is-activable">
                                         <i class="fal fa-ruler"></i>
-                                        <span>Advanced</span>
+                                        <span i18n="extended"></span>
                                     </li>
                                     <li class="sidebar-option">
                                         <i class="fal fa-clone"></i>
-                                        <span>Duplicate</span>
+                                        <span i18n="duplicate"></span>
                                     </li>
                                     <li class="sidebar-option">
                                         <i class="fal fa-trash"></i>
-                                        <span>Remove</span>
+                                        <span i18n="remove"></span>
                                     </li>
                                     <li class="sidebar-option">
                                         <i class="fal fa-check"></i>
-                                        <span>Save</span>
+                                        <span i18n="save"></span>
                                     </li>
                                 </ul>
                             </nav>
                             <div class="box-content">
-                                <h1 class="title is-4">Element Options</h1>
-                                <h2 class="subtitle is-6">Basic</h2>
+                                <h1 class="title is-4" i18n="element-options"></h1>
+                                <h2 class="subtitle is-6" i18n="basic"></h2>
                                 <hr>
                             </div>
                         </div>
