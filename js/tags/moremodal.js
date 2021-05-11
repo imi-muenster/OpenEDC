@@ -8,7 +8,6 @@ class MoreModal extends HTMLElement {
                         <div class="tabs is-centered" id="more-tabs">
                             <ul>
                                 <li class="is-active" id="element-options-tab" onclick="moreTabClicked(event)"><a i18n="element-options"></a></li>
-                                <li id="element-description-tab" onclick="moreTabClicked(event)"><a i18n="description"></a></li>
                                 <li id="conditions-tab" onclick="moreTabClicked(event)"><a i18n="conditions"></a></li>
                                 <li id="measurement-units-tab" onclick="moreTabClicked(event)"><a i18n="measurement-units"></a></li>
                             </ul>
@@ -31,14 +30,6 @@ class MoreModal extends HTMLElement {
                             <div class="buttons is-pulled-right are-small">
                                 <button class="button" onclick="addAliasInput()">+</button>
                             </div>
-                        </div>
-                        <div class="width-is-three-quarters is-hidden" id="element-description">
-                            <div class="notification is-link is-light">
-                                <h1 class="title is-4" i18n="description"></h1>
-                                <p i18n="description-hint"></p>
-                            </div>
-                            <label class="label" id="element-description-label" i18n="description"></label>
-                            <textarea class="textarea" id="element-description-textarea"></textarea>
                         </div>
                         <div class="width-is-three-quarters is-hidden" id="conditions">
                             <div class="notification is-link is-light">

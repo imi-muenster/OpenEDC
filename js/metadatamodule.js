@@ -435,16 +435,6 @@ function fillRangeChecks() {
     }
 }
 
-function fillElementDescription() {
-    $("#element-description-textarea").value = null;
-    $("#element-description-textarea").disabled = true;
-    if (currentElementType == metadataHelper.elementTypes.ITEM) {
-        let element = metadataHelper.getElementDefByOID(currentElementID.item);
-        $("#element-description-textarea").value = element.getTranslatedDescription(locale);
-        $("#element-description-textarea").disabled = false;
-    }
-}
-
 function fillConditions() {
     $$(".condition-input").removeElements();
     $("#conditions-label").insertAdjacentElement("afterend", htmlElements.getEmptyConditionInputElement());
@@ -529,7 +519,6 @@ window.saveMoreModal = function() {
     if (currentElementType == metadataHelper.elementTypes.ITEM) {
         saveMeasurementUnit();
         saveRangeChecks();
-        saveDescription();
     }
 
     saveAliases();
@@ -573,10 +562,6 @@ function saveAliases() {
             metadataHelper.setElementAlias(getCurrentElementOID(), currentElementID.codeListItem, context, name);
         }
     }
-}
-
-function saveDescription() {
-    metadataHelper.setElementDescription(getCurrentElementOID(), $("#element-description-textarea").value, locale);
 }
 
 function saveConditions() {
@@ -1105,7 +1090,6 @@ window.showMoreModal = function() {
     createMeasurementUnitSelect();
     fillRangeChecks();
     fillAliases();
-    fillElementDescription();
 }
 
 window.hideMoreModal = function() {
@@ -1113,7 +1097,6 @@ window.hideMoreModal = function() {
     $$("input.condition-formex").forEach(input => autocompleteHelper.disableAutocomplete(input));
     $("#element-options-tab").activate();
     $("#element-options").show();
-    $("#element-description").hide();
     $("#measurement-units").hide();
     $("#conditions").hide();
     $("#more-modal").deactivate();
@@ -1149,13 +1132,6 @@ window.moreTabClicked = function(event) {
             createConditionSelect();
             createMeasurementUnitSelect();
             $("#element-options").show();
-            $("#element-description").hide();
-            $("#measurement-units").hide();
-            $("#conditions").hide();
-            break;
-        case "element-description-tab":
-            $("#element-options").hide();
-            $("#element-description").show();
             $("#measurement-units").hide();
             $("#conditions").hide();
             break;
@@ -1163,7 +1139,6 @@ window.moreTabClicked = function(event) {
             saveCondition();
             fillConditions();
             $("#element-options").hide();
-            $("#element-description").hide();
             $("#measurement-units").hide();
             $("#conditions").show();
             break;
@@ -1171,7 +1146,6 @@ window.moreTabClicked = function(event) {
             saveMeasurementUnit();
             fillMeasurementUnits();
             $("#element-options").hide();
-            $("#element-description").hide();
             $("#measurement-units").show();
             $("#conditions").hide();
     }

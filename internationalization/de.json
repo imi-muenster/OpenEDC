@@ -106,7 +106,6 @@
     "close-with-saving": "Schließen mit Speichern",
 
     "element-options": "Elementoptionen",
-    "description": "Beschreibung",
     "conditions": "Bedingungen",
     "measurement-units": "Messeinheiten",
     "element-options-hint": "Mit den folgenden Einstellungen können Sie weitere Optionen des aktuellen Elements konfigurieren. Neue Ausnahmebedingungen der Erhebung von Elementen und Messeinheiten können über die Reiter oben hinzugefügt werden.",
@@ -117,7 +116,6 @@
     "alias": "Alias",
     "context": "Kontext",
     "cancel": "Abbrechen",
-    "description-hint": "Das Hauptdetailfenster zeigt nicht die Beschreibung eines Elements an, sondern dessen Fragetext. Bei Bedarf kann die Beschreibung des Elements hier bearbeitet werden.",
     "conditions-hint": "Bedingungen können genutzt werden, um Ausnahmen der Erhebung von Elementen zu definieren. Das System versteckt Elemente automatisch, wenn die Bedingung wahr ist. <strong>Beispiel:</strong> Um ein Element mit der eindeutigen ID <i>diabetes_therapie</i> zu verstecken, wenn der Wert eines anderen Elements mit der ID <i>diagnose</i> nicht <i>diabetes</i> ist, gib <i><u>diagnose != diabetes</u></i> als formalen Ausdruck ein und wähle diesen Ausdruck anhand des Namens in den <i>Elementoptionen</i> des <i>diabetes_therapy</i> Elements aus.",
     "formal-expression": "Formaler Ausdruck",
     "measurement-units-hint": "Messeinheiten, die hier definiert werden, sind für jedes Element verfügbar. Das Symbol ist eine übersetzte Einheit und entspricht der aktuell ausgewählten Sprache.",
