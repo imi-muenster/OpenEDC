@@ -20,7 +20,6 @@ html.no-scroll {
 
 html, body {
     user-select: none;
-    -webkit-user-select: none;
     touch-action: manipulation;
 }
 
@@ -54,6 +53,68 @@ a.panel-block {
 
 .notification {
     padding: 1.25rem 1.5rem;
+}
+
+.sidebar {
+    border-radius: 6px 0 0 6px;
+    color: white;
+    background-color: var(--link-color);
+}
+
+.sidebar-options {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: .5rem 0 .5rem 0;
+}
+
+.sidebar-option {
+    display: flex;
+    align-items: center;
+    height: 3rem;
+}
+
+.sidebar-option:hover {
+    cursor: pointer;
+    background-color: var(--link-hover-color);
+}
+
+.sidebar-option.is-active {
+    background-color: var(--link-active-color);
+}
+
+.sidebar-option:nth-last-child(3) {
+    margin-top: auto;
+}
+
+.sidebar-option i {
+    text-align: center;
+    width: 3rem;
+}
+
+.sidebar-option i:before {
+    vertical-align: middle;
+}
+
+.sidebar-option span {
+    display: none;
+    margin-right: 1.25rem;
+}
+
+.sidebar:hover .sidebar-option span {
+    display: block;
+}
+
+.box.has-sidebar {
+    display: flex;
+    padding: 0;
+    height: 300px;
+}
+
+.box.has-sidebar .box-content {
+    flex-grow: 1;
+    padding: 1.25rem;
 }
 
 #question-textarea {

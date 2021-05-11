@@ -191,6 +191,9 @@ readers do not read off random characters that represent icons */
 .fa-bars:before {
   content: "\f0c9"; }
 
+.fa-check:before {
+  content: "\f00c"; }
+
 .fa-check-circle:before {
   content: "\f058"; }
 
@@ -199,6 +202,9 @@ readers do not read off random characters that represent icons */
 
 .fa-circle:before {
   content: "\f111"; }
+
+.fa-clone:before {
+  content: "\f24d"; }
 
 .fa-dot-circle:before {
   content: "\f192"; }
@@ -221,6 +227,9 @@ readers do not read off random characters that represent icons */
 .fa-question:before {
   content: "\f128"; }
 
+.fa-ruler:before {
+  content: "\f545"; }
+
 .fa-search:before {
   content: "\f002"; }
 
@@ -229,6 +238,12 @@ readers do not read off random characters that represent icons */
 
 .fa-stop:before {
   content: "\f04d"; }
+
+.fa-text:before {
+  content: "\f893"; }
+
+.fa-trash:before {
+  content: "\f1f8"; }
 
 .fa-user:before {
   content: "\f007"; }
@@ -250,6 +265,16 @@ readers do not read off random characters that represent icons */
   overflow: visible;
   position: static;
   width: auto; }
+@font-face {
+  font-family: 'Font Awesome 5 Pro';
+  font-style: normal;
+  font-weight: 300;
+  font-display: block;
+  src: url("./webfonts/fa-light-300.woff2") format("woff2"); }
+
+.fal {
+  font-family: 'Font Awesome 5 Pro';
+  font-weight: 300; }
 @font-face {
   font-family: 'Font Awesome 5 Pro';
   font-style: normal;

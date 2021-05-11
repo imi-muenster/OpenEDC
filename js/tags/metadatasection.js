@@ -6,7 +6,7 @@ class MetadataSection extends HTMLElement {
                     <h1 class="title is-4" i18n="mobile-metadata"></h1>
                     <p i18n="mobile-metadata-hint"></p>
                 </div>
-                <div class="columns is-desktop is-centered" id="details-panel">
+                <div class="columns is-desktop is-centered is-hidden" id="details-panel">
                     <div class="column is-one-fifth-desktop">
                         <div class="field">
                             <label class="label" id="element-oid-label"></label>
@@ -50,7 +50,41 @@ class MetadataSection extends HTMLElement {
                         </div>
                     </div>
                 </div>
-                <hr>
+                <div class="columns is-centered">
+                    <div class="column is-three-fifths">
+                        <div class="box has-sidebar">
+                            <nav class="sidebar">
+                                <ul class="sidebar-options">
+                                    <li class="sidebar-option is-activable">
+                                        <i class="fal fa-text"></i>
+                                        <span>Basic</span>
+                                    </li>
+                                    <li class="sidebar-option is-activable">
+                                        <i class="fal fa-ruler"></i>
+                                        <span>Advanced</span>
+                                    </li>
+                                    <li class="sidebar-option">
+                                        <i class="fal fa-clone"></i>
+                                        <span>Duplicate</span>
+                                    </li>
+                                    <li class="sidebar-option">
+                                        <i class="fal fa-trash"></i>
+                                        <span>Remove</span>
+                                    </li>
+                                    <li class="sidebar-option">
+                                        <i class="fal fa-check"></i>
+                                        <span>Save</span>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <div class="box-content">
+                                <h1 class="title is-4">Element Options</h1>
+                                <h2 class="subtitle is-6">Basic</h2>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="columns is-desktop">
                     <div class="column">
                         <nav class="panel is-link">
