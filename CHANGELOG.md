@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.4.3
+
+- Autocomplete for conditions, including suggestions for comparison operators and target values
+
 ## 0.4.2
 
 - New option to add long lists of code list items using copy and paste
