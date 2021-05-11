@@ -50,8 +50,8 @@ class MetadataSection extends HTMLElement {
                         </div>
                     </div>
                 </div>
-                <div class="columns is-centered">
-                    <div class="column is-three-fifths">
+                <div class="columns is-desktop is-centered">
+                    <div class="column is-three-fifths-desktop">
                         <div class="box has-sidebar">
                             <nav class="sidebar">
                                 <ul class="sidebar-options">
