@@ -20,8 +20,6 @@ let currentElementID = {
 }
 
 // Further auxiliary variables
-// TODO: Should be replaced with a function getCurrentElementType() that uses the currentElementID
-let currentElementType = null;
 let elementTypeOnDrag = null;
 let locale = null;
 
@@ -131,8 +129,7 @@ function studyEventClicked(event) {
     event.target.activate();
     
     currentElementID.studyEvent = event.target.getOID();
-    currentElementType = event.target.getAttribute("element-type");
-    fillDetailsPanel(currentElementID.studyEvent, currentElementType);
+    fillDetailsPanel();
 
     loadFormsByStudyEvent(currentElementID.studyEvent, true);
 }
@@ -155,8 +152,7 @@ function formClicked(event) {
     event.target.activate();
 
     currentElementID.form = event.target.getOID();
-    currentElementType = event.target.getAttribute("element-type");
-    fillDetailsPanel(currentElementID.form, currentElementType);
+    fillDetailsPanel();
 
     loadItemGroupsByForm(currentElementID.form, true);
 }
@@ -179,8 +175,7 @@ function itemGroupClicked(event) {
     event.target.activate();
 
     currentElementID.itemGroup = event.target.getOID();
-    currentElementType = event.target.getAttribute("element-type");
-    fillDetailsPanel(currentElementID.itemGroup, currentElementType);
+    fillDetailsPanel();
 
     loadItemsByItemGroup(currentElementID.itemGroup, true);
 }
@@ -204,8 +199,7 @@ function itemClicked(event) {
     event.target.activate();
 
     currentElementID.item = event.target.getOID();
-    currentElementType = event.target.getAttribute("element-type");
-    fillDetailsPanel(currentElementID.item, currentElementType);
+    fillDetailsPanel();
 
     loadCodeListItemsByItem(currentElementID.item, true);
 }
@@ -231,8 +225,7 @@ function codeListItemClicked(event) {
 
     currentElementID.codeList = event.target.getOID();
     currentElementID.codeListItem = event.target.getAttribute("coded-value");
-    currentElementType = event.target.getAttribute("element-type");
-    fillDetailsPanel(currentElementID.codeList, currentElementType);
+    fillDetailsPanel();
 }
 
 function reloadStudyEvents() {
@@ -300,7 +293,10 @@ function resetDetailsPanel() {
     $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
 }
 
-function fillDetailsPanel(elementOID, elementType) {
+function fillDetailsPanel() {
+    const currentElementType = getCurrentElementType();
+    const currentElementOID = currentElementType == metadataHelper.elementTypes.CODELISTITEM ? currentElementID.codelist : getCurrentElementOID();
+
     resetDetailsPanel();
     $("#oid-input").disabled = false;
     $("#name-input").disabled = false;
@@ -310,20 +306,19 @@ function fillDetailsPanel(elementOID, elementType) {
     $("#remove-button-mobile").disabled = false;
     $("#duplicate-button").disabled = false;
     $("#duplicate-button-mobile").disabled = false;
-    $("#oid-input").value = elementOID;
+    $("#oid-input").value = currentElementOID;
 
-    let element = metadataHelper.getElementDefByOID(elementOID);
-    const elementRef = metadataHelper.getElementRefByOID(elementOID, elementType, getParentOID(elementType));
+    let element = metadataHelper.getElementDefByOID(currentElementOID);
+    const elementRef = metadataHelper.getElementRefByOID(currentElementOID, currentElementType, getParentOID(currentElementType));
     $("#name-input").value = element.getName();
 
-    const references = metadataHelper.getElementRefs(elementOID, elementType);
+    const references = metadataHelper.getElementRefs(currentElementOID, currentElementType);
     if (references.length > 1) {
         $("#references-tag").show();
         $("#number-of-references").textContent = references.length;
     }
 
-    let translatedText;
-    switch (elementType) {
+    switch (currentElementType) {
         case metadataHelper.elementTypes.STUDYEVENT:
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
@@ -335,7 +330,7 @@ function fillDetailsPanel(elementOID, elementType) {
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-question");
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             $("#question-textarea").value = element.getTranslatedQuestion(locale);
-            $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(elementOID) ? metadataHelper.elementTypes.CODELIST + "-" + element.getDataType() : element.getDataType();
+            $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(currentElementOID) ? metadataHelper.elementTypes.CODELIST + "-" + element.getDataType() : element.getDataType();
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             $("#mandatory-select-inner").disabled = true;
@@ -349,7 +344,7 @@ function fillDetailsPanel(elementOID, elementType) {
 }
 
 export function reloadDetailsPanel() {
-    if (currentElementType) fillDetailsPanel(getCurrentElementOID(), currentElementType);
+    if (getCurrentElementType()) fillDetailsPanel();
     else resetDetailsPanel();
 }
 
@@ -375,7 +370,7 @@ function fillRangeChecks() {
     }
 
     $("#add-range-check-button").disabled = false;
-    if (currentElementType != metadataHelper.elementTypes.ITEM) {
+    if (getCurrentElementType() != metadataHelper.elementTypes.ITEM) {
         $(".range-check-comparator-inner").disabled = true;
         $(".range-check-value").disabled = true;
         $("#add-range-check-button").disabled = true;
@@ -385,6 +380,8 @@ function fillRangeChecks() {
 window.saveElement = async function() {
     const newOID = $("#oid-input").value;
     const currentElementOID = getCurrentElementOID();
+    const currentElementType = getCurrentElementType();
+
     if (currentElementOID != newOID) {
         const getSubjectsHavingDataForElement = await clinicaldataHelper.getSubjectsHavingDataForElement(currentElementOID);
         if (getSubjectsHavingDataForElement.length == 0) {
@@ -519,7 +516,6 @@ function scrollParentToChild(child) {
 
 window.addStudyEvent = function(event) {
     currentElementID.studyEvent = metadataHelper.createStudyEvent();
-    currentElementType = metadataHelper.elementTypes.STUDYEVENT;
     reloadStudyEvents();
     reloadDetailsPanel();
     loadFormsByStudyEvent(currentElementID.studyEvent, true);
@@ -535,7 +531,6 @@ window.addStudyEvent = function(event) {
 
 window.addForm = function(event) {
     currentElementID.form = metadataHelper.createForm(currentElementID.studyEvent);
-    currentElementType = metadataHelper.elementTypes.FORM;
     reloadForms();
     reloadDetailsPanel();
     loadItemGroupsByForm(currentElementID.form, true);
@@ -546,7 +541,6 @@ window.addForm = function(event) {
 
 window.addItemGroup = function(event) {
     currentElementID.itemGroup = metadataHelper.createItemGroup(currentElementID.form);
-    currentElementType = metadataHelper.elementTypes.ITEMGROUP;
     reloadItemGroups();
     reloadDetailsPanel();
     loadItemsByItemGroup(currentElementID.itemGroup, true);
@@ -557,7 +551,6 @@ window.addItemGroup = function(event) {
 
 window.addItem = function(event) {
     currentElementID.item = metadataHelper.createItem(currentElementID.itemGroup);
-    currentElementType = metadataHelper.elementTypes.ITEM;
     reloadItems();
     reloadDetailsPanel();
     loadCodeListItemsByItem(currentElementID.item, true);
@@ -571,7 +564,6 @@ window.addCodeListItem = function(event) {
     if (codeListOID) {
         currentElementID.codeListItem = metadataHelper.addCodeListItem(codeListOID);
         currentElementID.codeList = codeListOID;
-        currentElementType = metadataHelper.elementTypes.CODELISTITEM;
         reloadCodeListItems();
         reloadDetailsPanel();
         scrollParentToChild($(`[coded-value="${currentElementID.codeListItem}"]`));
@@ -581,7 +573,7 @@ window.addCodeListItem = function(event) {
 }
 
 function removeElement() {
-    switch (currentElementType) {
+    switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.STUDYEVENT:
             metadataHelper.removeStudyEventRef(currentElementID.studyEvent);
             currentElementID.studyEvent = null;
@@ -603,7 +595,6 @@ function removeElement() {
             currentElementID.codeList = null;
             currentElementID.codeListItem = null;
     }
-    currentElementType = null;
 
     resetDetailsPanel();
     reloadTree();
@@ -611,6 +602,7 @@ function removeElement() {
 }
 
 function duplicateReference() {
+    const currentElementType = getCurrentElementType();
     if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) {
         const newItemOID = metadataHelper.createItem(currentElementID.itemGroup);
         metadataHelper.setItemDataType(newItemOID, metadataHelper.getElementDefByOID(currentElementID.item).getDataType());
@@ -625,7 +617,7 @@ function duplicateReference() {
 }
 
 function copyElement(deepCopy) {
-    switch (currentElementType) {
+    switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.STUDYEVENT:
             metadataHelper.copyStudyEvent(currentElementID.studyEvent, deepCopy);
             break;
@@ -684,6 +676,22 @@ function dragEnter(event) {
     }
 }
 
+function getCurrentElementOID() {
+    if (currentElementID.codeListItem) return currentElementID.codeListItem;
+    else if (currentElementID.item) return currentElementID.item;
+    else if (currentElementID.itemGroup) return currentElementID.itemGroup;
+    else if (currentElementID.form) return currentElementID.form;
+    else if (currentElementID.studyEvent) return currentElementID.studyEvent;
+}
+
+function getCurrentElementType() {
+    if (currentElementID.codeListItem) return metadataHelper.elementTypes.CODELISTITEM;
+    else if (currentElementID.item) return metadataHelper.elementTypes.ITEM;
+    else if (currentElementID.itemGroup) return metadataHelper.elementTypes.ITEMGROUP;
+    else if (currentElementID.form) return metadataHelper.elementTypes.FORM;
+    else if (currentElementID.studyEvent) return metadataHelper.elementTypes.STUDYEVENT;
+}
+
 function getParentOID(elementType) {
     switch (elementType) {
         case metadataHelper.elementTypes.STUDYEVENT:
@@ -699,23 +707,8 @@ function getParentOID(elementType) {
     }
 }
 
-function getCurrentElementOID() {
-    switch (currentElementType) {
-        case metadataHelper.elementTypes.STUDYEVENT:
-            return currentElementID.studyEvent;
-        case metadataHelper.elementTypes.FORM:
-            return currentElementID.form;
-        case metadataHelper.elementTypes.ITEMGROUP:
-            return currentElementID.itemGroup;
-        case metadataHelper.elementTypes.ITEM:
-            return currentElementID.item;
-        case metadataHelper.elementTypes.CODELISTITEM:
-            return currentElementID.codeList;
-    }
-}
-
 function setCurrentElementOID(elementOID) {
-    switch (currentElementType) {
+    switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.STUDYEVENT:
             currentElementID.studyEvent = elementOID;
             break;
@@ -797,8 +790,8 @@ window.elementDrop = async function(event) {
 }
 
 window.showRemoveModal = async function() {
-    const currentElement = currentElementType == metadataHelper.elementTypes.CODELISTITEM ? currentElementID.item : getCurrentElementOID();
-    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(currentElement);
+    const currentElementOID = getCurrentElementType() == metadataHelper.elementTypes.CODELISTITEM ? currentElementID.item : getCurrentElementOID();
+    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(currentElementOID);
     
     if (subjectKeys.length > 0) {
         ioHelper.showMessage(languageHelper.getTranslation("cannot-be-removed"), languageHelper.getTranslation("cannot-be-removed-text") + subjectKeys.join(", ") + "</strong>");
@@ -925,7 +918,7 @@ window.referenceCodeList = function() {
     const currentCodeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
     metadataHelper.removeCodeListRef(currentElementID.item, currentCodeListOID);
     metadataHelper.addCodeListRef(currentElementID.item, externalCodeListOID);
-    if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) currentElementID.codeList = externalCodeListOID;
+    if (getCurrentElementType() == metadataHelper.elementTypes.CODELISTITEM) currentElementID.codeList = externalCodeListOID;
 
     hideCodeListModal();
     reloadTree();
@@ -938,7 +931,7 @@ window.unreferenceCodeList = function() {
     const newCodeListOID = metadataHelper.copyCodeList(currentCodeListOID);
     metadataHelper.removeCodeListRef(currentElementID.item, currentCodeListOID);
     metadataHelper.addCodeListRef(currentElementID.item, newCodeListOID);
-    if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) currentElementID.codeList = newCodeListOID;
+    if (getCurrentElementType() == metadataHelper.elementTypes.CODELISTITEM) currentElementID.codeList = newCodeListOID;
 
     showCodeListModal();
     reloadTree();
