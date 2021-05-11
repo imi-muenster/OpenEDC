@@ -55,7 +55,7 @@ class MetadataSection extends HTMLElement {
                         <div class="box has-sidebar">
                             <nav class="sidebar">
                                 <ul class="sidebar-options">
-                                    <li class="sidebar-option is-activable">
+                                    <li class="sidebar-option is-activable is-active">
                                         <i class="fal fa-text"></i>
                                         <span i18n="basic"></span>
                                     </li>
