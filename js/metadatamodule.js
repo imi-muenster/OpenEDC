@@ -294,8 +294,8 @@ function resetDetailsPanel() {
 }
 
 function fillDetailsPanel() {
+    const currentElementOID = getCurrentElementOID();
     const currentElementType = getCurrentElementType();
-    const currentElementOID = currentElementType == metadataHelper.elementTypes.CODELISTITEM ? currentElementID.codelist : getCurrentElementOID();
 
     resetDetailsPanel();
     $("#oid-input").disabled = false;
@@ -677,7 +677,7 @@ function dragEnter(event) {
 }
 
 function getCurrentElementOID() {
-    if (currentElementID.codeListItem) return currentElementID.codeListItem;
+    if (currentElementID.codeListItem) return currentElementID.codeList;
     else if (currentElementID.item) return currentElementID.item;
     else if (currentElementID.itemGroup) return currentElementID.itemGroup;
     else if (currentElementID.form) return currentElementID.form;
