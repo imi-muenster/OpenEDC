@@ -59,12 +59,11 @@ a.panel-block {
 
 .sidebar {
     border-radius: 6px 0 0 6px;
-    color: var(--link-color);
-    background-color: var(--link-light-color);
+    color: white;
+    background-color: var(--link-color);
 }
 
 .sidebar-options {
-    list-style: none;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -79,12 +78,11 @@ a.panel-block {
 
 .sidebar-option:hover {
     cursor: pointer;
-    background-color: var(--link-light-hover-color);
+    background-color: var(--link-hover-color);
 }
 
 .sidebar-option.is-active {
-    border-left: 2px solid var(--link-color);
-    background-color: var(--link-light-active-color);
+    background-color: var(--link-active-color);
 }
 
 .sidebar-option:nth-last-child(3) {
@@ -112,7 +110,7 @@ a.panel-block {
 .box.has-sidebar {
     display: flex;
     padding: 0;
-    height: 300px;
+    height: 280px;
 }
 
 .box.has-sidebar .box-content {

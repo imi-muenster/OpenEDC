@@ -56,23 +56,23 @@ class MetadataSection extends HTMLElement {
                             <nav class="sidebar">
                                 <ul class="sidebar-options">
                                     <li class="sidebar-option is-activable is-active">
-                                        <i class="fal fa-text"></i>
+                                        <i class="far fa-text"></i>
                                         <span i18n="basic"></span>
                                     </li>
                                     <li class="sidebar-option is-activable">
-                                        <i class="fal fa-ruler"></i>
+                                        <i class="far fa-ruler"></i>
                                         <span i18n="extended"></span>
                                     </li>
                                     <li class="sidebar-option">
-                                        <i class="fal fa-clone"></i>
+                                        <i class="far fa-clone"></i>
                                         <span i18n="duplicate"></span>
                                     </li>
                                     <li class="sidebar-option">
-                                        <i class="fal fa-trash"></i>
+                                        <i class="far fa-trash"></i>
                                         <span i18n="remove"></span>
                                     </li>
                                     <li class="sidebar-option">
-                                        <i class="fal fa-check"></i>
+                                        <i class="far fa-check"></i>
                                         <span i18n="save"></span>
                                     </li>
                                 </ul>

@@ -265,16 +265,7 @@ readers do not read off random characters that represent icons */
   overflow: visible;
   position: static;
   width: auto; }
-@font-face {
-  font-family: 'Font Awesome 5 Pro';
-  font-style: normal;
-  font-weight: 300;
-  font-display: block;
-  src: url("./webfonts/fa-light-300.woff2") format("woff2"); }
 
-.fal {
-  font-family: 'Font Awesome 5 Pro';
-  font-weight: 300; }
 @font-face {
   font-family: 'Font Awesome 5 Pro';
   font-style: normal;
@@ -285,6 +276,7 @@ readers do not read off random characters that represent icons */
 .far {
   font-family: 'Font Awesome 5 Pro';
   font-weight: 400; }
+  
 @font-face {
   font-family: 'Font Awesome 5 Pro';
   font-style: normal;
