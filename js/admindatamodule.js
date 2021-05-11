@@ -92,7 +92,7 @@ function loadUser(userOID) {
             .then(user => {
                 if (user.username) {
                     $("#user-username-input").value = user.username
-                    $("#user-password-input").placeholder = "Reset initial password";
+                    $("#user-password-input").placeholder = languageHelper.getTranslation("reset-initial-password");
                 }
                 $$("#user-rights input").forEach(checkbox => {
                     if (user.rights && user.rights.includes(checkbox.name)) checkbox.checked = true;

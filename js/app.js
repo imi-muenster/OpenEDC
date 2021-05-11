@@ -198,7 +198,7 @@ function loginNotSuccessful(error) {
 
     switch (error) {
         case ioHelper.loginStatus.USERHASINITIALPASSWORD:
-            $("#login-text").textContent = "This is the first time you log in to the OpenEDC Server. Please choose a new secure password.";
+            $("#login-text").textContent = languageHelper.getTranslation("first-login-text");
             $("#login-confirm-password-input").parentNode.parentNode.show();
             $("#login-username-input").disabled = true;
             break;
