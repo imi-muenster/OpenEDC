@@ -35,7 +35,6 @@ export function init() {
 export function show() {
     reloadTree();
     reloadDetailsPanel();
-    setArrowKeyListener();
 
     $("#metadata-section").show();
     $("#metadata-toggle-button").hide();
@@ -45,8 +44,6 @@ export function show() {
 }
 
 export function hide() {
-    removeArrowKeyListener();
-
     $("#metadata-section").hide();
     $("#metadata-toggle-button").show();
 
@@ -500,70 +497,10 @@ function setIOListeners() {
                 saveElement();
             }
         };
-        inputElement.onfocus = removeArrowKeyListener;
-        inputElement.onblur = setArrowKeyListener;
         inputElement.tabIndex = index + 1;
     }
     $("#save-button").tabIndex = 6;
     $("#remove-button").tabIndex = 7;
-}
-
-export function removeArrowKeyListener() {
-    document.removeEventListener("keydown", arrowKeyListener);
-}
-
-export function setArrowKeyListener() {
-    document.addEventListener("keydown", arrowKeyListener);
-}
-
-function arrowKeyListener(event) {
-    if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "KeyA", "KeyR", "Tab"].includes(event.code)) return;
-    event.preventDefault();
-
-    let target = null;
-    if (event.code == "ArrowUp") {
-        if (currentElementType) target = $(`[oid="${getCurrentElementOID()}"]`).previousSibling;
-        if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) target = $(`[coded-value="${currentElementID.codeListItem}"]`).previousSibling;
-    } else if (event.code == "ArrowDown") {
-        if (currentElementType) target = $(`[oid="${getCurrentElementOID()}"]`).nextSibling;
-        if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) target = $(`[coded-value="${currentElementID.codeListItem}"]`).nextSibling;
-    } else if (event.code == "ArrowLeft") {
-        if (currentElementType != metadataHelper.elementTypes.STUDYEVENT) {
-            target = $(`[oid="${getParentOID(currentElementType)}"]`);
-            setCurrentElementOID(null);
-            currentElementType = getParentElementType(currentElementType);
-        }
-    } else if (event.code == "ArrowRight") {
-        if (currentElementType != metadataHelper.elementTypes.CODELISTITEM && getCurrentElementFirstChild()) {
-            target = getCurrentElementFirstChild();
-            currentElementType = getChildElementType(currentElementType);
-        }
-    } else if (event.code == "KeyA") {
-        addCurrentElementType();
-    } else if (event.code == "KeyR") {
-        showRemoveModal();
-    } else if (event.code == "Tab") {
-        $("#oid-input").focus();
-    }
-
-    if (!currentElementType && (event.code == "ArrowDown" || event.code == "ArrowRight")) {
-        target = $(`a[element-type="studyevent"]`);
-        currentElementType = metadataHelper.elementTypes.STUDYEVENT;
-    }
-
-    if (target && target.tagName == "A") {
-        setCurrentElementOID(target.getOID());
-        if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) currentElementID.codeListItem = target.getAttribute("coded-value");
-        
-        reloadDetailsPanel();
-        reloadTree();
-
-        if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) {
-            scrollParentToChild($(`[coded-value="${currentElementID.codeListItem}"]`));
-        } else {
-            scrollParentToChild($(`[oid="${getCurrentElementOID()}"]`));
-        }
-    }
 }
 
 function scrollParentToChild(child) {
@@ -762,66 +699,6 @@ function getParentOID(elementType) {
     }
 }
 
-function getParentElementType(elementType) {
-    switch (elementType) {
-        case metadataHelper.elementTypes.STUDYEVENT:
-            return null;
-        case metadataHelper.elementTypes.FORM:
-            return metadataHelper.elementTypes.STUDYEVENT;
-        case metadataHelper.elementTypes.ITEMGROUP:
-            return metadataHelper.elementTypes.FORM;
-        case metadataHelper.elementTypes.ITEM:
-            return metadataHelper.elementTypes.ITEMGROUP;
-        case metadataHelper.elementTypes.CODELISTITEM:
-            return metadataHelper.elementTypes.ITEM;
-    }
-}
-
-function getChildElementType(elementType) {
-    switch (elementType) {
-        case metadataHelper.elementTypes.STUDYEVENT:
-            return metadataHelper.elementTypes.FORM;
-        case metadataHelper.elementTypes.FORM:
-            return metadataHelper.elementTypes.ITEMGROUP;
-        case metadataHelper.elementTypes.ITEMGROUP:
-            return metadataHelper.elementTypes.ITEM;
-        case metadataHelper.elementTypes.ITEM:
-            return metadataHelper.elementTypes.CODELISTITEM;
-    }
-}
-
-function addCurrentElementType() {
-    switch (currentElementType) {
-        case metadataHelper.elementTypes.STUDYEVENT:
-            addStudyEvent();
-            break;
-        case metadataHelper.elementTypes.FORM:
-            addForm();
-            break;
-        case metadataHelper.elementTypes.ITEMGROUP:
-            addItemGroup();
-            break;
-        case metadataHelper.elementTypes.ITEM:
-            addItem();
-            break;
-        case metadataHelper.elementTypes.CODELISTITEM:
-            addCodeListItem();
-    }
-}
-
-function getCurrentElementFirstChild() {
-    switch (currentElementType) {
-        case metadataHelper.elementTypes.STUDYEVENT:
-            return $(`a[element-type="form"]`);
-        case metadataHelper.elementTypes.FORM:
-            return $(`a[element-type="itemgroup"]`);
-        case metadataHelper.elementTypes.ITEMGROUP:
-            return $(`a[element-type="item"]`);
-        case metadataHelper.elementTypes.ITEM:
-            return $(`a[element-type="codelistitem"]`);
-    }
-}
-
 function getCurrentElementOID() {
     switch (currentElementType) {
         case metadataHelper.elementTypes.STUDYEVENT:
@@ -996,7 +873,6 @@ window.showCodeListModal = function() {
     $("#codelist-modal #textitems-textarea").value = codeListItemsString;
     $("#codelist-modal #codelist-reference-input").value = null;
     $("#codelist-modal").activate();
-    removeArrowKeyListener();
 }
 
 window.saveCodeListModal = function() {
@@ -1029,7 +905,6 @@ window.saveCodeListModal = function() {
 window.hideCodeListModal = function() {
     autocompleteHelper.disableAutocomplete($("#codelist-modal #codelist-reference-input"));
     $("#codelist-modal").deactivate();
-    setArrowKeyListener();
 }
 
 window.referenceCodeList = function() {

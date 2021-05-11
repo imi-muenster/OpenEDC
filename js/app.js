@@ -300,8 +300,6 @@ window.loadExample = async function() {
 }
 
 window.showProjectModal = function() {
-    metadataModule.removeArrowKeyListener();
-
     if (ioHelper.hasDecryptionKey()) {
         $("#project-modal #encryption-password-input").parentNode.parentNode.hide();
         $("#project-modal #data-encryption-warning").hide();
@@ -338,7 +336,6 @@ window.hideProjectModal = function() {
     $("#sites-options").hide();
     $("#name-description").hide();
     $("#project-modal").deactivate();
-    if (getCurrentMode() == appModes.METADATA) metadataModule.setArrowKeyListener();
 }
 
 window.projectTabClicked = function(event) {
@@ -469,7 +466,6 @@ window.saveStudyNameDescription = function() {
     metadataHelper.storeMetadata();
     hideProjectModal();
     setTitles();
-    if (getCurrentMode() == appModes.METADATA) metadataModule.setArrowKeyListener();
 }
 
 window.showRemoveDataModal = function(complete) {
@@ -491,7 +487,6 @@ window.showRemoveDataModal = function(complete) {
 }
 
 window.showAboutModal = function() {
-    metadataModule.removeArrowKeyListener();
     $("#about-modal h2").textContent = languageHelper.getTranslation("version") + " " + appVersion;
     $("#about-modal").activate();
 
@@ -500,7 +495,6 @@ window.showAboutModal = function() {
 
 window.hideAboutModal = function() {
     $("#about-modal").deactivate();
-    if (getCurrentMode() == appModes.METADATA) metadataModule.setArrowKeyListener();
 }
 
 window.exportODM = async function() {
