@@ -72,52 +72,6 @@ function createDatatypeMandatorySelect() {
     if (!$("#mandatory-select-outer")) $("#mandatory-label").insertAdjacentElement("afterend", htmlElements.getMandatorySelect());
 }
 
-function createConditionSelect() {
-    $$("#condition-select-outer").removeElements();
-
-    let conditions = [""];
-    let selectedCondition = "";
-
-    if (currentElementType == metadataHelper.elementTypes.ITEMGROUP || currentElementType == metadataHelper.elementTypes.ITEM) {
-        for (let condition of metadataHelper.getConditions()) {
-            conditions.push(condition.getName());
-        }
-    
-        let elementCondition = metadataHelper.getElementCondition(currentElementType, getCurrentElementOID(), getParentOID(currentElementType));
-        if (elementCondition) selectedCondition = elementCondition.getName();
-    }
-
-    let select = htmlElements.getSelect("condition-select", true, true, conditions, selectedCondition);
-    $("#condition-label").insertAdjacentElement("afterend", select);
-
-    if (currentElementType != metadataHelper.elementTypes.ITEMGROUP && currentElementType != metadataHelper.elementTypes.ITEM) {
-        $("#condition-select-inner").disabled = true;
-    }
-}
-
-function createMeasurementUnitSelect() {
-    $$("#measurement-unit-select-outer").removeElements();
-
-    let measurementUnits = [""];
-    let selectedMeasurementUnit = "";
-
-    if (currentElementType == metadataHelper.elementTypes.ITEM) {
-        for (let measurementUnit of metadataHelper.getMeasurementUnits()) {
-            measurementUnits.push(measurementUnit.getName());
-        }
-    
-        let itemMeasurementUnit = metadataHelper.getMeasurementUnitByItem(currentElementID.item);
-        if (itemMeasurementUnit) selectedMeasurementUnit = itemMeasurementUnit.getName();
-    }
-
-    let select = htmlElements.getSelect("measurement-unit-select", true, true, measurementUnits, selectedMeasurementUnit);
-    $("#measurement-unit-label").insertAdjacentElement("afterend", select);
-
-    if (currentElementType != metadataHelper.elementTypes.ITEM) {
-        $("#measurement-unit-select-inner").disabled = true;
-    }
-}
-
 function hideStudyEvents(hideTree) {
     $$("#study-event-panel-blocks a").removeElements();
     if (hideTree) {
@@ -334,8 +288,6 @@ function resetDetailsPanel() {
     $("#remove-button-mobile").disabled = true;
     $("#duplicate-button").disabled = true;
     $("#duplicate-button-mobile").disabled = true;
-    $("#more-button").disabled = true;
-    $("#more-button-mobile").disabled = true;
     $("#question-textarea").disabled = true;
     $("#datatype-select-inner").disabled = true;
     $("#mandatory-select-inner").disabled = true;
@@ -361,8 +313,6 @@ function fillDetailsPanel(elementOID, elementType) {
     $("#remove-button-mobile").disabled = false;
     $("#duplicate-button").disabled = false;
     $("#duplicate-button-mobile").disabled = false;
-    $("#more-button").disabled = false;
-    $("#more-button-mobile").disabled = false;
     $("#oid-input").value = elementOID;
 
     let element = metadataHelper.getElementDefByOID(elementOID);
@@ -435,30 +385,6 @@ function fillRangeChecks() {
     }
 }
 
-function fillConditions() {
-    $$(".condition-input").removeElements();
-    $("#conditions-label").insertAdjacentElement("afterend", htmlElements.getEmptyConditionInputElement());
-    
-    for (let condition of metadataHelper.getConditions()) {
-        let formalExpression = condition.querySelector("FormalExpression").textContent;
-        let conditionInput = htmlElements.getConditionInputElement(condition.getOID(), condition.getName(), formalExpression);
-        $(".empty-condition-field").insertAdjacentElement("beforebegin", conditionInput);
-    }
-
-    $$("input.condition-formex").forEach(input => autocompleteHelper.enableAutocomplete(input, autocompleteHelper.modes.CONDITION));
-}
-
-function fillMeasurementUnits() {
-    $$(".measurement-unit-input").removeElements();
-    $("#measurement-units-label").insertAdjacentElement("afterend", htmlElements.getEmptyMeasurementUnitInputElement());
-
-    for (let measurementUnit of metadataHelper.getMeasurementUnits()) {
-        let translatedSymbol = measurementUnit.getTranslatedSymbol(locale);
-        let unitInput = htmlElements.getMeasurementUnitInputElement(measurementUnit.getOID(), measurementUnit.getName(), translatedSymbol);
-        $(".empty-measurement-unit-field").insertAdjacentElement("beforebegin", unitInput);
-    }
-}
-
 window.saveElement = async function() {
     const newOID = $("#oid-input").value;
     const currentElementOID = getCurrentElementOID();
@@ -512,34 +438,6 @@ window.saveElement = async function() {
     metadataHelper.storeMetadata();
 }
 
-window.saveMoreModal = function() {
-    if (currentElementType == metadataHelper.elementTypes.ITEMGROUP || currentElementType == metadataHelper.elementTypes.ITEM) {
-        saveCondition();
-    }
-    if (currentElementType == metadataHelper.elementTypes.ITEM) {
-        saveMeasurementUnit();
-        saveRangeChecks();
-    }
-
-    saveAliases();
-    saveConditions();
-    saveMeasurementUnits();
-    hideMoreModal();
-    setArrowKeyListener();
-
-    metadataHelper.storeMetadata();
-}
-
-function saveCondition() {
-    let conditionName = $("#condition-select-inner").value;
-    metadataHelper.setElementCondition(currentElementType, getCurrentElementOID(), getParentOID(currentElementType), conditionName);
-}
-
-function saveMeasurementUnit() {
-    let measurementUnitName = $("#measurement-unit-select-inner").value;
-    metadataHelper.setItemMeasurementUnit(currentElementID.item, measurementUnitName);
-}
-
 function saveRangeChecks() {
     metadataHelper.deleteRangeChecksOfItem(currentElementID.item);
     let rangeCheckInputs = $$(".range-check-input");
@@ -562,42 +460,6 @@ function saveAliases() {
             metadataHelper.setElementAlias(getCurrentElementOID(), currentElementID.codeListItem, context, name);
         }
     }
-}
-
-function saveConditions() {
-    let conditionInputs = $$(".condition-input");
-    for (let conditionInput of conditionInputs) {
-        let oid = conditionInput.getOID();
-        let name = conditionInput.querySelector(".condition-name").value;
-        let formalExpression = conditionInput.querySelector(".condition-formex").value.escapeXML();
-        if (name && formalExpression) {
-            if (!oid) {
-                metadataHelper.createCondition(name, formalExpression, locale);
-            } else {
-                metadataHelper.setElementName(oid, name);
-                metadataHelper.setConditionFormalExpression(oid, formalExpression);
-            }
-        }
-    }
-    $$(".condition-input").removeElements();
-}
-
-function saveMeasurementUnits() {
-    let measurementUnitInputs = $$(".measurement-unit-input");
-    for (let measurementUnitInput of measurementUnitInputs) {
-        let oid = measurementUnitInput.getOID();
-        let name = measurementUnitInput.querySelector(".measurement-unit-name").value;
-        let symbol = measurementUnitInput.querySelector(".measurement-unit-symbol").value;
-        if (name && symbol) {
-            if (!oid) {
-                metadataHelper.createMeasurementUnit(name, symbol, locale);
-            } else {
-                metadataHelper.setElementName(oid, name);
-                metadataHelper.setMeasurementUnitSymbol(oid, symbol, locale);
-            }
-        }
-    }
-    $$(".measurement-unit-input").removeElements();
 }
 
 function handleItemDataType(itemOID, dataType) {
@@ -1083,26 +945,6 @@ window.showDuplicateModal = function() {
     );
 }
 
-window.showMoreModal = function() {
-    removeArrowKeyListener();
-    $("#more-modal").activate();
-    createConditionSelect();
-    createMeasurementUnitSelect();
-    fillRangeChecks();
-    fillAliases();
-}
-
-window.hideMoreModal = function() {
-    ioHelper.removeIsActiveFromElement($("#more-tabs ul li.is-active"));
-    $$("input.condition-formex").forEach(input => autocompleteHelper.disableAutocomplete(input));
-    $("#element-options-tab").activate();
-    $("#element-options").show();
-    $("#measurement-units").hide();
-    $("#conditions").hide();
-    $("#more-modal").deactivate();
-    setArrowKeyListener();
-}
-
 window.addAliasInput = function() {
     $$(".empty-alias-field").getLastElement().insertAdjacentElement("afterend", htmlElements.getEmptyAliasInputElement());
 }
@@ -1119,36 +961,6 @@ window.addConditionInput = function() {
     const conditionInput = htmlElements.getEmptyConditionInputElement();
     autocompleteHelper.enableAutocomplete(conditionInput.querySelector("input.condition-formex"), autocompleteHelper.modes.CONDITION);
     $$(".empty-condition-field").getLastElement().insertAdjacentElement("afterend", conditionInput);
-}
-
-window.moreTabClicked = function(event) {
-    ioHelper.removeIsActiveFromElement($("#more-tabs ul li.is-active"));
-    event.target.parentNode.activate();
-
-    switch (event.target.parentNode.id) {
-        case "element-options-tab":
-            saveConditions();
-            saveMeasurementUnits();
-            createConditionSelect();
-            createMeasurementUnitSelect();
-            $("#element-options").show();
-            $("#measurement-units").hide();
-            $("#conditions").hide();
-            break;
-        case "conditions-tab":
-            saveCondition();
-            fillConditions();
-            $("#element-options").hide();
-            $("#measurement-units").hide();
-            $("#conditions").show();
-            break;
-        case "measurement-units-tab":
-            saveMeasurementUnit();
-            fillMeasurementUnits();
-            $("#element-options").hide();
-            $("#measurement-units").show();
-            $("#conditions").hide();
-    }
 }
 
 // TODO: Reorder other modal functions in this order (show -> save -> hide)

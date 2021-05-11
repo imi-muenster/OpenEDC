@@ -31,7 +31,6 @@ const staticAssets = [
     "./js/tags/metadatasection.js",
     "./js/tags/clinicaldatasection.js",
     "./js/tags/projectmodal.js",
-    "./js/tags/moremodal.js",
     "./js/tags/codelistmodal.js",
     "./js/tags/othermodals.js",
     "./lib/bulma.css",
