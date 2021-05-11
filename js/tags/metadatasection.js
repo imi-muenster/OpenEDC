@@ -134,7 +134,7 @@ class MetadataSection extends HTMLElement {
                                     <div class="control">
                                         <button class="button is-white" id="code-list-items-opt-button" onclick="showCodeListModal()" disabled>
                                             <span class="icon">
-                                                <i class="fas fa-bars"></i>
+                                                <i class="far fa-bars"></i>
                                             </span>
                                         </button>
                                     </div>

@@ -55,7 +55,7 @@ class LoginModal extends HTMLElement {
                                     <div class="control has-icons-left">
                                         <input class="input" id="login-username-input" type="text" autocomplete="username" i18n-ph="username">
                                         <span class="icon is-small is-left">
-                                            <i class="fas fa-user"></i>
+                                            <i class="far fa-user"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -63,7 +63,7 @@ class LoginModal extends HTMLElement {
                                     <div class="control has-icons-left">
                                         <input class="input" id="login-password-input" type="password" autocomplete="current-password" i18n-ph="password">
                                         <span class="icon is-small is-left">
-                                            <i class="fas fa-lock"></i>
+                                            <i class="far fa-lock"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -71,7 +71,7 @@ class LoginModal extends HTMLElement {
                                     <div class="control has-icons-left">
                                         <input class="input" id="login-confirm-password-input" type="password" autocomplete="current-password" i18n-ph="password-confirm">
                                         <span class="icon is-small is-left">
-                                            <i class="fas fa-lock"></i>
+                                            <i class="far fa-lock"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -117,7 +117,7 @@ class AboutModal extends HTMLElement {
                             </div>
                             <a class="button is-rounded is-small is-link mb-5" target="_blank" i18n-href="privacy-policy-url">
                                 <span class="icon">
-                                    <i class="fas fa-arrow-right"></i>
+                                    <i class="far fa-arrow-right"></i>
                                 </span>
                                 <span i18n="privacy-policy"></span>
                             </a>
