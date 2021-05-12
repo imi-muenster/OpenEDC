@@ -270,6 +270,8 @@ export function reloadTree() {
 }
 
 function resetDetailsPanel() {
+    $("#duplicate-button").unhighlight();
+    $("#remove-button").unhighlight();
     $("#save-button").unhighlight();
     $("#oid-input").disabled = true;
     $("#question-textarea").disabled = true;
@@ -288,6 +290,8 @@ function fillDetailsPanel() {
     const currentElementType = getCurrentElementType();
 
     resetDetailsPanel();
+    $("#duplicate-button").highlight();
+    $("#remove-button").highlight();
     $("#oid-input").disabled = false;
     $("#question-textarea").disabled = false;
     $("#remove-button").disabled = false;

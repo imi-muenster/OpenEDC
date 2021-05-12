@@ -87,6 +87,6 @@ HTMLElement.prototype.isActive = function() {
     return this.classList.contains("is-active");
 }
 
-HTMLElement.prototype.isActive = function() {
+HTMLElement.prototype.isHighlighted = function() {
     return this.classList.contains("is-highlighted");
 }

@@ -77,17 +77,17 @@ a.panel-block {
 }
 
 .sidebar-option:hover {
-    cursor: pointer;
     background-color: var(--link-hover-color);
+    cursor: pointer;
 }
 
 .sidebar-option.is-active {
     background-color: var(--link-active-color);
 }
 
-.sidebar-option.is-highlighted {
-    color: var(--link-color);
-    background-color: var(--link-light-active-color);
+.sidebar-option:not(.is-activable):not(.is-highlighted) {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 .sidebar-option:nth-last-child(3) {
