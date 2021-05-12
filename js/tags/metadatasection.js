@@ -6,34 +6,7 @@ class MetadataSection extends HTMLElement {
                     <h1 class="title is-4" i18n="mobile-metadata"></h1>
                     <p i18n="mobile-metadata-hint"></p>
                 </div>
-                <div class="columns is-desktop is-centered is-hidden" id="details-panel">
-                    <div class="column is-one-fifth-desktop">
-                        <div class="buttons is-hidden-touch">
-                            <button class="button is-link" id="save-button" onclick="saveElement()" i18n="save-changes" disabled></button>
-                            <button class="button is-danger" id="remove-button" onclick="showRemoveModal()" i18n="remove" disabled></button>
-                        </div>
-                    </div>
-                    <div class="column is-one-fifth-desktop">
-                        <div class="tags has-addons is-centered is-hidden" id="references-tag">
-                            <span class="tag" i18n="multiple-references-hint"></span>
-                            <span class="tag is-link" id="number-of-references"></span>
-                        </div>
-                    </div>
-                    <div class="column is-one-fifth-desktop">
-                        
-                        <div class="buttons is-pulled-right is-hidden-touch">
-                            <button class="button" id="duplicate-button" onclick="showDuplicateModal()" i18n="duplicate" disabled></button>
-                        </div>
-                    </div>
-                    <div class="column is-hidden-desktop">
-                        <div class="buttons">
-                            <button class="button is-link" id="save-button-mobile" onclick="saveElement()" i18n="save-changes" disabled></button>
-                            <button class="button is-danger" id="remove-button-mobile" onclick="showRemoveModal()" i18n="remove" disabled></button>
-                            <button class="button" id="duplicate-button-mobile" onclick="showDuplicateModal()" i18n="duplicate" disabled></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="columns is-desktop is-centered">
+                <div class="columns is-desktop is-centered" id="details-panel">
                     <div class="column is-half-desktop">
                         <div class="box has-sidebar">
                             <nav class="sidebar">
@@ -46,15 +19,15 @@ class MetadataSection extends HTMLElement {
                                         <i class="far fa-ruler"></i>
                                         <span i18n="extended"></span>
                                     </li>
-                                    <li class="sidebar-option">
+                                    <li class="sidebar-option" id="duplicate-button" onclick="showDuplicateModal()">
                                         <i class="far fa-clone"></i>
                                         <span i18n="duplicate"></span>
                                     </li>
-                                    <li class="sidebar-option">
+                                    <li class="sidebar-option" id="remove-button" onclick="showRemoveModal()">
                                         <i class="far fa-trash"></i>
                                         <span i18n="remove"></span>
                                     </li>
-                                    <li class="sidebar-option">
+                                    <li class="sidebar-option" id="save-button" onclick="saveElement()">
                                         <i class="far fa-check"></i>
                                         <span i18n="save"></span>
                                     </li>

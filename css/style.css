@@ -124,10 +124,6 @@ a.panel-block {
     resize: none;
 }
 
-#references-tag {
-    margin-top: 1.25em;
-}
-
 #clinicaldata-form-title, #clinicaldata-form-title .level-item {
     flex-shrink: 1;
 }

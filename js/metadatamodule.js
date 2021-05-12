@@ -272,11 +272,8 @@ export function reloadTree() {
 function resetDetailsPanel() {
     $("#oid-input").disabled = true;
     $("#save-button").disabled = true;
-    $("#save-button-mobile").disabled = true;
     $("#remove-button").disabled = true;
-    $("#remove-button-mobile").disabled = true;
     $("#duplicate-button").disabled = true;
-    $("#duplicate-button-mobile").disabled = true;
     $("#question-textarea").disabled = true;
     $("#datatype-select-inner").disabled = true;
     $("#mandatory-select-inner").disabled = true;
@@ -284,7 +281,6 @@ function resetDetailsPanel() {
     $("#question-textarea").value = "";
     $("#datatype-select-inner").value = "";
     $("#mandatory-select-inner").value = "";
-    $("#references-tag").hide();
     $("#element-oid-label").textContent = languageHelper.getTranslation("unique-id");
     $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
 }
@@ -297,17 +293,14 @@ function fillDetailsPanel() {
     $("#oid-input").disabled = false;
     $("#question-textarea").disabled = false;
     $("#remove-button").disabled = false;
-    $("#remove-button-mobile").disabled = false;
     $("#duplicate-button").disabled = false;
-    $("#duplicate-button-mobile").disabled = false;
     $("#oid-input").value = currentElementOID;
 
     let element = metadataHelper.getElementDefByOID(currentElementOID);
     const elementRef = metadataHelper.getElementRefByOID(currentElementOID, currentElementType, getParentOID(currentElementType));
     const references = metadataHelper.getElementRefs(currentElementOID, currentElementType);
     if (references.length > 1) {
-        $("#references-tag").show();
-        $("#number-of-references").textContent = references.length;
+        // TODO: Reimplement for new properties panel
     }
 
     switch (currentElementType) {
@@ -418,7 +411,6 @@ window.saveElement = async function() {
     reloadDetailsPanel();
     document.activeElement.blur();
     $("#save-button").disabled = true;
-    $("#save-button-mobile").disabled = true;
 
     metadataHelper.storeMetadata();
 }
@@ -474,7 +466,6 @@ function setIOListeners() {
     for (let [index, inputElement] of inputElements.entries()) {
         inputElement.oninput = function() {
             $("#save-button").disabled = false;
-            $("#save-button-mobile").disabled = false;
         };
         inputElement.onkeydown = function(keyEvent) {
             if (keyEvent.code == "Escape") {
@@ -487,8 +478,6 @@ function setIOListeners() {
         };
         inputElement.tabIndex = index + 1;
     }
-    $("#save-button").tabIndex = 6;
-    $("#remove-button").tabIndex = 7;
 }
 
 function scrollParentToChild(child) {
