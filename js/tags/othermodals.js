@@ -115,7 +115,7 @@ class AboutModal extends HTMLElement {
                                 <p i18n="address_3"></p>
                                 <p i18n="address_4"></p>
                             </div>
-                            <a class="button is-rounded is-small is-link mb-5" target="_blank" i18n-href="privacy-policy-url">
+                            <a class="button is-link is-small is-rounded mb-5" target="_blank" i18n-href="privacy-policy-url">
                                 <span class="icon">
                                     <i class="far fa-arrow-right"></i>
                                 </span>
@@ -239,7 +239,7 @@ class MessageModal extends HTMLElement {
         if (this.callbacks) {
             for (const [text, callback] of Object.entries(this.callbacks)) {
                 let button = document.createElement("button");
-                button.classList = `button is-small ${this.callbackType}`;
+                button.classList = `button ${this.callbackType} is-small`;
                 button.textContent = text;
                 button.onclick = () => {
                     callback();
@@ -251,7 +251,7 @@ class MessageModal extends HTMLElement {
         
         // Add close button
         let button = document.createElement("button");
-        button.classList = this.callbacks ? "button is-small" : "button is-small is-link";
+        button.classList = this.callbacks ? "button is-small" : "button is-link is-small";
         button.textContent = this.closeText;
         button.onclick = () => this.remove();
         this.querySelector(".buttons").insertAdjacentElement("beforeend", button);

@@ -63,7 +63,7 @@ class MetadataSection extends HTMLElement {
                                             <input class="input" type="text" id="measurement-unit" autocomplete="off" disabled>
                                         </div>
                                         <label class="label" id="range-check-label" i18n="range-check"></label>
-                                        <button class="button is-small is-pulled-right" id="add-range-check-button" onclick="addRangeCheckInput()">+</button>
+                                        <button class="button is-link is-light is-small is-pulled-right" id="add-range-check-button" onclick="addRangeCheckInput()" i18n="add"></button>
                                     </div>
                                     <div class="column is-half">
                                         <div class="field">
@@ -71,7 +71,7 @@ class MetadataSection extends HTMLElement {
                                             <input class="input" type="text" id="collection-exception-condition" autocomplete="off" disabled>
                                         </div>
                                         <label class="label" id="alias-label" i18n="alias"></label>
-                                        <button class="button is-small is-pulled-right" onclick="addAliasInput()">+</button>
+                                        <button class="button is-link is-light is-small is-pulled-right" onclick="addAliasInput()" i18n="add"></button>
                                     </div>
                                 </div>
                             </div>
