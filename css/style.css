@@ -116,10 +116,12 @@ a.panel-block {
 .box.has-sidebar .box-content {
     flex-grow: 1;
     padding: 1.25rem;
+    overflow-y: auto;
 }
 
 #question-textarea {
-    min-height: 7.75em;
+    height: 13rem;
+    resize: none;
 }
 
 #references-tag {

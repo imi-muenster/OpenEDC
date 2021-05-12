@@ -271,7 +271,6 @@ export function reloadTree() {
 
 function resetDetailsPanel() {
     $("#oid-input").disabled = true;
-    $("#name-input").disabled = true;
     $("#save-button").disabled = true;
     $("#save-button-mobile").disabled = true;
     $("#remove-button").disabled = true;
@@ -282,14 +281,11 @@ function resetDetailsPanel() {
     $("#datatype-select-inner").disabled = true;
     $("#mandatory-select-inner").disabled = true;
     $("#oid-input").value = "";
-    $("#name-input").value = "";
-    $("#name-input").placeholder = "";
     $("#question-textarea").value = "";
     $("#datatype-select-inner").value = "";
     $("#mandatory-select-inner").value = "";
     $("#references-tag").hide();
     $("#element-oid-label").textContent = languageHelper.getTranslation("unique-id");
-    $("#element-short-label").textContent = languageHelper.getTranslation("name");
     $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
 }
 
@@ -299,9 +295,7 @@ function fillDetailsPanel() {
 
     resetDetailsPanel();
     $("#oid-input").disabled = false;
-    $("#name-input").disabled = false;
     $("#question-textarea").disabled = false;
-    $("#mandatory-select-inner").disabled = false;
     $("#remove-button").disabled = false;
     $("#remove-button-mobile").disabled = false;
     $("#duplicate-button").disabled = false;
@@ -310,8 +304,6 @@ function fillDetailsPanel() {
 
     let element = metadataHelper.getElementDefByOID(currentElementOID);
     const elementRef = metadataHelper.getElementRefByOID(currentElementOID, currentElementType, getParentOID(currentElementType));
-    $("#name-input").value = element.getName();
-
     const references = metadataHelper.getElementRefs(currentElementOID, currentElementType);
     if (references.length > 1) {
         $("#references-tag").show();
@@ -322,11 +314,11 @@ function fillDetailsPanel() {
         case metadataHelper.elementTypes.STUDYEVENT:
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
-            $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             $("#question-textarea").value = element.getTranslatedDescription(locale);
             break;
         case metadataHelper.elementTypes.ITEM:
             $("#datatype-select-inner").disabled = false;
+            $("#mandatory-select-inner").disabled = false;
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-question");
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             $("#question-textarea").value = element.getTranslatedQuestion(locale);
@@ -334,11 +326,10 @@ function fillDetailsPanel() {
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             $("#mandatory-select-inner").disabled = true;
-            $("#element-oid-label").textContent = languageHelper.getTranslation("choices-unique-id");
-            $("#element-short-label").textContent = languageHelper.getTranslation("coded-value");
+            $("#element-oid-label").textContent = languageHelper.getTranslation("coded-value");
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-choice");
             element = metadataHelper.getCodeListItem(currentElementID.codeList, currentElementID.codeListItem);
-            $("#name-input").value = element.getCodedValue();
+            $("#oid-input").value = element.getCodedValue();
             $("#question-textarea").value = element.getTranslatedDecode(locale);
     }
 }
@@ -400,13 +391,13 @@ window.saveElement = async function() {
             showFirstEventEditedHelp();
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
-            metadataHelper.setElementName(getCurrentElementOID(), $("#name-input").value);
+            metadataHelper.setElementName(getCurrentElementOID(), newOID);
             metadataHelper.setElementDescription(getCurrentElementOID(), $("#question-textarea").value, locale);
             metadataHelper.setElementMandatory(getCurrentElementOID(), currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
             reloadTree();
             break;
         case metadataHelper.elementTypes.ITEM:
-            metadataHelper.setElementName(getCurrentElementOID(), $("#name-input").value);
+            metadataHelper.setElementName(getCurrentElementOID(), newOID);
             metadataHelper.setItemQuestion(getCurrentElementOID(), $("#question-textarea").value, locale);
             metadataHelper.setElementMandatory(getCurrentElementOID(), currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
             handleItemDataType(getCurrentElementOID(), $("#datatype-select-inner").value);
@@ -414,8 +405,8 @@ window.saveElement = async function() {
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             metadataHelper.setCodeListItemDecodedText(currentElementID.codeList, currentElementID.codeListItem, $("#question-textarea").value, locale);
-            metadataHelper.setCodeListItemCodedValue(currentElementID.codeList, currentElementID.codeListItem, $("#name-input").value);
-            currentElementID.codeListItem = $("#name-input").value;
+            metadataHelper.setCodeListItemCodedValue(currentElementID.codeList, currentElementID.codeListItem, newOID);
+            currentElementID.codeListItem = newOID;
             reloadCodeListItems();
     }
 

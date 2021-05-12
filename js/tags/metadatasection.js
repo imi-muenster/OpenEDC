@@ -8,36 +8,19 @@ class MetadataSection extends HTMLElement {
                 </div>
                 <div class="columns is-desktop is-centered is-hidden" id="details-panel">
                     <div class="column is-one-fifth-desktop">
-                        <div class="field">
-                            <label class="label" id="element-oid-label"></label>
-                            <input class="input" type="text" id="oid-input" autocomplete="off" disabled>
-                        </div>
-                        <div class="field">
-                            <label class="label" id="element-short-label"></label>
-                            <input class="input" type="text" id="name-input" autocomplete="off" disabled>
-                        </div>
                         <div class="buttons is-hidden-touch">
                             <button class="button is-link" id="save-button" onclick="saveElement()" i18n="save-changes" disabled></button>
                             <button class="button is-danger" id="remove-button" onclick="showRemoveModal()" i18n="remove" disabled></button>
                         </div>
                     </div>
                     <div class="column is-one-fifth-desktop">
-                        <div class="field">
-                            <label class="label" id="element-long-label"></label>
-                            <textarea class="textarea" id="question-textarea" disabled></textarea>
-                        </div>
                         <div class="tags has-addons is-centered is-hidden" id="references-tag">
                             <span class="tag" i18n="multiple-references-hint"></span>
                             <span class="tag is-link" id="number-of-references"></span>
                         </div>
                     </div>
                     <div class="column is-one-fifth-desktop">
-                        <div class="field">
-                            <label class="label" id="datatype-label" i18n="data-type"></label>
-                        </div>
-                        <div class="field">
-                            <label class="label" id="mandatory-label" i18n="mandatory"></label>
-                        </div>
+                        
                         <div class="buttons is-pulled-right is-hidden-touch">
                             <button class="button" id="duplicate-button" onclick="showDuplicateModal()" i18n="duplicate" disabled></button>
                         </div>
@@ -51,7 +34,7 @@ class MetadataSection extends HTMLElement {
                     </div>
                 </div>
                 <div class="columns is-desktop is-centered">
-                    <div class="column is-three-fifths-desktop">
+                    <div class="column is-half-desktop">
                         <div class="box has-sidebar">
                             <nav class="sidebar">
                                 <ul class="sidebar-options">
@@ -78,9 +61,26 @@ class MetadataSection extends HTMLElement {
                                 </ul>
                             </nav>
                             <div class="box-content">
-                                <h1 class="title is-4" i18n="element-options"></h1>
-                                <h2 class="subtitle is-6" i18n="basic"></h2>
-                                <hr>
+                                <div class="columns">
+                                    <div class="column is-half">
+                                        <div class="field">
+                                            <label class="label" id="element-oid-label"></label>
+                                            <input class="input" type="text" id="oid-input" autocomplete="off" disabled>
+                                        </div>
+                                        <div class="field">
+                                            <label class="label" id="datatype-label" i18n="data-type"></label>
+                                        </div>
+                                        <div class="field">
+                                            <label class="label" id="mandatory-label" i18n="mandatory"></label>
+                                        </div>
+                                    </div>
+                                    <div class="column is-half">
+                                        <div class="field">
+                                            <label class="label" id="element-long-label"></label>
+                                            <textarea class="textarea" id="question-textarea" disabled></textarea>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
