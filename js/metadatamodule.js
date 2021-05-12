@@ -417,6 +417,23 @@ window.saveElement = async function() {
     metadataHelper.storeMetadata();
 }
 
+window.sidebarOptionClicked = function(event) {
+    ioHelper.removeIsActiveFromElement($("#details-panel .sidebar-option.is-active"));
+    event.target.activate();
+
+    switch (event.target.id) {
+        case "essential-option":
+            $("#essential-options").show();
+            $("#extended-options").hide();
+            break;
+        case "extended-option":
+            $("#essential-options").hide();
+            $("#extended-options").show();
+            fillRangeChecks();
+            fillAliases();
+    }
+}
+
 function saveRangeChecks() {
     metadataHelper.deleteRangeChecksOfItem(currentElementID.item);
     let rangeCheckInputs = $$(".range-check-input");

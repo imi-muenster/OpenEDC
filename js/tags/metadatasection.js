@@ -11,11 +11,11 @@ class MetadataSection extends HTMLElement {
                         <div class="box has-sidebar">
                             <nav class="sidebar">
                                 <ul class="sidebar-options">
-                                    <li class="sidebar-option is-activable is-active">
+                                    <li class="sidebar-option is-activable is-active" id="essential-option" onclick="sidebarOptionClicked(event)">
                                         <i class="far fa-text"></i>
-                                        <span i18n="basic"></span>
+                                        <span i18n="essential"></span>
                                     </li>
-                                    <li class="sidebar-option is-activable">
+                                    <li class="sidebar-option is-activable" id="extended-option" onclick="sidebarOptionClicked(event)">
                                         <i class="far fa-ruler"></i>
                                         <span i18n="extended"></span>
                                     </li>
@@ -33,7 +33,7 @@ class MetadataSection extends HTMLElement {
                                     </li>
                                 </ul>
                             </nav>
-                            <div class="box-content">
+                            <div class="box-content" id="essential-options">
                                 <div class="columns">
                                     <div class="column is-half">
                                         <div class="field">
@@ -52,6 +52,26 @@ class MetadataSection extends HTMLElement {
                                             <label class="label" id="element-long-label"></label>
                                             <textarea class="textarea" id="question-textarea" disabled></textarea>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-content is-hidden" id="extended-options">
+                                <div class="columns">
+                                    <div class="column is-half">
+                                        <div class="field">
+                                            <label class="label" i18n="measurement-unit"></label>
+                                            <input class="input" type="text" id="measurement-unit" autocomplete="off" disabled>
+                                        </div>
+                                        <label class="label" id="range-check-label" i18n="range-check"></label>
+                                        <button class="button is-small is-pulled-right" id="add-range-check-button" onclick="addRangeCheckInput()">+</button>
+                                    </div>
+                                    <div class="column is-half">
+                                        <div class="field">
+                                            <label class="label" i18n="collection-exception-condition"></label>
+                                            <input class="input" type="text" id="collection-exception-condition" autocomplete="off" disabled>
+                                        </div>
+                                        <label class="label" id="alias-label" i18n="alias"></label>
+                                        <button class="button is-small is-pulled-right" onclick="addAliasInput()">+</button>
                                     </div>
                                 </div>
                             </div>

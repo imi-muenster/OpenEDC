@@ -97,6 +97,7 @@ a.panel-block {
 .sidebar-option i {
     text-align: center;
     width: 3rem;
+    pointer-events: none;
 }
 
 .sidebar-option i:before {
@@ -106,6 +107,7 @@ a.panel-block {
 .sidebar-option span {
     display: none;
     margin-right: 1.25rem;
+    pointer-events: none;
 }
 
 .sidebar:hover .sidebar-option span {
