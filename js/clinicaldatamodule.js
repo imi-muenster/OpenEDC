@@ -478,7 +478,7 @@ function showErrors(metadataNotFoundErrors, hiddenFieldWithValueErrors) {
         let fieldElement = $(`#clinicaldata-content [item-group-content-oid="${error.itemGroupOID}"] [item-field-oid="${error.itemOID}"]`);
         fieldElement.show();
         fieldElement.parentNode.show();
-        fieldElement.classList.add("is-highlighted");
+        fieldElement.highlight();
     }
 }
 
@@ -597,7 +597,7 @@ function checkMandatoryFields(formItemDataList) {
     let mandatoryFieldsAnswered = true;
     for (let mandatoryField of $$(".item-group-content:not(.is-hidden) .item-field[mandatory='Yes']:not(.is-hidden)")) {
         if (!formItemDataList.find(formItemData => formItemData.itemGroupOID == mandatoryField.parentNode.getAttribute("item-group-content-oid") && formItemData.itemOID == mandatoryField.getAttribute("item-field-oid"))) {
-            mandatoryField.classList.add("is-highlighted");
+            mandatoryField.highlight();
             mandatoryFieldsAnswered = false;
         }
     }

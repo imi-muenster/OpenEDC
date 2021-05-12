@@ -85,6 +85,11 @@ a.panel-block {
     background-color: var(--link-active-color);
 }
 
+.sidebar-option.is-highlighted {
+    color: var(--link-color);
+    background-color: var(--link-light-active-color);
+}
+
 .sidebar-option:nth-last-child(3) {
     margin-top: auto;
 }
@@ -271,7 +276,7 @@ a.panel-block:hover {
     max-height: none !important;
 }
 
-.is-highlighted {
+.item-field.is-highlighted {
     padding: 6px;
     border-radius: 6px;
     background-color: lightsalmon;

@@ -63,10 +63,6 @@ HTMLElement.prototype.hide = function() {
     this.classList.add("is-hidden");
 }
 
-HTMLElement.prototype.isVisible = function() {
-    return !this.classList.contains("is-hidden");
-}
-
 HTMLElement.prototype.activate = function() {
     this.classList.add("is-active");
 }
@@ -75,6 +71,22 @@ HTMLElement.prototype.deactivate = function() {
     this.classList.remove("is-active");
 }
 
+HTMLElement.prototype.highlight = function() {
+    this.classList.add("is-highlighted");
+}
+
+HTMLElement.prototype.unhighlight = function() {
+    this.classList.remove("is-highlighted");
+}
+
+HTMLElement.prototype.isVisible = function() {
+    return !this.classList.contains("is-hidden");
+}
+
 HTMLElement.prototype.isActive = function() {
     return this.classList.contains("is-active");
+}
+
+HTMLElement.prototype.isActive = function() {
+    return this.classList.contains("is-highlighted");
 }

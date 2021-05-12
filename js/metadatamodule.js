@@ -270,10 +270,8 @@ export function reloadTree() {
 }
 
 function resetDetailsPanel() {
+    $("#save-button").unhighlight();
     $("#oid-input").disabled = true;
-    $("#save-button").disabled = true;
-    $("#remove-button").disabled = true;
-    $("#duplicate-button").disabled = true;
     $("#question-textarea").disabled = true;
     $("#datatype-select-inner").disabled = true;
     $("#mandatory-select-inner").disabled = true;
@@ -410,7 +408,7 @@ window.saveElement = async function() {
     
     reloadDetailsPanel();
     document.activeElement.blur();
-    $("#save-button").disabled = true;
+    $("#save-button").unhighlight();
 
     metadataHelper.storeMetadata();
 }
@@ -463,11 +461,9 @@ function handleItemDataType(itemOID, dataType) {
 function setIOListeners() {
     $("#clinicaldata-toggle-button").onclick = () => hide();
     let inputElements = $$("#details-panel input, #details-panel textarea, #details-panel select");
-    for (let [index, inputElement] of inputElements.entries()) {
-        inputElement.oninput = function() {
-            $("#save-button").disabled = false;
-        };
-        inputElement.onkeydown = function(keyEvent) {
+    for (const inputElement of inputElements) {
+        inputElement.oninput = () => $("#save-button").highlight();
+        inputElement.onkeydown = keyEvent => {
             if (keyEvent.code == "Escape") {
                 keyEvent.preventDefault();
                 document.activeElement.blur();
@@ -476,7 +472,6 @@ function setIOListeners() {
                 saveElement();
             }
         };
-        inputElement.tabIndex = index + 1;
     }
 }
 
