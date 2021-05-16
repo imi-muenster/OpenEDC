@@ -54,8 +54,8 @@ a.panel-block {
 
 .sidebar {
     border-radius: 6px 0 0 6px;
-    color: white;
-    background-color: var(--link-color);
+    color: var(--link-color);
+    background-color: var(--link-light-color);
 }
 
 .sidebar-options {
@@ -72,12 +72,12 @@ a.panel-block {
 }
 
 .sidebar-option:hover {
-    background-color: var(--link-hover-color);
+    background-color: var(--link-light-hover-color);
     cursor: pointer;
 }
 
 .sidebar-option.is-active {
-    background-color: var(--link-active-color);
+    background-color: var(--link-light-active-color);
 }
 
 .sidebar-option:not(.is-activable):not(.is-highlighted) {

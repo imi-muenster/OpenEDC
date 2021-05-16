@@ -247,18 +247,17 @@ export function reloadTree() {
     if (currentElementID.item) loadCodeListItemsByItem();
 }
 
-// TODO: Remove and then reset essential and extended view individually
 function resetDetailsPanel() {
+    // Sidebar
     $("#duplicate-button").unhighlight();
     $("#remove-button").unhighlight();
     $("#save-button").unhighlight();
 
+    // Essential
     $("#oid-input").disabled = true;
     $("#question-textarea").disabled = true;
     $("#datatype-select-inner").disabled = true;
     $("#mandatory-select-inner").disabled = true;
-    $("#measurement-unit").disabled = true;
-    $("#collection-exception-condition").disabled = true;
     $("#oid-input").value = "";
     $("#question-textarea").value = "";
     $("#datatype-select-inner").value = "";
@@ -266,8 +265,13 @@ function resetDetailsPanel() {
     $("#element-oid-label").textContent = languageHelper.getTranslation("unique-id");
     $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
 
+    // Extended
+    $("#measurement-unit").disabled = true;
+    $("#collection-exception-condition").disabled = true;
     $("#add-range-check-button").disabled = true;
     $("#add-alias-button").disabled = true;
+    $("#measurement-unit").value = "";
+    $("#collection-exception-condition").value = "";
     $$("#range-check-inputs .range-check-input").removeElements();
     $$("#alias-inputs .alias-input").removeElements();
     addEmptyRangeCheckInput(true);
