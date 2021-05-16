@@ -6,6 +6,11 @@ import * as languageHelper from "./helper/languagehelper.js";
 import * as htmlElements from "./helper/htmlelements.js";
 import * as autocompleteHelper from "./helper/autocompletehelper.js";
 
+const detailsPanelViews = {
+    ESSENTIAL: 1,
+    EXTENDED: 2
+};
+
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
@@ -129,7 +134,7 @@ function studyEventClicked(event) {
     event.target.activate();
     
     currentElementID.studyEvent = event.target.getOID();
-    fillDetailsPanel();
+    reloadDetailsPanel();
 
     loadFormsByStudyEvent(currentElementID.studyEvent, true);
 }
@@ -152,7 +157,7 @@ function formClicked(event) {
     event.target.activate();
 
     currentElementID.form = event.target.getOID();
-    fillDetailsPanel();
+    reloadDetailsPanel();
 
     loadItemGroupsByForm(currentElementID.form, true);
 }
@@ -175,7 +180,7 @@ function itemGroupClicked(event) {
     event.target.activate();
 
     currentElementID.itemGroup = event.target.getOID();
-    fillDetailsPanel();
+    reloadDetailsPanel();
 
     loadItemsByItemGroup(currentElementID.itemGroup, true);
 }
@@ -199,7 +204,7 @@ function itemClicked(event) {
     event.target.activate();
 
     currentElementID.item = event.target.getOID();
-    fillDetailsPanel();
+    reloadDetailsPanel();
 
     loadCodeListItemsByItem(currentElementID.item, true);
 }
@@ -225,7 +230,7 @@ function codeListItemClicked(event) {
 
     currentElementID.codeList = event.target.getOID();
     currentElementID.codeListItem = event.target.getAttribute("coded-value");
-    fillDetailsPanel();
+    reloadDetailsPanel();
 }
 
 function reloadStudyEvents() {
@@ -269,42 +274,53 @@ export function reloadTree() {
     reloadCodeListItems();
 }
 
+// TODO: Remove and then reset essential and extended view individually
 function resetDetailsPanel() {
     $("#duplicate-button").unhighlight();
     $("#remove-button").unhighlight();
     $("#save-button").unhighlight();
+
     $("#oid-input").disabled = true;
     $("#question-textarea").disabled = true;
     $("#datatype-select-inner").disabled = true;
     $("#mandatory-select-inner").disabled = true;
+    $("#measurement-unit").disabled = true;
+    $("#collection-exception-condition").disabled = true;
     $("#oid-input").value = "";
     $("#question-textarea").value = "";
     $("#datatype-select-inner").value = "";
     $("#mandatory-select-inner").value = "";
     $("#element-oid-label").textContent = languageHelper.getTranslation("unique-id");
     $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
+
+    $("#add-range-check-button").disabled = true;
+    $("#add-alias-button").disabled = true;
+    $$("#range-check-inputs .range-check-input").removeElements();
+    $$("#alias-inputs .alias-input").removeElements();
+    addEmptyRangeCheckInput(true);
+    addEmptyAliasInput(true);
 }
 
-function fillDetailsPanel() {
+function adjustDetailsPanelSidebar() {
+    $("#duplicate-button").highlight();
+    $("#remove-button").highlight();
+
+    const references = metadataHelper.getElementRefs(getCurrentElementOID(), getCurrentElementType());
+    if (references.length > 1) {
+        // TODO: Reimplement for new properties panel
+    }
+}
+
+function fillDetailsPanelEssential() {
     const currentElementOID = getCurrentElementOID();
     const currentElementType = getCurrentElementType();
 
-    resetDetailsPanel();
-    $("#duplicate-button").highlight();
-    $("#remove-button").highlight();
     $("#oid-input").disabled = false;
     $("#question-textarea").disabled = false;
-    $("#remove-button").disabled = false;
-    $("#duplicate-button").disabled = false;
     $("#oid-input").value = currentElementOID;
 
     let element = metadataHelper.getElementDefByOID(currentElementOID);
     const elementRef = metadataHelper.getElementRefByOID(currentElementOID, currentElementType, getParentOID(currentElementType));
-    const references = metadataHelper.getElementRefs(currentElementOID, currentElementType);
-    if (references.length > 1) {
-        // TODO: Reimplement for new properties panel
-    }
-
     switch (currentElementType) {
         case metadataHelper.elementTypes.STUDYEVENT:
         case metadataHelper.elementTypes.FORM:
@@ -329,38 +345,62 @@ function fillDetailsPanel() {
     }
 }
 
+function fillDetailsPanelExtended() {
+    fillElementAliases();
+    $("#alias-inputs .alias-context").disabled = false;
+    $("#alias-inputs .alias-name").disabled = false;
+    $("#extended-options #add-alias-button").disabled = false;
+
+    let element = metadataHelper.getElementDefByOID(getCurrentElementOID());
+    switch (getCurrentElementType()) {
+        case metadataHelper.elementTypes.ITEMGROUP:
+            $("#collection-exception-condition").disabled = false;
+            break;
+        case metadataHelper.elementTypes.ITEM:
+            fillItemRangeChecks();
+            $("#range-check-inputs .range-check-comparator-inner").disabled = false;
+            $("#range-check-inputs .range-check-value").disabled = false;
+            $("#extended-options #add-range-check-button").disabled = false;
+            $("#measurement-unit").disabled = true;
+            $("#collection-exception-condition").disabled = false;
+    }
+}
+
 export function reloadDetailsPanel() {
-    if (getCurrentElementType()) fillDetailsPanel();
-    else resetDetailsPanel();
-}
-
-function fillAliases() {
-    $$(".alias-input").removeElements();
-    $("#alias-label").insertAdjacentElement("afterend", htmlElements.getEmptyAliasInputElement());
-
-    let aliases = metadataHelper.getAliasesByElement(getCurrentElementOID(), currentElementID.codeListItem);
-    for (let alias of aliases) {
-        let newInput = htmlElements.getAliasInputElement(alias.getAttribute("Context"), alias.getName());
-        $(".empty-alias-field").insertAdjacentElement("beforebegin", newInput);
+    resetDetailsPanel();
+    if (getCurrentElementType()) {
+        adjustDetailsPanelSidebar();
+        if (getCurrentDetailsView() == detailsPanelViews.ESSENTIAL) fillDetailsPanelEssential();
+        else if (getCurrentDetailsView() == detailsPanelViews.EXTENDED) fillDetailsPanelExtended();
     }
 }
 
-function fillRangeChecks() {
-    $$(".range-check-input").removeElements();
-    $("#range-check-label").insertAdjacentElement("afterend", htmlElements.getEmptyRangeCheckInputElement());
+function fillItemRangeChecks() {
+    const rangeChecks = metadataHelper.getRangeChecksByItem(currentElementID.item);
+    if (rangeChecks.length > 0) $$("#range-check-inputs .range-check-input").removeElements();
 
-    let rangeChecks = metadataHelper.getRangeChecksByItem(currentElementID.item);
-    for (let rangeCheck of rangeChecks) {
-        let newInput = htmlElements.getRangeCheckInputElement(rangeCheck.getAttribute("Comparator"), rangeCheck.querySelector("CheckValue").textContent);
-        $(".empty-range-check-field").insertAdjacentElement("beforebegin", newInput);
+    for (const rangeCheck of rangeChecks) {
+        const newInput = htmlElements.getRangeCheckInputElement(rangeCheck.getAttribute("Comparator"), rangeCheck.querySelector("CheckValue").textContent);
+        $("#range-check-inputs").appendChild(newInput);
     }
+}
 
-    $("#add-range-check-button").disabled = false;
-    if (getCurrentElementType() != metadataHelper.elementTypes.ITEM) {
-        $(".range-check-comparator-inner").disabled = true;
-        $(".range-check-value").disabled = true;
-        $("#add-range-check-button").disabled = true;
+function fillElementAliases() {
+    const aliases = metadataHelper.getAliasesByElement(getCurrentElementOID(), currentElementID.codeListItem);
+    if (aliases.length > 0) $$("#alias-inputs .alias-input").removeElements();
+
+    for (const alias of aliases) {
+        const newInput = htmlElements.getAliasInputElement(alias.getAttribute("Context"), alias.getName());
+        $("#alias-inputs").appendChild(newInput);
     }
+}
+
+window.addEmptyRangeCheckInput = function(disabled) {
+    $("#range-check-inputs").appendChild(htmlElements.getRangeCheckInputElement(null, null, disabled));
+}
+
+window.addEmptyAliasInput = function(disabled) {
+    $("#alias-inputs").appendChild(htmlElements.getAliasInputElement(null, null, disabled));
 }
 
 window.saveElement = async function() {
@@ -429,9 +469,9 @@ window.sidebarOptionClicked = function(event) {
         case "extended-option":
             $("#essential-options").hide();
             $("#extended-options").show();
-            fillRangeChecks();
-            fillAliases();
     }
+
+    reloadDetailsPanel();
 }
 
 function saveRangeChecks() {
@@ -811,24 +851,6 @@ window.showDuplicateModal = function() {
     );
 }
 
-window.addAliasInput = function() {
-    $$(".empty-alias-field").getLastElement().insertAdjacentElement("afterend", htmlElements.getEmptyAliasInputElement());
-}
-
-window.addRangeCheckInput = function() {
-    $$(".empty-range-check-field").getLastElement().insertAdjacentElement("afterend", htmlElements.getEmptyRangeCheckInputElement());
-}
-
-window.addMeasurementUnitInput = function() {
-    $$(".empty-measurement-unit-field").getLastElement().insertAdjacentElement("afterend", htmlElements.getEmptyMeasurementUnitInputElement());
-}
-
-window.addConditionInput = function() {
-    const conditionInput = htmlElements.getEmptyConditionInputElement();
-    autocompleteHelper.enableAutocomplete(conditionInput.querySelector("input.condition-formex"), autocompleteHelper.modes.CONDITION);
-    $$(".empty-condition-field").getLastElement().insertAdjacentElement("afterend", conditionInput);
-}
-
 // TODO: Reorder other modal functions in this order (show -> save -> hide)
 window.showCodeListModal = function() {
     if (!metadataHelper.itemHasCodeList(currentElementID.item)) {
@@ -933,6 +955,11 @@ window.unreferenceCodeList = function() {
     reloadTree();
     reloadDetailsPanel();
     metadataHelper.storeMetadata();
+}
+
+function getCurrentDetailsView() {
+    if ($("#essential-option").isActive()) return detailsPanelViews.ESSENTIAL;
+    else if ($("#extended-option").isActive()) return detailsPanelViews.EXTENDED;
 }
 
 function showFirstEventEditedHelp() {

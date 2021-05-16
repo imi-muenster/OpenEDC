@@ -16,12 +16,7 @@ html {
     overflow-y: auto;
 }
 
-html.no-scroll {
-    overflow-y: hidden;
-}
-
 html, body {
-    user-select: none;
     touch-action: manipulation;
 }
 
@@ -122,7 +117,7 @@ a.panel-block {
 
 .box.has-sidebar .box-content {
     flex-grow: 1;
-    padding: 1.25rem;
+    padding: 1rem 1.25rem;
     overflow-y: auto;
 }
 

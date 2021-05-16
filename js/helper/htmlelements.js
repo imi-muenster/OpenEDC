@@ -115,78 +115,45 @@ export function getClinicaldataPanelBlock(elementOID, titleText, fallbackText, s
     return panelBlock;
 }
 
-export function getAliasInputElement(context, name) {
+export function getAliasInputElement(context, name, disabled) {
     let field = document.createElement("div");
     field.className = "field alias-input is-grouped";
 
     let input = document.createElement("input");
-    input.setAttribute("type", "text");
+    input.type = "text";
+    if (disabled) input.disabled = true;
 
     input.value = context;
     input.className = "input alias-context";
+    if (!context) input.placeholder = languageHelper.getTranslation("context");
     field.appendChild(input.cloneNode());
     
     field.insertAdjacentHTML("beforeend", "&nbsp;&nbsp;");
 
     input.value = name;
     input.className = "input alias-name";
+    if (!name) input.placeholder = languageHelper.getTranslation("name");
     field.appendChild(input.cloneNode());
 
     return field;
 }
 
-export function getEmptyAliasInputElement() {
-    let field = document.createElement("div");
-    field.className = "field alias-input empty-alias-field is-grouped";
-
-    let input = document.createElement("input");
-    input.setAttribute("type", "text");
-
-    input.className = "input alias-context";
-    input.setAttribute("placeholder", languageHelper.getTranslation("context"));
-    field.appendChild(input.cloneNode());
-    
-    field.insertAdjacentHTML("beforeend", "&nbsp;&nbsp;");
-
-    input.className = "input alias-name";
-    input.setAttribute("placeholder", languageHelper.getTranslation("name"));
-    field.appendChild(input.cloneNode());
-
-    return field;
-}
-
-export function getRangeCheckInputElement(selectedComparator, checkValue) {
+export function getRangeCheckInputElement(selectedComparator, checkValue, disabled) {
     let field = document.createElement("div");
     field.className = "field range-check-input is-grouped";
 
-    let select = getSelect("range-check-comparator", false, false, rangeCheckComparators, selectedComparator, rangeCheckComparatorsDisplay);
+    let select = getSelect("range-check-comparator", false, false, rangeCheckComparators, selectedComparator, rangeCheckComparatorsDisplay, null, disabled);
     field.appendChild(select);
     
     field.insertAdjacentHTML("beforeend", "&nbsp;&nbsp;");
 
     let input = document.createElement("input");
-    input.setAttribute("type", "text");
+    input.type = "text";
     input.value = checkValue;
     input.className = "input range-check-value";
+    if (!checkValue) input.placeholder = languageHelper.getTranslation("check-value");
+    if (disabled) input.disabled = true;
     field.appendChild(input.cloneNode());
-
-    return field;
-}
-
-export function getEmptyRangeCheckInputElement() {
-    let field = document.createElement("div");
-    field.className = "field range-check-input empty-range-check-field is-grouped";
-
-    let select = getSelect("range-check-comparator", false, false, rangeCheckComparators, "", rangeCheckComparatorsDisplay);
-    field.appendChild(select);
-    
-    field.insertAdjacentHTML("beforeend", "&nbsp;&nbsp;");
-
-    let input = document.createElement("input");
-    input.setAttribute("type", "text");
-    input.className = "input range-check-value";
-    input.setAttribute("placeholder", languageHelper.getTranslation("check-value"));
-    field.appendChild(input);
 
     return field;
 }
@@ -201,7 +168,7 @@ export function getMandatorySelect() {
     return getSelect("mandatory-select", true, true, mandatory, null, translatedOptions, true);
 }
 
-export function getSelect(name, isUnique, isFullwidth, values, selectedValue, displayTexts, i18n) {
+export function getSelect(name, isUnique, isFullwidth, values, selectedValue, displayTexts, i18n, disabled) {
     let select = document.createElement("div");
     if (isUnique) {
         select.id = `${name}-outer`;
@@ -219,6 +186,7 @@ export function getSelect(name, isUnique, isFullwidth, values, selectedValue, di
     }
 
     let innerSelect = document.createElement("select");
+    if (disabled) innerSelect.disabled = true;
     if (isUnique) {
         innerSelect.id = `${name}-inner`;
     } else {

@@ -38,7 +38,7 @@ class MetadataSection extends HTMLElement {
                                     <div class="column is-half">
                                         <div class="field">
                                             <label class="label" id="element-oid-label"></label>
-                                            <input class="input" type="text" id="oid-input" autocomplete="off" disabled>
+                                            <input class="input" type="text" id="oid-input" autocomplete="off">
                                         </div>
                                         <div class="field">
                                             <label class="label" id="datatype-label" i18n="data-type"></label>
@@ -50,7 +50,7 @@ class MetadataSection extends HTMLElement {
                                     <div class="column is-half">
                                         <div class="field">
                                             <label class="label" id="element-long-label"></label>
-                                            <textarea class="textarea" id="question-textarea" disabled></textarea>
+                                            <textarea class="textarea" id="question-textarea"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -60,18 +60,24 @@ class MetadataSection extends HTMLElement {
                                     <div class="column is-half">
                                         <div class="field">
                                             <label class="label" i18n="measurement-unit"></label>
-                                            <input class="input" type="text" id="measurement-unit" autocomplete="off" disabled>
+                                            <input class="input" type="text" id="measurement-unit" autocomplete="off">
                                         </div>
-                                        <label class="label" id="range-check-label" i18n="range-check"></label>
-                                        <button class="button is-link is-light is-small is-pulled-right" id="add-range-check-button" onclick="addRangeCheckInput()" i18n="add"></button>
+                                        <div class="field">
+                                            <label class="label" i18n="range-check"></label>
+                                            <div id="range-check-inputs"></div>
+                                            <button class="button is-small is-pulled-right mt-2" id="add-range-check-button" onclick="addEmptyRangeCheckInput()" i18n="add"></button>
+                                        </div>
                                     </div>
                                     <div class="column is-half">
                                         <div class="field">
                                             <label class="label" i18n="collection-exception-condition"></label>
-                                            <input class="input" type="text" id="collection-exception-condition" autocomplete="off" disabled>
+                                            <input class="input" type="text" id="collection-exception-condition" autocomplete="off">
                                         </div>
-                                        <label class="label" id="alias-label" i18n="alias"></label>
-                                        <button class="button is-link is-light is-small is-pulled-right" onclick="addAliasInput()" i18n="add"></button>
+                                        <div class="field">
+                                            <label class="label" i18n="alias"></label>
+                                            <div id="alias-inputs"></div>
+                                            <button class="button is-small is-pulled-right mt-2" id="add-alias-button" onclick="addEmptyAliasInput()" i18n="add"></button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
