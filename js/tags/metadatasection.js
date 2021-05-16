@@ -60,7 +60,9 @@ class MetadataSection extends HTMLElement {
                                     <div class="column">
                                         <div class="field">
                                             <label class="label" i18n="collection-exception-condition"></label>
-                                            <input class="input" type="text" id="collection-exception-condition" autocomplete="off" i18n-ph="formal-expression">
+                                            <div class="control has-autocomplete-bottom">
+                                                <input class="input" type="text" id="collection-exception-condition" autocomplete="off" i18n-ph="formal-expression">
+                                            </div>
                                         </div>
                                         <div class="field">
                                             <label class="label" i18n="alias"></label>

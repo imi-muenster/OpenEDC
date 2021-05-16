@@ -24,7 +24,7 @@ class CodeListModal extends HTMLElement {
                                 <div class="text-divider" i18n="or"></div>
                                 <label class="label" i18n="choices-reference-hint"></label>
                                 <div class="field is-grouped is-fullwidth">
-                                    <div class="control is-expanded">
+                                    <div class="control is-expanded has-autocomplete-top">
                                         <input class="input" id="codelist-reference-input" type="text" autocomplete="off" i18n-ph="item-with-choices">
                                     </div>
                                     <div class="control">

@@ -334,13 +334,20 @@ a.panel-block:hover {
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 120%;
     z-index: 1;
     border-radius: 6px;
-    max-height: 200px;
+    max-height: 160px;
     overflow-x: auto;
     box-shadow: 0px 0px 10px 5px var(--gray-light-color);
     background-color: white;
+}
+
+.control.has-autocomplete-top .autocomplete-list {
+    bottom: 120%;
+}
+
+.control.has-autocomplete-bottom .autocomplete-list {
+    top: 120%;
 }
 
 .autocomplete-option {

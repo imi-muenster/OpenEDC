@@ -544,6 +544,8 @@ function setIOListeners() {
             }
         };
     }
+
+    autocompleteHelper.enableAutocomplete($("#collection-exception-condition"), autocompleteHelper.modes.CONDITION);
 }
 
 function scrollParentToChild(child) {

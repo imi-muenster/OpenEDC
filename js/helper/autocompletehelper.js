@@ -35,7 +35,8 @@ let currentMode;
 let currentPart;
 let currentInput;
 
-export const enableAutocomplete = (input, mode) => {
+// TODO: The parts and mode are currently set globally but must rather depend on the input element
+export const enableAutocomplete = (input, mode, position) => {
     // Set the mode and adjust the input parts
     currentMode = mode;
     setParts();
