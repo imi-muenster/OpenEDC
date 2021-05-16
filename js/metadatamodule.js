@@ -127,6 +127,8 @@ export function loadStudyEvents(hideTree) {
         panelBlock.onclick = studyEventClicked;
         $("#study-event-panel-blocks").appendChild(panelBlock);
     }
+
+    if (currentElementID.studyEvent) $(`[oid="${currentElementID.studyEvent}"]`).activate();
 }
 
 function studyEventClicked(event) {
@@ -149,6 +151,8 @@ function loadFormsByStudyEvent(hideTree) {
         panelBlock.onclick = formClicked;
         $("#form-panel-blocks").appendChild(panelBlock);
     }
+
+    if (currentElementID.form) $(`[oid="${currentElementID.form}"]`).activate();
 }
 
 function formClicked(event) {
@@ -171,6 +175,8 @@ function loadItemGroupsByForm(hideTree) {
         panelBlock.onclick = itemGroupClicked;
         $("#item-group-panel-blocks").appendChild(panelBlock);
     }
+
+    if (currentElementID.itemGroup) $(`[oid="${currentElementID.itemGroup}"]`).activate();
 }
 
 function itemGroupClicked(event) {
@@ -194,6 +200,8 @@ function loadItemsByItemGroup(hideTree) {
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
     }
+
+    if (currentElementID.item) $(`[oid="${currentElementID.item}"]`).activate();
 }
 
 function itemClicked(event) {
@@ -218,6 +226,8 @@ function loadCodeListItemsByItem(hideTree) {
         panelBlock.onclick = codeListItemClicked;
         $("#code-list-item-panel-blocks").appendChild(panelBlock);
     }
+
+    if (currentElementID.codeList && currentElementID.codeListItem) $(`[oid="${currentElementID.codeList}"][coded-value="${currentElementID.codeListItem}"]`).activate();
 }
 
 function codeListItemClicked(event) {
@@ -229,45 +239,12 @@ function codeListItemClicked(event) {
     reloadDetailsPanel();
 }
 
-function reloadStudyEvents() {
-    loadStudyEvents(!currentElementID.studyEvent);
-    if (currentElementID.studyEvent) $(`[oid="${currentElementID.studyEvent}"]`).activate();
-}
-
-function reloadForms() {
-    if (currentElementID.studyEvent) {
-        loadFormsByStudyEvent(!currentElementID.form);
-        if (currentElementID.form) $(`[oid="${currentElementID.form}"]`).activate();
-    }
-}
-
-function reloadItemGroups() {
-    if (currentElementID.form) {
-        loadItemGroupsByForm(!currentElementID.itemGroup);
-        if (currentElementID.itemGroup) $(`[oid="${currentElementID.itemGroup}"]`).activate();
-    }
-}
-
-function reloadItems() {
-    if (currentElementID.itemGroup) {
-        loadItemsByItemGroup(!currentElementID.item);
-        if (currentElementID.item) $(`[oid="${currentElementID.item}"]`).activate();
-    }
-}
-
-function reloadCodeListItems() {
-    if (currentElementID.item) {
-        loadCodeListItemsByItem(!currentElementID.codeList);
-        if (currentElementID.codeList) $(`[oid="${currentElementID.codeList}"][coded-value="${currentElementID.codeListItem}"]`).activate();
-    }
-}
-
 export function reloadTree() {
-    reloadStudyEvents();
-    reloadForms();
-    reloadItemGroups();
-    reloadItems();
-    reloadCodeListItems();
+    loadStudyEvents();
+    if (currentElementID.studyEvent) loadFormsByStudyEvent();
+    if (currentElementID.form) loadItemGroupsByForm();
+    if (currentElementID.itemGroup) loadItemsByItemGroup();
+    if (currentElementID.item && currentElementID.codeList) loadCodeListItemsByItem();
 }
 
 // TODO: Remove and then reset essential and extended view individually
@@ -342,22 +319,29 @@ function fillDetailsPanelEssential() {
 }
 
 function fillDetailsPanelExtended() {
+    const currentElementOID = getCurrentElementOID();
+    const currentElementType = getCurrentElementType();
+
     fillElementAliases();
     $("#alias-inputs .alias-context").disabled = false;
     $("#alias-inputs .alias-name").disabled = false;
-    $("#extended-options #add-alias-button").disabled = false;
+    $("#add-alias-button").disabled = false;
 
-    let element = metadataHelper.getElementDefByOID(getCurrentElementOID());
-    switch (getCurrentElementType()) {
+    const condition = metadataHelper.getElementCondition(currentElementType, currentElementOID, getParentOID(currentElementType));
+    switch (currentElementType) {
         case metadataHelper.elementTypes.ITEMGROUP:
+            $("#collection-exception-condition").value = condition ? condition.querySelector("FormalExpression").textContent : null;
             $("#collection-exception-condition").disabled = false;
             break;
         case metadataHelper.elementTypes.ITEM:
             fillItemRangeChecks();
             $("#range-check-inputs .range-check-comparator-inner").disabled = false;
             $("#range-check-inputs .range-check-value").disabled = false;
-            $("#extended-options #add-range-check-button").disabled = false;
+            $("#add-range-check-button").disabled = false;
+            const measurementUnit = metadataHelper.getMeasurementUnitByItem(currentElementOID);
+            $("#measurement-unit").value = measurementUnit ? measurementUnit.getTranslatedSymbol(locale) : null;
             $("#measurement-unit").disabled = false;
+            $("#collection-exception-condition").value = condition ? condition.querySelector("FormalExpression").textContent : null;
             $("#collection-exception-condition").disabled = false;
     }
 }
@@ -531,10 +515,10 @@ function handleItemDataType(itemOID, dataType) {
     let codeListRef = metadataHelper.getElementDefByOID(itemOID).querySelector("CodeListRef");
     if (codeListRef && !dataTypeIsCodeList) {
         metadataHelper.removeCodeListRef(itemOID, codeListRef.getAttribute("CodeListOID"));
-        reloadCodeListItems();
+        loadCodeListItemsByItem();
     } else if (!codeListRef && dataTypeIsCodeList) {
         metadataHelper.createCodeList(itemOID);
-        reloadCodeListItems();
+        loadCodeListItemsByItem();
     }
 
     if (dataTypeIsCodeList) {
@@ -578,7 +562,7 @@ function scrollParentToChild(child) {
 
 window.addStudyEvent = function(event) {
     currentElementID.studyEvent = metadataHelper.createStudyEvent();
-    reloadStudyEvents();
+    loadStudyEvents();
     loadFormsByStudyEvent(true);
     reloadDetailsPanel();
     scrollParentToChild($(`[OID="${currentElementID.studyEvent}"]`));
@@ -593,7 +577,7 @@ window.addStudyEvent = function(event) {
 
 window.addForm = function(event) {
     currentElementID.form = metadataHelper.createForm(currentElementID.studyEvent);
-    reloadForms();
+    loadFormsByStudyEvent();
     loadItemGroupsByForm(true);
     reloadDetailsPanel();
     scrollParentToChild($(`[OID="${currentElementID.form}"]`));
@@ -603,7 +587,7 @@ window.addForm = function(event) {
 
 window.addItemGroup = function(event) {
     currentElementID.itemGroup = metadataHelper.createItemGroup(currentElementID.form);
-    reloadItemGroups();
+    loadItemGroupsByForm();
     loadItemsByItemGroup(true);
     reloadDetailsPanel();
     scrollParentToChild($(`[OID="${currentElementID.itemGroup}"]`));
@@ -613,7 +597,7 @@ window.addItemGroup = function(event) {
 
 window.addItem = function(event) {
     currentElementID.item = metadataHelper.createItem(currentElementID.itemGroup);
-    reloadItems();
+    loadItemsByItemGroup();
     loadCodeListItemsByItem(true);
     reloadDetailsPanel();
     scrollParentToChild($(`[OID="${currentElementID.item}"]`));
@@ -626,7 +610,7 @@ window.addCodeListItem = function(event) {
     if (codeListOID) {
         currentElementID.codeListItem = metadataHelper.addCodeListItem(codeListOID);
         currentElementID.codeList = codeListOID;
-        reloadCodeListItems();
+        loadCodeListItemsByItem();
         reloadDetailsPanel();
         scrollParentToChild($(`[coded-value="${currentElementID.codeListItem}"]`));
     }
