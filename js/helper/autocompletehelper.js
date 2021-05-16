@@ -24,22 +24,21 @@ export const modes = {
 
 const comparators = ["==", "!=", "<", "<=", ">", ">="];
 
-let parts = {
+const availableParts = {
     ITEM: 1,
     COMPARATOR: 2,
     VALUE: 3
 }
 
-let elements;
 let currentMode;
-let currentPart;
 let currentInput;
+let currentPart;
+let enabledParts;
+let elements;
 
-// TODO: The parts and mode are currently set globally but must rather depend on the input element
-export const enableAutocomplete = (input, mode, position) => {
-    // Set the mode and adjust the input parts
-    currentMode = mode;
-    setParts();
+export const enableAutocomplete = (input, mode) => {
+    // Set the mode to later adjust the input parts
+    input.setAttribute("autocomplete-mode", mode);
 
     // Start autocomplete when element gets focus
     input.addEventListener("input", inputEventListener);
@@ -58,20 +57,8 @@ export const disableAutocomplete = input => {
     elements = null;
 }
 
-const setParts = () => {
-    switch (currentMode) {
-        case modes.CONDITION:
-            // Keep all parts
-            break;
-        case modes.ITEM:
-            // Remove comparator and code list values
-        case modes.ITEMWITHCODELIST:
-            delete parts.COMPARATOR;
-            delete parts.VALUE;
-    }
-}
-
 const inputEventListener = event => {
+    setCurrentModeAndEnabledParts(event.target);
     closeLists();
     if (!event.target.value) return;
 
@@ -101,6 +88,23 @@ const keydownEventListener = event => {
     }
 }
 
+const setCurrentModeAndEnabledParts = input => {
+    if (input == currentInput) return;
+    
+    currentMode = parseInt(input.getAttribute("autocomplete-mode"));
+    enabledParts = { ...availableParts };
+    switch (currentMode) {
+        case modes.CONDITION:
+            // Keep all parts
+            break;
+        case modes.ITEM:
+            // Remove comparator and code list values
+        case modes.ITEMWITHCODELIST:
+            delete enabledParts.COMPARATOR;
+            delete enabledParts.VALUE;
+    }
+}
+
 const setCurrentPartAndInput = input => {
     const part = input.value.substring(0, input.selectionStart).split(" ").length;
     if (part != currentPart || input != currentInput) elements = null;
@@ -117,7 +121,7 @@ const elementSelected = element => {
     currentInput.value = existingParts.join(" ");
 
     closeLists();
-    if (existingParts.length < Object.keys(parts).length) {
+    if (existingParts.length < Object.keys(enabledParts).length) {
         currentInput.value += " ";
         currentInput.focus();
         currentInput.click();
@@ -144,13 +148,13 @@ const setElements = () => {
 
     console.log("Load autocomplete elements");
     switch (currentPart) {
-        case parts.ITEM:
+        case enabledParts.ITEM:
             elements = getItemElements();
             break;
-        case parts.COMPARATOR:
+        case enabledParts.COMPARATOR:
             elements = getComparatorElements();
             break;
-        case parts.VALUE:
+        case enabledParts.VALUE:
             elements = getValueElements();
             break;
         default:

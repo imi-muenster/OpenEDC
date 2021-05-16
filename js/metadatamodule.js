@@ -244,7 +244,7 @@ export function reloadTree() {
     if (currentElementID.studyEvent) loadFormsByStudyEvent();
     if (currentElementID.form) loadItemGroupsByForm();
     if (currentElementID.itemGroup) loadItemsByItemGroup();
-    if (currentElementID.item && currentElementID.codeList) loadCodeListItemsByItem();
+    if (currentElementID.item) loadCodeListItemsByItem();
 }
 
 // TODO: Remove and then reset essential and extended view individually
@@ -539,6 +539,7 @@ function setIOListeners() {
                 keyEvent.preventDefault();
                 document.activeElement.blur();
             } else if (keyEvent.code == "Enter" && !keyEvent.shiftKey) {
+                if ($(".autocomplete-list")) return;
                 keyEvent.preventDefault();
                 saveElement();
             }
