@@ -134,9 +134,8 @@ function studyEventClicked(event) {
     event.target.activate();
     
     currentElementID.studyEvent = event.target.getOID();
-    reloadDetailsPanel();
-
     loadFormsByStudyEvent(currentElementID.studyEvent, true);
+    reloadDetailsPanel();
 }
 
 function loadFormsByStudyEvent(studyEventOID, hideTree) {
@@ -157,9 +156,8 @@ function formClicked(event) {
     event.target.activate();
 
     currentElementID.form = event.target.getOID();
-    reloadDetailsPanel();
-
     loadItemGroupsByForm(currentElementID.form, true);
+    reloadDetailsPanel();
 }
 
 function loadItemGroupsByForm(formOID, hideTree) {
@@ -180,9 +178,8 @@ function itemGroupClicked(event) {
     event.target.activate();
 
     currentElementID.itemGroup = event.target.getOID();
-    reloadDetailsPanel();
-
     loadItemsByItemGroup(currentElementID.itemGroup, true);
+    reloadDetailsPanel();
 }
 
 function loadItemsByItemGroup(itemGroupOID, hideTree) {
@@ -204,9 +201,8 @@ function itemClicked(event) {
     event.target.activate();
 
     currentElementID.item = event.target.getOID();
-    reloadDetailsPanel();
-
     loadCodeListItemsByItem(currentElementID.item, true);
+    reloadDetailsPanel();
 }
 
 function loadCodeListItemsByItem(itemOID, hideTree) {
@@ -410,6 +406,7 @@ window.addEmptyRangeCheckInput = function(disabled) {
     }
 
     $("#range-check-inputs").appendChild(input);
+    if (!disabled) input.scrollIntoView();
 }
 
 window.addEmptyAliasInput = function(disabled) {
@@ -423,6 +420,7 @@ window.addEmptyAliasInput = function(disabled) {
     }
 
     $("#alias-inputs").appendChild(input);
+    if (!disabled) input.scrollIntoView();
 }
 
 window.saveElement = async function() {
@@ -487,23 +485,6 @@ function saveDetailsExtended() {
     saveAliases();
 }
 
-window.sidebarOptionClicked = function(event) {
-    ioHelper.removeIsActiveFromElement($("#details-panel .sidebar-option.is-active"));
-    event.target.activate();
-
-    switch (event.target.id) {
-        case "essential-option":
-            $("#essential-options").show();
-            $("#extended-options").hide();
-            break;
-        case "extended-option":
-            $("#essential-options").hide();
-            $("#extended-options").show();
-    }
-
-    reloadDetailsPanel();
-}
-
 function saveRangeChecks() {
     metadataHelper.deleteRangeChecksOfItem(currentElementID.item);
     for (let rangeCheckInput of $$(".range-check-input")) {
@@ -524,6 +505,23 @@ function saveAliases() {
             metadataHelper.setElementAlias(getCurrentElementOID(), currentElementID.codeListItem, context, name);
         }
     }
+}
+
+window.sidebarOptionClicked = function(event) {
+    ioHelper.removeIsActiveFromElement($("#details-panel .sidebar-option.is-active"));
+    event.target.activate();
+
+    switch (event.target.id) {
+        case "essential-option":
+            $("#essential-options").show();
+            $("#extended-options").hide();
+            break;
+        case "extended-option":
+            $("#essential-options").hide();
+            $("#extended-options").show();
+    }
+
+    reloadDetailsPanel();
 }
 
 function handleItemDataType(itemOID, dataType) {

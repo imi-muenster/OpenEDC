@@ -60,7 +60,7 @@ class MetadataSection extends HTMLElement {
                                     <div class="column">
                                         <div class="field">
                                             <label class="label" i18n="collection-exception-condition"></label>
-                                            <input class="input" type="text" id="collection-exception-condition" autocomplete="off">
+                                            <input class="input" type="text" id="collection-exception-condition" autocomplete="off" i18n-ph="formal-expression">
                                         </div>
                                         <div class="field">
                                             <label class="label" i18n="alias"></label>
@@ -71,7 +71,7 @@ class MetadataSection extends HTMLElement {
                                     <div class="column">
                                         <div class="field">
                                             <label class="label" i18n="measurement-unit"></label>
-                                            <input class="input" type="text" id="measurement-unit" autocomplete="off">
+                                            <input class="input" type="text" id="measurement-unit" autocomplete="off" i18n-ph="name">
                                         </div>
                                         <div class="field">
                                             <label class="label" i18n="range-check"></label>
