@@ -134,15 +134,15 @@ function studyEventClicked(event) {
     event.target.activate();
     
     currentElementID.studyEvent = event.target.getOID();
-    loadFormsByStudyEvent(currentElementID.studyEvent, true);
+    loadFormsByStudyEvent(true);
     reloadDetailsPanel();
 }
 
-function loadFormsByStudyEvent(studyEventOID, hideTree) {
+function loadFormsByStudyEvent(hideTree) {
     hideForms(hideTree);
     $("#forms-add-button").disabled = false;
 
-    let formDefs = metadataHelper.getFormsByStudyEvent(studyEventOID);
+    let formDefs = metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent);
     for (let formDef of formDefs) {
         let translatedDescription = formDef.getTranslatedDescription(locale);
         let panelBlock = createPanelBlock(formDef.getOID(), metadataHelper.elementTypes.FORM, translatedDescription, formDef.getName());
@@ -156,15 +156,15 @@ function formClicked(event) {
     event.target.activate();
 
     currentElementID.form = event.target.getOID();
-    loadItemGroupsByForm(currentElementID.form, true);
+    loadItemGroupsByForm(true);
     reloadDetailsPanel();
 }
 
-function loadItemGroupsByForm(formOID, hideTree) {
+function loadItemGroupsByForm(hideTree) {
     hideItemGroups(hideTree);
     $("#item-groups-add-button").disabled = false;
 
-    let itemGroupDefs = metadataHelper.getItemGroupsByForm(formOID);
+    let itemGroupDefs = metadataHelper.getItemGroupsByForm(currentElementID.form);
     for (let itemGroupDef of itemGroupDefs) {
         let translatedDescription = itemGroupDef.getTranslatedDescription(locale);
         let panelBlock = createPanelBlock(itemGroupDef.getOID(), metadataHelper.elementTypes.ITEMGROUP, translatedDescription, itemGroupDef.getName());
@@ -178,15 +178,15 @@ function itemGroupClicked(event) {
     event.target.activate();
 
     currentElementID.itemGroup = event.target.getOID();
-    loadItemsByItemGroup(currentElementID.itemGroup, true);
+    loadItemsByItemGroup(true);
     reloadDetailsPanel();
 }
 
-function loadItemsByItemGroup(itemGroupOID, hideTree) {
+function loadItemsByItemGroup(hideTree) {
     hideItems(hideTree);
     $("#items-add-button").disabled = false;
 
-    let itemDefs = metadataHelper.getItemsByItemGroup(itemGroupOID);
+    let itemDefs = metadataHelper.getItemsByItemGroup(currentElementID.itemGroup);
     for (let itemDef of itemDefs) {
         let translatedQuestion = itemDef.getTranslatedQuestion(locale);
         const dataType = itemDef.querySelector("CodeListRef") ? metadataHelper.elementTypes.CODELIST : itemDef.getDataType();
@@ -201,17 +201,17 @@ function itemClicked(event) {
     event.target.activate();
 
     currentElementID.item = event.target.getOID();
-    loadCodeListItemsByItem(currentElementID.item, true);
+    loadCodeListItemsByItem(true);
     reloadDetailsPanel();
 }
 
-function loadCodeListItemsByItem(itemOID, hideTree) {
+function loadCodeListItemsByItem(hideTree) {
     hideCodeListItems(hideTree);
 
-    if (metadataHelper.itemHasCodeList(itemOID)) $("#code-list-items-add-button").disabled = false;
+    if (metadataHelper.itemHasCodeList(currentElementID.item)) $("#code-list-items-add-button").disabled = false;
     $("#code-list-items-opt-button").disabled = false;
 
-    let codeListItems = metadataHelper.getCodeListItemsByItem(itemOID);
+    let codeListItems = metadataHelper.getCodeListItemsByItem(currentElementID.item);
     for (let codeListItem of codeListItems) {
         let translatedDecode = codeListItem.getTranslatedDecode(locale);
         let panelBlock = createPanelBlock(codeListItem.parentNode.getOID(), metadataHelper.elementTypes.CODELISTITEM, translatedDecode, codeListItem.getCodedValue(), null, codeListItem.getCodedValue());
@@ -230,34 +230,34 @@ function codeListItemClicked(event) {
 }
 
 function reloadStudyEvents() {
-    loadStudyEvents(currentElementID.studyEvent == null);
+    loadStudyEvents(!currentElementID.studyEvent);
     if (currentElementID.studyEvent) $(`[oid="${currentElementID.studyEvent}"]`).activate();
 }
 
 function reloadForms() {
     if (currentElementID.studyEvent) {
-        loadFormsByStudyEvent(currentElementID.studyEvent, currentElementID.form == null);
+        loadFormsByStudyEvent(!currentElementID.form);
         if (currentElementID.form) $(`[oid="${currentElementID.form}"]`).activate();
     }
 }
 
 function reloadItemGroups() {
     if (currentElementID.form) {
-        loadItemGroupsByForm(currentElementID.form, currentElementID.itemGroup == null);
+        loadItemGroupsByForm(!currentElementID.itemGroup);
         if (currentElementID.itemGroup) $(`[oid="${currentElementID.itemGroup}"]`).activate();
     }
 }
 
 function reloadItems() {
     if (currentElementID.itemGroup) {
-        loadItemsByItemGroup(currentElementID.itemGroup, currentElementID.item == null);
+        loadItemsByItemGroup(!currentElementID.item);
         if (currentElementID.item) $(`[oid="${currentElementID.item}"]`).activate();
     }
 }
 
 function reloadCodeListItems() {
     if (currentElementID.item) {
-        loadCodeListItemsByItem(currentElementID.item, currentElementID.codeList == null);
+        loadCodeListItemsByItem(!currentElementID.codeList);
         if (currentElementID.codeList) $(`[oid="${currentElementID.codeList}"][coded-value="${currentElementID.codeListItem}"]`).activate();
     }
 }
@@ -580,7 +580,7 @@ window.addStudyEvent = function(event) {
     currentElementID.studyEvent = metadataHelper.createStudyEvent();
     reloadStudyEvents();
     reloadDetailsPanel();
-    loadFormsByStudyEvent(currentElementID.studyEvent, true);
+    loadFormsByStudyEvent(true);
     scrollParentToChild($(`[OID="${currentElementID.studyEvent}"]`));
     metadataHelper.storeMetadata();
     event.target.blur();
@@ -595,7 +595,7 @@ window.addForm = function(event) {
     currentElementID.form = metadataHelper.createForm(currentElementID.studyEvent);
     reloadForms();
     reloadDetailsPanel();
-    loadItemGroupsByForm(currentElementID.form, true);
+    loadItemGroupsByForm(true);
     scrollParentToChild($(`[OID="${currentElementID.form}"]`));
     metadataHelper.storeMetadata();
     event.target.blur();
@@ -605,7 +605,7 @@ window.addItemGroup = function(event) {
     currentElementID.itemGroup = metadataHelper.createItemGroup(currentElementID.form);
     reloadItemGroups();
     reloadDetailsPanel();
-    loadItemsByItemGroup(currentElementID.itemGroup, true);
+    loadItemsByItemGroup(true);
     scrollParentToChild($(`[OID="${currentElementID.itemGroup}"]`));
     metadataHelper.storeMetadata();
     event.target.blur();
@@ -615,7 +615,7 @@ window.addItem = function(event) {
     currentElementID.item = metadataHelper.createItem(currentElementID.itemGroup);
     reloadItems();
     reloadDetailsPanel();
-    loadCodeListItemsByItem(currentElementID.item, true);
+    loadCodeListItemsByItem(true);
     scrollParentToChild($(`[OID="${currentElementID.item}"]`));
     metadataHelper.storeMetadata();
     event.target.blur();
