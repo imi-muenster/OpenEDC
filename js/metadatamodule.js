@@ -579,8 +579,8 @@ function scrollParentToChild(child) {
 window.addStudyEvent = function(event) {
     currentElementID.studyEvent = metadataHelper.createStudyEvent();
     reloadStudyEvents();
-    reloadDetailsPanel();
     loadFormsByStudyEvent(true);
+    reloadDetailsPanel();
     scrollParentToChild($(`[OID="${currentElementID.studyEvent}"]`));
     metadataHelper.storeMetadata();
     event.target.blur();
@@ -594,8 +594,8 @@ window.addStudyEvent = function(event) {
 window.addForm = function(event) {
     currentElementID.form = metadataHelper.createForm(currentElementID.studyEvent);
     reloadForms();
-    reloadDetailsPanel();
     loadItemGroupsByForm(true);
+    reloadDetailsPanel();
     scrollParentToChild($(`[OID="${currentElementID.form}"]`));
     metadataHelper.storeMetadata();
     event.target.blur();
@@ -604,8 +604,8 @@ window.addForm = function(event) {
 window.addItemGroup = function(event) {
     currentElementID.itemGroup = metadataHelper.createItemGroup(currentElementID.form);
     reloadItemGroups();
-    reloadDetailsPanel();
     loadItemsByItemGroup(true);
+    reloadDetailsPanel();
     scrollParentToChild($(`[OID="${currentElementID.itemGroup}"]`));
     metadataHelper.storeMetadata();
     event.target.blur();
@@ -614,8 +614,8 @@ window.addItemGroup = function(event) {
 window.addItem = function(event) {
     currentElementID.item = metadataHelper.createItem(currentElementID.itemGroup);
     reloadItems();
-    reloadDetailsPanel();
     loadCodeListItemsByItem(true);
+    reloadDetailsPanel();
     scrollParentToChild($(`[OID="${currentElementID.item}"]`));
     metadataHelper.storeMetadata();
     event.target.blur();
