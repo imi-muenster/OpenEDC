@@ -9,7 +9,7 @@
 import * as languageHelper from "./languagehelper.js";
 
 const rangeCheckComparators = ["", "LT", "LE", "GT", "GE", "EQ", "NE"];
-const rangeCheckComparatorsDisplay = ["", "<", "<=", ">", ">=", "=", "!="];
+const rangeCheckComparatorsDisplay = ["--", "<", "<=", ">", ">=", "=", "!="];
 const dataTypes = ["integer", "float", "boolean", "text", "string", "date", "time", "datetime", "codelist-text", "codelist-integer", "codelist-float", "double"];
 const mandatory = ["No", "Yes"];
 
@@ -115,13 +115,12 @@ export function getClinicaldataPanelBlock(elementOID, titleText, fallbackText, s
     return panelBlock;
 }
 
-export function getAliasInputElement(context, name, disabled) {
+export function getAliasInputElement(context, name) {
     let field = document.createElement("div");
     field.className = "field alias-input is-grouped";
 
     let input = document.createElement("input");
     input.type = "text";
-    if (disabled) input.disabled = true;
 
     input.value = context;
     input.className = "input alias-context";
@@ -138,11 +137,11 @@ export function getAliasInputElement(context, name, disabled) {
     return field;
 }
 
-export function getRangeCheckInputElement(selectedComparator, checkValue, disabled) {
+export function getRangeCheckInputElement(selectedComparator, checkValue) {
     let field = document.createElement("div");
     field.className = "field range-check-input is-grouped";
 
-    let select = getSelect("range-check-comparator", false, false, rangeCheckComparators, selectedComparator, rangeCheckComparatorsDisplay, null, disabled);
+    let select = getSelect("range-check-comparator", false, false, rangeCheckComparators, selectedComparator, rangeCheckComparatorsDisplay, null);
     field.appendChild(select);
     
     field.insertAdjacentHTML("beforeend", "&nbsp;&nbsp;");
@@ -152,7 +151,6 @@ export function getRangeCheckInputElement(selectedComparator, checkValue, disabl
     input.value = checkValue;
     input.className = "input range-check-value";
     if (!checkValue) input.placeholder = languageHelper.getTranslation("check-value");
-    if (disabled) input.disabled = true;
     field.appendChild(input.cloneNode());
 
     return field;
@@ -168,7 +166,7 @@ export function getMandatorySelect() {
     return getSelect("mandatory-select", true, true, mandatory, null, translatedOptions, true);
 }
 
-export function getSelect(name, isUnique, isFullwidth, values, selectedValue, displayTexts, i18n, disabled) {
+export function getSelect(name, isUnique, isFullwidth, values, selectedValue, displayTexts, i18n) {
     let select = document.createElement("div");
     if (isUnique) {
         select.id = `${name}-outer`;
@@ -186,7 +184,6 @@ export function getSelect(name, isUnique, isFullwidth, values, selectedValue, di
     }
 
     let innerSelect = document.createElement("select");
-    if (disabled) innerSelect.disabled = true;
     if (isUnique) {
         innerSelect.id = `${name}-inner`;
     } else {

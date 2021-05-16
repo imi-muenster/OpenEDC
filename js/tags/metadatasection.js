@@ -35,7 +35,7 @@ class MetadataSection extends HTMLElement {
                             </nav>
                             <div class="box-content" id="essential-options">
                                 <div class="columns">
-                                    <div class="column is-half">
+                                    <div class="column">
                                         <div class="field">
                                             <label class="label" id="element-oid-label"></label>
                                             <input class="input" type="text" id="oid-input" autocomplete="off">
@@ -47,7 +47,7 @@ class MetadataSection extends HTMLElement {
                                             <label class="label" id="mandatory-label" i18n="mandatory"></label>
                                         </div>
                                     </div>
-                                    <div class="column is-half">
+                                    <div class="column">
                                         <div class="field">
                                             <label class="label" id="element-long-label"></label>
                                             <textarea class="textarea" id="question-textarea"></textarea>
@@ -57,18 +57,7 @@ class MetadataSection extends HTMLElement {
                             </div>
                             <div class="box-content is-hidden" id="extended-options">
                                 <div class="columns">
-                                    <div class="column is-half">
-                                        <div class="field">
-                                            <label class="label" i18n="measurement-unit"></label>
-                                            <input class="input" type="text" id="measurement-unit" autocomplete="off">
-                                        </div>
-                                        <div class="field">
-                                            <label class="label" i18n="range-check"></label>
-                                            <div id="range-check-inputs"></div>
-                                            <button class="button is-small is-pulled-right mt-2" id="add-range-check-button" onclick="addEmptyRangeCheckInput()" i18n="add"></button>
-                                        </div>
-                                    </div>
-                                    <div class="column is-half">
+                                    <div class="column">
                                         <div class="field">
                                             <label class="label" i18n="collection-exception-condition"></label>
                                             <input class="input" type="text" id="collection-exception-condition" autocomplete="off">
@@ -77,6 +66,17 @@ class MetadataSection extends HTMLElement {
                                             <label class="label" i18n="alias"></label>
                                             <div id="alias-inputs"></div>
                                             <button class="button is-small is-pulled-right mt-2" id="add-alias-button" onclick="addEmptyAliasInput()" i18n="add"></button>
+                                        </div>
+                                    </div>
+                                    <div class="column">
+                                        <div class="field">
+                                            <label class="label" i18n="measurement-unit"></label>
+                                            <input class="input" type="text" id="measurement-unit" autocomplete="off">
+                                        </div>
+                                        <div class="field">
+                                            <label class="label" i18n="range-check"></label>
+                                            <div id="range-check-inputs"></div>
+                                            <button class="button is-small is-pulled-right mt-2" id="add-range-check-button" onclick="addEmptyRangeCheckInput()" i18n="add"></button>
                                         </div>
                                     </div>
                                 </div>

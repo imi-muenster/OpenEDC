@@ -361,7 +361,7 @@ function fillDetailsPanelExtended() {
             $("#range-check-inputs .range-check-comparator-inner").disabled = false;
             $("#range-check-inputs .range-check-value").disabled = false;
             $("#extended-options #add-range-check-button").disabled = false;
-            $("#measurement-unit").disabled = true;
+            $("#measurement-unit").disabled = false;
             $("#collection-exception-condition").disabled = false;
     }
 }
@@ -380,8 +380,10 @@ function fillItemRangeChecks() {
     if (rangeChecks.length > 0) $$("#range-check-inputs .range-check-input").removeElements();
 
     for (const rangeCheck of rangeChecks) {
-        const newInput = htmlElements.getRangeCheckInputElement(rangeCheck.getAttribute("Comparator"), rangeCheck.querySelector("CheckValue").textContent);
-        $("#range-check-inputs").appendChild(newInput);
+        const input = htmlElements.getRangeCheckInputElement(rangeCheck.getAttribute("Comparator"), rangeCheck.querySelector("CheckValue").textContent);
+        input.querySelector(".range-check-comparator-inner").oninput = () => $("#save-button").highlight();
+        input.querySelector(".range-check-value").oninput = () => $("#save-button").highlight();
+        $("#range-check-inputs").appendChild(input);
     }
 }
 
@@ -390,20 +392,57 @@ function fillElementAliases() {
     if (aliases.length > 0) $$("#alias-inputs .alias-input").removeElements();
 
     for (const alias of aliases) {
-        const newInput = htmlElements.getAliasInputElement(alias.getAttribute("Context"), alias.getName());
-        $("#alias-inputs").appendChild(newInput);
+        const input = htmlElements.getAliasInputElement(alias.getAttribute("Context"), alias.getName());
+        input.querySelector(".alias-context").oninput = () => $("#save-button").highlight();
+        input.querySelector(".alias-name").oninput = () => $("#save-button").highlight();
+        $("#alias-inputs").appendChild(input);
     }
 }
 
 window.addEmptyRangeCheckInput = function(disabled) {
-    $("#range-check-inputs").appendChild(htmlElements.getRangeCheckInputElement(null, null, disabled));
+    const input = htmlElements.getRangeCheckInputElement(null, null);
+    input.querySelector(".range-check-comparator-inner").oninput = () => $("#save-button").highlight();
+    input.querySelector(".range-check-value").oninput = () => $("#save-button").highlight();
+
+    if (disabled) {
+        input.querySelector(".range-check-comparator-inner").disabled = true;
+        input.querySelector(".range-check-value").disabled = true;
+    }
+
+    $("#range-check-inputs").appendChild(input);
 }
 
 window.addEmptyAliasInput = function(disabled) {
-    $("#alias-inputs").appendChild(htmlElements.getAliasInputElement(null, null, disabled));
+    const input = htmlElements.getAliasInputElement(null, null);
+    input.querySelector(".alias-context").oninput = () => $("#save-button").highlight();
+    input.querySelector(".alias-name").oninput = () => $("#save-button").highlight();
+
+    if (disabled) {
+        input.querySelector(".alias-context").disabled = true;
+        input.querySelector(".alias-name").disabled = true;
+    }
+
+    $("#alias-inputs").appendChild(input);
 }
 
 window.saveElement = async function() {
+    if (getCurrentDetailsView() == detailsPanelViews.ESSENTIAL) saveDetailsEssential();
+    else if (getCurrentDetailsView() == detailsPanelViews.EXTENDED) saveDetailsExtended();
+
+    if (!languageHelper.getPresentLanguages().includes(locale)) {
+        languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
+        languageHelper.createLanguageSelect(true);
+    }
+    
+    reloadTree();
+    reloadDetailsPanel();
+    document.activeElement.blur();
+    $("#save-button").unhighlight();
+
+    metadataHelper.storeMetadata();
+}
+
+async function saveDetailsEssential() {
     const newOID = $("#oid-input").value;
     const currentElementOID = getCurrentElementOID();
     const currentElementType = getCurrentElementType();
@@ -429,32 +468,23 @@ window.saveElement = async function() {
             metadataHelper.setElementName(getCurrentElementOID(), newOID);
             metadataHelper.setElementDescription(getCurrentElementOID(), $("#question-textarea").value, locale);
             metadataHelper.setElementMandatory(getCurrentElementOID(), currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
-            reloadTree();
             break;
         case metadataHelper.elementTypes.ITEM:
             metadataHelper.setElementName(getCurrentElementOID(), newOID);
             metadataHelper.setItemQuestion(getCurrentElementOID(), $("#question-textarea").value, locale);
             metadataHelper.setElementMandatory(getCurrentElementOID(), currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
             handleItemDataType(getCurrentElementOID(), $("#datatype-select-inner").value);
-            reloadItems();
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             metadataHelper.setCodeListItemDecodedText(currentElementID.codeList, currentElementID.codeListItem, $("#question-textarea").value, locale);
             metadataHelper.setCodeListItemCodedValue(currentElementID.codeList, currentElementID.codeListItem, newOID);
             currentElementID.codeListItem = newOID;
-            reloadCodeListItems();
     }
+}
 
-    if (!languageHelper.getPresentLanguages().includes(locale)) {
-        languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
-        languageHelper.createLanguageSelect(true);
-    }
-    
-    reloadDetailsPanel();
-    document.activeElement.blur();
-    $("#save-button").unhighlight();
-
-    metadataHelper.storeMetadata();
+function saveDetailsExtended() {
+    saveRangeChecks();
+    saveAliases();
 }
 
 window.sidebarOptionClicked = function(event) {
@@ -476,8 +506,7 @@ window.sidebarOptionClicked = function(event) {
 
 function saveRangeChecks() {
     metadataHelper.deleteRangeChecksOfItem(currentElementID.item);
-    let rangeCheckInputs = $$(".range-check-input");
-    for (let rangeCheckInput of rangeCheckInputs) {
+    for (let rangeCheckInput of $$(".range-check-input")) {
         let comparator = rangeCheckInput.querySelector(".range-check-comparator-inner").value;
         let checkValue = rangeCheckInput.querySelector(".range-check-value").value.replace(",", ".");
         if (comparator && checkValue == parseFloat(checkValue)) {
@@ -488,8 +517,7 @@ function saveRangeChecks() {
 
 function saveAliases() {
     metadataHelper.deleteAliasesOfElement(getCurrentElementOID(), currentElementID.codeListItem);
-    let aliasInputs = $$(".alias-input");
-    for (let aliasInput of aliasInputs) {
+    for (let aliasInput of $$(".alias-input")) {
         let context = aliasInput.querySelector(".alias-context").value;
         let name = aliasInput.querySelector(".alias-name").value;
         if (context && name) {
