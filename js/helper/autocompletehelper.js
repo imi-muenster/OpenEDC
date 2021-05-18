@@ -61,7 +61,7 @@ export const disableAutocomplete = input => {
 
 const inputEventListener = event => {
     setCurrentModeAndEnabledParts(event.target);
-    closeLists();
+    closeLists(null, true);
     if (!event.target.value) return;
 
     setCurrentPartInputAndLocale(event.target);
@@ -140,9 +140,10 @@ const getExpressionParts = expression => {
     ];
 }
 
-const closeLists = event => {
+const closeLists = (event, keepElements) => {
     document.querySelectorAll(".autocomplete-list").forEach(list => {
         if (event && event.target && (event.target == currentInput || event.target.classList.contains("autocomplete-option"))) return;
+        if (!keepElements) elements = null;
         list.remove();
     });
 }
