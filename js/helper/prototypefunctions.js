@@ -14,6 +14,11 @@ Element.prototype.getDataType = function() {
     return this.getAttribute("DataType");
 }
 
+Element.prototype.getFormalExpression = function() {
+    const formalExpression = this.querySelector("FormalExpression");
+    return formalExpression ? formalExpression.textContent : null;
+}
+
 Element.prototype.getTranslatedDescription = function(locale, nameFallback) {
     const translatedText = this.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
     return translatedText ? translatedText.textContent : (nameFallback ? this.getName() : null);

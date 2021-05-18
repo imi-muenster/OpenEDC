@@ -795,7 +795,7 @@ export function removeCodeListRef(itemOID, codeListOID) {
     safeDeleteCodeList(codeListOID);
 }
 
-export function safeDeleteStudyEvent(studyEventOID) {
+function safeDeleteStudyEvent(studyEventOID) {
     // Get all Forms within the StudyEvent and safe-delete them
     let formOIDs = Array.from($$(`StudyEventDef[OID="${studyEventOID}"] FormRef`)).map(item => item.getAttribute("FormOID"));
     // Search for other references of the StudyEvent and delete the Def only if there is no one left
@@ -808,7 +808,7 @@ export function safeDeleteStudyEvent(studyEventOID) {
     }
 }
 
-export function safeDeleteForm(formOID) {
+function safeDeleteForm(formOID) {
     // Get all ItemGroups within the Form and safe-delete them
     let itemGroupOIDs = Array.from($$(`FormDef[OID="${formOID}"] ItemGroupRef`)).map(item => item.getAttribute("ItemGroupOID"));
     // Search for other references of the Form and delete the Def only if there is no one left
@@ -821,7 +821,7 @@ export function safeDeleteForm(formOID) {
     }
 }
 
-export function safeDeleteItemGroup(itemGroupOID) {
+function safeDeleteItemGroup(itemGroupOID) {
     // Get all Items within the ItemGroup and safe-delete them
     let itemOIDs = Array.from($$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)).map(item => item.getAttribute("ItemOID"));
     // Search for other references of the ItemGroup and delete the Def only if there is no one left
@@ -834,7 +834,7 @@ export function safeDeleteItemGroup(itemGroupOID) {
     }
 }
 
-export function safeDeleteItem(itemOID) {
+function safeDeleteItem(itemOID) {
     // Get the CodeList within the Item and remove it
     let codeListRef = $(`ItemDef[OID="${itemOID}"] CodeListRef`);
     // Search for other references of the Item and delete the Def only if there is no one left
@@ -845,11 +845,18 @@ export function safeDeleteItem(itemOID) {
     if (codeListRef) safeDeleteCodeList(codeListRef.getAttribute("CodeListOID"));
 }
 
-export function safeDeleteCodeList(codeListOID) {
+function safeDeleteCodeList(codeListOID) {
     // Search for other references of the CodeList and delete the Def only if there is no one left
     if (!$(`CodeListRef[CodeListOID="${codeListOID}"]`)) {
         let codeList = $(`CodeList[OID="${codeListOID}"]`);
         if (codeList) codeList.remove();
+    }
+}
+
+export function safeDeleteCondition(conditionOID) {
+    if (!$(`[CollectionExceptionConditionOID="${conditionOID}"]`)) {
+        let conditionDef = $(`ConditionDef[OID="${conditionOID}"]`);
+        if (conditionDef) conditionDef.remove();
     }
 }
 
@@ -858,23 +865,12 @@ export function deleteCodeListItem(codeListOID, codedValue) {
 }
 
 export function deleteAliasesOfElement(elementOID, codeListItemCodedValue) {
-    let aliases = [];
-    if (!codeListItemCodedValue) {
-        aliases = $$(`[OID="${elementOID}"] Alias`);
-    } else {
-        aliases = $$(`[OID="${elementOID}"] CodeListItem[CodedValue="${codeListItemCodedValue}"] Alias`);
-    }
-
-    for (let alias of aliases) {
-        alias.remove();
-    }
+    if (!codeListItemCodedValue) $$(`[OID="${elementOID}"] Alias`).removeElements();
+    else $$(`[OID="${elementOID}"] CodeListItem[CodedValue="${codeListItemCodedValue}"] Alias`).removeElements();
 }
 
 export function deleteRangeChecksOfItem(itemOID) {
-    let rangeChecks = $$(`[OID="${itemOID}"] RangeCheck`);
-    for (let rangeCheck of rangeChecks) {
-        rangeCheck.remove();
-    }
+    $$(`[OID="${itemOID}"] RangeCheck`).removeElements();
 }
 
 export function copyStudyEvent(studyEventOID, deepCopy) {

@@ -334,7 +334,7 @@ function fillDetailsPanelExtended() {
     const condition = metadataHelper.getElementCondition(currentElementType, currentElementOID, getCurrentElementParentOID());
     switch (currentElementType) {
         case metadataHelper.elementTypes.ITEMGROUP:
-            $("#collection-exception-condition").value = condition ? condition.querySelector("FormalExpression").textContent : null;
+            $("#collection-exception-condition").value = condition ? condition.getFormalExpression() : null;
             $("#collection-exception-condition").disabled = false;
             break;
         case metadataHelper.elementTypes.ITEM:
@@ -345,7 +345,7 @@ function fillDetailsPanelExtended() {
             const measurementUnit = metadataHelper.getMeasurementUnitByItem(currentElementOID);
             $("#measurement-unit").value = measurementUnit ? measurementUnit.getTranslatedSymbol(locale) : null;
             $("#measurement-unit").disabled = false;
-            $("#collection-exception-condition").value = condition ? condition.querySelector("FormalExpression").textContent : null;
+            $("#collection-exception-condition").value = condition ? condition.getFormalExpression() : null;
             $("#collection-exception-condition").disabled = false;
     }
 }
@@ -482,15 +482,20 @@ function saveDetailsExtended() {
 }
 
 function saveCondition() {
-    const formalExpression = $("#collection-exception-condition").value;
-    const existingCondition = metadataHelper.getConditions().find(condition => condition.querySelector("FormalExpression").textContent == formalExpression);
+    const formalExpression = $("#collection-exception-condition").value.escapeXML();
+    const currentCondition = metadataHelper.getElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID());
+    if (formalExpression && currentCondition && formalExpression == currentCondition.getFormalExpression()) return;
 
     let conditionOID;
-    if (existingCondition) conditionOID = existingCondition.getOID();
-    else conditionOID = metadataHelper.createCondition(formalExpression);
+    const identicalCondition = metadataHelper.getConditions().find(condition => condition.getFormalExpression() == formalExpression);
+    if (identicalCondition) conditionOID = identicalCondition.getOID();
+    else if (formalExpression) conditionOID = metadataHelper.createCondition(formalExpression);
+
+    console.log(conditionOID);
 
     // TODO: Refactor -- new object or class: currentElement.type / oid / codedValue / parentOID 
     metadataHelper.setElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID(), conditionOID);
+    if (currentCondition && currentCondition.getOID() != conditionOID) metadataHelper.safeDeleteCondition(currentCondition.getOID());
 }
 
 function saveMeasurementUnit() {
