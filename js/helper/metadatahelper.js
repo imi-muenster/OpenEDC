@@ -294,7 +294,7 @@ export function getRangeChecksByItem(itemOID) {
 }
 
 export function getConditions() {
-    return $$("ConditionDef");
+    return Array.from($$("ConditionDef"));
 }
 
 export function getElementsWithCondition(formOID) {
@@ -303,6 +303,7 @@ export function getElementsWithCondition(formOID) {
         const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
         const conditionOID = itemGroupRef.getAttribute("CollectionExceptionConditionOID");
         if (conditionOID) elementsWithCondition = addElementWithCondition(elementsWithCondition, elementTypes.ITEMGROUP, itemGroupOID, conditionOID);
+
         for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[CollectionExceptionConditionOID]`)) {
             const itemOID = itemRef.getAttribute("ItemOID");
             const conditionOID = itemRef.getAttribute("CollectionExceptionConditionOID");
@@ -470,6 +471,7 @@ export function setElementName(elementOID, name) {
     $(`[OID="${elementOID}"]`).setAttribute("Name", name);
 }
 
+// TODO: Refactor -- passing the local as parameter is not required anymore since the metadatahelper has access to the language helper
 export function setElementDescription(elementOID, description, locale) {
     let translatedText = $(`[OID="${elementOID}"] Description TranslatedText[*|lang="${locale}"]`);
     if (translatedText && description) {
@@ -579,8 +581,7 @@ export function setItemRangeCheck(itemOID, comparator, checkValue) {
     insertPosition.insertAdjacentElement("afterend", metadataTemplates.getRangeCheck(comparator, checkValue));
 }
 
-export function setElementCondition(elementType, elementOID, parentElementOID, conditionName) {
-    const conditionOID = conditionName ? $(`ConditionDef[Name="${conditionName}"]`).getOID() : null;
+export function setElementCondition(elementType, elementOID, parentElementOID, conditionOID) {
     switch (elementType) {
         case elementTypes.ITEMGROUP:
             if (conditionOID) $(`FormDef[OID="${parentElementOID}"] ItemGroupRef[ItemGroupOID="${elementOID}"]`).setAttribute("CollectionExceptionConditionOID", conditionOID);
@@ -731,9 +732,11 @@ export function insertCodeListRef(codeListRef, itemOID) {
     }
 }
 
-export function createCondition(name, formalExpression, locale) {
+export function createCondition(formalExpression) {
     const newConditionOID = generateUniqueOID("C.");
-    insertElementDef(metadataTemplates.getConditionDef(newConditionOID, name, formalExpression, locale));
+    // Currently, use the generated OID also as name and description for usability purposes
+    // Prospectively, a user could be asked to enter a name and description for a new condition
+    insertElementDef(metadataTemplates.getConditionDef(newConditionOID, newConditionOID, newConditionOID, languageHelper.getCurrentLocale(), formalExpression));
     
     return newConditionOID;
 }

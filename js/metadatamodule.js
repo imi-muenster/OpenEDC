@@ -297,7 +297,7 @@ function fillDetailsPanelEssential() {
     $("#oid-input").value = currentElementOID;
 
     let element = metadataHelper.getElementDefByOID(currentElementOID);
-    const elementRef = metadataHelper.getElementRefByOID(currentElementOID, currentElementType, getParentOID(currentElementType));
+    const elementRef = metadataHelper.getElementRefByOID(currentElementOID, currentElementType, getCurrentElementParentOID());
     switch (currentElementType) {
         case metadataHelper.elementTypes.STUDYEVENT:
         case metadataHelper.elementTypes.FORM:
@@ -331,7 +331,7 @@ function fillDetailsPanelExtended() {
     $("#alias-inputs .alias-name").disabled = false;
     $("#add-alias-button").disabled = false;
 
-    const condition = metadataHelper.getElementCondition(currentElementType, currentElementOID, getParentOID(currentElementType));
+    const condition = metadataHelper.getElementCondition(currentElementType, currentElementOID, getCurrentElementParentOID());
     switch (currentElementType) {
         case metadataHelper.elementTypes.ITEMGROUP:
             $("#collection-exception-condition").value = condition ? condition.querySelector("FormalExpression").textContent : null;
@@ -453,12 +453,11 @@ async function saveDetailsEssential() {
         case metadataHelper.elementTypes.ITEMGROUP:
             metadataHelper.setElementName(getCurrentElementOID(), newOID);
             metadataHelper.setElementDescription(getCurrentElementOID(), $("#question-textarea").value, locale);
-            metadataHelper.setElementMandatory(getCurrentElementOID(), currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
             break;
         case metadataHelper.elementTypes.ITEM:
             metadataHelper.setElementName(getCurrentElementOID(), newOID);
             metadataHelper.setItemQuestion(getCurrentElementOID(), $("#question-textarea").value, locale);
-            metadataHelper.setElementMandatory(getCurrentElementOID(), currentElementType, $("#mandatory-select-inner").value, getParentOID(currentElementType));
+            metadataHelper.setElementMandatory(getCurrentElementOID(), currentElementType, $("#mandatory-select-inner").value, getCurrentElementParentOID());
             handleItemDataType(getCurrentElementOID(), $("#datatype-select-inner").value);
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
@@ -469,8 +468,33 @@ async function saveDetailsEssential() {
 }
 
 function saveDetailsExtended() {
-    saveRangeChecks();
+    switch (getCurrentElementType()) {
+        case metadataHelper.elementTypes.ITEMGROUP:
+            saveCondition();
+            break;
+        case metadataHelper.elementTypes.ITEM:
+            saveCondition();
+            saveMeasurementUnit();
+            saveRangeChecks();
+    }
+    
     saveAliases();
+}
+
+function saveCondition() {
+    const formalExpression = $("#collection-exception-condition").value;
+    const existingCondition = metadataHelper.getConditions().find(condition => condition.querySelector("FormalExpression").textContent == formalExpression);
+
+    let conditionOID;
+    if (existingCondition) conditionOID = existingCondition.getOID();
+    else conditionOID = metadataHelper.createCondition(formalExpression);
+
+    // TODO: Refactor -- new object or class: currentElement.type / oid / codedValue / parentOID 
+    metadataHelper.setElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID(), conditionOID);
+}
+
+function saveMeasurementUnit() {
+
 }
 
 function saveRangeChecks() {
@@ -655,13 +679,12 @@ function removeElement() {
 }
 
 function duplicateReference() {
-    const currentElementType = getCurrentElementType();
-    if (currentElementType == metadataHelper.elementTypes.CODELISTITEM) {
+    if (getCurrentElementType() == metadataHelper.elementTypes.CODELISTITEM) {
         const newItemOID = metadataHelper.createItem(currentElementID.itemGroup);
         metadataHelper.setItemDataType(newItemOID, metadataHelper.getElementDefByOID(currentElementID.item).getDataType());
         metadataHelper.addCodeListRef(newItemOID, currentElementID.codeList);
     } else {
-        let elementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), currentElementType, getParentOID(currentElementType));
+        let elementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), getCurrentElementType(), getCurrentElementParentOID());
         elementRef.parentNode.insertBefore(elementRef.cloneNode(), elementRef.nextSibling);
     }
 
@@ -743,6 +766,10 @@ function getCurrentElementType() {
     else if (currentElementID.itemGroup) return metadataHelper.elementTypes.ITEMGROUP;
     else if (currentElementID.form) return metadataHelper.elementTypes.FORM;
     else if (currentElementID.studyEvent) return metadataHelper.elementTypes.STUDYEVENT;
+}
+
+function getCurrentElementParentOID() {
+    return getParentOID(getCurrentElementType());
 }
 
 function getParentOID(elementType) {

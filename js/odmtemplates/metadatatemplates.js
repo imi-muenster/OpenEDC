@@ -98,10 +98,10 @@ export let getAlias = (context, name) => template(`
     <Alias Context="${context}" Name="${name}"/>
 `);
 
-export let getConditionDef = (oid, name, formalExpression, locale) => template(`
+export let getConditionDef = (oid, name, description, locale, formalExpression) => template(`
     <ConditionDef OID="${oid}" Name="${name}">
         <Description>
-            <TranslatedText xml:lang="${locale}">${name}</TranslatedText>
+            <TranslatedText xml:lang="${locale}">${description}</TranslatedText>
         </Description>
         <FormalExpression Context="default">${formalExpression}</FormalExpression>
     </ConditionDef>
