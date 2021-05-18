@@ -43,9 +43,11 @@ export const enableAutocomplete = (input, mode) => {
     input.setAttribute("autocomplete-mode", mode);
 
     // Start autocomplete when element gets focus
+    // TODO: Check if all listeners are really required -- use input within keydown?
     input.addEventListener("input", inputEventListener);
     input.addEventListener("click", inputEventListener);
     input.addEventListener("keydown", keydownEventListener);
+    input.addEventListener("blur", blurEventListener);
 
     // Close the autocomplete list when the user clicks somewhere else
     document.addEventListener("click", closeLists);
@@ -55,6 +57,7 @@ export const disableAutocomplete = input => {
     input.removeEventListener("input", inputEventListener);
     input.removeEventListener("click", inputEventListener);
     input.removeEventListener("keydown", keydownEventListener);
+    input.removeEventListener("blur", blurEventListener);
     document.removeEventListener("click", closeLists);
     elements = null;
 }
@@ -90,6 +93,10 @@ const keydownEventListener = event => {
     }
 }
 
+const blurEventListener = () => {
+    elements = null;
+}
+
 const setCurrentModeAndEnabledParts = input => {
     if (input == currentInput) return;
     
@@ -110,6 +117,7 @@ const setCurrentModeAndEnabledParts = input => {
 const setCurrentPartInputAndLocale = input => {
     const part = input.value.substring(0, input.selectionStart).split(" ").length;
     const locale = languageHelper.getCurrentLocale();
+    // TODO: Check if all checks are really required
     if (part != currentPart || input != currentInput || locale != currentLocale) elements = null;
 
     currentPart = part;
