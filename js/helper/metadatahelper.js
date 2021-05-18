@@ -356,7 +356,7 @@ export function getItemsWithRangeChecks(formOID) {
 }
 
 export function getMeasurementUnits() {
-    return $$("BasicDefinitions MeasurementUnit");
+    return Array.from($$("BasicDefinitions MeasurementUnit"));
 }
 
 export function getElementCondition(elementType, elementOID, parentElementOID) {
@@ -375,7 +375,7 @@ export function getElementCondition(elementType, elementOID, parentElementOID) {
     }
 }
 
-export function getMeasurementUnitByItem(itemOID) {
+export function getItemMeasurementUnit(itemOID) {
     let measurementUnitRef = $(`ItemDef[OID="${itemOID}"] MeasurementUnitRef`);
 
     if (measurementUnitRef) {
@@ -506,12 +506,12 @@ export function setConditionFormalExpression(conditionOID, formalExpression) {
     $(`ConditionDef[OID="${conditionOID}"] FormalExpression`).textContent = formalExpression;
 }
 
-export function setMeasurementUnitSymbol(measurementUnitOID, symbol, locale) {
-    let translatedText = $(`MeasurementUnit[OID="${measurementUnitOID}"] Symbol TranslatedText[*|lang="${locale}"]`);
+export function setMeasurementUnitSymbol(measurementUnitOID, symbol) {
+    let translatedText = $(`MeasurementUnit[OID="${measurementUnitOID}"] Symbol TranslatedText[*|lang="${languageHelper.getCurrentLocale()}"]`);
     if (translatedText) {
         translatedText.textContent = symbol;
     } else {
-        $(`MeasurementUnit[OID="${measurementUnitOID}"] Symbol`).appendChild(metadataTemplates.getTranslatedText(symbol, locale));
+        $(`MeasurementUnit[OID="${measurementUnitOID}"] Symbol`).appendChild(metadataTemplates.getTranslatedText(symbol, languageHelper.getCurrentLocale()));
     }
 }
 
@@ -593,20 +593,16 @@ export function setElementCondition(elementType, elementOID, parentElementOID, c
     }
 }
 
-export function setItemMeasurementUnit(itemOID, measurementUnitName) {
+export function setItemMeasurementUnit(itemOID, measurementUnitOID) {
     let measurementUnitRef = $(`[OID="${itemOID}"] MeasurementUnitRef`);
-
-    if (measurementUnitName) {
-        let measurementUnitOID = $(`MeasurementUnit[Name="${measurementUnitName}"]`).getOID();
+    if (measurementUnitOID) {
         if (measurementUnitRef) {
             measurementUnitRef.setAttribute("MeasurementUnitOID", measurementUnitOID);
         } else {
-            let insertPosition = $(`[OID="${itemOID}"] Question`);
-            if (insertPosition) {
-                insertPosition.insertAdjacentElement("afterend", metadataTemplates.getMeasurementUnitRef(measurementUnitOID));
-            } else {
-                $(`[OID="${itemOID}"]`).appendChild(metadataTemplates.getMeasurementUnitRef(measurementUnitOID));
-            }
+            measurementUnitRef = metadataTemplates.getMeasurementUnitRef(measurementUnitOID);
+            const insertPosition = $(`[OID="${itemOID}"] Question`);
+            if (insertPosition) insertPosition.insertAdjacentElement("afterend", measurementUnitRef);
+            else $(`[OID="${itemOID}"]`).appendChild(measurementUnitRef);
         }
     } else {
         if (measurementUnitRef) measurementUnitRef.remove();
@@ -741,9 +737,11 @@ export function createCondition(formalExpression) {
     return newConditionOID;
 }
 
-export function createMeasurementUnit(name, symbol, locale) {
+export function createMeasurementUnit(symbol) {
     const newMeasurementUnitOID = generateUniqueOID("MM.");
-    insertMeasurementUnit(metadataTemplates.getMeasurementUnitDef(newMeasurementUnitOID, name, symbol, locale));
+    // Currently, use the generated OID also as name usability purposes
+    // Prospectively, a user could be asked to enter a name for a new measurement unit
+    insertMeasurementUnit(metadataTemplates.getMeasurementUnitDef(newMeasurementUnitOID, newMeasurementUnitOID, symbol, languageHelper.getCurrentLocale()));
 
     return newMeasurementUnitOID;
 }
@@ -859,6 +857,14 @@ export function safeDeleteCondition(conditionOID) {
         if (conditionDef) conditionDef.remove();
     }
 }
+
+export function safeDeleteMeasurementUnit(measurementUnitOID) {
+    if (!$(`MeasurementUnitRef[MeasurementUnitOID="${measurementUnitOID}"]`)) {
+        let measurementUnit = $(`MeasurementUnit[OID="${measurementUnitOID}"]`);
+        if (measurementUnit) measurementUnit.remove();
+    }
+}
+
 
 export function deleteCodeListItem(codeListOID, codedValue) {
     $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"]`).remove();

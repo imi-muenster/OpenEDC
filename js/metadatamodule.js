@@ -342,7 +342,7 @@ function fillDetailsPanelExtended() {
             $("#range-check-inputs .range-check-comparator-inner").disabled = false;
             $("#range-check-inputs .range-check-value").disabled = false;
             $("#add-range-check-button").disabled = false;
-            const measurementUnit = metadataHelper.getMeasurementUnitByItem(currentElementOID);
+            const measurementUnit = metadataHelper.getItemMeasurementUnit(currentElementOID);
             $("#measurement-unit").value = measurementUnit ? measurementUnit.getTranslatedSymbol(locale) : null;
             $("#measurement-unit").disabled = false;
             $("#collection-exception-condition").value = condition ? condition.getFormalExpression() : null;
@@ -481,6 +481,7 @@ function saveDetailsExtended() {
     saveAliases();
 }
 
+// TODO: Check if correct and efficient
 function saveCondition() {
     const formalExpression = $("#collection-exception-condition").value.escapeXML();
     const currentCondition = metadataHelper.getElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID());
@@ -488,18 +489,39 @@ function saveCondition() {
 
     let conditionOID;
     const identicalCondition = metadataHelper.getConditions().find(condition => condition.getFormalExpression() == formalExpression);
-    if (identicalCondition) conditionOID = identicalCondition.getOID();
-    else if (formalExpression) conditionOID = metadataHelper.createCondition(formalExpression);
+    if (formalExpression && currentCondition && !identicalCondition) {
+        metadataHelper.setConditionFormalExpression(currentCondition.getOID(), formalExpression);
+    } else {
+        if (identicalCondition) conditionOID = identicalCondition.getOID();
+        else if (formalExpression) conditionOID = metadataHelper.createCondition(formalExpression);
+        // TODO: Refactor -- new object or class: currentElement.type / oid / codedValue / parentOID 
+        metadataHelper.setElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID(), conditionOID);
+    }
 
-    console.log(conditionOID);
+    console.log("Save condition: " + conditionOID);
 
-    // TODO: Refactor -- new object or class: currentElement.type / oid / codedValue / parentOID 
-    metadataHelper.setElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID(), conditionOID);
-    if (currentCondition && currentCondition.getOID() != conditionOID) metadataHelper.safeDeleteCondition(currentCondition.getOID());
+    if (currentCondition && (!formalExpression || currentCondition.getOID() != conditionOID)) metadataHelper.safeDeleteCondition(currentCondition.getOID());
 }
 
+// TODO: Check if correct and efficient
 function saveMeasurementUnit() {
+    const symbol = $("#measurement-unit").value.escapeXML();
+    const currentMeasurementUnit = metadataHelper.getItemMeasurementUnit(getCurrentElementOID());
+    if (symbol && currentMeasurementUnit && symbol == currentMeasurementUnit.getTranslatedSymbol(locale)) return;
 
+    let measurementUnitOID;
+    const identicalMeasurementUnit = metadataHelper.getMeasurementUnits().find(measurementUnit => measurementUnit.getTranslatedSymbol(locale) == symbol);
+    if (symbol && currentMeasurementUnit && !identicalMeasurementUnit) {
+        metadataHelper.setMeasurementUnitSymbol(currentMeasurementUnit.getOID(), symbol);
+    } else {
+        if (identicalMeasurementUnit) measurementUnitOID = identicalMeasurementUnit.getOID();
+        else if (symbol) measurementUnitOID = metadataHelper.createMeasurementUnit(symbol);
+        metadataHelper.setItemMeasurementUnit(getCurrentElementOID(), measurementUnitOID);
+    }
+
+    console.log("Save unit: " + measurementUnitOID);
+
+    if (currentMeasurementUnit && currentMeasurementUnit.getOID() != measurementUnitOID) metadataHelper.safeDeleteCondition(currentMeasurementUnit.getOID());
 }
 
 function saveRangeChecks() {
