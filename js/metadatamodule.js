@@ -482,6 +482,7 @@ function saveDetailsExtended() {
 }
 
 // TODO: Check if correct and efficient
+// TODO: Implement prompt that lets the user chose whether to update other referencing elements or not
 function saveCondition() {
     const formalExpression = $("#collection-exception-condition").value.escapeXML();
     const currentCondition = metadataHelper.getElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID());
@@ -504,6 +505,7 @@ function saveCondition() {
 }
 
 // TODO: Check if correct and efficient
+// TODO: Implement prompt that lets the user chose whether to update other referencing items or not
 function saveMeasurementUnit() {
     const symbol = $("#measurement-unit").value.escapeXML();
     const currentMeasurementUnit = metadataHelper.getItemMeasurementUnit(getCurrentElementOID());
@@ -602,6 +604,7 @@ function setIOListeners() {
     }
 
     autocompleteHelper.enableAutocomplete($("#collection-exception-condition"), autocompleteHelper.modes.CONDITION);
+    autocompleteHelper.enableAutocomplete($("#measurement-unit"), autocompleteHelper.modes.MEASUREMENTUNIT);
 }
 
 function scrollParentToChild(child) {

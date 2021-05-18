@@ -18,12 +18,13 @@ class AutocompleteElement {
 
 export const modes = {
     CONDITION: 1,
-    ITEM: 2,
+    MEASUREMENTUNIT: 2,
     ITEMWITHCODELIST: 3
 }
 
 const comparators = ["==", "!=", "<", "<=", ">", ">="];
 
+// TODO: Rename item, which can also be a measurement unit
 const availableParts = {
     ITEM: 1,
     COMPARATOR: 2,
@@ -33,6 +34,7 @@ const availableParts = {
 let currentMode;
 let currentInput;
 let currentPart;
+let currentLocale;
 let enabledParts;
 let elements;
 
@@ -62,7 +64,7 @@ const inputEventListener = event => {
     closeLists();
     if (!event.target.value) return;
 
-    setCurrentPartAndInput(event.target);
+    setCurrentPartInputAndLocale(event.target);
     const value = getExpressionParts(currentInput.value)[currentPart-1];
 
     const list = document.createElement("div");
@@ -97,7 +99,7 @@ const setCurrentModeAndEnabledParts = input => {
         case modes.CONDITION:
             // Keep all parts
             break;
-        case modes.ITEM:
+        case modes.MEASUREMENTUNIT:
             // Remove comparator and code list values
         case modes.ITEMWITHCODELIST:
             delete enabledParts.COMPARATOR;
@@ -105,12 +107,14 @@ const setCurrentModeAndEnabledParts = input => {
     }
 }
 
-const setCurrentPartAndInput = input => {
+const setCurrentPartInputAndLocale = input => {
     const part = input.value.substring(0, input.selectionStart).split(" ").length;
-    if (part != currentPart || input != currentInput) elements = null;
+    const locale = languageHelper.getCurrentLocale();
+    if (part != currentPart || input != currentInput || locale != currentLocale) elements = null;
 
     currentPart = part;
     currentInput = input;
+    currentLocale = locale;
 }
 
 const elementSelected = element => {
@@ -163,11 +167,31 @@ const setElements = () => {
 }
 
 const getItemElements = () => {
-    const items = currentMode == modes.ITEMWITHCODELIST ? metadataHelper.getItemsWithCodeList() : metadataHelper.getItems();
-    return items.map(item => new AutocompleteElement(
-        item.getOID(),
-        item.getTranslatedQuestion(languageHelper.getCurrentLocale())
-    ));
+    let items;
+    switch (currentMode) {
+        case modes.CONDITION:
+            items = metadataHelper.getItems();
+            break;
+        case modes.MEASUREMENTUNIT:
+            items = metadataHelper.getMeasurementUnits();
+            break;
+        case modes.ITEMWITHCODELIST:
+            items = metadataHelper.getItemsWithCodeList();
+    }
+
+    switch (currentMode) {
+        case modes.CONDITION:
+        case modes.ITEMWITHCODELIST:
+            return items.map(item => new AutocompleteElement(
+                item.getOID(),
+                item.getTranslatedQuestion(languageHelper.getCurrentLocale())
+            ));
+        case modes.MEASUREMENTUNIT:
+            return items.map(item => new AutocompleteElement(
+                item.getTranslatedSymbol(languageHelper.getCurrentLocale())
+            ));
+    }
+
 }
 
 const getComparatorElements = () => {

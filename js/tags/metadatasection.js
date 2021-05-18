@@ -73,7 +73,9 @@ class MetadataSection extends HTMLElement {
                                     <div class="column">
                                         <div class="field">
                                             <label class="label" i18n="measurement-unit"></label>
-                                            <input class="input" type="text" id="measurement-unit" autocomplete="off" i18n-ph="symbol">
+                                            <div class="control has-autocomplete-bottom">
+                                                <input class="input" type="text" id="measurement-unit" autocomplete="off" i18n-ph="symbol">
+                                            </div>
                                         </div>
                                         <div class="field">
                                             <label class="label" i18n="range-check"></label>
