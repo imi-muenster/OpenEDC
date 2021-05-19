@@ -63,6 +63,12 @@ a.panel-block {
     flex-direction: column;
     height: 100%;
     padding: .5rem 0 .5rem 0;
+    max-width: 3rem;
+    transition: max-width .5s 1.5s;
+}
+
+.sidebar:hover .sidebar-options {
+    max-width: 10rem;
 }
 
 .sidebar-option {
@@ -91,7 +97,7 @@ a.panel-block {
 
 .sidebar-option i {
     text-align: center;
-    width: 3rem;
+    min-width: 3rem;
     pointer-events: none;
 }
 
@@ -100,13 +106,14 @@ a.panel-block {
 }
 
 .sidebar-option span {
-    display: none;
     margin-right: 1.25rem;
     pointer-events: none;
+    opacity: 0;
+    transition: opacity .5s 1.5s;
 }
 
 .sidebar:hover .sidebar-option span {
-    display: block;
+    opacity: 1;
 }
 
 .box.has-sidebar {
@@ -403,6 +410,18 @@ a.panel-block:hover {
 
     #survey-view-button {
         margin-left: 0px !important;
+    }
+
+    .box.has-sidebar {
+        height: auto;
+    }
+
+    .sidebar:hover .sidebar-options {
+        max-width: 3rem;
+    }
+
+    .sidebar:hover .sidebar-option span {
+        opacity: 0;
     }
 }
 

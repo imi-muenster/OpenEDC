@@ -394,7 +394,7 @@ window.addEmptyRangeCheckInput = function(disabled) {
     }
 
     $("#range-check-inputs").appendChild(input);
-    if (!disabled) input.scrollIntoView();
+    if (!disabled && !ioHelper.isMobile()) input.scrollIntoView();
 }
 
 window.addEmptyAliasInput = function(disabled) {
@@ -408,7 +408,7 @@ window.addEmptyAliasInput = function(disabled) {
     }
 
     $("#alias-inputs").appendChild(input);
-    if (!disabled) input.scrollIntoView();
+    if (!disabled && !ioHelper.isMobile()) input.scrollIntoView();
 }
 
 window.saveElement = async function() {
@@ -523,7 +523,7 @@ function saveMeasurementUnit() {
 
     console.log("Save unit: " + measurementUnitOID);
 
-    if (currentMeasurementUnit && currentMeasurementUnit.getOID() != measurementUnitOID) metadataHelper.safeDeleteCondition(currentMeasurementUnit.getOID());
+    if (currentMeasurementUnit && currentMeasurementUnit.getOID() != measurementUnitOID) metadataHelper.safeDeleteMeasurementUnit(currentMeasurementUnit.getOID());
 }
 
 function saveRangeChecks() {
