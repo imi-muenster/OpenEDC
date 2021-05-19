@@ -327,6 +327,10 @@ function addElementWithCondition(elementList, elementType, elementOID, condition
     return elementList;
 }
 
+export function getElementRefsHavingCondition(conditionOID) {
+    return Array.from($$(`[CollectionExceptionConditionOID="${conditionOID}"]`));
+}
+
 // TODO: Introduce own class for the two arrays? If yes, implement it for getElementsWithCondition as well
 // TODO: Could also handle soft and hard RangeChecks
 export function getItemsWithRangeChecks(formOID) {
@@ -581,16 +585,9 @@ export function setItemRangeCheck(itemOID, comparator, checkValue) {
     insertPosition.insertAdjacentElement("afterend", metadataTemplates.getRangeCheck(comparator, checkValue));
 }
 
-export function setElementCondition(elementType, elementOID, parentElementOID, conditionOID) {
-    switch (elementType) {
-        case elementTypes.ITEMGROUP:
-            if (conditionOID) $(`FormDef[OID="${parentElementOID}"] ItemGroupRef[ItemGroupOID="${elementOID}"]`).setAttribute("CollectionExceptionConditionOID", conditionOID);
-            else $(`FormDef[OID="${parentElementOID}"] ItemGroupRef[ItemGroupOID="${elementOID}"]`).removeAttribute("CollectionExceptionConditionOID");
-            break;
-        case elementTypes.ITEM:
-            if (conditionOID) $(`ItemGroupDef[OID="${parentElementOID}"] ItemRef[ItemOID="${elementOID}"]`).setAttribute("CollectionExceptionConditionOID", conditionOID);
-            else $(`ItemGroupDef[OID="${parentElementOID}"] ItemRef[ItemOID="${elementOID}"]`).removeAttribute("CollectionExceptionConditionOID");
-    }
+export function setElementRefCondition(elementRef, conditionOID) {
+    if (conditionOID) elementRef.setAttribute("CollectionExceptionConditionOID", conditionOID);
+    else elementRef.removeAttribute("CollectionExceptionConditionOID");
 }
 
 export function setItemMeasurementUnit(itemOID, measurementUnitOID) {

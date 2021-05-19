@@ -420,6 +420,7 @@ window.saveElement = async function() {
         languageHelper.createLanguageSelect(true);
     }
     
+    // TODO: Does not work with async storing of extended details with prompt
     reloadTree();
     reloadDetailsPanel();
     document.activeElement.blur();
@@ -470,10 +471,10 @@ async function saveDetailsEssential() {
 function saveDetailsExtended() {
     switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.ITEMGROUP:
-            saveCondition();
+            saveConditionPreCheck();
             break;
         case metadataHelper.elementTypes.ITEM:
-            saveCondition();
+            saveConditionPreCheck();
             saveMeasurementUnit();
             saveRangeChecks();
     }
@@ -483,23 +484,40 @@ function saveDetailsExtended() {
 
 // TODO: Check if correct and efficient
 // TODO: Implement prompt that lets the user chose whether to update other referencing elements or not
-function saveCondition() {
+function saveConditionPreCheck() {
     const formalExpression = $("#collection-exception-condition").value.escapeXML();
     const currentCondition = metadataHelper.getElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID());
     if (formalExpression && currentCondition && formalExpression == currentCondition.getFormalExpression()) return;
 
-    let conditionOID;
+    const currentElementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), getCurrentElementType(), getCurrentElementParentOID());
+    if (currentCondition) {
+        const elementsHavingCondition = metadataHelper.getElementRefsHavingCondition(currentCondition.getOID());
+        if (elementsHavingCondition.length > 1) {
+            ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("condition-multiple-references-hint"),
+                {
+                    [languageHelper.getTranslation("update-all")]: () => saveConditionForElements(formalExpression, currentCondition, elementsHavingCondition, true),
+                    [languageHelper.getTranslation("update-current-only")]: () => saveConditionForElements(formalExpression, currentCondition, [currentElementRef], false)
+                }
+            );
+        } else {
+            saveConditionForElements(formalExpression, currentCondition, [currentElementRef], true);
+        }
+    } else {
+        saveConditionForElements(formalExpression, null, [currentElementRef], true);
+    }
+}
+
+function saveConditionForElements(formalExpression, currentCondition, elementRefs, changeAll) {
     const identicalCondition = metadataHelper.getConditions().find(condition => condition.getFormalExpression() == formalExpression);
-    if (formalExpression && currentCondition && !identicalCondition) {
+    let conditionOID;
+    if (formalExpression && currentCondition && changeAll && !identicalCondition) {
         metadataHelper.setConditionFormalExpression(currentCondition.getOID(), formalExpression);
     } else {
         if (identicalCondition) conditionOID = identicalCondition.getOID();
         else if (formalExpression) conditionOID = metadataHelper.createCondition(formalExpression);
-        // TODO: Refactor -- new object or class: currentElement.type / oid / codedValue / parentOID 
-        metadataHelper.setElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID(), conditionOID);
-    }
 
-    console.log("Save condition: " + conditionOID);
+        elementRefs.forEach(elementRef => metadataHelper.setElementRefCondition(elementRef, conditionOID));
+    }
 
     if (currentCondition && (!formalExpression || currentCondition.getOID() != conditionOID)) metadataHelper.safeDeleteCondition(currentCondition.getOID());
 }

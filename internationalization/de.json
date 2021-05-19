@@ -71,6 +71,10 @@
     "new-item": "Neues Element",
     "mobile-metadata": "Mobile Metadaten",
     "mobile-metadata-hint": "Sie verwenden aktuell ein kleines Gerät um die Formulare zu entwerfen. Obwohl das in Ordnung ist, empfehlen wir Ihnen, auf ein Gerät mit einem größeren Bildschirm zu wechseln. Dadurch können Sie von einer vereinfachten Bedienung profitieren.",
+    "condition-multiple-references-hint": "Diese Bedingung wird auch für andere Elemente verwendet. Möchten Sie die Bedingung für alle Elemente anpassen?",
+    "measurement-unit-multiple-references-hint": "Diese Messeinheit wird auch für andere Elemente verwendet. Möchten Sie die Messeinheit für alle Elemente anpassen?",
+    "update-all": "Alle anpassen",
+    "update-current-only": "Nur Aktuelles anpassen",
 
     "subjects": "Probanden",
     "new-subject": "Neuer Proband",

@@ -62,6 +62,8 @@ export const disableAutocomplete = input => {
 }
 
 const inputEventListener = event => {
+    if (!event.isTrusted) return;
+
     setCurrentModeAndEnabledParts(event.target);
     closeLists(null, true);
 
@@ -132,6 +134,8 @@ const elementSelected = element => {
         currentInput.value += " ";
         currentInput.focus();
         currentInput.click();
+    } else {
+        currentInput.dispatchEvent(new Event("input"));
     }
 }
 
