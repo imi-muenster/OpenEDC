@@ -34,7 +34,6 @@ const availableParts = {
 let currentMode;
 let currentInput;
 let currentPart;
-let currentLocale;
 let enabledParts;
 let elements;
 
@@ -65,9 +64,8 @@ export const disableAutocomplete = input => {
 const inputEventListener = event => {
     setCurrentModeAndEnabledParts(event.target);
     closeLists(null, true);
-    if (!event.target.value) return;
 
-    setCurrentPartInputAndLocale(event.target);
+    setCurrentPartAndInput(event.target);
     const value = getExpressionParts(currentInput.value)[currentPart-1];
 
     const list = document.createElement("div");
@@ -114,15 +112,12 @@ const setCurrentModeAndEnabledParts = input => {
     }
 }
 
-const setCurrentPartInputAndLocale = input => {
+const setCurrentPartAndInput = input => {
     const part = input.value.substring(0, input.selectionStart).split(" ").length;
-    const locale = languageHelper.getCurrentLocale();
-    // TODO: Check if all checks are really required
-    if (part != currentPart || input != currentInput || locale != currentLocale) elements = null;
+    if (part != currentPart || input != currentInput) elements = null;
 
     currentPart = part;
     currentInput = input;
-    currentLocale = locale;
 }
 
 const elementSelected = element => {
