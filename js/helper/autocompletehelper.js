@@ -42,7 +42,7 @@ export const enableAutocomplete = (input, mode) => {
     input.setAttribute("autocomplete-mode", mode);
 
     // Start autocomplete when element gets focus
-    // TODO: Check if all listeners are really required -- use input within keydown?
+    // TODO: Check if all listeners are really required -- use input within keydown/keyup?
     input.addEventListener("input", inputEventListener);
     input.addEventListener("click", inputEventListener);
     input.addEventListener("keydown", keydownEventListener);
@@ -62,7 +62,7 @@ export const disableAutocomplete = input => {
 }
 
 const inputEventListener = event => {
-    if (!event.isTrusted) return;
+    if (event.detail.skipRender) return;
 
     setCurrentModeAndEnabledParts(event.target);
     closeLists(null, true);
@@ -135,7 +135,7 @@ const elementSelected = element => {
         currentInput.focus();
         currentInput.click();
     } else {
-        currentInput.dispatchEvent(new Event("input"));
+        currentInput.dispatchEvent(new CustomEvent("input", { detail: { skipRender: true } }));
     }
 }
 

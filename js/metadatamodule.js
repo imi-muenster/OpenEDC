@@ -419,14 +419,6 @@ window.saveElement = async function() {
         languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
         languageHelper.createLanguageSelect(true);
     }
-    
-    // TODO: Does not work with async storing of extended details with prompt
-    reloadTree();
-    reloadDetailsPanel();
-    document.activeElement.blur();
-    $("#save-button").unhighlight();
-
-    metadataHelper.storeMetadata();
 }
 
 async function saveDetailsEssential() {
@@ -466,20 +458,24 @@ async function saveDetailsEssential() {
             metadataHelper.setCodeListItemCodedValue(currentElementID.codeList, currentElementID.codeListItem, newOID);
             currentElementID.codeListItem = newOID;
     }
+
+    reloadAndStoreMetadata();
 }
 
 function saveDetailsExtended() {
+    let userInteractionRequired;
     switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.ITEMGROUP:
-            saveConditionPreCheck();
+            userInteractionRequired = saveConditionPreCheck();
             break;
         case metadataHelper.elementTypes.ITEM:
-            saveConditionPreCheck();
+            userInteractionRequired = saveConditionPreCheck();
             saveMeasurementUnit();
             saveRangeChecks();
     }
     
     saveAliases();
+    if (!userInteractionRequired) reloadAndStoreMetadata();
 }
 
 // TODO: Check if correct and efficient
@@ -499,6 +495,7 @@ function saveConditionPreCheck() {
                     [languageHelper.getTranslation("update-current-only")]: () => saveConditionForElements(formalExpression, currentCondition, [currentElementRef], false)
                 }
             );
+            return true;
         } else {
             saveConditionForElements(formalExpression, currentCondition, [currentElementRef], true);
         }
@@ -520,6 +517,7 @@ function saveConditionForElements(formalExpression, currentCondition, elementRef
     }
 
     if (currentCondition && (!formalExpression || currentCondition.getOID() != conditionOID)) metadataHelper.safeDeleteCondition(currentCondition.getOID());
+    reloadAndStoreMetadata();
 }
 
 // TODO: Check if correct and efficient
@@ -702,18 +700,22 @@ function removeElement() {
         case metadataHelper.elementTypes.STUDYEVENT:
             metadataHelper.removeStudyEventRef(currentElementID.studyEvent);
             currentElementID.studyEvent = null;
+            hideForms(true);
             break;
         case metadataHelper.elementTypes.FORM:
             metadataHelper.removeFormRef(currentElementID.studyEvent, currentElementID.form);
             currentElementID.form = null;
+            hideItemGroups(true);
             break;
         case metadataHelper.elementTypes.ITEMGROUP:
             metadataHelper.removeItemGroupRef(currentElementID.form, currentElementID.itemGroup);
             currentElementID.itemGroup = null;
+            hideItems(true);
             break;
         case metadataHelper.elementTypes.ITEM:
             metadataHelper.removeItemRef(currentElementID.itemGroup, currentElementID.item);
             currentElementID.item = null;
+            hideCodeListItems(true);
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             metadataHelper.deleteCodeListItem(currentElementID.codeList, currentElementID.codeListItem);
@@ -721,9 +723,7 @@ function removeElement() {
             currentElementID.codeListItem = null;
     }
 
-    resetDetailsPanel();
-    reloadTree();
-    metadataHelper.storeMetadata();
+    reloadAndStoreMetadata();
 }
 
 function duplicateReference() {
@@ -913,8 +913,7 @@ window.elementDrop = async function(event) {
     }
 
     elementTypeOnDrag = null;
-    reloadTree();
-    metadataHelper.storeMetadata();
+    reloadAndStoreMetadata();
 }
 
 window.showRemoveModal = async function() {
@@ -1001,8 +1000,7 @@ window.saveCodeListModal = function() {
     }
 
     hideCodeListModal();
-    reloadTree();
-    metadataHelper.storeMetadata();
+    reloadAndStoreMetadata();
 }
 
 window.hideCodeListModal = function() {
@@ -1031,9 +1029,7 @@ window.referenceCodeList = function() {
     if (getCurrentElementType() == metadataHelper.elementTypes.CODELISTITEM) currentElementID.codeList = externalCodeListOID;
 
     hideCodeListModal();
-    reloadTree();
-    reloadDetailsPanel();
-    metadataHelper.storeMetadata();
+    reloadAndStoreMetadata();
 }
 
 window.unreferenceCodeList = function() {
@@ -1044,6 +1040,11 @@ window.unreferenceCodeList = function() {
     if (getCurrentElementType() == metadataHelper.elementTypes.CODELISTITEM) currentElementID.codeList = newCodeListOID;
 
     showCodeListModal();
+    reloadAndStoreMetadata();
+}
+
+function reloadAndStoreMetadata() {
+    $("#save-button").unhighlight();
     reloadTree();
     reloadDetailsPanel();
     metadataHelper.storeMetadata();
