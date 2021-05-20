@@ -371,13 +371,13 @@ function fillDetailsPanelDuplicate() {
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
         case metadataHelper.elementTypes.ITEM:
-            translatedTexts = references.map(reference => reference.parentNode.getTranslatedDescription(locale));
+            translatedTexts = references.map(reference => reference.parentNode.getTranslatedDescription(locale, true));
             $("#reference-button").disabled = false;
             $("#shallow-copy-button").disabled = false;
             $("#deep-copy-button").disabled = false;
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
-            translatedTexts = references.map(reference => reference.parentNode.getTranslatedQuestion(locale));
+            translatedTexts = references.map(reference => reference.parentNode.getTranslatedQuestion(locale, true));
     }
 
     if (translatedTexts.length > 1) {
@@ -1111,7 +1111,7 @@ function getCurrentDetailsView() {
 
 function showFirstEventEditedHelp() {
     const element = metadataHelper.getElementDefByOID(getCurrentElementOID());
-    if (!element.getTranslatedDescription() && $("#question-textarea").value && metadataHelper.getStudyEvents().length == 1) {
+    if (!element.getTranslatedDescription(locale) && $("#question-textarea").value && metadataHelper.getStudyEvents().length == 1) {
         // Show the first event edited help message
         setTimeout(() => ioHelper.showMessage(languageHelper.getTranslation("first-event-edited-title"), languageHelper.getTranslation("first-event-edited-text")), 1000);
     }
