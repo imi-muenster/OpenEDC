@@ -86,7 +86,20 @@ class MetadataSection extends HTMLElement {
                                 </div>
                             </div>
                             <div class="box-content is-hidden" id="duplicate-options">
-                                Empty ...
+                                <div class="field">
+                                    <label class="label" i18n="existing-references"></label>
+                                    <div class="notification">
+                                        
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label class="label" i18n="new-duplication"></label>
+                                    <div class="buttons">
+                                        <div class="button is-small" i18n="reference"></div>
+                                        <div class="button is-small" i18n="shallow-copy"></div>
+                                        <div class="button is-small" i18n="deep-copy"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
