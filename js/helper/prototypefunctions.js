@@ -46,11 +46,11 @@ Element.prototype.getFormalExpression = function() {
 String.prototype.escapeXML = function() {
     return this.replace(/[&<>'"]/g, function(character) {
         switch (character) {
-            case "&": return "&#38;";
-            case "<": return "&#60;";
-            case ">": return "&#62;";
-            case "'": return "&#39;";
-            case '"': return "&#34;";
+            case "&": return "&amp;";
+            case "<": return "&lt;";
+            case ">": return "&gt;";
+            case "'": return "&quot";
+            case '"': return "&apos;";
         }
     });
 }
