@@ -9,13 +9,11 @@ export function process(conditions) {
         const operator = formalExpressionParts[1];
         const target = formalExpressionParts[2].replace(/['"]/g, "");
 
-        // Select conditional item group or item
+        // Select conditional item group or item and hide it
         let conditionalElement;
         if (condition.type == "itemgroup") conditionalElement = $(`[item-group-content-oid="${condition.oid}"]`);
         else if (condition.type == "item") conditionalElement = $(`[item-field-oid="${condition.oid}"]`);
-
-        // Hide the element if the operator is !=
-        if (operator == "!=") conditionalElement.hide();
+        conditionalElement.hide();
 
         // Add event listeners to respond to inputs to the determinant items
         const inputElement = $(`[item-oid="${determinant}"]`);
@@ -53,12 +51,12 @@ function respondToInputChange(event, conditionalElement, operator, target) {
     }
 }
 
-function showOrHideConditionalElement(conditionalElement, hide) {
-    if (hide) {
+function showOrHideConditionalElement(conditionalElement, show) {
+    if (show) {
+        conditionalElement.show();
+    } else {
         conditionalElement.hide();
         emptyConditionalElement(conditionalElement);
-    } else {
-        conditionalElement.show();
     }
 }
 

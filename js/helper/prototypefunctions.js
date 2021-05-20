@@ -14,11 +14,6 @@ Element.prototype.getDataType = function() {
     return this.getAttribute("DataType");
 }
 
-Element.prototype.getFormalExpression = function() {
-    const formalExpression = this.querySelector("FormalExpression");
-    return formalExpression ? formalExpression.textContent : null;
-}
-
 Element.prototype.getTranslatedDescription = function(locale, nameFallback) {
     const translatedText = this.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
     return translatedText ? translatedText.textContent : (nameFallback ? this.getName() : null);
@@ -39,6 +34,15 @@ Element.prototype.getTranslatedDecode = function(locale, codedValueFallback) {
     return translatedText ? translatedText.textContent : (codedValueFallback ? this.getCodedValue() : null);
 }
 
+Element.prototype.getFormalExpression = function() {
+    // Since ODM only provides a CollectionExceptionCondition, but a CollectionCondition is much more user friendly, the expression is stored negated
+    const formalExpression = this.querySelector("FormalExpression");
+    if (formalExpression && formalExpression.getAttribute("Context") == "OpenEDC") {
+        return formalExpression.textContent.getBetween("!(", ")");
+    }
+    return null;
+}
+
 String.prototype.escapeXML = function() {
     return this.replace(/[&<>'"]/g, function(character) {
         switch (character) {
@@ -49,6 +53,13 @@ String.prototype.escapeXML = function() {
             case '"': return "&#34;";
         }
     });
+}
+
+String.prototype.getBetween = function(start, end) {
+    return this.substring(
+        this.indexOf(start) + start.length, 
+        this.lastIndexOf(end)
+    );
 }
 
 NodeList.prototype.getLastElement = function() {

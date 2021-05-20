@@ -98,12 +98,13 @@ export let getAlias = (context, name) => template(`
     <Alias Context="${context}" Name="${name}"/>
 `);
 
+// Since ODM only provides a CollectionExceptionCondition, but a CollectionCondition is much more user friendly, the expression is negated
 export let getConditionDef = (oid, name, description, locale, formalExpression) => template(`
     <ConditionDef OID="${oid}" Name="${name}">
         <Description>
             <TranslatedText xml:lang="${locale}">${description}</TranslatedText>
         </Description>
-        <FormalExpression Context="default">${formalExpression}</FormalExpression>
+        <FormalExpression Context="OpenEDC">!(${formalExpression})</FormalExpression>
     </ConditionDef>
 `);
 

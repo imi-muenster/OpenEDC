@@ -315,12 +315,12 @@ export function getElementsWithCondition(formOID) {
 }
 
 function addElementWithCondition(elementList, elementType, elementOID, conditionOID) {
-    const formalExpression = $(`ConditionDef[OID="${conditionOID}"] FormalExpression`);
+    const formalExpression = $(`ConditionDef[OID="${conditionOID}"]`).getFormalExpression();
     if (formalExpression) {
         elementList.push({
             type: elementType,
             oid: elementOID,
-            formalExpression: formalExpression.textContent
+            formalExpression: formalExpression
         });
     }
 
@@ -511,7 +511,11 @@ export function setItemQuestion(itemOID, question, locale) {
 }
 
 export function setConditionFormalExpression(conditionOID, formalExpression) {
-    $(`ConditionDef[OID="${conditionOID}"] FormalExpression`).textContent = formalExpression;
+    // Since ODM only provides a CollectionExceptionCondition, but a CollectionCondition is much more user friendly, the expression is negated
+    const negatedFormalExpression = `!(${formalExpression})`;
+    const formalExpressionElement = $(`ConditionDef[OID="${conditionOID}"] FormalExpression`);
+    formalExpressionElement.setAttribute("Context", "OpenEDC");
+    formalExpressionElement.textContent = negatedFormalExpression;
 }
 
 export function setMeasurementUnitSymbol(measurementUnitOID, symbol) {
