@@ -267,11 +267,11 @@ function resetDetailsPanel() {
 
     // Extended
     $("#measurement-unit").disabled = true;
-    $("#collection-exception-condition").disabled = true;
+    $("#collection-condition").disabled = true;
     $("#add-range-check-button").disabled = true;
     $("#add-alias-button").disabled = true;
     $("#measurement-unit").value = "";
-    $("#collection-exception-condition").value = "";
+    $("#collection-condition").value = "";
     $$("#range-check-inputs .range-check-input").removeElements();
     $$("#alias-inputs .alias-input").removeElements();
     addEmptyRangeCheckInput(true);
@@ -334,8 +334,8 @@ function fillDetailsPanelExtended() {
     const condition = metadataHelper.getElementCondition(currentElementType, currentElementOID, getCurrentElementParentOID());
     switch (currentElementType) {
         case metadataHelper.elementTypes.ITEMGROUP:
-            $("#collection-exception-condition").value = condition ? condition.getFormalExpression() : null;
-            $("#collection-exception-condition").disabled = false;
+            $("#collection-condition").value = condition ? condition.getFormalExpression() : null;
+            $("#collection-condition").disabled = false;
             break;
         case metadataHelper.elementTypes.ITEM:
             fillItemRangeChecks();
@@ -345,8 +345,8 @@ function fillDetailsPanelExtended() {
             const measurementUnit = metadataHelper.getItemMeasurementUnit(currentElementOID);
             $("#measurement-unit").value = measurementUnit ? measurementUnit.getTranslatedSymbol(locale) : null;
             $("#measurement-unit").disabled = false;
-            $("#collection-exception-condition").value = condition ? condition.getFormalExpression() : null;
-            $("#collection-exception-condition").disabled = false;
+            $("#collection-condition").value = condition ? condition.getFormalExpression() : null;
+            $("#collection-condition").disabled = false;
     }
 }
 
@@ -478,7 +478,7 @@ function saveDetailsExtended() {
 }
 
 function saveConditionPreCheck() {
-    const formalExpression = $("#collection-exception-condition").value.escapeXML();
+    const formalExpression = $("#collection-condition").value.escapeXML();
     const currentCondition = metadataHelper.getElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID());
     if (formalExpression && currentCondition && formalExpression == currentCondition.getFormalExpression()) return;
 
@@ -634,7 +634,7 @@ function setIOListeners() {
         };
     }
 
-    autocompleteHelper.enableAutocomplete($("#collection-exception-condition"), autocompleteHelper.modes.CONDITION);
+    autocompleteHelper.enableAutocomplete($("#collection-condition"), autocompleteHelper.modes.CONDITION);
     autocompleteHelper.enableAutocomplete($("#measurement-unit"), autocompleteHelper.modes.MEASUREMENTUNIT);
 }
 

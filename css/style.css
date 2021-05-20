@@ -64,7 +64,7 @@ a.panel-block {
     height: 100%;
     padding: .5rem 0 .5rem 0;
     max-width: 3rem;
-    transition: max-width .5s 1.5s;
+    transition: max-width .5s 1s;
 }
 
 .sidebar:hover .sidebar-options {
@@ -109,7 +109,7 @@ a.panel-block {
     margin-right: 1.25rem;
     pointer-events: none;
     opacity: 0;
-    transition: opacity .5s 1.5s;
+    transition: opacity .5s 1s;
 }
 
 .sidebar:hover .sidebar-option span {

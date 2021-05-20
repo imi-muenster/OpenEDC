@@ -59,13 +59,13 @@ class MetadataSection extends HTMLElement {
                                 <div class="columns">
                                     <div class="column">
                                         <div class="field">
-                                            <label class="label" i18n="collection-exception-condition"></label>
+                                            <label class="label" i18n="collection-condition"></label>
                                             <div class="control has-autocomplete-bottom">
-                                                <input class="input" type="text" id="collection-exception-condition" autocomplete="off" i18n-ph="formal-expression">
+                                                <input class="input" type="text" id="collection-condition" autocomplete="off" i18n-ph="formal-expression">
                                             </div>
                                         </div>
                                         <div class="field">
-                                            <label class="label" i18n="alias"></label>
+                                            <label class="label" i18n="alias-names"></label>
                                             <div id="alias-inputs"></div>
                                             <button class="button is-small is-pulled-right mt-2" id="add-alias-button" onclick="addEmptyAliasInput()" i18n="add"></button>
                                         </div>
@@ -78,7 +78,7 @@ class MetadataSection extends HTMLElement {
                                             </div>
                                         </div>
                                         <div class="field">
-                                            <label class="label" i18n="range-check"></label>
+                                            <label class="label" i18n="range-checks"></label>
                                             <div id="range-check-inputs"></div>
                                             <button class="button is-small is-pulled-right mt-2" id="add-range-check-button" onclick="addEmptyRangeCheckInput()" i18n="add"></button>
                                         </div>
