@@ -8,7 +8,8 @@ import * as autocompleteHelper from "./helper/autocompletehelper.js";
 
 const detailsPanelViews = {
     ESSENTIAL: 1,
-    EXTENDED: 2
+    EXTENDED: 2,
+    DUPLICATE: 3
 };
 
 const $ = query => document.querySelector(query);
@@ -275,6 +276,10 @@ function resetDetailsPanel() {
     $$("#alias-inputs .alias-input").removeElements();
     addEmptyRangeCheckInput(true);
     addEmptyAliasInput(true);
+
+    // Duplicate
+    $("#element-references-hint").textContent = languageHelper.getTranslation("element-no-references-hint");
+    $("#element-references-list").classList.add("is-hidden");
 }
 
 function adjustDetailsPanelSidebar() {
@@ -282,7 +287,11 @@ function adjustDetailsPanelSidebar() {
 
     const references = metadataHelper.getElementRefs(getCurrentElementOID(), getCurrentElementType());
     if (references.length > 1) {
-        // TODO: Reimplement for new properties panel
+        $("#duplicate-option").classList.add("has-text-danger");
+        $("#duplicate-option i").className = "fas fa-clone";
+    } else {
+        $("#duplicate-option").classList.remove("has-text-danger");
+        $("#duplicate-option i").className = "far fa-clone";
     }
 }
 
@@ -348,12 +357,37 @@ function fillDetailsPanelExtended() {
     }
 }
 
+function fillDetailsPanelDuplicate() {
+    const references = metadataHelper.getElementRefs(getCurrentElementOID(), getCurrentElementType());
+
+    let translatedTexts;
+    switch (getCurrentElementType()) {
+        case metadataHelper.elementTypes.STUDYEVENT:
+            $("#reference-button").disabled = true;
+            return;
+        case metadataHelper.elementTypes.FORM:
+        case metadataHelper.elementTypes.ITEMGROUP:
+        case metadataHelper.elementTypes.ITEM:
+            translatedTexts = references.map(reference => reference.parentNode.getTranslatedDescription(locale));
+            break;
+        case metadataHelper.elementTypes.CODELISTITEM:
+            translatedTexts = references.map(reference => reference.parentNode.getTranslatedQuestion(locale));
+    }
+
+    if (translatedTexts.length > 1) {
+        $("#element-references-hint").textContent = languageHelper.getTranslation("element-multiple-references-hint");
+        $("#element-references-list").innerHTML = translatedTexts.join("<br>");
+        $("#element-references-list").classList.remove("is-hidden");
+    } 
+}
+
 export function reloadDetailsPanel() {
     resetDetailsPanel();
     if (getCurrentElementType()) {
         adjustDetailsPanelSidebar();
         if (getCurrentDetailsView() == detailsPanelViews.ESSENTIAL) fillDetailsPanelEssential();
         else if (getCurrentDetailsView() == detailsPanelViews.EXTENDED) fillDetailsPanelExtended();
+        else if (getCurrentDetailsView() == detailsPanelViews.DUPLICATE) fillDetailsPanelDuplicate();
     }
 }
 
@@ -746,7 +780,7 @@ function removeElement() {
     reloadAndStoreMetadata();
 }
 
-function duplicateReference() {
+window.duplicateReference = function() {
     if (getCurrentElementType() == metadataHelper.elementTypes.CODELISTITEM) {
         const newItemOID = metadataHelper.createItem(currentElementID.itemGroup);
         metadataHelper.setItemDataType(newItemOID, metadataHelper.getElementDefByOID(currentElementID.item).getDataType());
@@ -760,7 +794,7 @@ function duplicateReference() {
     reloadDetailsPanel();
 }
 
-function copyElement(deepCopy) {
+window.copyElement = function(deepCopy) {
     switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.STUDYEVENT:
             metadataHelper.copyStudyEvent(currentElementID.studyEvent, deepCopy);
@@ -952,16 +986,6 @@ window.showRemoveModal = async function() {
     }
 }
 
-window.showDuplicateModal = function() {
-    ioHelper.showMessage(languageHelper.getTranslation("mode-of-duplication"), languageHelper.getTranslation("duplication-hint"),
-        {
-            [languageHelper.getTranslation("reference")]: () => duplicateReference(),
-            [languageHelper.getTranslation("shallow-copy")]: () => copyElement(false),
-            [languageHelper.getTranslation("deep-copy")]: () => copyElement(true)
-        }
-    );
-}
-
 // TODO: Reorder other modal functions in this order (show -> save -> hide)
 window.showCodeListModal = function() {
     if (!metadataHelper.itemHasCodeList(currentElementID.item)) {
@@ -977,7 +1001,7 @@ window.showCodeListModal = function() {
     const codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
     const codeListReferences = metadataHelper.getElementRefs(codeListOID, metadataHelper.elementTypes.CODELISTITEM);
     if (codeListReferences.length > 1) {
-        const translatedQuestions = Array.from(codeListReferences).map(reference => reference.parentNode.getTranslatedQuestion(locale, true));
+        const translatedQuestions = codeListReferences.map(reference => reference.parentNode.getTranslatedQuestion(locale, true));
         $("#codelist-modal #codelist-references-list").innerHTML = translatedQuestions.join("<br>");
         $("#codelist-modal .notification").show();
         $("#codelist-modal #codelist-reference-field").hide();
@@ -1073,6 +1097,7 @@ function reloadAndStoreMetadata() {
 function getCurrentDetailsView() {
     if ($("#essential-option").isActive()) return detailsPanelViews.ESSENTIAL;
     else if ($("#extended-option").isActive()) return detailsPanelViews.EXTENDED;
+    else if ($("#duplicate-option").isActive()) return detailsPanelViews.DUPLICATE;
 }
 
 function showFirstEventEditedHelp() {

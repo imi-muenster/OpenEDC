@@ -10,9 +10,8 @@ class CodeListModal extends HTMLElement {
                             <h2 class="subtitle"></h2>
                             <hr>
                             <div class="notification is-link is-light is-hidden">
-                                <p i18n="choices-references-hint"></p>
-                                <p class="mt-3">
-                                    <strong id="codelist-references-list"></strong>
+                                <p i18n="choices-multiple-references-hint"></p>
+                                <p class="has-text-weight-bold mt-3" id="codelist-references-list">
                                 </p>
                                 <button class="button is-link is-small is-outlined mt-5" onclick="unreferenceCodeList()" i18n="cancel-reference-option"></button>
                             </div>

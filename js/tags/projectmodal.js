@@ -16,7 +16,7 @@ class ProjectModal extends HTMLElement {
                         <div class="width-is-three-quarters" id="general-options">
                             <div class="notification is-link is-light" id="connect-to-server-option">
                                 <h1 class="title is-4" i18n="connect-to-server"></h1>
-                                <p class="mb-5 is-hidden" id="server-connected-hint"><strong i18n="connected-hint"></strong></p>
+                                <p class="has-text-weight-bold mb-5 is-hidden" id="server-connected-hint" i18n="connected-hint"></p>
                                 <p i18n="connection-hint"></p>
                                 <div class="field has-addons mt-5 mb-0">
                                     <div class="control is-expanded">
@@ -27,7 +27,7 @@ class ProjectModal extends HTMLElement {
                                     </div>
                                 </div>
                                 <form class="is-hidden" id="initialize-server-form">
-                                    <p class="mt-5 mb-5"><strong i18n="new-account-hint"></strong></p>
+                                    <p class="has-text-weight-bold mt-5 mb-5" i18n="new-account-hint"></p>
                                     <input class="input is-small mb-3" id="owner-username-input" type="text" autocomplete="username" i18n-ph="username">
                                     <input class="input is-small mb-3" id="owner-password-input" type="password" autocomplete="new-password" i18n-ph="password">
                                     <input class="input is-small mb-5" id="owner-confirm-password-input" type="password" autocomplete="new-password" i18n-ph="password-confirm">
@@ -36,9 +36,9 @@ class ProjectModal extends HTMLElement {
                             </div>
                             <div class="notification is-link is-light">
                                 <h1 class="title is-4" i18n="encrypt-data"></h1>
-                                <p class="mb-5 is-hidden" id="data-encrypted-hint"><strong i18n="enrypted-hint"></strong></p>
+                                <p class="has-text-weight-bold mb-5 is-hidden" id="data-encrypted-hint" i18n="enrypted-hint"></p>
                                 <p i18n="encryption-hint"></p>
-                                <p class="mt-5" id="data-encryption-warning"><strong i18n="encryption-warning"></strong></p>
+                                <p class="has-text-weight-bold mt-5" id="data-encryption-warning" i18n="encryption-warning"></p>
                                 <form>
                                     <input class="is-hidden" autocomplete="username">
                                     <div class="field has-addons mt-5 mb-0">

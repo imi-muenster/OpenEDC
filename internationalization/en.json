@@ -126,7 +126,7 @@
     "close-with-saving": "Close with saving",
 
     "choices-for-element": "Choices for Element",
-    "choices-references-hint": "Editing the choices affects the following elements:",
+    "choices-multiple-references-hint": "Editing the choices affects the following elements:",
     "cancel-reference-option": "Cancel reference to other elements",
     "textitems-hint": "Choices as Text",
     "coded-value-translated-choice": "Coded Value, Translated Choice",

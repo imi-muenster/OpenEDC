@@ -125,7 +125,7 @@
     "close-with-saving": "Schließen mit Speichern",
 
     "choices-for-element": "Wahlmöglichkeiten",
-    "choices-references-hint": "Bearbeiten der Wahlmöglichkeiten wirkt sich auf folgende Elemente aus:",
+    "choices-multiple-references-hint": "Bearbeiten der Wahlmöglichkeiten wirkt sich auf folgende Elemente aus:",
     "cancel-reference-option": "Verweis zu anderen Elementen aufheben",
     "textitems-hint": "Wahlmöglichkeiten als Text",
     "coded-value-translated-choice": "Kodierter Wert, Übersetzte Auswahlmöglichkeit",

@@ -408,15 +408,15 @@ export function getItemsWithCodeList() {
 export function getElementRefs(elementOID, elementType) {
     switch (elementType) {
         case elementTypes.STUDYEVENT:
-            return $$(`StudyEventRef[StudyEventOID="${elementOID}"]`);
+            return Array.from($$(`StudyEventRef[StudyEventOID="${elementOID}"]`));
         case elementTypes.FORM:
-            return $$(`FormRef[FormOID="${elementOID}"]`);
+            return Array.from($$(`FormRef[FormOID="${elementOID}"]`));
         case elementTypes.ITEMGROUP:
-            return $$(`ItemGroupRef[ItemGroupOID="${elementOID}"]`);
+            return Array.from($$(`ItemGroupRef[ItemGroupOID="${elementOID}"]`));
         case elementTypes.ITEM:
-            return $$(`ItemRef[ItemOID="${elementOID}"]`);
+            return Array.from($$(`ItemRef[ItemOID="${elementOID}"]`));
         case elementTypes.CODELISTITEM:
-            return $$(`CodeListRef[CodeListOID="${elementOID}"]`);
+            return Array.from($$(`CodeListRef[CodeListOID="${elementOID}"]`));
     }
 }
 
