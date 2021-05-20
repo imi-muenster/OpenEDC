@@ -57,7 +57,7 @@
     "existing-references": "Existing References",
     "no-element-selected": "No element selected.",
     "element-no-references-hint": "The current element is not reused at other locations.",
-    "element-multiple-references-hint": "The current element is used at the following locations:",
+    "element-multiple-references-hint": "The current element is used at the following locations. If you edit it, it will be edited there as well.",
     "new-duplication": "New Duplication",
     "reference": "Reference",
     "shallow-copy": "Shallow Copy",
@@ -80,7 +80,7 @@
     "mobile-metadata": "Mobile Metadata",
     "mobile-metadata-hint": "You are currently using a small device to design the forms. While this is fine and doable, we suggest switching to a device with a larger screen to benefit from a simplified editing workflow.",
     "condition-multiple-references-hint": "This condition is used for other elements as well. Do you want to update it for all elements?",
-    "measurement-unit-multiple-references-hint": "This measurement unit is used for other elements as well. Do you want to update it for all elements?",
+    "measurement-unit-multiple-references-hint": "This measurement unit is used for other items as well. Do you want to update it for all items?",
     "update-all": "Update all",
     "update-current-only": "Update current only",
 
@@ -318,5 +318,5 @@
     "first-event-title": "You added your first event",
     "first-event-text": "You can now add a description to your event. Please note that this description is dependent on the language that you have currently selected.<br><br>You can change the language at any time to add new translations to your project which lets you create a multilingual study.",
     "first-event-edited-title": "You added your first event description",
-    "first-event-edited-text": "You can now continue by adding a form to the event. Then you can add an item group to the form and then items to that group. When you have created your first few items, you can click on <i>Capture Data</i> to see the form in action.<br><br>With the <i>More</i> button you can change additional settings of an item such as allowed data ranges or units. Go to <i>Project Options</i> to see more options for your project.<br><br>Great luck with your study!"
+    "first-event-edited-text": "You can now continue by adding a form to the event. Then you can add an item group to the form and then items to that group. When you have created your first few items, you can click on <i>Capture Data</i> to see the form in action.<br><br>Go to <i>Project Options</i> to see more options for your project.<br><br>Great luck with your study!"
 }
