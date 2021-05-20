@@ -96,9 +96,9 @@ class MetadataSection extends HTMLElement {
                                 <div class="field">
                                     <label class="label" i18n="new-duplication"></label>
                                     <div class="buttons">
-                                        <div class="button is-small" id="reference-button" i18n="reference" onclick="duplicateReference()"></div>
-                                        <div class="button is-small" id="shallow-copy-button" i18n="shallow-copy" onclick="copyElement(false)"></div>
-                                        <div class="button is-small" id="deep-copy-button" i18n="deep-copy" onclick="copyElement(true)"></div>
+                                        <button class="button is-small" id="reference-button" i18n="reference" onclick="duplicateReference()"></button>
+                                        <button class="button is-small" id="shallow-copy-button" i18n="shallow-copy" onclick="copyElement(false)"></button>
+                                        <button class="button is-small" id="deep-copy-button" i18n="deep-copy" onclick="copyElement(true)"></button>
                                     </div>
                                 </div>
                             </div>

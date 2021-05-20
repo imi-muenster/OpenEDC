@@ -278,8 +278,10 @@ function resetDetailsPanel() {
     addEmptyAliasInput(true);
 
     // Duplicate
-    $("#element-references-hint").textContent = languageHelper.getTranslation("element-no-references-hint");
-    $("#element-references-list").classList.add("is-hidden");
+    $("#element-references-hint").textContent = languageHelper.getTranslation("no-element-selected");
+    $("#reference-button").disabled = true;
+    $("#shallow-copy-button").disabled = true;
+    $("#deep-copy-button").disabled = true;
 }
 
 function adjustDetailsPanelSidebar() {
@@ -360,15 +362,19 @@ function fillDetailsPanelExtended() {
 function fillDetailsPanelDuplicate() {
     const references = metadataHelper.getElementRefs(getCurrentElementOID(), getCurrentElementType());
 
-    let translatedTexts;
+    let translatedTexts = [];
     switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.STUDYEVENT:
-            $("#reference-button").disabled = true;
-            return;
+            $("#shallow-copy-button").disabled = false;
+            $("#deep-copy-button").disabled = false;
+            break;
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
         case metadataHelper.elementTypes.ITEM:
             translatedTexts = references.map(reference => reference.parentNode.getTranslatedDescription(locale));
+            $("#reference-button").disabled = false;
+            $("#shallow-copy-button").disabled = false;
+            $("#deep-copy-button").disabled = false;
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             translatedTexts = references.map(reference => reference.parentNode.getTranslatedQuestion(locale));
@@ -378,7 +384,10 @@ function fillDetailsPanelDuplicate() {
         $("#element-references-hint").textContent = languageHelper.getTranslation("element-multiple-references-hint");
         $("#element-references-list").innerHTML = translatedTexts.join("<br>");
         $("#element-references-list").classList.remove("is-hidden");
-    } 
+    } else {
+        $("#element-references-hint").textContent = languageHelper.getTranslation("element-no-references-hint");
+        $("#element-references-list").classList.add("is-hidden");
+    }
 }
 
 export function reloadDetailsPanel() {
