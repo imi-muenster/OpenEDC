@@ -242,8 +242,8 @@ class MessageModal extends HTMLElement {
                 button.classList = `button ${this.callbackType} is-small`;
                 button.textContent = text;
                 button.onclick = () => {
-                    callback();
                     this.remove();
+                    callback();
                 };
                 this.querySelector(".buttons").insertAdjacentElement("beforeend", button);
             }

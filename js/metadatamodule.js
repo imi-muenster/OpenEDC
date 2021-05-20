@@ -463,23 +463,20 @@ async function saveDetailsEssential() {
 }
 
 function saveDetailsExtended() {
-    let userInteractionRequired;
     switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.ITEMGROUP:
-            userInteractionRequired = saveConditionPreCheck();
+            if (saveConditionPreCheck()) return;
             break;
         case metadataHelper.elementTypes.ITEM:
-            userInteractionRequired = saveConditionPreCheck();
-            saveMeasurementUnit();
+            if (saveConditionPreCheck()) return;
+            if (saveMeasurementUnitPreCheck()) return;
             saveRangeChecks();
     }
     
     saveAliases();
-    if (!userInteractionRequired) reloadAndStoreMetadata();
+    reloadAndStoreMetadata();
 }
 
-// TODO: Check if correct and efficient
-// TODO: Implement prompt that lets the user chose whether to update other referencing elements or not
 function saveConditionPreCheck() {
     const formalExpression = $("#collection-exception-condition").value.escapeXML();
     const currentCondition = metadataHelper.getElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID());
@@ -491,55 +488,73 @@ function saveConditionPreCheck() {
         if (elementsHavingCondition.length > 1) {
             ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("condition-multiple-references-hint"),
                 {
-                    [languageHelper.getTranslation("update-all")]: () => saveConditionForElements(formalExpression, currentCondition, elementsHavingCondition, true),
-                    [languageHelper.getTranslation("update-current-only")]: () => saveConditionForElements(formalExpression, currentCondition, [currentElementRef], false)
+                    [languageHelper.getTranslation("update-all")]: () => saveConditionForElements(formalExpression, currentCondition, elementsHavingCondition, true, true),
+                    [languageHelper.getTranslation("update-current-only")]: () => saveConditionForElements(formalExpression, currentCondition, [currentElementRef], false, true)
                 }
             );
             return true;
         } else {
-            saveConditionForElements(formalExpression, currentCondition, [currentElementRef], true);
+            saveConditionForElements(formalExpression, currentCondition, [currentElementRef], true, false);
         }
     } else {
-        saveConditionForElements(formalExpression, null, [currentElementRef], true);
+        saveConditionForElements(formalExpression, null, [currentElementRef], true, false);
     }
 }
 
-function saveConditionForElements(formalExpression, currentCondition, elementRefs, changeAll) {
+function saveConditionForElements(formalExpression, currentCondition, elementRefs, changeAll, promptInitiated) {
     const identicalCondition = metadataHelper.getConditions().find(condition => condition.getFormalExpression() == formalExpression);
+
     let conditionOID;
     if (formalExpression && currentCondition && changeAll && !identicalCondition) {
         metadataHelper.setConditionFormalExpression(currentCondition.getOID(), formalExpression);
     } else {
         if (identicalCondition) conditionOID = identicalCondition.getOID();
         else if (formalExpression) conditionOID = metadataHelper.createCondition(formalExpression);
-
         elementRefs.forEach(elementRef => metadataHelper.setElementRefCondition(elementRef, conditionOID));
     }
 
     if (currentCondition && (!formalExpression || currentCondition.getOID() != conditionOID)) metadataHelper.safeDeleteCondition(currentCondition.getOID());
-    reloadAndStoreMetadata();
+    if (promptInitiated) saveDetailsExtended();
 }
 
-// TODO: Check if correct and efficient
-// TODO: Implement prompt that lets the user chose whether to update other referencing items or not
-function saveMeasurementUnit() {
+function saveMeasurementUnitPreCheck() {
     const symbol = $("#measurement-unit").value.escapeXML();
     const currentMeasurementUnit = metadataHelper.getItemMeasurementUnit(getCurrentElementOID());
     if (symbol && currentMeasurementUnit && symbol == currentMeasurementUnit.getTranslatedSymbol(locale)) return;
 
-    let measurementUnitOID;
+    const currentItemDef = metadataHelper.getElementDefByOID(getCurrentElementOID());
+    if (currentMeasurementUnit) {
+        const elementsHavingMeasurementUnit = metadataHelper.getItemDefsHavingMeasurementUnit(currentMeasurementUnit.getOID());
+        if (elementsHavingMeasurementUnit.length > 1) {
+            ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("measurement-unit-multiple-references-hint"),
+                {
+                    [languageHelper.getTranslation("update-all")]: () => saveMeasurementUnitForElements(symbol, currentMeasurementUnit, elementsHavingMeasurementUnit, true, true),
+                    [languageHelper.getTranslation("update-current-only")]: () => saveMeasurementUnitForElements(symbol, currentMeasurementUnit, [currentItemDef], false, true)
+                }
+            );
+            return true;
+        } else {
+            saveMeasurementUnitForElements(symbol, currentMeasurementUnit, [currentItemDef], true, false);
+        }
+    } else {
+        saveMeasurementUnitForElements(symbol, null, [currentItemDef], true, false);
+    }
+}
+
+function saveMeasurementUnitForElements(symbol, currentMeasurementUnit, itemDefs, changeAll, promptInitiated) {
     const identicalMeasurementUnit = metadataHelper.getMeasurementUnits().find(measurementUnit => measurementUnit.getTranslatedSymbol(locale) == symbol);
-    if (symbol && currentMeasurementUnit && !identicalMeasurementUnit) {
+
+    let measurementUnitOID;
+    if (symbol && currentMeasurementUnit && changeAll && !identicalMeasurementUnit) {
         metadataHelper.setMeasurementUnitSymbol(currentMeasurementUnit.getOID(), symbol);
     } else {
         if (identicalMeasurementUnit) measurementUnitOID = identicalMeasurementUnit.getOID();
         else if (symbol) measurementUnitOID = metadataHelper.createMeasurementUnit(symbol);
-        metadataHelper.setItemMeasurementUnit(getCurrentElementOID(), measurementUnitOID);
+        itemDefs.forEach(itemDef => metadataHelper.setItemDefMeasurementUnit(itemDef, measurementUnitOID));
     }
 
-    console.log("Save unit: " + measurementUnitOID);
-
-    if (currentMeasurementUnit && currentMeasurementUnit.getOID() != measurementUnitOID) metadataHelper.safeDeleteMeasurementUnit(currentMeasurementUnit.getOID());
+    if (currentMeasurementUnit && (!symbol || currentMeasurementUnit.getOID() != measurementUnitOID)) metadataHelper.safeDeleteMeasurementUnit(currentMeasurementUnit.getOID());
+    if (promptInitiated) saveDetailsExtended();
 }
 
 function saveRangeChecks() {

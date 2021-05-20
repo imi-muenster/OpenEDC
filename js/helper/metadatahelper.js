@@ -331,6 +331,10 @@ export function getElementRefsHavingCondition(conditionOID) {
     return Array.from($$(`[CollectionExceptionConditionOID="${conditionOID}"]`));
 }
 
+export function getItemDefsHavingMeasurementUnit(measuremenUnitOID) {
+    return Array.from($$(`[MeasurementUnitOID="${measuremenUnitOID}"]`)).map(measurementUnitRef => measurementUnitRef.parentNode);
+}
+
 // TODO: Introduce own class for the two arrays? If yes, implement it for getElementsWithCondition as well
 // TODO: Could also handle soft and hard RangeChecks
 export function getItemsWithRangeChecks(formOID) {
@@ -590,16 +594,16 @@ export function setElementRefCondition(elementRef, conditionOID) {
     else elementRef.removeAttribute("CollectionExceptionConditionOID");
 }
 
-export function setItemMeasurementUnit(itemOID, measurementUnitOID) {
-    let measurementUnitRef = $(`[OID="${itemOID}"] MeasurementUnitRef`);
+export function setItemDefMeasurementUnit(itemDef, measurementUnitOID) {
+    let measurementUnitRef = itemDef.querySelector("MeasurementUnitRef");
     if (measurementUnitOID) {
         if (measurementUnitRef) {
             measurementUnitRef.setAttribute("MeasurementUnitOID", measurementUnitOID);
         } else {
             measurementUnitRef = metadataTemplates.getMeasurementUnitRef(measurementUnitOID);
-            const insertPosition = $(`[OID="${itemOID}"] Question`);
+            const insertPosition = itemDef.querySelector("Question");
             if (insertPosition) insertPosition.insertAdjacentElement("afterend", measurementUnitRef);
-            else $(`[OID="${itemOID}"]`).appendChild(measurementUnitRef);
+            else itemDef.appendChild(measurementUnitRef);
         }
     } else {
         if (measurementUnitRef) measurementUnitRef.remove();
