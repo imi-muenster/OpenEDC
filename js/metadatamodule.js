@@ -621,6 +621,9 @@ function saveAliases() {
 }
 
 window.sidebarOptionClicked = function(event) {
+    // Save the element if it has been updated and another sidebar option is selected
+    if ($("#save-button").isHighlighted() && event.target.id != $(".sidebar-option.is-active").id) saveElement();
+
     ioHelper.removeIsActiveFromElement($("#details-panel .sidebar-option.is-active"));
     event.target.activate();
 
