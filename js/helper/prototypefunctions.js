@@ -49,8 +49,8 @@ String.prototype.escapeXML = function() {
             case "&": return "&amp;";
             case "<": return "&lt;";
             case ">": return "&gt;";
-            case "'": return "&quot";
-            case '"': return "&apos;";
+            case "'": return "&apos;";
+            case '"': return "&quot;";
         }
     });
 }

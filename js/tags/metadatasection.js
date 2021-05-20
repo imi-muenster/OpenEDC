@@ -19,7 +19,7 @@ class MetadataSection extends HTMLElement {
                                         <i class="far fa-ruler"></i>
                                         <span i18n="extended"></span>
                                     </li>
-                                    <li class="sidebar-option" id="duplicate-button" onclick="showDuplicateModal()">
+                                    <li class="sidebar-option is-activable" id="duplicate-option" onclick="sidebarOptionClicked(event)">
                                         <i class="far fa-clone"></i>
                                         <span i18n="duplicate"></span>
                                     </li>
@@ -84,6 +84,9 @@ class MetadataSection extends HTMLElement {
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="box-content is-hidden" id="duplicate-options">
+                                Empty ...
                             </div>
                         </div>
                     </div>

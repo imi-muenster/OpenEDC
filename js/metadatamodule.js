@@ -249,7 +249,6 @@ export function reloadTree() {
 
 function resetDetailsPanel() {
     // Sidebar
-    $("#duplicate-button").unhighlight();
     $("#remove-button").unhighlight();
     $("#save-button").unhighlight();
 
@@ -279,7 +278,6 @@ function resetDetailsPanel() {
 }
 
 function adjustDetailsPanelSidebar() {
-    $("#duplicate-button").highlight();
     $("#remove-button").highlight();
 
     const references = metadataHelper.getElementRefs(getCurrentElementOID(), getCurrentElementType());
@@ -587,10 +585,17 @@ window.sidebarOptionClicked = function(event) {
         case "essential-option":
             $("#essential-options").show();
             $("#extended-options").hide();
+            $("#duplicate-options").hide();
             break;
         case "extended-option":
             $("#essential-options").hide();
             $("#extended-options").show();
+            $("#duplicate-options").hide();
+            break;
+        case "duplicate-option":
+            $("#essential-options").hide();
+            $("#extended-options").hide();
+            $("#duplicate-options").show();
     }
 
     reloadDetailsPanel();

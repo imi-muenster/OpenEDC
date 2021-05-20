@@ -91,7 +91,7 @@ a.panel-block {
     pointer-events: none;
 }
 
-.sidebar-option:nth-last-child(3) {
+.sidebar-option:nth-last-child(2) {
     margin-top: auto;
 }
 
