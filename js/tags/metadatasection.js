@@ -11,9 +11,9 @@ class MetadataSection extends HTMLElement {
                         <div class="box has-sidebar">
                             <nav class="sidebar">
                                 <ul class="sidebar-options">
-                                    <li class="sidebar-option is-activable is-active" id="essential-option" onclick="sidebarOptionClicked(event)">
+                                    <li class="sidebar-option is-activable is-active" id="foundational-option" onclick="sidebarOptionClicked(event)">
                                         <i class="far fa-text"></i>
-                                        <span i18n="essential"></span>
+                                        <span i18n="foundational"></span>
                                     </li>
                                     <li class="sidebar-option is-activable" id="extended-option" onclick="sidebarOptionClicked(event)">
                                         <i class="far fa-ruler"></i>
@@ -33,7 +33,7 @@ class MetadataSection extends HTMLElement {
                                     </li>
                                 </ul>
                             </nav>
-                            <div class="box-content" id="essential-options">
+                            <div class="box-content" id="foundational-options">
                                 <div class="columns">
                                     <div class="column">
                                         <div class="field">

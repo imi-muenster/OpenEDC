@@ -7,7 +7,7 @@ import * as htmlElements from "./helper/htmlelements.js";
 import * as autocompleteHelper from "./helper/autocompletehelper.js";
 
 const detailsPanelViews = {
-    ESSENTIAL: 1,
+    FOUNDATIONAL: 1,
     EXTENDED: 2,
     DUPLICATE: 3
 };
@@ -253,7 +253,7 @@ function resetDetailsPanel() {
     $("#remove-button").unhighlight();
     $("#save-button").unhighlight();
 
-    // Essential
+    // Foundational
     $("#oid-input").disabled = true;
     $("#question-textarea").disabled = true;
     $("#datatype-select-inner").disabled = true;
@@ -297,7 +297,7 @@ function adjustDetailsPanelSidebar() {
     }
 }
 
-function fillDetailsPanelEssential() {
+function fillDetailsPanelFoundational() {
     const currentElementOID = getCurrentElementOID();
     const currentElementType = getCurrentElementType();
 
@@ -394,7 +394,7 @@ export function reloadDetailsPanel() {
     resetDetailsPanel();
     if (getCurrentElementType()) {
         adjustDetailsPanelSidebar();
-        if (getCurrentDetailsView() == detailsPanelViews.ESSENTIAL) fillDetailsPanelEssential();
+        if (getCurrentDetailsView() == detailsPanelViews.FOUNDATIONAL) fillDetailsPanelFoundational();
         else if (getCurrentDetailsView() == detailsPanelViews.EXTENDED) fillDetailsPanelExtended();
         else if (getCurrentDetailsView() == detailsPanelViews.DUPLICATE) fillDetailsPanelDuplicate();
     }
@@ -453,7 +453,7 @@ window.addEmptyAliasInput = function(disabled) {
 }
 
 window.saveElement = async function() {
-    if (getCurrentDetailsView() == detailsPanelViews.ESSENTIAL) saveDetailsEssential();
+    if (getCurrentDetailsView() == detailsPanelViews.FOUNDATIONAL) saveDetailsFoundational();
     else if (getCurrentDetailsView() == detailsPanelViews.EXTENDED) saveDetailsExtended();
 
     if (!languageHelper.getPresentLanguages().includes(locale)) {
@@ -462,7 +462,7 @@ window.saveElement = async function() {
     }
 }
 
-async function saveDetailsEssential() {
+async function saveDetailsFoundational() {
     const newOID = $("#oid-input").value;
     const currentElementOID = getCurrentElementOID();
     const currentElementType = getCurrentElementType();
@@ -625,18 +625,18 @@ window.sidebarOptionClicked = function(event) {
     event.target.activate();
 
     switch (event.target.id) {
-        case "essential-option":
-            $("#essential-options").show();
+        case "foundational-option":
+            $("#foundational-options").show();
             $("#extended-options").hide();
             $("#duplicate-options").hide();
             break;
         case "extended-option":
-            $("#essential-options").hide();
+            $("#foundational-options").hide();
             $("#extended-options").show();
             $("#duplicate-options").hide();
             break;
         case "duplicate-option":
-            $("#essential-options").hide();
+            $("#foundational-options").hide();
             $("#extended-options").hide();
             $("#duplicate-options").show();
     }
@@ -1104,7 +1104,7 @@ function reloadAndStoreMetadata() {
 }
 
 function getCurrentDetailsView() {
-    if ($("#essential-option").isActive()) return detailsPanelViews.ESSENTIAL;
+    if ($("#foundational-option").isActive()) return detailsPanelViews.FOUNDATIONAL;
     else if ($("#extended-option").isActive()) return detailsPanelViews.EXTENDED;
     else if ($("#duplicate-option").isActive()) return detailsPanelViews.DUPLICATE;
 }
