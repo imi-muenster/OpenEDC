@@ -94,7 +94,7 @@ const startApp = async () => {
     setIOListeners();
 
     // If there is at least one study event, automatically open the clinicaldata module
-    metadataHelper.getStudyEvents().length > 0 ? metadataModule.hide() : metadataModule.show();
+    metadataHelper.getStudyEvents().length > 0 ? clinicaldataModule.show() : metadataModule.show();
 
     // For performance purposes, add remaining modals to DOM after main app has been rendered
     addModalsToDOM();

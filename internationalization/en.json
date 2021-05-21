@@ -55,7 +55,6 @@
     "alias-names": "Alias Names",
     "context": "Context",
     "existing-references": "Existing References",
-    "no-element-selected": "No element selected.",
     "element-no-references-hint": "The current element is not reused at other locations.",
     "element-multiple-references-hint": "The current element is used at the following locations. If you edit it, it will be edited there as well.",
     "new-duplication": "New Duplication",

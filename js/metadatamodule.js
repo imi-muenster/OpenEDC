@@ -42,14 +42,14 @@ export function show() {
 
     $("#metadata-section").show();
     $("#metadata-toggle-button").hide();
+    $("#clinicaldata-toggle-button").show();
 
     languageHelper.createLanguageSelect(true);
     ioHelper.setTreeMaxHeight();
 }
 
-export function hide() {
+function hide() {
     $("#metadata-section").hide();
-    $("#metadata-toggle-button").show();
 
     clinicaldataModule.show();
     ioHelper.hideMenu();
@@ -278,7 +278,7 @@ function resetDetailsPanel() {
     addEmptyAliasInput(true);
 
     // Duplicate
-    $("#element-references-hint").textContent = languageHelper.getTranslation("no-element-selected");
+    $("#element-references-hint").textContent = "";
     $("#reference-button").disabled = true;
     $("#shallow-copy-button").disabled = true;
     $("#deep-copy-button").disabled = true;

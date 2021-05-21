@@ -53,11 +53,14 @@ export const enableAutocomplete = (input, mode) => {
 }
 
 export const disableAutocomplete = input => {
+    input.removeAttribute("autocomplete-mode");
+
     input.removeEventListener("input", inputEventListener);
     input.removeEventListener("click", inputEventListener);
     input.removeEventListener("keydown", keydownEventListener);
     input.removeEventListener("blur", blurEventListener);
-    document.removeEventListener("click", closeLists);
+    if (!document.querySelector("input[autocomplete-mode]")) document.removeEventListener("click", closeLists);
+
     elements = null;
 }
 

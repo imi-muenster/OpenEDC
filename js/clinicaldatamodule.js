@@ -43,12 +43,13 @@ export function show() {
 
     $("#clinicaldata-section").show();
     $("#clinicaldata-toggle-button").hide();
+    $("#metadata-toggle-button").show();
 
     languageHelper.createLanguageSelect();
     ioHelper.setTreeMaxHeight();
 }
 
-export function hide() {
+function hide() {
     // Check if the data has changed / new data has been entered and show a prompt first
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
@@ -58,7 +59,6 @@ export function hide() {
     }
 
     $("#clinicaldata-section").hide();
-    $("#clinicaldata-toggle-button").show();
 
     metadataModule.show();
     ioHelper.hideMenu();
