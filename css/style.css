@@ -20,6 +20,26 @@ html, body {
     touch-action: manipulation;
 }
 
+.navbar-brand, .navbar-brand .navbar-item {
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+#study-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+#mobile-back-button {
+    font-weight: 500;
+}
+
+.navbar-burger {
+    min-width: 3.25rem;
+}
+
 .navbar-burger:hover {
     background-color: transparent;
 }
@@ -139,10 +159,6 @@ a.panel-block {
 
 #clinicaldata-form-data {
     padding: 20px;
-}
-
-#study-title, #mobile-back-button {
-    font-weight: 500;
 }
 
 #no-subjects-hint {
