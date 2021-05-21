@@ -680,6 +680,7 @@ function setIOListeners() {
             } else if (keyEvent.code == "Enter" && !keyEvent.shiftKey) {
                 if ($(".autocomplete-list")) return;
                 keyEvent.preventDefault();
+                document.activeElement.blur();
                 saveElement();
             }
         };

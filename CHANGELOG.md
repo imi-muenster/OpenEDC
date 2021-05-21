@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.5.0
+
+- This update largely improves the metadata module usability
+- Advanced functions such as setting measurement units or collection conditions are no longer hidden in a modal but are now accessible right from the main details panel
+- Autocomplete for measurement units, collection conditions, and codelist reuse from another item
+- Option to update measurement units and collection conditions for multiple metadata elements at once
+- List of parent elements where a metadata element is reused, i.e., is referenced
+
 ## 0.4.3
 
 - Autocomplete for conditions, including suggestions for comparison operators and target values

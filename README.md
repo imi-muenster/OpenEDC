@@ -1,8 +1,16 @@
 # OpenEDC
 
-[OpenEDC](https://openedc.org/) is an electronic data capture (EDC) system for designing and conducting secure medical research studies based on the [CDISC ODM-XML](https://www.cdisc.org/standards/data-exchange/odm) standard. The standard is adopted without modifications to foster data exchange, metadata reuse, and open science.
+> OpenEDC is an electronic data capture (EDC) system for designing and conducting secure medical research studies based on the [CDISC ODM-XML](https://www.cdisc.org/standards/data-exchange/odm) standard. The standard is adopted without modifications to foster data exchange, metadata reuse, and open science.
 
-OpenEDC is a cross-platform progressive web application (PWA) that can also be installed as a standalone app and works offline. The application itself is client-based. All data is exclusively processed on the local device it is running on. For security reasons, all data can be AES encrypted on the device as well.
+#### Quick links
+
+- [OpenEDC App](https://openedc.org/)
+- [OpenEDC Server](https://github.com/imi-muenster/OpenEDC-Server)
+- [Changelog](CHANGELOG.md)
+
+## About
+
+[OpenEDC](https://openedc.org/) is a cross-platform progressive web application (PWA) that can also be installed as a standalone app and works offline. The application itself is client-based. All data is exclusively processed on the local device it is running on. For security reasons, all data can be AES encrypted on the device as well.
 
 An instance of the [OpenEDC Server](https://github.com/imi-muenster/OpenEDC-Server) can be hosted optionally to create a project with multiple users and sites. Forms that were already designed or data that was already captured with [openedc.org](https://openedc.org/) can be synced with the server. When connected to a server, all data is end-to-end encrypted by default. The application can work offline and syncs data back to the server when an internet connection could be re-established.
 
