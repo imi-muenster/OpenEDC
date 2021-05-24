@@ -6,9 +6,12 @@ const $$ = query => document.querySelectorAll(query);
 const locales = {
     ENGLISH: "en",
     DUTCH: "nl",
+    FINNISH: "fi",
     FRENCH: "fr",
     GERMAN: "de",
+    GREEK: "el",
     ITALIAN: "it",
+    POLISH: "pl",
     PORTUGUESE: "pt",
     RUSSIAN: "ru",
     SPANISH: "es",
@@ -62,7 +65,7 @@ export function populatePresentLanguages(odm) {
 
     for (const translatedText of odm.querySelectorAll("TranslatedText")) {
         const locale = translatedText.getAttribute("xml:lang");
-        if (!localesInODM.includes(locale)) localesInODM.push(locale);
+        if (Object.values(locales).includes(locale) && !localesInODM.includes(locale)) localesInODM.push(locale);
     }
 
     for (let locale of Object.values(locales)) {
