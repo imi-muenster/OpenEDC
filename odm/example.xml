@@ -7,25 +7,25 @@
             <ProtocolName>Exemplary Project</ProtocolName>
         </GlobalVariables>
         <BasicDefinitions>
-            <MeasurementUnit OID="MM.1" Name="kg">
+            <MeasurementUnit OID="MU.1" Name="kg">
                 <Symbol>
                     <TranslatedText xml:lang="en">kg</TranslatedText>
                     <TranslatedText xml:lang="de">kg</TranslatedText>
                 </Symbol>
             </MeasurementUnit>
-            <MeasurementUnit OID="MM.2" Name="m">
+            <MeasurementUnit OID="MU.2" Name="m">
                 <Symbol>
                     <TranslatedText xml:lang="en">m</TranslatedText>
                     <TranslatedText xml:lang="de">m</TranslatedText>
                 </Symbol>
             </MeasurementUnit>
-            <MeasurementUnit OID="MM.3" Name="weeks">
+            <MeasurementUnit OID="MU.3" Name="weeks">
                 <Symbol>
                     <TranslatedText xml:lang="en">weeks</TranslatedText>
                     <TranslatedText xml:lang="de">Wochen</TranslatedText>
                 </Symbol>
             </MeasurementUnit>
-            <MeasurementUnit OID="MM.4" Name="years">
+            <MeasurementUnit OID="MU.4" Name="years">
                 <Symbol>
                     <TranslatedText xml:lang="en">years</TranslatedText>
                     <TranslatedText xml:lang="de">Jahre</TranslatedText>
@@ -186,7 +186,7 @@
                     <TranslatedText xml:lang="en">What is your age?</TranslatedText>
                     <TranslatedText xml:lang="de">Wie alt sind Sie?</TranslatedText>
                 </Question>
-                <MeasurementUnitRef MeasurementUnitOID="MM.4"/>
+                <MeasurementUnitRef MeasurementUnitOID="MU.4"/>
                 <RangeCheck Comparator="GE" SoftHard="Hard">
                     <CheckValue>18</CheckValue>
                 </RangeCheck>
@@ -199,7 +199,7 @@
                     <TranslatedText xml:lang="en">What is your weight?</TranslatedText>
                     <TranslatedText xml:lang="de">Wie viel wiegen Sie?</TranslatedText>
                 </Question>
-                <MeasurementUnitRef MeasurementUnitOID="MM.1"/>
+                <MeasurementUnitRef MeasurementUnitOID="MU.1"/>
                 <RangeCheck Comparator="GE" SoftHard="Hard">
                     <CheckValue>40</CheckValue>
                 </RangeCheck>
@@ -212,7 +212,7 @@
                     <TranslatedText xml:lang="en">What is your height?</TranslatedText>
                     <TranslatedText xml:lang="de">Wie groß sind Sie?</TranslatedText>
                 </Question>
-                <MeasurementUnitRef MeasurementUnitOID="MM.2"/>
+                <MeasurementUnitRef MeasurementUnitOID="MU.2"/>
                 <RangeCheck Comparator="GT" SoftHard="Hard">
                     <CheckValue>1</CheckValue>
                 </RangeCheck>
@@ -287,7 +287,7 @@
                     <TranslatedText xml:lang="en">For how long are you pregnant now?</TranslatedText>
                     <TranslatedText xml:lang="de">Wie lange sind Sie nun schon schwanger?</TranslatedText>
                 </Question>
-                <MeasurementUnitRef MeasurementUnitOID="MM.3"/>
+                <MeasurementUnitRef MeasurementUnitOID="MU.3"/>
                 <RangeCheck Comparator="GE" SoftHard="Hard">
                     <CheckValue>1</CheckValue>
                 </RangeCheck>

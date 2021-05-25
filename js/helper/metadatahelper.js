@@ -743,7 +743,7 @@ export function createCondition(formalExpression) {
 }
 
 export function createMeasurementUnit(symbol) {
-    const newMeasurementUnitOID = generateUniqueOID("MM.");
+    const newMeasurementUnitOID = generateUniqueOID("MU.");
     // Currently, use the generated OID also as name usability purposes
     // Prospectively, a user could be asked to enter a name for a new measurement unit
     insertMeasurementUnit(metadataTemplates.getMeasurementUnitDef(newMeasurementUnitOID, newMeasurementUnitOID, symbol, languageHelper.getCurrentLocale()));
