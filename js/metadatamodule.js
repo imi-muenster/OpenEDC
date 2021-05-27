@@ -464,9 +464,10 @@ window.saveElement = async function() {
 
 async function saveDetailsFoundational() {
     const newOID = $("#oid-input").value;
-    const currentElementOID = getCurrentElementOID();
     const currentElementType = getCurrentElementType();
+    const currentElementOID = currentElementType == metadataHelper.elementTypes.CODELISTITEM ? currentElementID.codeListItem : getCurrentElementOID();
 
+    // TODO: Needs to be refactored for CodeListItem CodedValues
     if (currentElementOID != newOID) {
         const getSubjectsHavingDataForElement = await clinicaldataHelper.getSubjectsHavingDataForElement(currentElementOID);
         if (getSubjectsHavingDataForElement.length == 0) {
@@ -794,14 +795,10 @@ function removeElement() {
 }
 
 window.duplicateReference = function() {
-    if (getCurrentElementType() == metadataHelper.elementTypes.CODELISTITEM) {
-        const newItemOID = metadataHelper.createItem(currentElementID.itemGroup);
-        metadataHelper.setItemDataType(newItemOID, metadataHelper.getElementDefByOID(currentElementID.item).getDataType());
-        metadataHelper.addCodeListRef(newItemOID, currentElementID.codeList);
-    } else {
-        let elementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), getCurrentElementType(), getCurrentElementParentOID());
-        elementRef.parentNode.insertBefore(elementRef.cloneNode(), elementRef.nextSibling);
-    }
+    if (getCurrentElementType() == metadataHelper.elementTypes.CODELISTITEM) return;
+
+    const elementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), getCurrentElementType(), getCurrentElementParentOID());
+    elementRef.parentNode.insertBefore(elementRef.cloneNode(), elementRef.nextSibling);
 
     reloadTree();
     reloadDetailsPanel();
@@ -868,6 +865,7 @@ function dragEnter(event) {
 }
 
 function getCurrentElementOID() {
+    // TODO: Good to return the codeList for the codeListItem?
     if (currentElementID.codeListItem) return currentElementID.codeList;
     else if (currentElementID.item) return currentElementID.item;
     else if (currentElementID.itemGroup) return currentElementID.itemGroup;

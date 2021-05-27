@@ -427,6 +427,7 @@ export function itemHasCodeList(itemOID) {
     return codeListRef != null;
 }
 
+// TODO: Should be refactored -- return true / false not nice
 export function setElementOID(elementOID, newOID, elementType) {
     if (elementOID === newOID) {
         return true;

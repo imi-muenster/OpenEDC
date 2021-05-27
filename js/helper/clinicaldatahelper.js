@@ -423,6 +423,7 @@ export function getDataStatusForForm(studyEventOID, formOID) {
     return flagValue ? parseInt(flagValue.textContent) : dataStatusTypes.COMPLETE;
 }
 
+// TODO: Needs to be improved -- may report false-positives due to string comparison overlaps
 export async function getSubjectsHavingDataForElement(elementOID) {
     await loadSubjects();
 
