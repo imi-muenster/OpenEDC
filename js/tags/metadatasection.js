@@ -38,7 +38,7 @@ class MetadataSection extends HTMLElement {
                                     <div class="column">
                                         <div class="field">
                                             <label class="label" id="element-oid-label"></label>
-                                            <input class="input" type="text" id="oid-input" autocomplete="off">
+                                            <input class="input" type="text" id="id-input" autocomplete="off">
                                         </div>
                                         <div class="field">
                                             <label class="label" id="datatype-label" i18n="data-type"></label>

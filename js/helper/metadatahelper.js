@@ -447,7 +447,7 @@ export function setElementOID(elementOID, elementType, newOID) {
             $$(`ItemRef[ItemOID="${elementOID}"]`).forEach(itemRef => itemRef.setAttribute("ItemOID", newOID));
             $(`ItemDef[OID="${elementOID}"]`).setAttribute("OID", newOID);
             break;
-        case elementTypes.CODELIST:
+        case elementTypes.CODELISTITEM:
             $$(`CodeListRef[CodeListOID="${elementOID}"]`).forEach(codeListRef => codeListRef.setAttribute("CodeListOID", newOID));
             $(`CodeList[OID="${elementOID}"]`).setAttribute("OID", newOID);
     }

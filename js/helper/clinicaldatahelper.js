@@ -423,14 +423,28 @@ export function getDataStatusForForm(studyEventOID, formOID) {
     return flagValue ? parseInt(flagValue.textContent) : dataStatusTypes.COMPLETE;
 }
 
-// TODO: Needs to be improved -- may report false-positives due to string comparison overlaps
-export async function getSubjectsHavingDataForElement(elementOID) {
+export async function getSubjectsHavingDataForElement(elementOID, elementType, itemOID, codedValue) {
     await loadSubjects();
 
     let subjectKeys = [];
     for (const subject of subjects) {
         const subjectData = await ioHelper.getSubjectData(subject.fileName);
-        if (new XMLSerializer().serializeToString(subjectData).includes(elementOID)) subjectKeys.push(subject.key);
+        switch (elementType) {
+            case metadataHelper.elementTypes.STUDYEVENT:
+                if (subjectData.querySelector(`StudyEventData[StudyEventOID="${elementOID}"]`)) subjectKeys.push(subject.key);
+                break;
+            case metadataHelper.elementTypes.FORM:
+                if (subjectData.querySelector(`FormData[FormOID="${elementOID}"]`)) subjectKeys.push(subject.key);
+                break;
+            case metadataHelper.elementTypes.ITEMGROUP:
+                if (subjectData.querySelector(`ItemGroupData[ItemGroupOID="${elementOID}"]`)) subjectKeys.push(subject.key);
+                break;
+            case metadataHelper.elementTypes.ITEM:
+                if (subjectData.querySelector(`ItemData[ItemOID="${elementOID}"]`)) subjectKeys.push(subject.key);
+                break;
+            case metadataHelper.elementTypes.CODELISTITEM:
+                if (subjectData.querySelector(`ItemData[ItemOID="${itemOID}"][Value="${codedValue}"]`)) subjectKeys.push(subject.key);
+        }
     }
 
     return subjectKeys;
