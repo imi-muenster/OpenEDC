@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.5.1
+
+- Usability and stability improvements
+
 ## 0.5.0
 
 - This update largely improves the metadata module usability
