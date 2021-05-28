@@ -427,53 +427,32 @@ export function itemHasCodeList(itemOID) {
     return codeListRef != null;
 }
 
-// TODO: Should be refactored -- return true / false not nice
-export function setElementOID(elementOID, newOID, elementType) {
-    if (elementOID === newOID) {
-        return true;
-    } else if ($(`[OID="${newOID}"]`)) {
-        return false;
-    }
+export function setElementOID(elementOID, elementType, newOID) {
+    if ($(`[OID="${newOID}"]`)) return Promise.reject();
 
     switch (elementType) {
         case elementTypes.STUDYEVENT:
-            let studyEventRefs = $$(`StudyEventRef[StudyEventOID="${elementOID}"]`);
-            for (let studyEventRef of studyEventRefs) {
-                studyEventRef.setAttribute("StudyEventOID", newOID);
-            }
+            $$(`StudyEventRef[StudyEventOID="${elementOID}"]`).forEach(studyEventRef => studyEventRef.setAttribute("StudyEventOID", newOID));
             $(`StudyEventDef[OID="${elementOID}"]`).setAttribute("OID", newOID);
-            return true;
+            break;
         case elementTypes.FORM:
-            let formRefs = $$(`FormRef[FormOID="${elementOID}"]`);
-            for (let formRef of formRefs) {
-                formRef.setAttribute("FormOID", newOID);
-            }
+            $$(`FormRef[FormOID="${elementOID}"]`).forEach(formRef => formRef.setAttribute("FormOID", newOID));
             $(`FormDef[OID="${elementOID}"]`).setAttribute("OID", newOID);
-            return true;
+            break;
         case elementTypes.ITEMGROUP:
-            let itemGroupRefs = $$(`ItemGroupRef[ItemGroupOID="${elementOID}"]`);
-            for (let itemGroupRef of itemGroupRefs) {
-                itemGroupRef.setAttribute("ItemGroupOID", newOID);
-            }
+            $$(`ItemGroupRef[ItemGroupOID="${elementOID}"]`).forEach(itemGroupRef => itemGroupRef.setAttribute("ItemGroupOID", newOID));
             $(`ItemGroupDef[OID="${elementOID}"]`).setAttribute("OID", newOID);
-            return true;
+            break;
         case elementTypes.ITEM:
-            let itemRefs = $$(`ItemRef[ItemOID="${elementOID}"]`);
-            for (let itemRef of itemRefs) {
-                itemRef.setAttribute("ItemOID", newOID);
-            }
+            $$(`ItemRef[ItemOID="${elementOID}"]`).forEach(itemRef => itemRef.setAttribute("ItemOID", newOID));
             $(`ItemDef[OID="${elementOID}"]`).setAttribute("OID", newOID);
-            return true;
-        case elementTypes.CODELISTITEM:
-            let codeListRefs = $$(`CodeListRef[CodeListOID="${elementOID}"]`);
-            for (let codeListRef of codeListRefs) {
-                codeListRef.setAttribute("CodeListOID", newOID);
-            }
+            break;
+        case elementTypes.CODELIST:
+            $$(`CodeListRef[CodeListOID="${elementOID}"]`).forEach(codeListRef => codeListRef.setAttribute("CodeListOID", newOID));
             $(`CodeList[OID="${elementOID}"]`).setAttribute("OID", newOID);
-            return true;
     }
 
-    return false;
+    return Promise.resolve();
 }
 
 export function setElementName(elementOID, name) {

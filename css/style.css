@@ -149,7 +149,7 @@ a.panel-block {
     overflow-y: auto;
 }
 
-#question-textarea {
+#translation-textarea {
     height: 13rem;
     resize: none;
 }

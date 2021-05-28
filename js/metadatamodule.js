@@ -255,11 +255,11 @@ function resetDetailsPanel() {
 
     // Foundational
     $("#oid-input").disabled = true;
-    $("#question-textarea").disabled = true;
+    $("#translation-textarea").disabled = true;
     $("#datatype-select-inner").disabled = true;
     $("#mandatory-select-inner").disabled = true;
     $("#oid-input").value = "";
-    $("#question-textarea").value = "";
+    $("#translation-textarea").value = "";
     $("#datatype-select-inner").value = "";
     $("#mandatory-select-inner").value = "";
     $("#element-oid-label").textContent = languageHelper.getTranslation("unique-id");
@@ -298,28 +298,25 @@ function adjustDetailsPanelSidebar() {
 }
 
 function fillDetailsPanelFoundational() {
-    const currentElementOID = getCurrentElementOID();
-    const currentElementType = getCurrentElementType();
-
     $("#oid-input").disabled = false;
-    $("#question-textarea").disabled = false;
-    $("#oid-input").value = currentElementOID;
+    $("#translation-textarea").disabled = false;
+    $("#oid-input").value = getCurrentElementOID();
 
-    let element = metadataHelper.getElementDefByOID(currentElementOID);
-    const elementRef = metadataHelper.getElementRefByOID(currentElementOID, currentElementType, getCurrentElementParentOID());
-    switch (currentElementType) {
+    let element = metadataHelper.getElementDefByOID(getCurrentElementOID());
+    const elementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), getCurrentElementType(), getCurrentElementParentOID());
+    switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.STUDYEVENT:
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
-            $("#question-textarea").value = element.getTranslatedDescription(locale);
+            $("#translation-textarea").value = element.getTranslatedDescription(locale);
             break;
         case metadataHelper.elementTypes.ITEM:
             $("#datatype-select-inner").disabled = false;
             $("#mandatory-select-inner").disabled = false;
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-question");
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
-            $("#question-textarea").value = element.getTranslatedQuestion(locale);
-            $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(currentElementOID) ? metadataHelper.elementTypes.CODELIST + "-" + element.getDataType() : element.getDataType();
+            $("#translation-textarea").value = element.getTranslatedQuestion(locale);
+            $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(getCurrentElementOID()) ? metadataHelper.elementTypes.CODELIST + "-" + element.getDataType() : element.getDataType();
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             $("#mandatory-select-inner").disabled = true;
@@ -327,21 +324,18 @@ function fillDetailsPanelFoundational() {
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-choice");
             element = metadataHelper.getCodeListItem(currentElementID.codeList, currentElementID.codeListItem);
             $("#oid-input").value = element.getCodedValue();
-            $("#question-textarea").value = element.getTranslatedDecode(locale);
+            $("#translation-textarea").value = element.getTranslatedDecode(locale);
     }
 }
 
 function fillDetailsPanelExtended() {
-    const currentElementOID = getCurrentElementOID();
-    const currentElementType = getCurrentElementType();
-
     fillElementAliases();
     $("#alias-inputs .alias-context").disabled = false;
     $("#alias-inputs .alias-name").disabled = false;
     $("#add-alias-button").disabled = false;
 
-    const condition = metadataHelper.getElementCondition(currentElementType, currentElementOID, getCurrentElementParentOID());
-    switch (currentElementType) {
+    const condition = metadataHelper.getElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID());
+    switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.ITEMGROUP:
             $("#collection-condition").value = condition ? condition.getFormalExpression() : null;
             $("#collection-condition").disabled = false;
@@ -351,7 +345,7 @@ function fillDetailsPanelExtended() {
             $("#range-check-inputs .range-check-comparator-inner").disabled = false;
             $("#range-check-inputs .range-check-value").disabled = false;
             $("#add-range-check-button").disabled = false;
-            const measurementUnit = metadataHelper.getItemMeasurementUnit(currentElementOID);
+            const measurementUnit = metadataHelper.getItemMeasurementUnit(getCurrentElementOID());
             $("#measurement-unit").value = measurementUnit ? measurementUnit.getTranslatedSymbol(locale) : null;
             $("#measurement-unit").disabled = false;
             $("#collection-condition").value = condition ? condition.getFormalExpression() : null;
@@ -464,39 +458,39 @@ window.saveElement = async function() {
 
 async function saveDetailsFoundational() {
     const newOID = $("#oid-input").value;
-    const currentElementType = getCurrentElementType();
-    const currentElementOID = currentElementType == metadataHelper.elementTypes.CODELISTITEM ? currentElementID.codeListItem : getCurrentElementOID();
+    const newTranslatedText = $("#translation-textarea").value;
 
-    // TODO: Needs to be refactored for CodeListItem CodedValues
-    if (currentElementOID != newOID) {
-        const getSubjectsHavingDataForElement = await clinicaldataHelper.getSubjectsHavingDataForElement(currentElementOID);
+    // Update the OID for all elements but CodeListItems
+    if (getCurrentElementOID() != newOID && getCurrentElementType() != metadataHelper.elementTypes.CODELISTITEM) {
+        const getSubjectsHavingDataForElement = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID());
         if (getSubjectsHavingDataForElement.length == 0) {
-            if (metadataHelper.setElementOID(currentElementOID, newOID, currentElementType)) {
-                setCurrentElementOID(newOID);
-            } else {
-                ioHelper.showMessage(languageHelper.getTranslation("id-not-changed"), languageHelper.getTranslation("id-not-changed-error-used"));
-            }
+            await metadataHelper.setElementOID(getCurrentElementOID(), getCurrentElementType(), newOID)
+                .then(() => {
+                    setCurrentElementOID(newOID);
+                    metadataHelper.setElementName(getCurrentElementOID(), newOID);
+                })
+                .catch(() => ioHelper.showMessage(languageHelper.getTranslation("id-not-changed"), languageHelper.getTranslation("id-not-changed-error-used")))
         } else {
             ioHelper.showMessage(languageHelper.getTranslation("id-not-changed"), languageHelper.getTranslation("id-not-changed-error-data"));
         }
     }
 
-    switch (currentElementType) {
+    // Update further details
+    switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.STUDYEVENT:
             showFirstEventEditedHelp();
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
-            metadataHelper.setElementName(getCurrentElementOID(), newOID);
-            metadataHelper.setElementDescription(getCurrentElementOID(), $("#question-textarea").value, locale);
+            metadataHelper.setElementDescription(getCurrentElementOID(), newTranslatedText, locale);
             break;
         case metadataHelper.elementTypes.ITEM:
-            metadataHelper.setElementName(getCurrentElementOID(), newOID);
-            metadataHelper.setItemQuestion(getCurrentElementOID(), $("#question-textarea").value, locale);
-            metadataHelper.setElementMandatory(getCurrentElementOID(), currentElementType, $("#mandatory-select-inner").value, getCurrentElementParentOID());
+            metadataHelper.setItemQuestion(getCurrentElementOID(), newTranslatedText, locale);
+            metadataHelper.setElementMandatory(getCurrentElementOID(), getCurrentElementType(), $("#mandatory-select-inner").value, getCurrentElementParentOID());
             handleItemDataType(getCurrentElementOID(), $("#datatype-select-inner").value);
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
-            metadataHelper.setCodeListItemDecodedText(currentElementID.codeList, currentElementID.codeListItem, $("#question-textarea").value, locale);
+            metadataHelper.setCodeListItemDecodedText(currentElementID.codeList, currentElementID.codeListItem, newTranslatedText, locale);
+            // TODO: Should check if there is data assigned to it and if the codedvalue is occupied
             metadataHelper.setCodeListItemCodedValue(currentElementID.codeList, currentElementID.codeListItem, newOID);
             currentElementID.codeListItem = newOID;
     }
@@ -913,9 +907,6 @@ function setCurrentElementOID(elementOID) {
             break;
         case metadataHelper.elementTypes.ITEM:
             currentElementID.item = elementOID;
-            break;
-        case metadataHelper.elementTypes.CODELISTITEM:
-            currentElementID.codeList = elementOID;
     }
 }
 
@@ -1113,7 +1104,7 @@ function getCurrentDetailsView() {
 
 function showFirstEventEditedHelp() {
     const element = metadataHelper.getElementDefByOID(getCurrentElementOID());
-    if (!element.getTranslatedDescription(locale) && $("#question-textarea").value && metadataHelper.getStudyEvents().length == 1) {
+    if (!element.getTranslatedDescription(locale) && $("#translation-textarea").value && metadataHelper.getStudyEvents().length == 1) {
         // Show the first event edited help message
         setTimeout(() => ioHelper.showMessage(languageHelper.getTranslation("first-event-edited-title"), languageHelper.getTranslation("first-event-edited-text")), 1000);
     }

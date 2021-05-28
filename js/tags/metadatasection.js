@@ -50,7 +50,7 @@ class MetadataSection extends HTMLElement {
                                     <div class="column">
                                         <div class="field">
                                             <label class="label" id="element-long-label"></label>
-                                            <textarea class="textarea" id="question-textarea"></textarea>
+                                            <textarea class="textarea" id="translation-textarea"></textarea>
                                         </div>
                                     </div>
                                 </div>
