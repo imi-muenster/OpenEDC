@@ -936,9 +936,9 @@ window.elementDrop = async function(event) {
 
     if (sourceParentOID != targetParentOID) {
         // Extra if-statement for performance reasons (do not load all subjects when sourceParentOID and targetParentOID are equal)
-        const subjectsHavingDataForElement = await clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID);
-        if (subjectsHavingDataForElement.length > 0) {
-            ioHelper.showMessage(languageHelper.getTranslation("element-not-moved"), languageHelper.getTranslation("element-not-moved-error"));
+        const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID, elementTypeOnDrag, sourceParentOID, sourceCodedValue);
+        if (subjectKeys.length > 0) {
+            ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("element-not-moved-error"));
             return;
         }
     }

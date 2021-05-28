@@ -262,7 +262,6 @@
     "id-not-changed-error-data": "Die eindeutige ID konnte nicht geändert werden, da diesem Element klinische Daten zugeordnet sind. Sie können versuchen, das Element zu entfernen, um eine Liste der Probanden anzuzeigen, die Daten für dieses Element enthalten.",
     "coded-value-not-changed-error-used": "Der eingegebene kodierte Wert wird schon verwendet.",
     "coded-value-not-changed-error-data": "Der kodierte Wert konnte nicht geändert werden, da diesem Element klinische Daten zugeordnet sind. Sie können versuchen, das Element zu entfernen, um eine Liste der Probanden anzuzeigen, die Daten für dieses Element enthalten.",
-    "element-not-moved": "Element nicht verschoben",
     "element-not-moved-error": "Das Element konnte nicht verschoben werden, da ihm klinische Daten zugeordnet sind. Sie können versuchen, das Element zu entfernen, um eine Liste der Probanden anzuzeigen, die Daten für dieses Element enthalten.",
     "cannot-be-removed": "Kann nicht gelöscht werden",
     "cannot-be-removed-text": "<p>Sie können dieses Element derzeit nicht entfernen, da ihm klinische Daten für die folgenden Probanden zugeordnet sind:</p><br><strong>",
