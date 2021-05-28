@@ -447,7 +447,7 @@ export function setElementOID(elementOID, elementType, newOID) {
             $$(`ItemRef[ItemOID="${elementOID}"]`).forEach(itemRef => itemRef.setAttribute("ItemOID", newOID));
             $(`ItemDef[OID="${elementOID}"]`).setAttribute("OID", newOID);
             break;
-        case elementTypes.CODELISTITEM:
+        case elementTypes.CODELIST:
             $$(`CodeListRef[CodeListOID="${elementOID}"]`).forEach(codeListRef => codeListRef.setAttribute("CodeListOID", newOID));
             $(`CodeList[OID="${elementOID}"]`).setAttribute("OID", newOID);
     }
@@ -532,7 +532,10 @@ export function setCodeListDataType(codeListOID, codeListType) {
 }
 
 export function setCodeListItemCodedValue(codeListOID, codedValue, newCodedValue) {
+    if ($(`[OID="${codeListOID}"] CodeListItem[CodedValue="${newCodedValue}"]`)) return Promise.reject();
+    
     $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"]`).setAttribute("CodedValue", newCodedValue);
+    return Promise.resolve();
 }
 
 export function setCodeListItemDecodedText(codeListOID, codedValue, decodedText, locale) {

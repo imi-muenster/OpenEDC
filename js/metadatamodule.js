@@ -460,43 +460,56 @@ window.saveElement = async function() {
 async function saveDetailsFoundational() {
     const newID = $("#id-input").value;
     const newTranslatedText = $("#translation-textarea").value;
-
-    // Update the OID for all elements but CodeListItems
-    if (getCurrentElementOID() != newID && getCurrentElementType() != metadataHelper.elementTypes.CODELISTITEM) {
-        const getSubjectsHavingDataForElement = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID());
-        if (getSubjectsHavingDataForElement.length == 0) {
-            await metadataHelper.setElementOID(getCurrentElementOID(), getCurrentElementType(), newID)
-                .then(() => {
-                    setCurrentElementOID(newID);
-                    metadataHelper.setElementName(getCurrentElementOID(), newID);
-                })
-                .catch(() => ioHelper.showMessage(languageHelper.getTranslation("id-not-changed"), languageHelper.getTranslation("id-not-changed-error-used")))
-        } else {
-            ioHelper.showMessage(languageHelper.getTranslation("id-not-changed"), languageHelper.getTranslation("id-not-changed-error-data"));
-        }
-    }
-
-    // Update further details
+    
     switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.STUDYEVENT:
             showFirstEventEditedHelp();
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
+            await setElementOIDAndName(newID);
             metadataHelper.setElementDescription(getCurrentElementOID(), newTranslatedText, locale);
             break;
         case metadataHelper.elementTypes.ITEM:
+            await setElementOIDAndName(newID);
             metadataHelper.setItemQuestion(getCurrentElementOID(), newTranslatedText, locale);
             metadataHelper.setElementMandatory(getCurrentElementOID(), getCurrentElementType(), $("#mandatory-select-inner").value, getCurrentElementParentOID());
             handleItemDataType(getCurrentElementOID(), $("#datatype-select-inner").value);
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
+            await setCodeListItemCodedValue(newID);
             metadataHelper.setCodeListItemDecodedText(currentElementID.codeList, currentElementID.codeListItem, newTranslatedText, locale);
-            // TODO: Should check if there is data assigned to it and if the codedvalue is occupied
-            metadataHelper.setCodeListItemCodedValue(currentElementID.codeList, currentElementID.codeListItem, newID);
-            currentElementID.codeListItem = newID;
     }
 
     reloadAndStoreMetadata();
+}
+
+async function setElementOIDAndName(oid) {
+    if (getCurrentElementOID() == oid) return;
+
+    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID(), getCurrentElementType());
+    if (subjectKeys.length == 0) {
+        await metadataHelper.setElementOID(getCurrentElementOID(), getCurrentElementType(), oid)
+            .then(() => {
+                setCurrentElementOID(oid);
+                metadataHelper.setElementName(getCurrentElementOID(), oid);
+            })
+            .catch(() => ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("id-not-changed-error-used")))
+    } else {
+        ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("id-not-changed-error-data"));
+    }
+}
+
+async function setCodeListItemCodedValue(codedValue) {
+    if (currentElementID.codeListItem == codedValue) return;
+
+    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID(), getCurrentElementType(), currentElementID.item, currentElementID.codeListItem);
+    if (subjectKeys.length == 0) {
+        await metadataHelper.setCodeListItemCodedValue(getCurrentElementOID(), currentElementID.codeListItem, codedValue)
+            .then(() => currentElementID.codeListItem = codedValue)
+            .catch(() => ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("coded-value-not-changed-error-used")))
+    } else {
+        ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("coded-value-not-changed-error-data"));
+    }
 }
 
 function saveDetailsExtended() {
