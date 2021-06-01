@@ -816,8 +816,8 @@ window.showSubjectInfo = function() {
     // Create audit record entries
     $$("#audit-records .notification").removeElements();
     for (let auditRecord of clinicaldataHelper.getAuditRecords()) {
-        const studyEventName = auditRecord.studyEventOID ? metadataHelper.getElementDefByOID(auditRecord.studyEventOID).getName() : null;
-        const formName = auditRecord.formOID ? metadataHelper.getElementDefByOID(auditRecord.formOID).getName() : null;
+        const studyEventName = auditRecord.studyEventOID ? metadataHelper.getElementDefByOID(auditRecord.studyEventOID).getTranslatedDescription(locale, true) : null;
+        const formName = auditRecord.formOID ? metadataHelper.getElementDefByOID(auditRecord.formOID).getTranslatedDescription(locale, true) : null;
         const userName = admindataHelper.getUserFullName(auditRecord.userOID);
         const siteName = admindataHelper.getSiteNameByOID(auditRecord.locationOID);
         let auditRecordElement = htmlElements.getAuditRecord(auditRecord.type, studyEventName, formName, auditRecord.dataStatus, userName, siteName, auditRecord.date);
