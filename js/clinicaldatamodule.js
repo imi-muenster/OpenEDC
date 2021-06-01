@@ -54,7 +54,7 @@ function hide() {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => hide();
-        showCloseClinicaldataModal();
+        showCloseClinicaldataMessage();
         return;
     }
 
@@ -86,7 +86,7 @@ export function createSiteFilterSelect() {
         if (dataHasChanged()) {
             skipDataHasChangedCheck = true;
             deferredFunction = () => loadTree(currentElementID.studyEvent, null);
-            showCloseClinicaldataModal();
+            showCloseClinicaldataMessage();
             clickEvent.target.blur();
         }
     };
@@ -114,7 +114,7 @@ window.addSubjectManual = function() {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => addSubjectManual();
-        showCloseClinicaldataModal();
+        showCloseClinicaldataMessage();
         return;
     }
 
@@ -130,7 +130,7 @@ window.addSubjectAuto = function() {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => addSubjectAuto();
-        showCloseClinicaldataModal();
+        showCloseClinicaldataMessage();
         return;
     }
 
@@ -147,7 +147,7 @@ window.addSubjectBarcode = async function() {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => addSubjectBarcode();
-        showCloseClinicaldataModal();
+        showCloseClinicaldataMessage();
         return;
     }
 
@@ -211,7 +211,7 @@ function subjectClicked(subjectKey) {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => subjectClicked(subjectKey);
-        showCloseClinicaldataModal();
+        showCloseClinicaldataMessage();
         return;
     }
 
@@ -265,7 +265,7 @@ async function loadTree(studyEventOID, formOID) {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => loadTree(studyEventOID, formOID);
-        showCloseClinicaldataModal();
+        showCloseClinicaldataMessage();
         return;
     }
 
@@ -622,20 +622,15 @@ window.closeFormData = async function(saveData) {
         loadSubjectKeys();
     }
 
-    if (deferredFunction) {
-        await deferredFunction();
-        hideCloseClinicalDataModal();
-    } else {
-        cancelFormOrSurveyEntry(true);
-    }
+    if (deferredFunction) await deferredFunction();
+    else cancelFormOrSurveyEntry(true);
 }
 
 window.cancelFormOrSurveyEntry = function(closeSurvey) {
     if (surveyViewIsActive() && !closeSurvey) {
-        showCloseClinicaldataModal();
+        showCloseClinicaldataMessage();
         return;
     } else if (surveyViewIsActive()) {
-        hideCloseClinicaldataModal();
         hideSurveyView();
         if (ioHelper.getSurveyCode()) showCloseSurveyModal();
         if (ioHelper.isAutoSurveyView() && ioHelper.isMobile()) currentElementID.studyEvent = null;
@@ -643,12 +638,6 @@ window.cancelFormOrSurveyEntry = function(closeSurvey) {
     }
 
     loadTree(currentElementID.studyEvent, null);
-}
-
-window.hideCloseClinicalDataModal = function() {
-    skipDataHasChangedCheck = false;
-    deferredFunction = null;
-    hideCloseClinicaldataModal();
 }
 
 window.showSurveyView = function() {
@@ -684,20 +673,21 @@ function hideSurveyView() {
     $("#clinicaldata-form-title").classList.remove("is-centered");
 }
 
-function showCloseClinicaldataModal() {
-    if (surveyViewIsActive()) {
-        $("#close-data-title").textContent = languageHelper.getTranslation("close-survey");
-        $("#close-data-text").textContent = languageHelper.getTranslation("close-survey-text");
-    } else {
-        $("#close-data-title").textContent = languageHelper.getTranslation("close-form");
-        $("#close-data-text").textContent = languageHelper.getTranslation("close-form-text");
-    }
-
-    $("#close-clinicaldata-modal").activate();
-}
-
-function hideCloseClinicaldataModal() {
-    $("#close-clinicaldata-modal").deactivate();
+function showCloseClinicaldataMessage() {
+    ioHelper.showMessage(
+        languageHelper.getTranslation(surveyViewIsActive() ? "close-survey" : "close-form"),
+        languageHelper.getTranslation(surveyViewIsActive() ? "close-survey-text" : "close-form-text"),
+        {
+            [languageHelper.getTranslation("close-with-saving")]: () => closeFormData(true),
+            [languageHelper.getTranslation("close-without-saving")]: () => closeFormData()
+        },
+        ioHelper.callbackTypes.DANGER,
+        languageHelper.getTranslation("continue"),
+        () => {
+            skipDataHasChangedCheck = false;
+            deferredFunction = null;
+        }
+    );
 }
 
 function showCloseSurveyModal() {

@@ -131,28 +131,6 @@ class AboutModal extends HTMLElement {
     }
 }
 
-// TODO: This could be removed and replaced by the MessageModal in the future
-class CloseClinicaldataModal extends HTMLElement {
-    connectedCallback() {
-        this.innerHTML = `
-            <div class="modal" id="close-clinicaldata-modal">
-                <div class="modal-background" onclick="hideCloseClinicalDataModal()"></div>
-                <div class="modal-content is-small">
-                    <div class="box has-text-centered">
-                        <h2 class="subtitle" id="close-data-title"></h2>
-                        <p class="mb-5" id="close-data-text"></p>
-                        <div class="buttons is-centered">
-                            <button class="button is-small" onclick="closeFormData()" i18n="close-without-saving"></button>
-                            <button class="button is-small" onclick="closeFormData(true)" i18n="close-with-saving"></button>
-                            <button class="button is-link is-small" onclick="hideCloseClinicalDataModal()" i18n="continue"></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-}
-
 class SubjectModal extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
@@ -220,6 +198,7 @@ class MessageModal extends HTMLElement {
     setCallbacks(callbacks) { this.callbacks = callbacks; }
     setCallbackType(callbackType) { this.callbackType = callbackType; }
     setCloseText(closeText) { this.closeText = closeText; }
+    setCloseCallback(closeCallback) { this.closeCallback = closeCallback; }
 
     connectedCallback() {
         this.innerHTML = `
@@ -253,18 +232,23 @@ class MessageModal extends HTMLElement {
         let button = document.createElement("button");
         button.classList = this.callbacks ? "button is-small" : "button is-link is-small";
         button.textContent = this.closeText;
-        button.onclick = () => this.remove();
+        button.onclick = () => {
+            this.remove();
+            if (this.closeCallback) this.closeCallback();
+        };
         this.querySelector(".buttons").insertAdjacentElement("beforeend", button);
 
         // Add event handler for clicking on the modal background
-        this.querySelector(".modal-background").onclick = () => this.remove();
+        this.querySelector(".modal-background").onclick = () => {
+            this.remove();
+            if (this.closeCallback) this.closeCallback(); 
+        };
     }
 }
 
 window.customElements.define("start-modal", StartModal);
 window.customElements.define("login-modal", LoginModal);
 window.customElements.define("about-modal", AboutModal);
-window.customElements.define("close-clinicaldata-modal", CloseClinicaldataModal);
 window.customElements.define("subject-modal", SubjectModal);
 window.customElements.define("survey-code-modal", SurveyCodeModal);
 window.customElements.define("message-modal", MessageModal);

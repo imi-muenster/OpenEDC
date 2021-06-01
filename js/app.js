@@ -560,7 +560,7 @@ export function setIOListeners() {
 
 function addModalsToDOM() {
     // TODO: This could be improved in the future by loading the modal js module files dynamically
-    const modalNames = ["project", "about", "close-clinicaldata", "subject", "survey-code", "codelist"];
+    const modalNames = ["project", "about", "subject", "survey-code", "codelist"];
     for (let modalName of modalNames) {
         document.body.appendChild(document.createElement(modalName + "-modal"));
     }

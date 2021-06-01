@@ -512,13 +512,14 @@ export function hideMenu() {
     $("#language-dropdown").classList.add("is-hidden-touch");
 }
 
-export function showMessage(heading, message, callbacks, callbackType) {
+export function showMessage(heading, message, callbacks, callbackType, closeText, closeCallback) {
     const messageModal = document.createElement("message-modal");
     messageModal.setHeading(heading);
     messageModal.setMessage(message);
     messageModal.setCallbacks(callbacks);
     messageModal.setCallbackType(callbackType == callbackTypes.DANGER ? "is-danger" : "is-link");
-    messageModal.setCloseText(callbacks ? languageHelper.getTranslation("close") : languageHelper.getTranslation("okay"));
+    messageModal.setCloseText(closeText ? closeText : (callbacks ? languageHelper.getTranslation("close") : languageHelper.getTranslation("okay")));
+    messageModal.setCloseCallback(closeCallback);
     
     if (!$("message-modal")) document.body.appendChild(messageModal);
 }
