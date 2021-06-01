@@ -11,7 +11,7 @@ import * as languageHelper from "./helper/languagehelper.js";
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-// Holds the OID of the currently selected SE, F, IG, I, and CL, as well as the CodedValue of the CLI
+// Holds the OID of the currently selected subject, event, and form
 let currentElementID = {
     subject: null,
     studyEvent: null,
@@ -54,7 +54,7 @@ function hide() {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => hide();
-        showCloseClinicaldataMessage();
+        showCloseClinicaldataPrompt();
         return;
     }
 
@@ -86,7 +86,7 @@ export function createSiteFilterSelect() {
         if (dataHasChanged()) {
             skipDataHasChangedCheck = true;
             deferredFunction = () => loadTree(currentElementID.studyEvent, null);
-            showCloseClinicaldataMessage();
+            showCloseClinicaldataPrompt();
             clickEvent.target.blur();
         }
     };
@@ -114,7 +114,7 @@ window.addSubjectManual = function() {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => addSubjectManual();
-        showCloseClinicaldataMessage();
+        showCloseClinicaldataPrompt();
         return;
     }
 
@@ -130,7 +130,7 @@ window.addSubjectAuto = function() {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => addSubjectAuto();
-        showCloseClinicaldataMessage();
+        showCloseClinicaldataPrompt();
         return;
     }
 
@@ -147,7 +147,7 @@ window.addSubjectBarcode = async function() {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => addSubjectBarcode();
-        showCloseClinicaldataMessage();
+        showCloseClinicaldataPrompt();
         return;
     }
 
@@ -211,7 +211,7 @@ function subjectClicked(subjectKey) {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => subjectClicked(subjectKey);
-        showCloseClinicaldataMessage();
+        showCloseClinicaldataPrompt();
         return;
     }
 
@@ -265,7 +265,7 @@ async function loadTree(studyEventOID, formOID) {
     if (dataHasChanged()) {
         skipDataHasChangedCheck = true;
         deferredFunction = () => loadTree(studyEventOID, formOID);
-        showCloseClinicaldataMessage();
+        showCloseClinicaldataPrompt();
         return;
     }
 
@@ -628,11 +628,11 @@ window.closeFormData = async function(saveData) {
 
 window.cancelFormOrSurveyEntry = function(closeSurvey) {
     if (surveyViewIsActive() && !closeSurvey) {
-        showCloseClinicaldataMessage();
+        showCloseClinicaldataPrompt();
         return;
     } else if (surveyViewIsActive()) {
         hideSurveyView();
-        if (ioHelper.getSurveyCode()) showCloseSurveyModal();
+        if (ioHelper.getSurveyCode()) showSurveyCodeModal();
         if (ioHelper.isAutoSurveyView() && ioHelper.isMobile()) currentElementID.studyEvent = null;
         skipDataHasChangedCheck = true;
     }
@@ -673,7 +673,7 @@ function hideSurveyView() {
     $("#clinicaldata-form-title").classList.remove("is-centered");
 }
 
-function showCloseClinicaldataMessage() {
+function showCloseClinicaldataPrompt() {
     ioHelper.showMessage(
         languageHelper.getTranslation(surveyViewIsActive() ? "close-survey" : "close-form"),
         languageHelper.getTranslation(surveyViewIsActive() ? "close-survey-text" : "close-form-text"),
@@ -690,7 +690,7 @@ function showCloseClinicaldataMessage() {
     );
 }
 
-function showCloseSurveyModal() {
+function showSurveyCodeModal() {
     // Create buttons for numpad if they dont exist
     if (!$(".numpad .buttons").hasChildNodes()) {
         for (let i = 1; i <= 12; i++) {
