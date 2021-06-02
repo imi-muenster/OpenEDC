@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.5.2
+
+- New notifications to show assistive texts when creating a new project
+- Further usability and stability improvements
+
 ## 0.5.1
 
 - Usability and stability improvements
