@@ -543,14 +543,10 @@ export function showToast(message, duration, toastType) {
 
 function fadeInToast(toast) {
     const currentToast = $(".is-toast");
-    if (currentToast) {
-        fadeOutToast(currentToast);
-        document.body.appendChild(toast);
-        setTimeout(() => toast.style.opacity = 1, 1000);
-    } else {
-        document.body.appendChild(toast);
-        setTimeout(() => toast.style.opacity = 1, 1000);
-    }
+    if (currentToast) fadeOutToast(currentToast);
+
+    document.body.appendChild(toast);
+    setTimeout(() => toast.style.opacity = 1, 1000);
 }
 
 function fadeOutToast(toast) {
