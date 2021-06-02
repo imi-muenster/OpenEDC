@@ -567,13 +567,12 @@ function addModalsToDOM() {
 }
 
 function checkAppVersion() {
-    // TODO: The following may used to show a reload prompt or offline message
     ioHelper.getAppVersion()
         .then(version => {
-            if (version != appVersion) console.log("App is outdated.");
+            if (version != appVersion) ioHelper.showToast(languageHelper.getTranslation("app-outdated-hint"), 10000, ioHelper.interactionTypes.WARNING);
         })
         .catch(() => {
-            if (ioHelper.hasServerURL()) console.log("App is offline.");
+            if (ioHelper.hasServerURL()) ioHelper.showToast(languageHelper.getTranslation("app-offline-hint"), 10000, ioHelper.interactionTypes.WARNING);
         });
 }
 

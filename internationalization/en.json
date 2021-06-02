@@ -292,6 +292,8 @@
     "login-encrypted-text": "Please enter the password that you used for the data encryption.",
     "password-incorrect-error": "The password is incorrect. Please try again.",
     "username-password-incorrect-error": "The username or password is incorrect. Please try again.",
+    "app-outdated-hint": "You are using an outdated version of OpenEDC. To upgrade to the latest version, please close the app or the browser tab and then reopen OpenEDC.",
+    "app-offline-hint": "You are currently using the application offline. While is fine, please still try to open the application soon with an Internet connection so that data stored offline can be synchronized.",
     "barcode": "Barcode",
     "barcode-help-text": "If your device does not provide a camera or the barcode scan does not work, you can manually enter the barcode value below.",
     "server-uninitialized": "Server uninitialized",

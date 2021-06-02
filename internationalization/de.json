@@ -291,6 +291,8 @@
     "login-encrypted-text": "Bitte geben Sie das Passwort ein, das Sie für die Datenverschlüsselung verwendet haben.",
     "password-incorrect-error": "Das Passwort ist falsch. Bitte versuchen Sie es erneut.",
     "username-password-incorrect-error": "Der Benutzername oder das Passwort ist falsch. Bitte versuchen Sie es erneut.",
+    "app-outdated-hint": "Sie nutzen eine veraltete Version von OpenEDC. Um auf die neuste Version zu aktualisieren, schließen Sie bitte die App oder den Browser-Tab und öffnen Sie OpenEDC dann erneut.",
+    "app-offline-hint": "Sie nutzen die Anwendung aktuell offline. Dies ist in Ordnung, aber versuchen Sie dennoch die Anwendung bald mit einer Internetverbindung zu öffnen, damit offline gespeicherte Daten synchronisiert werden können.",
     "barcode": "Strichcode",
     "barcode-help-text": "Wenn Ihr Gerät nicht über eine Kamera verfügt oder das Lesen des Strichcodes nicht funktioniert, können Sie unten manuell den Wert des Strichcodes eingeben.",
     "server-uninitialized": "Server uninitialisiert",
