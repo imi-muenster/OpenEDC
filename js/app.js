@@ -253,7 +253,7 @@ window.newProject = function() {
     startApp();
 
     // Show the new project help message
-    setTimeout(() => ioHelper.showMessage(languageHelper.getTranslation("new-project-title"), languageHelper.getTranslation("new-project-text")), 1000);
+    ioHelper.showToast(languageHelper.getTranslation("new-project-hint"));
 }
 
 window.openODM = async function() {

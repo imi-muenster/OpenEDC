@@ -530,7 +530,7 @@ export function showToast(message, duration, toastType) {
     const toast = document.createElement("div");
     toast.className = "notification is-toast";
     toast.classList.add(toastType == interactionTypes.WARNING ? "is-warning" : "is-success");
-    toast.textContent = message;
+    toast.innerHTML = message;
 
     const closeButton = document.createElement("button");
     closeButton.className = "delete";

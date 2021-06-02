@@ -723,9 +723,7 @@ window.addStudyEvent = function(event) {
     event.target.blur();
 
     // Show the first study event help message
-    if (metadataHelper.getStudyEvents().length == 1) {
-        setTimeout(() => ioHelper.showMessage(languageHelper.getTranslation("first-event-title"), languageHelper.getTranslation("first-event-text")), 1000);
-    }
+    if (metadataHelper.getStudyEvents().length == 1) ioHelper.showToast(languageHelper.getTranslation("first-event-hint"));
 }
 
 window.addForm = function(event) {
@@ -1117,6 +1115,6 @@ function showFirstEventEditedHelp() {
     const element = metadataHelper.getElementDefByOID(getCurrentElementOID());
     if (!element.getTranslatedDescription(locale) && $("#translation-textarea").value && metadataHelper.getStudyEvents().length == 1) {
         // Show the first event edited help message
-        setTimeout(() => ioHelper.showMessage(languageHelper.getTranslation("first-event-edited-title"), languageHelper.getTranslation("first-event-edited-text")), 1000);
+        ioHelper.showToast(languageHelper.getTranslation("first-event-edited-hint"), 20000);
     }
 }
