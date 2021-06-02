@@ -42,12 +42,14 @@ export const loginStatus = {
     USERHASINITIALPASSWORD: 2
 }
 
-export const callbackTypes = {
+export const interactionTypes = {
     DEFAULT: 1,
-    DANGER: 2
+    WARNING: 3,
+    DANGER: 4
 }
 
 const $ = query => document.querySelector(query);
+const $$ = query => document.querySelectorAll(query);
 
 const fileNames = {
     metadata: "metadata",
@@ -517,11 +519,27 @@ export function showMessage(heading, message, callbacks, callbackType, closeText
     messageModal.setHeading(heading);
     messageModal.setMessage(message);
     messageModal.setCallbacks(callbacks);
-    messageModal.setCallbackType(callbackType == callbackTypes.DANGER ? "is-danger" : "is-link");
+    messageModal.setCallbackType(callbackType == interactionTypes.DANGER ? "is-danger" : "is-link");
     messageModal.setCloseText(closeText ? closeText : (callbacks ? languageHelper.getTranslation("close") : languageHelper.getTranslation("okay")));
     messageModal.setCloseCallback(closeCallback);
     
-    if (!$("message-modal")) document.body.appendChild(messageModal);
+    if (!$("#message-modal")) document.body.appendChild(messageModal);
+}
+
+export function showToast(message, duration, toastType) {
+    const toast = document.createElement("div");
+    toast.className = "notification is-toast";
+    toast.classList.add(toastType == interactionTypes.WARNING ? "is-warning" : "is-success");
+    toast.textContent = message;
+
+    const closeButton = document.createElement("button");
+    closeButton.className = "delete";
+    closeButton.onclick = () => toast.remove();
+    toast.insertAdjacentElement("afterbegin", closeButton);
+
+    $$(".is-toast").removeElements();
+    document.body.appendChild(toast);
+    if (duration) window.setTimeout(() => toast.remove(), duration);
 }
 
 export function download(filename, extension, content) {

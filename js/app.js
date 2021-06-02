@@ -473,14 +473,14 @@ window.showRemoveDataModal = function(complete) {
             {
                 [languageHelper.getTranslation("remove")]: () => removeAllData()
             },
-            ioHelper.callbackTypes.DANGER
+            ioHelper.interactionTypes.DANGER
         );
     } else {
         ioHelper.showMessage(languageHelper.getTranslation("please-confirm"), languageHelper.getTranslation("remove-data-clinicaldata-warning"),
             {
                 [languageHelper.getTranslation("remove")]: () => removeClinicaldata()
             },
-            ioHelper.callbackTypes.DANGER
+            ioHelper.interactionTypes.DANGER
         );
     }
 }

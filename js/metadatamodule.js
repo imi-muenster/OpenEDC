@@ -994,7 +994,7 @@ window.showRemoveModal = async function() {
             {
                 [languageHelper.getTranslation("remove")]: () => removeElement()
             },
-            ioHelper.callbackTypes.DANGER
+            ioHelper.interactionTypes.DANGER
         );
     }
 }
