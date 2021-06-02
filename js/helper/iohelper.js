@@ -534,12 +534,28 @@ export function showToast(message, duration, toastType) {
 
     const closeButton = document.createElement("button");
     closeButton.className = "delete";
-    closeButton.onclick = () => toast.remove();
+    closeButton.onclick = () => fadeOutToast(toast);
     toast.insertAdjacentElement("afterbegin", closeButton);
 
-    $$(".is-toast").removeElements();
-    document.body.appendChild(toast);
-    if (duration) window.setTimeout(() => toast.remove(), duration);
+    fadeInToast(toast);
+    if (duration) window.setTimeout(() => fadeOutToast(toast), duration);
+}
+
+function fadeInToast(toast) {
+    const currentToast = $(".is-toast");
+    if (currentToast) {
+        fadeOutToast(currentToast);
+        document.body.appendChild(toast);
+        setTimeout(() => toast.style.opacity = 1, 1000);
+    } else {
+        document.body.appendChild(toast);
+        setTimeout(() => toast.style.opacity = 1, 1000);
+    }
+}
+
+function fadeOutToast(toast) {
+    toast.style.opacity = 0;
+    setTimeout(() => toast.remove(), 1000);
 }
 
 export function download(filename, extension, content) {

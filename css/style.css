@@ -80,6 +80,8 @@ a.panel-block {
     z-index: 50;
     margin: 1.5rem;
     max-width: 20rem;
+    opacity: 0;
+    transition: opacity .5s;
 }
 
 .sidebar {
