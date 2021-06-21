@@ -17,17 +17,17 @@ An instance of the [OpenEDC Server](https://github.com/imi-muenster/OpenEDC-Serv
 OpenEDC consists of three main modules. One for designing the metadata (i.e., the forms), one for capturing clinical data (including real-time validation checks and conditional skip patterns), and one for administrative settings when connected to an OpenEDC Server (i.e., managing users and sites).
 
 <div align="center">
-    <img src="https://static.uni-muenster.de/odm/mobile_1.png" width="300">
-    <img src="https://static.uni-muenster.de/odm/mobile_2.png" width="300">
+    <img src="https://static.uni-muenster.de/odm/mobile_1.png?" width="300">
+    <img src="https://static.uni-muenster.de/odm/mobile_2.png?" width="300">
 </div>
 
 <div align="center">
-    <img src="https://static.uni-muenster.de/odm/mobile_3.png" width="300">
-    <img src="https://static.uni-muenster.de/odm/mobile_4.png" width="300">
+    <img src="https://static.uni-muenster.de/odm/mobile_3.png?" width="300">
+    <img src="https://static.uni-muenster.de/odm/mobile_4.png?" width="300">
 </div>
 
 <div align="center">
-    <img src="https://static.uni-muenster.de/odm/data_capture.png" width="900">
+    <img src="https://static.uni-muenster.de/odm/data_capture.png?" width="900">
 </div>
 
 ## Getting Started
