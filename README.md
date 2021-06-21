@@ -12,7 +12,7 @@
 
 [OpenEDC](https://openedc.org/) is a cross-platform progressive web application (PWA) that can also be installed as a standalone app and works offline. The application itself is client-based. All data is exclusively processed on the local device it is running on. For security reasons, all data can be AES encrypted on the device as well.
 
-An instance of the [OpenEDC Server](https://github.com/imi-muenster/OpenEDC-Server) can be hosted optionally to create a project with multiple users and sites. Forms that were already designed or data that was already captured with [openedc.org](https://openedc.org/) can be synced with the server. When connected to a server, all data is end-to-end encrypted by default. The application can work offline and syncs data back to the server when an internet connection could be re-established.
+An instance of the [OpenEDC Server](https://github.com/imi-muenster/OpenEDC-Server) can be hosted optionally to create a project with multiple users and sites. Forms already designed or data already captured with [openedc.org](https://openedc.org/) can be synced with the server. When connected to a server, all data is end-to-end encrypted by default. The application can work offline and syncs data back to the server when an internet connection could be re-established.
 
 OpenEDC consists of three main modules. One for designing the metadata (i.e., the forms), one for capturing clinical data (including real-time validation checks and conditional skip patterns), and one for administrative settings when connected to an OpenEDC Server (i.e., managing users and sites).
 
@@ -32,7 +32,7 @@ OpenEDC consists of three main modules. One for designing the metadata (i.e., th
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of OpenEDC up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
@@ -40,7 +40,7 @@ OpenEDC is built with native HTML, CSS, and JavaScript and hence does not rely o
 
 ### Installing
 
-To get a development environment running, simply clone the repository and open the folder with a code editor of your choice. If you are using [Visual Studio Code](https://code.visualstudio.com/), we recommend the extension [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer). This extension starts a simple web server, opens the application in a new tab, and refrehes the pages after changes automatically. Without Visual Studio Code and Live Server you need to deploy the folder on a web server of your choice.
+To get a development environment running, simply clone the repository and open the folder with a code editor of your choice. If you are using [Visual Studio Code](https://code.visualstudio.com/), we recommend the extension [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer). This extension starts a simple web server, opens the application in a new tab, and refrehes it after changes automatically. Without Visual Studio Code and Live Server you need to deploy the folder on a web server of your choice.
 
 ### Deployment
 
