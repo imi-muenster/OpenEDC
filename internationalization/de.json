@@ -252,6 +252,8 @@
     "okay": "Okay",
     "please-confirm": "Bitte bestätigen",
     "element-remove-hint": "Der Verweis auf das Element wird entfernt. Die Elementdefinition wird ebenfalls entfernt, wenn es keinen anderen Verweis auf sie gibt.",
+    "reference-added-hint": "Bitte bewegen Sie den neuen Verweis nun mittels Drag-and-Drop in ein anderes Elternelement. In einem Elternelement darf derselbe Verweis immer nur ein Mal vorkommen.",
+    "copy-added-hint": "Neue Kopie hinzugefügt.",
     "enter-subject-key": "Kennung des Probanden eingeben",
     "enter-subject-key-text": "Bitte geben Sie zuerst eine Kennung für den Probanden ein.",
     "subject-key-existent": "Proband existiert",

@@ -546,12 +546,12 @@ function fadeInToast(toast) {
     if (currentToast) fadeOutToast(currentToast);
 
     document.body.appendChild(toast);
-    setTimeout(() => toast.style.opacity = 1, 1000);
+    setTimeout(() => toast.style.opacity = 1, 500);
 }
 
 function fadeOutToast(toast) {
     toast.style.opacity = 0;
-    setTimeout(() => toast.remove(), 1000);
+    setTimeout(() => toast.remove(), 500);
 }
 
 export function download(filename, extension, content) {

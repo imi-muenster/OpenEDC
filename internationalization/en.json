@@ -253,6 +253,8 @@
     "okay": "Okay",
     "please-confirm": "Please confirm",
     "element-remove-hint": "The reference to the element will be removed. The element definition will be removed as well if there is no other reference to it.",
+    "reference-added-hint": "Please now move the new reference into another parent element using drag-and-drop. The same reference may only appear once in a parent element.",
+    "copy-added-hint": "New copy added.",
     "enter-subject-key": "Enter subject key",
     "enter-subject-key-text": "Please enter a key for the subject first.",
     "subject-key-existent": "Subject exists",

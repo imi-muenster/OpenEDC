@@ -798,6 +798,7 @@ function removeElement() {
     }
 
     reloadAndStoreMetadata();
+    // TODO: Show element removed toast
 }
 
 window.duplicateReference = function() {
@@ -806,8 +807,8 @@ window.duplicateReference = function() {
     const elementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), getCurrentElementType(), getCurrentElementParentOID());
     elementRef.parentNode.insertBefore(elementRef.cloneNode(), elementRef.nextSibling);
 
-    reloadTree();
-    reloadDetailsPanel();
+    reloadAndStoreMetadata();
+    ioHelper.showToast(languageHelper.getTranslation("reference-added-hint"), 10000);
 }
 
 window.copyElement = function(deepCopy) {
@@ -831,8 +832,8 @@ window.copyElement = function(deepCopy) {
             metadataHelper.addCodeListRef(newItemOID, newCodeListOID);
     }
 
-    reloadTree();
-    reloadDetailsPanel();
+    reloadAndStoreMetadata();
+    ioHelper.showToast(languageHelper.getTranslation("copy-added-hint"), 2500);
 }
 
 function dragStart(event) {
