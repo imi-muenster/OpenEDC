@@ -296,6 +296,8 @@ window.importODM = async function() {
 window.loadExample = async function() {
     await metadataHelper.loadExample();
     startApp();
+
+    ioHelper.showToast(languageHelper.getTranslation("exemplary-project-hint"), 45000);
 }
 
 window.showProjectModal = function() {

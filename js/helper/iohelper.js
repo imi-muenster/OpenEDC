@@ -546,7 +546,7 @@ function fadeInToast(toast) {
     if (currentToast) fadeOutToast(currentToast);
 
     document.body.appendChild(toast);
-    setTimeout(() => toast.style.opacity = 1, 500);
+    setTimeout(() => toast.style.opacity = 1, currentToast ? 1000 : 500);
 }
 
 function fadeOutToast(toast) {
