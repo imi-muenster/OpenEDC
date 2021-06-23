@@ -798,7 +798,7 @@ function removeElement() {
     }
 
     reloadAndStoreMetadata();
-    // TODO: Show element removed toast
+    ioHelper.showToast(languageHelper.getTranslation("element-removed-hint"), 2500);
 }
 
 window.duplicateReference = function() {

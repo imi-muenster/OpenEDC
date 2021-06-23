@@ -79,6 +79,7 @@
     "new-form": "New Form",
     "new-group": "New Group",
     "new-item": "New Item",
+    "element-removed-hint": "Element removed.",
     "mobile-metadata": "Mobile Metadata",
     "mobile-metadata-hint": "You are currently using a small device to design the forms. While this is fine and doable, we suggest switching to a device with a larger screen to benefit from a simplified editing workflow.",
     "condition-multiple-references-hint": "This condition is used for other elements as well. Do you want to update it for all elements?",
@@ -322,5 +323,5 @@
     "new-project-hint": "<strong>You created your new project</strong><br><br>Start by adding your first event with a click on the <i>Add</i> button below the <i>Events</i> title.<br><br>Events refer to points in time or incidents during your study for which you want to collect data. This could be, for example, <i>Baseline</i> and <i>Follow-up</i> or <i>Patient-reported data</i> and <i>Routine data</i>. It is fine if your study consists of only one event.",
     "first-event-hint": "<strong>You added your first event</strong><br><br>You can now add a description to your event. Please note that this description is dependent on the language that you have currently selected.<br><br>You can change the language at any time to add new translations to your project which lets you create a multilingual study.",
     "first-event-edited-hint": "<strong>You added your first description</strong><br><br>You can now continue by adding a form to the event. Then you can add a group to the form and then items to that group. When you have created your first few items, you can click on <i>Capture Data</i> to see the form in action.<br><br>Go to <i>Project Options</i> to see more options for your project.<br><br>Great luck with your study!",
-    "exemplary-project-hint": "<strong>The examplary project has been opened</strong><br><br>You can now start by creating a new test patient in the <i>Subjects</i> column. If you click on an <i>Event</i>, you will see the associated <i>Forms</i> to the right of it. Clicking on a form allows you to enter <i>Data</i> for the currently selected subject.<br><br>You can customize the structure of the forms by clicking on the <i>Design Forms</i> button in the upper right corner. If you want to close the example, click on <i>Close Example<i/>."
+    "exemplary-project-hint": "<strong>Exemplary project opened</strong><br><br>You can now start by creating a new test patient in the <i>Subjects</i> column. If you click on an <i>Event</i>, you will see the associated <i>Forms</i> to the right of it. Clicking on a form allows you to enter <i>Data</i> for the currently selected subject.<br><br>You can customize the structure of the forms by clicking on the <i>Design Forms</i> button in the upper right corner. If you want to close the example, click on <i>Close Example<i/>."
 }

@@ -681,7 +681,7 @@ function showCloseClinicaldataPrompt() {
             [languageHelper.getTranslation("close-with-saving")]: () => closeFormData(true),
             [languageHelper.getTranslation("close-without-saving")]: () => closeFormData()
         },
-        ioHelper.interactionTypes.DANGER,
+        ioHelper.interactionTypes.DEFAULT,
         languageHelper.getTranslation("continue"),
         () => {
             skipDataHasChangedCheck = false;
