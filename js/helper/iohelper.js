@@ -533,7 +533,7 @@ export function showToast(message, duration, toastType) {
     toast.innerHTML = message;
 
     const closeButton = document.createElement("button");
-    closeButton.className = "delete";
+    closeButton.className = isMobile() ? "delete is-medium" : "delete";
     closeButton.onclick = () => fadeOutToast(toast);
     toast.insertAdjacentElement("afterbegin", closeButton);
 
