@@ -447,14 +447,9 @@ window.addEmptyAliasInput = function(disabled) {
     if (!disabled && !ioHelper.isMobile()) input.scrollIntoView();
 }
 
-window.saveElement = async function() {
+window.saveElement = function() {
     if (getCurrentDetailsView() == detailsPanelViews.FOUNDATIONAL) saveDetailsFoundational();
     else if (getCurrentDetailsView() == detailsPanelViews.EXTENDED) saveDetailsExtended();
-
-    if (!languageHelper.getPresentLanguages().includes(locale)) {
-        languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
-        languageHelper.createLanguageSelect(true);
-    }
 }
 
 async function saveDetailsFoundational() {
@@ -478,6 +473,11 @@ async function saveDetailsFoundational() {
         case metadataHelper.elementTypes.CODELISTITEM:
             await setCodeListItemCodedValue(newID);
             metadataHelper.setCodeListItemDecodedText(currentElementID.codeList, currentElementID.codeListItem, newTranslatedText, locale);
+    }
+
+    if (!languageHelper.getPresentLanguages().includes(locale)) {
+        languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
+        languageHelper.createLanguageSelect(true);
     }
 
     reloadAndStoreMetadata();
@@ -723,7 +723,7 @@ window.addStudyEvent = function(event) {
     event.target.blur();
 
     // Show the first study event help message
-    if (metadataHelper.getStudyEvents().length == 1) ioHelper.showToast(languageHelper.getTranslation("first-event-hint"));
+    if (metadataHelper.getStudyEvents().length == 1 && !ioHelper.isMobile()) ioHelper.showToast(languageHelper.getTranslation("first-event-hint"));
 }
 
 window.addForm = function(event) {
@@ -1114,7 +1114,7 @@ function getCurrentDetailsView() {
 
 function showFirstEventEditedHelp() {
     const element = metadataHelper.getElementDefByOID(getCurrentElementOID());
-    if (!element.getTranslatedDescription(locale) && $("#translation-textarea").value && metadataHelper.getStudyEvents().length == 1) {
+    if (!element.getTranslatedDescription(locale) && $("#translation-textarea").value && metadataHelper.getStudyEvents().length == 1 && !ioHelper.isMobile()) {
         // Show the first event edited help message
         ioHelper.showToast(languageHelper.getTranslation("first-event-edited-hint"), 20000);
     }

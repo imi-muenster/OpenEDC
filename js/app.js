@@ -253,7 +253,7 @@ window.newProject = function() {
     startApp();
 
     // Show the new project help message
-    ioHelper.showToast(languageHelper.getTranslation("new-project-hint"));
+    if (!ioHelper.isMobile()) ioHelper.showToast(languageHelper.getTranslation("new-project-hint"));
 }
 
 window.openODM = async function() {
@@ -297,7 +297,8 @@ window.loadExample = async function() {
     await metadataHelper.loadExample();
     startApp();
 
-    ioHelper.showToast(languageHelper.getTranslation("exemplary-project-hint"), 45000);
+    // Show the exemplary project help message
+    if (!ioHelper.isMobile()) ioHelper.showToast(languageHelper.getTranslation("exemplary-project-hint"), 30000);
 }
 
 window.showProjectModal = function() {

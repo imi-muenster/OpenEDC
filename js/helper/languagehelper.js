@@ -1,5 +1,7 @@
 import * as ioHelper from "./iohelper.js";
 
+export const untranslatedLocale = "none";
+
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
@@ -20,8 +22,6 @@ const locales = {
 }
 
 const defaultLocale = locales.ENGLISH;
-
-export const untranslatedLocale = "none";
 
 let currentLocale = defaultLocale;
 let currentLocaleSet = false;
@@ -65,7 +65,7 @@ export function populatePresentLanguages(odm) {
 
     for (const translatedText of odm.querySelectorAll("TranslatedText")) {
         const locale = translatedText.getAttribute("xml:lang");
-        if (Object.values(locales).includes(locale) && !localesInODM.includes(locale)) localesInODM.push(locale);
+        if (!localesInODM.includes(locale)) localesInODM.push(locale);
     }
 
     for (let locale of Object.values(locales)) {
