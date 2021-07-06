@@ -628,7 +628,7 @@ export function prettifyContent(content) {
 
 export function setTreeMaxHeight() {
     const offset = 30;
-    const minHeight = 300;
+    const minHeight = 250;
     const windowHeight = window.innerHeight;
     const isMobileDevice = isMobile();
 
@@ -639,7 +639,6 @@ export function setTreeMaxHeight() {
         };
 
         let panelTop = treePanelBlock.getBoundingClientRect().top;
-
         let addButtonHeight = 0;
         if (treePanelBlock.nextElementSibling) addButtonHeight = treePanelBlock.nextElementSibling.getBoundingClientRect().height;
 

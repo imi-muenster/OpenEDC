@@ -798,7 +798,7 @@ function removeElement() {
     }
 
     reloadAndStoreMetadata();
-    ioHelper.showToast(languageHelper.getTranslation("element-removed-hint"), 2500);
+    ioHelper.showToast(languageHelper.getTranslation("element-removed"), 2500);
 }
 
 window.duplicateReference = function() {
@@ -833,7 +833,7 @@ window.copyElement = function(deepCopy) {
     }
 
     reloadAndStoreMetadata();
-    ioHelper.showToast(languageHelper.getTranslation("copy-added-hint"), 2500);
+    ioHelper.showToast(languageHelper.getTranslation("copy-added"), 2500);
 }
 
 function dragStart(event) {
