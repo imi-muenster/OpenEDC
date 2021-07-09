@@ -156,6 +156,26 @@ export function getRangeCheckInputElement(selectedComparator, checkValue) {
     return field;
 }
 
+export function getSpecialFunctionInputElement(selectedType, value) {
+    let field = document.createElement("div");
+    field.className = "field special-function-input is-grouped";
+
+    let select = getSelect("special-function-type", false, false, ["", "hide"], null, ["--", "Hide (Test Function)"], null);
+    select.style.width = "55%";
+    field.appendChild(select);
+    
+    field.insertAdjacentHTML("beforeend", "&nbsp;&nbsp;");
+
+    let input = document.createElement("input");
+    input.type = "text";
+    input.value = value;
+    input.className = "input special-function-value";
+    if (!value) input.placeholder = languageHelper.getTranslation("value");
+    field.appendChild(input.cloneNode());
+
+    return field;
+}
+
 export function getDataTypeSelect() {
     const translatedOptions = dataTypes.map(option => languageHelper.getTranslation(option));
     return getSelect("datatype-select", true, true, dataTypes, null, translatedOptions, true);

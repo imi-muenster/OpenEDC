@@ -6,8 +6,8 @@ class MetadataSection extends HTMLElement {
                     <h1 class="title is-4" i18n="mobile-metadata"></h1>
                     <p i18n="mobile-metadata-hint"></p>
                 </div>
-                <div class="columns is-desktop is-centered" id="details-panel">
-                    <div class="column is-half-desktop">
+                <div class="columns is-desktop is-centered">
+                    <div class="column is-half-desktop" id="details-panel">
                         <div class="box has-sidebar">
                             <nav class="sidebar">
                                 <ul class="sidebar-options">
@@ -57,20 +57,7 @@ class MetadataSection extends HTMLElement {
                             </div>
                             <div class="box-content is-hidden" id="extended-options">
                                 <div class="columns">
-                                    <div class="column">
-                                        <div class="field">
-                                            <label class="label" i18n="collection-condition"></label>
-                                            <div class="control has-autocomplete-bottom">
-                                                <input class="input" type="text" id="collection-condition" autocomplete="off" i18n-ph="formal-expression">
-                                            </div>
-                                        </div>
-                                        <div class="field">
-                                            <label class="label" i18n="alias-names"></label>
-                                            <div id="alias-inputs"></div>
-                                            <button class="button is-small is-pulled-right mt-2" id="add-alias-button" onclick="addEmptyAliasInput()" i18n="add"></button>
-                                        </div>
-                                    </div>
-                                    <div class="column">
+                                    <div class="column is-one-third">
                                         <div class="field">
                                             <label class="label" i18n="measurement-unit"></label>
                                             <div class="control has-autocomplete-bottom">
@@ -81,6 +68,32 @@ class MetadataSection extends HTMLElement {
                                             <label class="label" i18n="range-checks"></label>
                                             <div id="range-check-inputs"></div>
                                             <button class="button is-small is-pulled-right mt-2" id="add-range-check-button" onclick="addEmptyRangeCheckInput()" i18n="add"></button>
+                                        </div>
+                                    </div>
+                                    <div class="column is-one-third">
+                                        <div class="field">
+                                            <label class="label" i18n="item-calculation"></label>
+                                            <div class="control has-autocomplete-bottom">
+                                                <input class="input" type="text" id="field-calculation" autocomplete="off" i18n-ph="formal-expression">
+                                            </div>
+                                        </div>
+                                        <div class="field">
+                                            <label class="label" i18n="special-functions"></label>
+                                            <div id="special-function-inputs"></div>
+                                            <button class="button is-small is-pulled-right mt-2" id="add-special-function-button" onclick="" i18n="add"></button>
+                                        </div>
+                                    </div>
+                                    <div class="column is-one-third">
+                                        <div class="field">
+                                            <label class="label" i18n="collection-condition"></label>
+                                            <div class="control has-autocomplete-bottom">
+                                                <input class="input" type="text" id="collection-condition" autocomplete="off" i18n-ph="formal-expression">
+                                            </div>
+                                        </div>
+                                        <div class="field">
+                                            <label class="label" i18n="alias-names"></label>
+                                            <div id="alias-inputs"></div>
+                                            <button class="button is-small is-pulled-right mt-2" id="add-alias-button" onclick="addEmptyAliasInput()" i18n="add"></button>
                                         </div>
                                     </div>
                                 </div>

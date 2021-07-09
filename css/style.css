@@ -84,6 +84,10 @@ a.panel-block {
     transition: opacity .5s;
 }
 
+#details-panel {
+    transition: width .5s;
+}
+
 .sidebar {
     border-radius: 6px 0 0 6px;
     color: var(--link-color);
@@ -96,7 +100,7 @@ a.panel-block {
     height: 100%;
     padding: .5rem 0 .5rem 0;
     max-width: 3rem;
-    transition: max-width .5s 1.25s;
+    transition: max-width .5s 1s;
 }
 
 .sidebar:hover .sidebar-options {
@@ -141,7 +145,7 @@ a.panel-block {
     margin-right: 1.25rem;
     pointer-events: none;
     opacity: 0;
-    transition: opacity .5s 1.25s;
+    transition: opacity .5s 1s;
 }
 
 .sidebar:hover .sidebar-option span {

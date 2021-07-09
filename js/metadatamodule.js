@@ -267,14 +267,18 @@ function resetDetailsPanel() {
 
     // Extended
     $("#measurement-unit").disabled = true;
+    $("#field-calculation").disabled = true;
     $("#collection-condition").disabled = true;
     $("#add-range-check-button").disabled = true;
+    $("#add-special-function-button").disabled = true;
     $("#add-alias-button").disabled = true;
     $("#measurement-unit").value = "";
     $("#collection-condition").value = "";
     $$("#range-check-inputs .range-check-input").removeElements();
+    $$("#special-function-inputs .special-function-input").removeElements();
     $$("#alias-inputs .alias-input").removeElements();
     addEmptyRangeCheckInput(true);
+    addEmptySpecialFunctionInput(true);
     addEmptyAliasInput(true);
 
     // Duplicate
@@ -343,12 +347,17 @@ function fillDetailsPanelExtended() {
             break;
         case metadataHelper.elementTypes.ITEM:
             fillItemRangeChecks();
+            // TODO: Refactor and create a new function to enable/disable the extensible input fields with its buttons
+            $("#special-function-inputs .special-function-type-inner").disabled = false;
+            $("#special-function-inputs .special-function-value").disabled = false;
+            $("#add-special-function-button").disabled = false;
             $("#range-check-inputs .range-check-comparator-inner").disabled = false;
             $("#range-check-inputs .range-check-value").disabled = false;
             $("#add-range-check-button").disabled = false;
             const measurementUnit = metadataHelper.getItemMeasurementUnit(getCurrentElementOID());
             $("#measurement-unit").value = measurementUnit ? measurementUnit.getTranslatedSymbol(locale) : null;
             $("#measurement-unit").disabled = false;
+            $("#field-calculation").disabled = false;
             $("#collection-condition").value = condition ? condition.getFormalExpression() : null;
             $("#collection-condition").disabled = false;
     }
@@ -419,6 +428,7 @@ function fillElementAliases() {
     }
 }
 
+// TODO: Could the following three functions be refactored? They are very similar
 window.addEmptyRangeCheckInput = function(disabled) {
     const input = htmlElements.getRangeCheckInputElement(null, null);
     input.querySelector(".range-check-comparator-inner").oninput = () => $("#save-button").highlight();
@@ -430,6 +440,20 @@ window.addEmptyRangeCheckInput = function(disabled) {
     }
 
     $("#range-check-inputs").appendChild(input);
+    if (!disabled && !ioHelper.isMobile()) input.scrollIntoView();
+}
+
+window.addEmptySpecialFunctionInput = function(disabled) {
+    const input = htmlElements.getSpecialFunctionInputElement(null, null);
+    input.querySelector(".special-function-type-inner").oninput = () => $("#save-button").highlight();
+    input.querySelector(".special-function-value").oninput = () => $("#save-button").highlight();
+
+    if (disabled) {
+        input.querySelector(".special-function-type-inner").disabled = true;
+        input.querySelector(".special-function-value").disabled = true;
+    }
+
+    $("#special-function-inputs").appendChild(input);
     if (!disabled && !ioHelper.isMobile()) input.scrollIntoView();
 }
 
@@ -641,16 +665,22 @@ window.sidebarOptionClicked = function(event) {
             $("#foundational-options").show();
             $("#extended-options").hide();
             $("#duplicate-options").hide();
+            $("#details-panel").classList.add("is-half-desktop");
+            $("#details-panel").classList.remove("is-two-thirds-desktop");
             break;
         case "extended-option":
             $("#foundational-options").hide();
             $("#extended-options").show();
             $("#duplicate-options").hide();
+            $("#details-panel").classList.remove("is-half-desktop");
+            $("#details-panel").classList.add("is-two-thirds-desktop");
             break;
         case "duplicate-option":
             $("#foundational-options").hide();
             $("#extended-options").hide();
             $("#duplicate-options").show();
+            $("#details-panel").classList.add("is-half-desktop");
+            $("#details-panel").classList.remove("is-two-thirds-desktop");
     }
 
     reloadDetailsPanel();
