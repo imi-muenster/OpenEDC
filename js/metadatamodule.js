@@ -39,7 +39,7 @@ export function init() {
 
 export function show() {
     // If clinical data was captured, enable the view-only mode and ask to disable it
-    if (clinicaldataHelper.getSubjects().length > 0) {
+    if (false && clinicaldataHelper.getSubjects().length > 0) {
         viewOnlyMode = true;
         ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("metadata-edit-mode-question"),
             {
@@ -47,7 +47,7 @@ export function show() {
             },
             ioHelper.interactionTypes.DEFAULT,
             languageHelper.getTranslation("edit-mode"),
-            () => {}
+            () => enableEditMode()
         );
     } else {
         viewOnlyMode = false;
@@ -1129,6 +1129,14 @@ function getCurrentDetailsView() {
     if ($("#foundational-option").isActive()) return detailsPanelViews.FOUNDATIONAL;
     else if ($("#extended-option").isActive()) return detailsPanelViews.EXTENDED;
     else if ($("#duplicate-option").isActive()) return detailsPanelViews.DUPLICATE;
+}
+
+function enableEditMode() {
+    // TODO: Cache all subject data
+
+    viewOnlyMode = false;
+    reloadTree();
+    reloadDetailsPanel();
 }
 
 function showFirstEventEditedHelp() {
