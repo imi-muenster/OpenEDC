@@ -26,6 +26,7 @@ let currentElementID = {
 }
 
 // Further auxiliary variables
+let viewOnlyMode = false;
 let elementTypeOnDrag = null;
 let locale = null;
 
@@ -37,6 +38,21 @@ export function init() {
 }
 
 export function show() {
+    // If clinical data was captured, enable the view-only mode and ask to disable it
+    if (clinicaldataHelper.getSubjects().length > 0) {
+        viewOnlyMode = true;
+        ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("metadata-edit-mode-question"),
+            {
+                [languageHelper.getTranslation("view-only-mode")]: () => {}
+            },
+            ioHelper.interactionTypes.DEFAULT,
+            languageHelper.getTranslation("edit-mode"),
+            () => {}
+        );
+    } else {
+        viewOnlyMode = false;
+    }
+
     reloadTree();
     reloadDetailsPanel();
 
@@ -60,7 +76,8 @@ export function setLanguage(newLocale) {
 }
 
 function createPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, codedValue) {
-    let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, codedValue);
+    const draggable = viewOnlyMode ? false : true;
+    let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, codedValue, draggable);
 
     panelBlock.ondragstart = dragStart;
     panelBlock.ondragenter = dragEnter;
@@ -128,8 +145,10 @@ export function loadStudyEvents(hideTree) {
         panelBlock.onclick = studyEventClicked;
         $("#study-event-panel-blocks").appendChild(panelBlock);
     }
-
     if (currentElementID.studyEvent) $(`[oid="${currentElementID.studyEvent}"]`).activate();
+
+    if (viewOnlyMode) $("#study-events-add-button").disabled = true;
+    else $("#study-events-add-button").disabled = false;
 }
 
 function studyEventClicked(event) {
@@ -143,7 +162,6 @@ function studyEventClicked(event) {
 
 function loadFormsByStudyEvent(hideTree) {
     hideForms(hideTree);
-    $("#forms-add-button").disabled = false;
 
     let formDefs = metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent);
     for (let formDef of formDefs) {
@@ -152,8 +170,10 @@ function loadFormsByStudyEvent(hideTree) {
         panelBlock.onclick = formClicked;
         $("#form-panel-blocks").appendChild(panelBlock);
     }
-
     if (currentElementID.form) $(`[oid="${currentElementID.form}"]`).activate();
+
+    if (viewOnlyMode) $("#forms-add-button").disabled = true;
+    else $("#forms-add-button").disabled = false;
 }
 
 function formClicked(event) {
@@ -167,7 +187,6 @@ function formClicked(event) {
 
 function loadItemGroupsByForm(hideTree) {
     hideItemGroups(hideTree);
-    $("#item-groups-add-button").disabled = false;
 
     let itemGroupDefs = metadataHelper.getItemGroupsByForm(currentElementID.form);
     for (let itemGroupDef of itemGroupDefs) {
@@ -176,8 +195,10 @@ function loadItemGroupsByForm(hideTree) {
         panelBlock.onclick = itemGroupClicked;
         $("#item-group-panel-blocks").appendChild(panelBlock);
     }
-
     if (currentElementID.itemGroup) $(`[oid="${currentElementID.itemGroup}"]`).activate();
+
+    if (viewOnlyMode) $("#item-groups-add-button").disabled = true;
+    else $("#item-groups-add-button").disabled = false;
 }
 
 function itemGroupClicked(event) {
@@ -191,7 +212,6 @@ function itemGroupClicked(event) {
 
 function loadItemsByItemGroup(hideTree) {
     hideItems(hideTree);
-    $("#items-add-button").disabled = false;
 
     let itemDefs = metadataHelper.getItemsByItemGroup(currentElementID.itemGroup);
     for (let itemDef of itemDefs) {
@@ -201,8 +221,10 @@ function loadItemsByItemGroup(hideTree) {
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
     }
-
     if (currentElementID.item) $(`[oid="${currentElementID.item}"]`).activate();
+
+    if (viewOnlyMode) $("#items-add-button").disabled = true;
+    else $("#items-add-button").disabled = false;
 }
 
 function itemClicked(event) {
@@ -217,9 +239,6 @@ function itemClicked(event) {
 function loadCodeListItemsByItem(hideTree) {
     hideCodeListItems(hideTree);
 
-    if (metadataHelper.itemHasCodeList(currentElementID.item)) $("#code-list-items-add-button").disabled = false;
-    $("#code-list-items-opt-button").disabled = false;
-
     let codeListItems = metadataHelper.getCodeListItemsByItem(currentElementID.item);
     for (let codeListItem of codeListItems) {
         let translatedDecode = codeListItem.getTranslatedDecode(locale);
@@ -227,8 +246,15 @@ function loadCodeListItemsByItem(hideTree) {
         panelBlock.onclick = codeListItemClicked;
         $("#code-list-item-panel-blocks").appendChild(panelBlock);
     }
-
     if (currentElementID.codeList && currentElementID.codeListItem) $(`[oid="${currentElementID.codeList}"][coded-value="${currentElementID.codeListItem}"]`).activate();
+
+    if (viewOnlyMode) {
+        $("#code-list-items-add-button").disabled = true;
+        $("#code-list-items-opt-button").disabled = true;
+    } else {
+        if (metadataHelper.itemHasCodeList(currentElementID.item)) $("#code-list-items-add-button").disabled = false;
+        $("#code-list-items-opt-button").disabled = false;
+    }
 }
 
 function codeListItemClicked(event) {
@@ -285,7 +311,7 @@ function resetDetailsPanel() {
 }
 
 function adjustDetailsPanelSidebar() {
-    $("#remove-button").highlight();
+    highlightRemoveButton();
 
     const references = metadataHelper.getElementRefs(getCurrentElementOID(), getCurrentElementType());
     if (references.length > 1) {
@@ -295,6 +321,16 @@ function adjustDetailsPanelSidebar() {
         $("#duplicate-option").classList.remove("has-text-danger");
         $("#duplicate-option i").className = "far fa-clone";
     }
+}
+
+function highlightSaveButton() {
+    if (viewOnlyMode) $("#save-button").unhighlight();
+    else $("#save-button").highlight();
+}
+
+function highlightRemoveButton() {
+    if (viewOnlyMode) $("#remove-button").unhighlight();
+    else $("#remove-button").highlight();
 }
 
 function fillDetailsPanelFoundational() {
@@ -360,16 +396,20 @@ function fillDetailsPanelDuplicate() {
     let translatedTexts = [];
     switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.STUDYEVENT:
-            $("#shallow-copy-button").disabled = false;
-            $("#deep-copy-button").disabled = false;
+            if (!viewOnlyMode) {
+                $("#shallow-copy-button").disabled = false;
+                $("#deep-copy-button").disabled = false;
+            }
             break;
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
         case metadataHelper.elementTypes.ITEM:
             translatedTexts = references.map(reference => reference.parentNode.getTranslatedDescription(locale, true));
-            $("#reference-button").disabled = false;
-            $("#shallow-copy-button").disabled = false;
-            $("#deep-copy-button").disabled = false;
+            if (!viewOnlyMode) {
+                $("#reference-button").disabled = false;
+                $("#shallow-copy-button").disabled = false;
+                $("#deep-copy-button").disabled = false;
+            }
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             translatedTexts = references.map(reference => reference.parentNode.getTranslatedQuestion(locale, true));
@@ -401,8 +441,8 @@ function fillItemRangeChecks() {
 
     for (const rangeCheck of rangeChecks) {
         const input = htmlElements.getRangeCheckInputElement(rangeCheck.getAttribute("Comparator"), rangeCheck.querySelector("CheckValue").textContent);
-        input.querySelector(".range-check-comparator-inner").oninput = () => $("#save-button").highlight();
-        input.querySelector(".range-check-value").oninput = () => $("#save-button").highlight();
+        input.querySelector(".range-check-comparator-inner").oninput = () => highlightSaveButton();
+        input.querySelector(".range-check-value").oninput = () => highlightSaveButton();
         $("#range-check-inputs").appendChild(input);
     }
 }
@@ -413,16 +453,16 @@ function fillElementAliases() {
 
     for (const alias of aliases) {
         const input = htmlElements.getAliasInputElement(alias.getAttribute("Context"), alias.getName());
-        input.querySelector(".alias-context").oninput = () => $("#save-button").highlight();
-        input.querySelector(".alias-name").oninput = () => $("#save-button").highlight();
+        input.querySelector(".alias-context").oninput = () => highlightSaveButton();
+        input.querySelector(".alias-name").oninput = () => highlightSaveButton();
         $("#alias-inputs").appendChild(input);
     }
 }
 
 window.addEmptyRangeCheckInput = function(disabled) {
     const input = htmlElements.getRangeCheckInputElement(null, null);
-    input.querySelector(".range-check-comparator-inner").oninput = () => $("#save-button").highlight();
-    input.querySelector(".range-check-value").oninput = () => $("#save-button").highlight();
+    input.querySelector(".range-check-comparator-inner").oninput = () => highlightSaveButton();
+    input.querySelector(".range-check-value").oninput = () => highlightSaveButton();
 
     if (disabled) {
         input.querySelector(".range-check-comparator-inner").disabled = true;
@@ -435,8 +475,8 @@ window.addEmptyRangeCheckInput = function(disabled) {
 
 window.addEmptyAliasInput = function(disabled) {
     const input = htmlElements.getAliasInputElement(null, null);
-    input.querySelector(".alias-context").oninput = () => $("#save-button").highlight();
-    input.querySelector(".alias-name").oninput = () => $("#save-button").highlight();
+    input.querySelector(".alias-context").oninput = () => highlightSaveButton();
+    input.querySelector(".alias-name").oninput = () => highlightSaveButton();
 
     if (disabled) {
         input.querySelector(".alias-context").disabled = true;
@@ -681,7 +721,7 @@ function setIOListeners() {
     $("#clinicaldata-toggle-button").onclick = () => hide();
     let inputElements = $$("#details-panel input, #details-panel textarea, #details-panel select");
     for (const inputElement of inputElements) {
-        inputElement.oninput = () => $("#save-button").highlight();
+        inputElement.oninput = () => highlightSaveButton();
         inputElement.onkeydown = keyEvent => {
             if (keyEvent.code == "Escape") {
                 keyEvent.preventDefault();
@@ -923,6 +963,8 @@ function setCurrentElementOID(elementOID) {
 }
 
 window.elementDrop = async function(event) {
+    if (viewOnlyMode) return;
+    
     const sourceElementOID = event.dataTransfer.getData("sourceElementOID");
     const sourceCodedValue = event.dataTransfer.getData("sourceCodedValue");
     const sourceParentOID = event.dataTransfer.getData("sourceParentOID");

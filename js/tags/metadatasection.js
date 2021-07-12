@@ -111,7 +111,7 @@ class MetadataSection extends HTMLElement {
                             <p class="panel-heading has-text-centered" i18n="events"></p>
                             <div class="tree-panel-blocks" id="study-event-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
                             <div class="panel-block has-light-border-top">
-                                <button class="button is-link is-light is-fullwidth" onclick="addStudyEvent(event)" element-type="studyevent" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)" i18n="add"></button>
+                                <button class="button is-link is-light is-fullwidth" id="study-events-add-button" onclick="addStudyEvent(event)" element-type="studyevent" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)" i18n="add"></button>
                             </div>
                         </nav>
                     </div>
