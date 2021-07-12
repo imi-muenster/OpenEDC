@@ -825,14 +825,11 @@ window.showSubjectInfo = function() {
     $("#subject-modal input").value = clinicaldataHelper.getSubject().key;
 
     // Disable change functionality when there are unsaved changes in the form
-    $("#subject-modal input").disabled = false;
-    $("#subject-site-select-inner").disabled = false;
-    $("#save-subject-info-button").disabled = false;
     if (dataHasChanged()) {
-        $("#subject-modal input").disabled = true;
-        $("#subject-site-select-inner").disabled = true;
-        $("#save-subject-info-button").disabled = true;
+        [$("#subject-modal input"), $("#subject-site-select-inner"), $("#save-subject-info-button")].disableElements();
         $$("#subject-modal button:not([onclick])").forEach(button => button.disabled = true);
+    } else {
+        [$("#subject-modal input"), $("#subject-site-select-inner"), $("#save-subject-info-button")].enableElements();
     }
 
     $("#subject-modal").activate();

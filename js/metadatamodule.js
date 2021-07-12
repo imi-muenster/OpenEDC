@@ -280,34 +280,22 @@ function resetDetailsPanel() {
     $("#save-button").unhighlight();
 
     // Foundational
-    $("#id-input").disabled = true;
-    $("#translation-textarea").disabled = true;
-    $("#datatype-select-inner").disabled = true;
-    $("#mandatory-select-inner").disabled = true;
-    $("#id-input").value = "";
-    $("#translation-textarea").value = "";
-    $("#datatype-select-inner").value = "";
-    $("#mandatory-select-inner").value = "";
+    [$("#id-input"), $("#translation-textarea"), $("#datatype-select-inner"), $("#mandatory-select-inner")].disableElements();
+    [$("#id-input"), $("#translation-textarea"), $("#datatype-select-inner"), $("#mandatory-select-inner")].emptyInputs();
     $("#element-oid-label").textContent = languageHelper.getTranslation("unique-id");
     $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
 
     // Extended
-    $("#measurement-unit").disabled = true;
-    $("#collection-condition").disabled = true;
-    $("#add-range-check-button").disabled = true;
-    $("#add-alias-button").disabled = true;
-    $("#measurement-unit").value = "";
-    $("#collection-condition").value = "";
+    [$("#measurement-unit"), $("#collection-condition"), $("#add-range-check-button"), $("#add-alias-button")].disableElements();
+    [$("#measurement-unit"), $("#collection-condition")].emptyInputs();
     $$("#range-check-inputs .range-check-input").removeElements();
     $$("#alias-inputs .alias-input").removeElements();
     addEmptyRangeCheckInput(true);
     addEmptyAliasInput(true);
 
     // Duplicate
+    [$("#reference-button"), $("#shallow-copy-button"), $("#deep-copy-button")].disableElements();
     $("#element-references-hint").textContent = "";
-    $("#reference-button").disabled = true;
-    $("#shallow-copy-button").disabled = true;
-    $("#deep-copy-button").disabled = true;
 }
 
 function adjustDetailsPanelSidebar() {
@@ -367,9 +355,7 @@ function fillDetailsPanelFoundational() {
 
 function fillDetailsPanelExtended() {
     fillElementAliases();
-    $("#alias-inputs .alias-context").disabled = false;
-    $("#alias-inputs .alias-name").disabled = false;
-    $("#add-alias-button").disabled = false;
+    [$("#alias-inputs .alias-context"), $("#alias-inputs .alias-name"), $("#add-alias-button")].enableElements();
 
     const condition = metadataHelper.getElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID());
     switch (getCurrentElementType()) {
@@ -379,9 +365,7 @@ function fillDetailsPanelExtended() {
             break;
         case metadataHelper.elementTypes.ITEM:
             fillItemRangeChecks();
-            $("#range-check-inputs .range-check-comparator-inner").disabled = false;
-            $("#range-check-inputs .range-check-value").disabled = false;
-            $("#add-range-check-button").disabled = false;
+            [$("#range-check-inputs .range-check-comparator-inner"), $("#range-check-inputs .range-check-value"), $("#add-range-check-button")].enableElements();
             const measurementUnit = metadataHelper.getItemMeasurementUnit(getCurrentElementOID());
             $("#measurement-unit").value = measurementUnit ? measurementUnit.getTranslatedSymbol(locale) : null;
             $("#measurement-unit").disabled = false;
@@ -396,20 +380,13 @@ function fillDetailsPanelDuplicate() {
     let translatedTexts = [];
     switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.STUDYEVENT:
-            if (!viewOnlyMode) {
-                $("#shallow-copy-button").disabled = false;
-                $("#deep-copy-button").disabled = false;
-            }
+            if (!viewOnlyMode) [$("#shallow-copy-button"), $("#deep-copy-button")].enableElements();
             break;
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
         case metadataHelper.elementTypes.ITEM:
             translatedTexts = references.map(reference => reference.parentNode.getTranslatedDescription(locale, true));
-            if (!viewOnlyMode) {
-                $("#reference-button").disabled = false;
-                $("#shallow-copy-button").disabled = false;
-                $("#deep-copy-button").disabled = false;
-            }
+            if (!viewOnlyMode) [$("#reference-button"), $("#shallow-copy-button"), $("#deep-copy-button")].enableElements();
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             translatedTexts = references.map(reference => reference.parentNode.getTranslatedQuestion(locale, true));

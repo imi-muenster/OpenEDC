@@ -17,17 +17,8 @@ export async function loadUsers() {
     ioHelper.safeRemoveElement($("#user-site-select-outer"));
 
     $("#user-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("user-site-select", true, true, [], null));
-    $("#user-first-name-input").value = "";
-    $("#user-last-name-input").value = "";
-    $("#user-username-input").value = "";
-    $("#user-password-input").value = "";
-    $("#user-site-select-inner").disabled = true;
-    $("#user-first-name-input").disabled = true;
-    $("#user-last-name-input").disabled = true;
-    $("#user-username-input").disabled = true;
-    $("#user-password-input").disabled = true;
-    $("#user-save-button").disabled = true;
-    $("#user-remove-button").disabled = true;
+    [$("#user-first-name-input"), $("#user-last-name-input"), $("#user-username-input"), $("#user-password-input")].emptyInputs();
+    [$("#user-site-select-inner"), $("#user-first-name-input"), $("#user-last-name-input"), $("#user-username-input"), $("#user-password-input"), $("#user-save-button"), $("#user-remove-button")].disableElements();
 
     const users = admindataHelper.getUsers();
     if (users.length > 0) $("#no-users-hint").hide();
@@ -73,16 +64,12 @@ function loadUser(userOID) {
     // Fill other inputs and adjust enable status
     $("#user-first-name-input").value = user.querySelector("FirstName").textContent;
     $("#user-last-name-input").value = user.querySelector("LastName").textContent;
-    $("#user-first-name-input").disabled = false;
-    $("#user-last-name-input").disabled = false;
-    $("#user-save-button").disabled = false;
+    [$("#user-first-name-input"), $("#user-last-name-input"), $("#user-save-button")].enableElements();
     if (admindataHelper.getUsers().length > 1) $("#user-remove-button").disabled = false;
 
     if (ioHelper.hasServerURL()) {
-        $("#user-username-input").value = "";
-        $("#user-password-input").value = "";
-        $("#user-username-input").disabled = false;
-        $("#user-password-input").disabled = false;
+        [$("#user-username-input"), $("#user-password-input")].emptyInputs();
+        [$("#user-username-input"), $("#user-password-input")].enableElements();
         $("#user-password-input").placeholder = "";
         $$("#user-rights input").forEach(checkbox => {
             checkbox.disabled = false;
@@ -151,11 +138,8 @@ window.removeUser = function() {
 
 export function loadSites() {
     $$("#sites-options .panel a").removeElements();
-
     $("#site-name-input").value = "";
-    $("#site-name-input").disabled = true;
-    $("#site-save-button").disabled = true;
-    $("#site-remove-button").disabled = true;
+    [$("#site-name-input"), $("#site-save-button"), $("#site-remove-button")].disableElements();
 
     const sites = admindataHelper.getSites();
     if (sites.length > 0) $("#no-sites-hint").hide();
@@ -180,9 +164,7 @@ function loadSite(siteOID) {
     $(`#sites-options .panel a[oid="${siteOID}"]`).activate();
 
     $("#site-name-input").value = site.getName();
-    $("#site-name-input").disabled = false;
-    $("#site-save-button").disabled = false;
-    $("#site-remove-button").disabled = false;
+    [$("#site-name-input"), $("#site-save-button"), $("#site-remove-button")].enableElements();
 }
 
 window.addSite = function() {

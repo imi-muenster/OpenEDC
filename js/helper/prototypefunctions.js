@@ -71,6 +71,19 @@ NodeList.prototype.removeElements = function() {
     for (const element of this) element.remove();
 }
 
+// Used for performance reasons instead of querySelectorAll().forEach ...
+Array.prototype.enableElements = function() {
+    for (const element of this) element.disabled = false;
+}
+
+Array.prototype.disableElements = function() {
+    for (const element of this) element.disabled = true;
+}
+
+Array.prototype.emptyInputs = function() {
+    for (const element of this) element.value = "";
+}
+
 HTMLElement.prototype.show = function() {
     this.classList.remove("is-hidden");
 }
