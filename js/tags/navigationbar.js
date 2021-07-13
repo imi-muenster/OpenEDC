@@ -22,7 +22,7 @@ class NavigationBar extends HTMLElement {
                     <div class="navbar-start">
                         <div class="navbar-item has-dropdown" id="language-navbar-item">
                             <a class="navbar-link" id="current-language"></a>
-                            <div class="navbar-dropdown is-hidden-touch" id="language-dropdown"></div>
+                            <div class="navbar-dropdown is-boxed is-hidden-touch" id="language-dropdown"></div>
                         </div>
                         <a class="navbar-item" onclick="showAboutModal()" i18n="about"></a>
                     </div>
@@ -30,6 +30,7 @@ class NavigationBar extends HTMLElement {
                         <div class="navbar-item">
                             <div class="buttons">
                                 <button class="button is-hidden" id="logout-button" onclick="logout()" i18n="log-out"></button>
+                                <button class="button is-hidden" id="store-metadata-async-button" onclick="storeMetadataAsync()" i18n="save-forms"></button>
                                 <button class="button is-hidden" id="close-example-button" onclick="removeAllData()" i18n="close-example"></button>
                                 <button class="button" id="project-modal-button" onclick="showProjectModal()" i18n="project-options"></button>
                                 <button class="button is-link is-light mr-0" id="clinicaldata-toggle-button">

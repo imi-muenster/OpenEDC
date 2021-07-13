@@ -305,6 +305,14 @@
     "forgot-password-server-hint": "All data within OpenEDC is stored and transferred end-to-end encrypted. Therefore, it is currently not possible to automatically reset a forgotten password, unfortunately.<br><br>If you forgot your password, please contact the person that gave you your login credentials. This person is able to reset your password with a new initial password.",
     "forgot-password-encrypted-hint": "You encrypted all data within OpenEDC. Therefore, the stored data cannot be viewed or edited without your password.<br><br>If you forgot your password, you have to remove all data to use OpenEDC again, unfortunately.",
 
+    "metadata-edit-mode-question": "It seems that your OpenEDC Server is actively used. In order to edit forms at this point, you must switch into a special editing mode. Activating this mode can take some time depending on the number of subjects. We will let you know, if the editing mode was enabled. Alternatively, you can go into a view-only mode, where you can view but not edit forms.",
+    "view-only-mode": "View-only mode",
+    "edit-mode": "Editing mode",
+    "edit-mode-enabled-hint": "The editing mode has been successfully enabled. Please remember to click on <i>Save Forms</i> after you made all changes.",
+    "save-forms": "Save Forms",
+    "save-forms-question": "Do you want to save all changes that you made to the forms?",
+    "forms-saved-hint": "All changes were successfully saved.",
+
     "metadata-not-found-error": "One or multiple items in the clinical data could not be found in the metadata. This means that your clinical data and metadata might be out of sync or an imported ODM file is (partially) broken. You can find a list of all clinical data items that could not be found in the metadata below.",
     "hidden-field-with-value-error": "Based on the conditions, one or multiple items in the clinical data should be hidden but have values assigned to them. These fields were highlighted and can be reviewed and emptied by you.",
 

@@ -18,7 +18,7 @@ export function getMetadataPanelBlock(elementOID, elementType, titleText, fallba
     panelBlock.className = "panel-block";
     panelBlock.setAttribute("oid", elementOID);
     panelBlock.setAttribute("element-type", elementType);
-    panelBlock.setAttribute("draggable", true);
+    panelBlock.setAttribute("draggable", draggable);
     if (codedValue) panelBlock.setAttribute("coded-value", codedValue);
 
     let title = document.createElement("div");

@@ -1,6 +1,7 @@
 import * as clinicaldataModule from "./clinicaldatamodule.js";
 import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
 import * as metadataHelper from "./helper/metadatahelper.js";
+import * as admindataHelper from "./helper/admindatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 import * as htmlElements from "./helper/htmlelements.js";
@@ -27,6 +28,7 @@ let currentElementID = {
 
 // Further auxiliary variables
 let viewOnlyMode = false;
+let asyncEditMode = false;
 let elementTypeOnDrag = null;
 let locale = null;
 
@@ -38,21 +40,7 @@ export function init() {
 }
 
 export function show() {
-    // If clinical data was captured, enable the view-only mode and ask to disable it
-    if (false && clinicaldataHelper.getSubjects().length > 0) {
-        viewOnlyMode = true;
-        ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("metadata-edit-mode-question"),
-            {
-                [languageHelper.getTranslation("view-only-mode")]: () => {}
-            },
-            ioHelper.interactionTypes.DEFAULT,
-            languageHelper.getTranslation("edit-mode"),
-            () => enableEditMode()
-        );
-    } else {
-        viewOnlyMode = false;
-    }
-
+    setEditMode();
     reloadTree();
     reloadDetailsPanel();
 
@@ -69,6 +57,24 @@ function hide() {
 
     clinicaldataModule.show();
     ioHelper.hideMenu();
+}
+
+function setEditMode() {
+    // If connected to a server with more than one user or several subjects, enable the view-only and async-edit mode and ask to disable it
+    if (ioHelper.hasServerURL() && !asyncEditMode && (admindataHelper.getUsers().length > 1 || clinicaldataHelper.getSubjects().length > 1)) {
+        viewOnlyMode = true;
+        asyncEditMode = true;
+        ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("metadata-edit-mode-question"),
+            {
+                [languageHelper.getTranslation("view-only-mode")]: () => asyncEditMode = false
+            },
+            ioHelper.interactionTypes.DEFAULT,
+            languageHelper.getTranslation("edit-mode"),
+            () => enableAsyncEditMode()
+        );
+    } else {
+        viewOnlyMode = false;
+    }
 }
 
 export function setLanguage(newLocale) {
@@ -1122,6 +1128,9 @@ function reloadAndStoreMetadata() {
     $("#save-button").unhighlight();
     reloadTree();
     reloadDetailsPanel();
+
+    // If connected to an actively used server, only submit the metadata if according button is pressed
+    if (asyncEditMode) return;
     metadataHelper.storeMetadata();
 }
 
@@ -1131,12 +1140,29 @@ function getCurrentDetailsView() {
     else if ($("#duplicate-option").isActive()) return detailsPanelViews.DUPLICATE;
 }
 
-function enableEditMode() {
+function enableAsyncEditMode() {
     // TODO: Cache all subject data
+
+    ioHelper.showToast(languageHelper.getTranslation("edit-mode-enabled-hint"), 5000);
+    $("#store-metadata-async-button").show();
 
     viewOnlyMode = false;
     reloadTree();
     reloadDetailsPanel();
+}
+
+window.storeMetadataAsync = function() {
+    ioHelper.showMessage(languageHelper.getTranslation("please-confirm"), languageHelper.getTranslation("save-forms-question"),
+        {
+            [languageHelper.getTranslation("save")]: async () => {
+                await metadataHelper.storeMetadata();
+                asyncEditMode = false;
+                hide();
+                $("#store-metadata-async-button").hide();
+                ioHelper.showToast(languageHelper.getTranslation("forms-saved-hint"), 5000);
+            }
+        }
+    );
 }
 
 function showFirstEventEditedHelp() {
