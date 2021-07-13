@@ -6,7 +6,7 @@ class StartModal extends HTMLElement {
                 <div class="modal-content is-medium is-fullheight-mobile">
                     <div class="box">
                         <div class="width-is-two-thirds">
-                            <div id="openedc-title">
+                            <div class="openedc-title">
                                 <figure class="image is-64x64 mr-2">
                                     <img src="./img/title-logo.png">
                                 </figure>
@@ -101,8 +101,15 @@ class AboutModal extends HTMLElement {
                 <div class="modal-content is-medium is-fullheight-mobile">
                     <div class="box">
                         <div class="width-is-two-thirds">
-                            <h1 class="title" i18n="about-openedc"></h1>
-                            <h2 class="subtitle"></h2>
+                            <div class="openedc-title">
+                                <figure class="image is-64x64 mr-2">
+                                    <img src="./img/title-logo.png">
+                                </figure>
+                                <div>
+                                    <h1 class="title">OpenEDC</h1>
+                                    <h2 class="subtitle"></h2>
+                                </div>
+                            </div>
                             <hr>
                             <p class="mb-5" i18n-html="about-text-1"></p>
                             <p class="mb-5" i18n-html="about-text-2"></p>

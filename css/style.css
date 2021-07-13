@@ -45,7 +45,7 @@ html, body {
     background-color: transparent;
 }
 
-#openedc-title {
+.openedc-title {
     display: flex;
     flex-direction: row;
     align-items: center;
