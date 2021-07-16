@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.5.3
+
+- Replaced LocalStorage with IndexedDB to be able to store more subjects offline
+- New asynchronous metadata edit mode when connected to an OpenEDC server
+- Various usability improvements
+
 ## 0.5.2
 
 - New notifications to show assistive texts when creating a new project
