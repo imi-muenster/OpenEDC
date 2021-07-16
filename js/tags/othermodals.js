@@ -21,7 +21,7 @@ class StartModal extends HTMLElement {
                             <p class="mb-5" i18n-html="start-text"></p>
                             <div class="buttons is-centered">
                                 <button class="button" onclick="newProject()" i18n="new-project"></button>
-                                <div class="file" id="odm-open">
+                                <div class="file" id="open-odm-button">
                                     <label class="file-label">
                                         <input class="file-input" type="file" accept=".xml,text/xml" name="odm-xml" onchange="openODM()">
                                         <span class="file-cta button" i18n="open"></span>

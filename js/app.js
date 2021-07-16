@@ -257,17 +257,21 @@ window.newProject = function() {
 }
 
 window.openODM = async function() {
-    const file = $("#odm-open .file-input");
+    // Animate loading process
+    $("#open-odm-button .button").classList.add("is-loading");
+
+    const file = $("#open-odm-button .file-input");
     const content = await ioHelper.getFileContent(file.files[0]);
-    if (!content) return;
-
     const odmXMLString = validateODM(content);
-    if (!odmXMLString) return;
+    if (odmXMLString) {
+        metadataHelper.importMetadata(odmXMLString);
+        admindataHelper.importAdmindata(odmXMLString);
+        await clinicaldataHelper.importClinicaldata(odmXMLString);
+        startApp();
+    }
 
-    metadataHelper.importMetadata(odmXMLString);
-    admindataHelper.importAdmindata(odmXMLString);
-    await clinicaldataHelper.importClinicaldata(odmXMLString);
-    startApp();
+    // Remove loading animation
+    $("#open-odm-button .button").classList.remove("is-loading");
 }
 
 function validateODM(content) {
@@ -279,7 +283,7 @@ function validateODM(content) {
     }
 }
 
-// Currently only adds metadata elements to an existing project but could also be used in the future to add clinical data to an existing project
+// Currently only adds metadata elements (in contrast to openODM)
 window.importODM = async function() {
     const file = $("#odm-import .file-input");
     const content = await ioHelper.getFileContent(file.files[0]);
@@ -529,7 +533,7 @@ window.removeAllData = async function() {
         await clinicaldataHelper.removeClinicaldata();
         await metadataHelper.loadEmptyProject();
     } else {
-        localStorage.clear();
+        await ioHelper.removeAllData();
     }
 
     logout();

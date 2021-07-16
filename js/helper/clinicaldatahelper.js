@@ -81,13 +81,21 @@ let subject = null;
 let subjectData = null;
 
 export async function importClinicaldata(odmXMLString) {
+    // For performance reasons of IndexedDB, store serialized clinical data in bulk
+    const xmlSerializer = new XMLSerializer();
+    const subjectFileNameList = [];
+    const subjectDataList = [];
+
     const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
     for (subjectData of odm.querySelectorAll("ClinicalData SubjectData")) {
         const siteOID = $("SiteRef") ? $("SiteRef").getAttribute("LocationOID") : null;
         const creationDate = $("AuditRecord DateTimeStamp") ? new Date($("AuditRecord DateTimeStamp").textContent) : new Date();
         const subject = new Subject(subjectData.getAttribute("SubjectKey"), siteOID, creationDate, null, getDataStatus());
-        await ioHelper.storeSubjectData(subject, subjectData);
+        subjectFileNameList.push(subject.fileName);
+        subjectDataList.push(xmlSerializer.serializeToString(subjectData));
     }
+
+    await ioHelper.storeSubjectDataBulk(subjectFileNameList, subjectDataList);
 }
 
 export function getSubject() {
@@ -196,7 +204,7 @@ export async function storeSubject() {
 
     subject.status = getDataStatus();
     subject.modifiedDate = new Date();
-    await ioHelper.storeSubjectData(subject, subjectData);
+    await ioHelper.storeSubjectData(subject.fileName, subjectData);
 
     // This mechanism helps to prevent possible data loss when multiple users edit the same subject data at the same time (especially important for the offline mode)
     // If the previousFileName cannot be removed, the system keeps multiple current versions of the subject data and the user is notified that conflicting data exists
