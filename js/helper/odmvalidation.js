@@ -32,6 +32,10 @@ export function process(odmXMLString) {
         if (!translatedText.getAttribute("xml:lang")) translatedText.setAttribute("xml:lang", languageHelper.untranslatedLocale);
     }
 
+    // Replace ItemData values having true or false with 1 or 0
+    odm.querySelectorAll("ItemData[Value='true']").forEach(itemData => itemData.setAttribute("Value", "1"));
+    odm.querySelectorAll("ItemData[Value='false']").forEach(itemData => itemData.setAttribute("Value", "0"));
+
     // Check if the uploaded ODM originates from REDCap and show a warning
     const sourceSystem = odm.querySelector("ODM").getAttribute("SourceSystem");
     if (sourceSystem && sourceSystem.toLowerCase() == "redcap") ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("upload-note-redcap"));

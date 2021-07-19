@@ -54,7 +54,6 @@ export function process(variableValuesParam) {
 
 function respondToInputChange(input, inputOID, condition, conditionalElement) {
     variableValues[inputOID] = !input.value ? "" : input.value;
-    console.log(variableValues);
     showOrHideConditionalElement(conditionalElement, condition.expression.evaluate(variableValues));
 }
 
