@@ -22,7 +22,7 @@ export const modes = {
     ITEMWITHCODELIST: 3
 }
 
-const compounds = ["AND", "OR"];
+const compounds = ["and", "or", "AND", "OR", "&&", "||"];
 const comparators = ["==", "!=", "<", "<=", ">", ">="];
 const operators = ["+", "-", "*", "/", "^"];
 
@@ -74,7 +74,7 @@ const inputEventListener = event => {
     closeLists(null, true);
 
     setCurrentPartAndInput(event.target);
-    const value = currentInput.value.split(" ")[currentTokenIndex];
+    const value = removeQuotes(currentInput.value.split(" ")[currentTokenIndex]);
 
     const list = document.createElement("div");
     list.className = "autocomplete-list";
@@ -134,8 +134,11 @@ const setCurrentPartAndInput = input => {
 }
 
 const elementSelected = element => {
+    // If a value is selected, add quotes
+    const newValue = currentPart == availableParts.VALUE ? addQuotes(element.value) : element.value;
+
     let expressionParts = currentInput.value.split(" ");
-    expressionParts[currentTokenIndex] = element.value;
+    expressionParts[currentTokenIndex] = newValue;
     currentInput.value = expressionParts.join(" ");
 
     closeLists();
@@ -238,3 +241,7 @@ const getValueElements = () => {
         ));
     }
 }
+
+const addQuotes = string => '"' + string + '"';
+
+const removeQuotes = string => string.replace(/['"]/g, "");

@@ -551,7 +551,7 @@ function saveDetailsExtended() {
 }
 
 function saveConditionPreCheck() {
-    const formalExpression = $("#collection-condition").value.escapeXML();
+    const formalExpression = $("#collection-condition").value;
     const currentCondition = metadataHelper.getElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID());
     if (formalExpression && currentCondition && formalExpression == currentCondition.getFormalExpression()) return;
 
@@ -591,7 +591,7 @@ function saveConditionForElements(formalExpression, currentCondition, elementRef
 }
 
 function saveMeasurementUnitPreCheck() {
-    const symbol = $("#measurement-unit").value.escapeXML();
+    const symbol = $("#measurement-unit").value;
     const currentMeasurementUnit = metadataHelper.getItemMeasurementUnit(getCurrentElementOID());
     if (symbol && currentMeasurementUnit && symbol == currentMeasurementUnit.getTranslatedSymbol(locale)) return;
 

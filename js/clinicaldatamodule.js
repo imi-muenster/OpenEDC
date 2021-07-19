@@ -387,7 +387,8 @@ async function loadFormMetadata() {
 
 async function addDynamicFormLogic() {
     // First, add real-time logic to process conditional items
-    conditionHelper.process(metadataHelper.getElementsWithCondition(currentElementID.form));
+    const determinantItems = conditionHelper.getVariables(metadataHelper.getElementsWithCondition(currentElementID.form));
+    conditionHelper.process(clinicaldataHelper.getDataForItems(determinantItems));
 
     // Second, add real-time logic to validate fields by data type and/or allowed ranges
     validationHelper.process(metadataHelper.getItemsWithRangeChecks(currentElementID.form));
@@ -446,8 +447,9 @@ function loadFormClinicaldata() {
         }
 
         let fieldElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [item-field-oid="${formItemData.itemOID}"]`);
-        if (fieldElement.isVisible() && fieldElement.parentNode.isVisible()) inputElement.dispatchEvent(new Event("input"));
-        else hiddenFieldWithValueErrors.push({ itemOID: formItemData.itemOID, itemGroupOID: formItemData.itemGroupOID });
+        if (!fieldElement.isVisible() || !fieldElement.parentNode.isVisible()) {
+            hiddenFieldWithValueErrors.push({ itemOID: formItemData.itemOID, itemGroupOID: formItemData.itemGroupOID });
+        }
     }
 
     showErrors(metadataNotFoundErrors, hiddenFieldWithValueErrors);

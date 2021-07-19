@@ -496,43 +496,43 @@
                 <Description>
                     <TranslatedText xml:lang="en">CountryOfBirthNotOther</TranslatedText>
                 </Description>
-                <FormalExpression Context="OpenEDC">!(CountryOfBirth == Other)</FormalExpression>
+                <FormalExpression Context="OpenEDC">!(CountryOfBirth == "Other")</FormalExpression>
             </ConditionDef>
             <ConditionDef OID="C.2" Name="GenderNotFemale">
                 <Description>
                     <TranslatedText xml:lang="en">GenderNotFemale</TranslatedText>
                 </Description>
-                <FormalExpression Context="OpenEDC">!(Gender == Female)</FormalExpression>
+                <FormalExpression Context="OpenEDC">!(Gender == "Female")</FormalExpression>
             </ConditionDef>
             <ConditionDef OID="C.3" Name="CardiovascularDiseasesNotYes">
                 <Description>
                     <TranslatedText xml:lang="en">CardiovascularDiseasesNotYes</TranslatedText>
                 </Description>
-                <FormalExpression Context="OpenEDC">!(CardiovascularDiseases == 1)</FormalExpression>
+                <FormalExpression Context="OpenEDC">!(CardiovascularDiseases == "1")</FormalExpression>
             </ConditionDef>
             <ConditionDef OID="C.4" Name="TumorDiseasesNotYes">
                 <Description>
                     <TranslatedText xml:lang="en">TumorDiseasesNotYes</TranslatedText>
                 </Description>
-                <FormalExpression Context="OpenEDC">!(TumorDiseases == 1)</FormalExpression>
+                <FormalExpression Context="OpenEDC">!(TumorDiseases == "1")</FormalExpression>
             </ConditionDef>
             <ConditionDef OID="C.5" Name="PregnantNotYes">
                 <Description>
                     <TranslatedText xml:lang="en">PregnantNotYes</TranslatedText>
                 </Description>
-                <FormalExpression Context="OpenEDC">!(Pregnant == 1)</FormalExpression>
+                <FormalExpression Context="OpenEDC">!(Pregnant == "1")</FormalExpression>
             </ConditionDef>
             <ConditionDef OID="C.6" Name="SideEffectNotYes">
                 <Description>
                     <TranslatedText xml:lang="en">SideEffectNotYes</TranslatedText>
                 </Description>
-                <FormalExpression Context="OpenEDC">!(SideEffect == 1)</FormalExpression>
+                <FormalExpression Context="OpenEDC">!(SideEffect == "1")</FormalExpression>
             </ConditionDef>
             <ConditionDef OID="C.7" Name="SymptomsChangedNotYes">
                 <Description>
                     <TranslatedText xml:lang="en">SymptomsChangedNotYes</TranslatedText>
                 </Description>
-                <FormalExpression Context="OpenEDC">!(SymptomsChanged == 1)</FormalExpression>
+                <FormalExpression Context="OpenEDC">!(SymptomsChanged == "1")</FormalExpression>
             </ConditionDef>
         </MetaDataVersion>
     </Study>

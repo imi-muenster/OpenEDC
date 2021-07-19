@@ -307,6 +307,16 @@ function getFormItemDataList(formData) {
     return formItemDataList;
 }
 
+export function getDataForItems(itemOIDs) {
+    let data = {};
+    for (const itemOID of itemOIDs) {
+        const itemData = subject ? $$(`ItemData[ItemOID="${itemOID}"]`).getLastElement() : null;
+        data[itemOID] = itemData ? itemData.getAttribute("Value") : "";
+    }
+
+    return data;
+}
+
 export function dataHasChanged(formItemDataList, studyEventOID, formOID) {
     console.log("Check if data has changed ...");
     const sortedNewData = Array.from(formItemDataList).sort((a, b) => a.itemOID < b.itemOID ? 1 : (a.itemOID > b.itemOID ? -1 : 0));
