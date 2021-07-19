@@ -22,7 +22,9 @@ export const modes = {
     ITEMWITHCODELIST: 3
 }
 
+const compounds = ["AND", "OR"];
 const comparators = ["==", "!=", "<", "<=", ">", ">="];
+const operators = ["+", "-", "*", "/", "^"];
 
 // TODO: Rename item, which can also be a measurement unit
 const availableParts = {
@@ -33,6 +35,7 @@ const availableParts = {
 
 let currentMode;
 let currentInput;
+let currentTokenIndex;
 let currentPart;
 let enabledParts;
 let elements;
@@ -71,7 +74,7 @@ const inputEventListener = event => {
     closeLists(null, true);
 
     setCurrentPartAndInput(event.target);
-    const value = getExpressionParts(currentInput.value)[currentPart-1];
+    const value = currentInput.value.split(" ")[currentTokenIndex];
 
     const list = document.createElement("div");
     list.className = "autocomplete-list";
@@ -118,22 +121,25 @@ const setCurrentModeAndEnabledParts = input => {
 }
 
 const setCurrentPartAndInput = input => {
-    const part = input.value.substring(0, input.selectionStart).split(" ").length;
-    if (part != currentPart || input != currentInput) elements = null;
+    const substring = input.value.substring(0, input.selectionStart);
+    const tokenIndex = substring.split(" ").length - 1;
+    const lastCompoundTokenIndex = getLastIndexOfTokens(substring, compounds);
+    const part = tokenIndex - lastCompoundTokenIndex;
 
+    if (tokenIndex != currentTokenIndex || input != currentInput) elements = null;
+
+    currentTokenIndex = tokenIndex;
     currentPart = part;
     currentInput = input;
 }
 
 const elementSelected = element => {
-    let expressionParts = getExpressionParts(currentInput.value);
-    expressionParts[currentPart-1] = element.value;
-
-    let existingParts = expressionParts.filter(part => part);
-    currentInput.value = existingParts.join(" ");
+    let expressionParts = currentInput.value.split(" ");
+    expressionParts[currentTokenIndex] = element.value;
+    currentInput.value = expressionParts.join(" ");
 
     closeLists();
-    if (existingParts.length < Object.keys(enabledParts).length) {
+    if (currentTokenIndex == expressionParts.length - 1 && currentPart != Object.keys(enabledParts).length) {
         currentInput.value += " ";
         currentInput.focus();
         currentInput.click();
@@ -142,12 +148,11 @@ const elementSelected = element => {
     }
 }
 
-const getExpressionParts = expression => {
-    return [
-        expression.split(" ")[0],
-        expression.split(" ").length > 1 ? expression.split(" ")[1] : null,
-        expression.split(" ").length > 2 ? expression.split(" ")[2] : null
-    ];
+const getLastIndexOfTokens = (expression, tokens) => {
+    return tokens.reduce((lastIndex, token) => {
+        const index = expression.split(" ").lastIndexOf(token);
+        return index > lastIndex ? index : lastIndex;
+    }, -1);
 }
 
 const closeLists = (event, keepElements) => {
@@ -212,7 +217,7 @@ const getComparatorElements = () => {
 }
 
 const getValueElements = () => {
-    const itemOID = getExpressionParts(currentInput.value)[0];
+    const itemOID = currentInput.value.split(" ")[currentTokenIndex - currentPart + 1];
     const item = metadataHelper.getElementDefByOID(itemOID);
     if (item.getDataType() == "boolean") {
         return [
