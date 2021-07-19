@@ -22,7 +22,7 @@ class NavigationBar extends HTMLElement {
                     <div class="navbar-start">
                         <div class="navbar-item has-dropdown" id="language-navbar-item">
                             <a class="navbar-link" id="current-language"></a>
-                            <div class="navbar-dropdown is-boxed is-hidden-touch" id="language-dropdown"></div>
+                            <div class="navbar-dropdown is-hidden-touch" id="language-dropdown"></div>
                         </div>
                         <a class="navbar-item" onclick="showAboutModal()" i18n="about"></a>
                     </div>

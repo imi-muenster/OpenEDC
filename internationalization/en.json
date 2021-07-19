@@ -212,7 +212,6 @@
     "validate-forms": "Validate Forms",
     "add-subject-data": "Add Subject Data",
 
-    "about-openedc": "About OpenEDC",
     "version": "Version",
     "about-text-1": "This <a target='_blank' href='https://github.com/imi-muenster/OpenEDC'>open-source</a> electronic data capture (EDC) system lets you design and conduct secure medical research studies based on the <a target='_blank' href='https://www.cdisc.org/standards/data-exchange/odm'>CDISC ODM-XML</a> standard.",
     "about-text-2": "All data is processed and stored only on your local device. You can optionally connect to your own <a target='_blank' href='https://github.com/imi-muenster/OpenEDC-Server'>OpenEDC Server</a> to create research studies with multiple users and sites.",

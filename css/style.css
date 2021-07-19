@@ -25,12 +25,27 @@ html, body {
     min-width: 0;
 }
 
+.navbar-brand {
+    padding-bottom: 1px;
+}
+
+.navbar-start {
+    padding-top: 1px;
+}
+
 #study-title {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: normal;
     font-weight: 500;
+}
+
+#language-dropdown {
+    border-radius: 6px;
+    border-top: none;
+    box-shadow: 0 8px 8px rgba(10, 10, 10, .1), 0 0 0 1px rgba(10, 10, 10, .1);
+    top: calc(100% - 4px);
 }
 
 #mobile-back-button {
@@ -320,14 +335,6 @@ a.panel-block:hover {
 
 #audit-records {
     margin-bottom: 1rem;
-}
-
-.navbar-brand {
-    padding-bottom: 1px;
-}
-
-.navbar-start {
-    padding-top: 1px;
 }
 
 #mobile-back-button {

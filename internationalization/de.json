@@ -211,7 +211,6 @@
     "validate-forms": "Formulare validieren",
     "add-subject-data": "Klinische Daten hinzufügen",
 
-    "about-openedc": "OpenEDC Impressum",
     "version": "Version",
     "about-text-1": "Mit dieser <a target='_blank' href='https://github.com/imi-muenster/OpenEDC'>open-source</a> Anwendung können Sie sichere medizinische Forschungsprojekte basierend auf dem <a target='_blank' href='https://www.cdisc.org/standards/data-exchange/odm'>CDISC ODM-XML</a> Standard entwerfen und durchführen.",
     "about-text-2": "Alle Daten werden nur auf Ihrem lokalen Gerät verarbeitet und gespeichert. Sie können sich mit einem <a target='_blank' href='https://github.com/imi-muenster/OpenEDC-Server'>OpenEDC Server</a> verbinden, um Projekte mit mehreren Benutzern und Standorten zu erstellen.",
