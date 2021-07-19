@@ -11,16 +11,20 @@ export function getVariables(conditionsParam) {
 
     let variables = new Set();
     for (let condition of conditions) {
-        const normalizedExpression = normalizeTokens(condition.formalExpression);
+        const normalizedExpression = escapeOIDDots(normalizeTokens(condition.formalExpression));
         condition.expression = new Parser.parse(normalizedExpression);
-        condition.expression.variables().forEach(variable => variables.add(variable));
+        condition.expression.variables().forEach(variable => variables.add(unescapeOIDDots(variable)));
     }
 
     return Array.from(variables);
 }
 
 export function process(variableValuesParam) {
-    variableValues = variableValuesParam;
+    // Expr-eval does not support dots in variables names and are therefore replaced with underscores
+    variableValues = {};
+    for (const [key, value] of Object.entries(variableValuesParam)) {
+        variableValues[escapeOIDDots(key)] = value;
+    }
 
     for (const condition of conditions) {
         // Select conditional item group or item and hide it
@@ -33,15 +37,15 @@ export function process(variableValuesParam) {
         if (condition.expression.evaluate(variableValues)) conditionalElement.show();
 
         // Add event listeners to respond to inputs to the determinant items
-        for (const determinant of condition.expression.variables()) {
-            const inputElement = $(`[item-oid="${determinant}"]`);
+        for (const inputOID of condition.expression.variables()) {
+            const inputElement = $(`[item-oid="${unescapeOIDDots(inputOID)}"]`);
             if (!inputElement) continue;
             if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "select") {
-                inputElement.addEventListener("input", event => respondToInputChange(event.target, determinant, condition, conditionalElement));
+                inputElement.addEventListener("input", event => respondToInputChange(event.target, inputOID, condition, conditionalElement));
             } else if (inputElement.getAttribute("type") == "radio") {
-                const radioItems = $$(`[item-oid="${determinant}"]`);
+                const radioItems = $$(`[item-oid="${inputOID}"]`);
                 for (const radioItem of radioItems) {
-                    radioItem.addEventListener("input", event => respondToInputChange(event.target, determinant, condition, conditionalElement));
+                    radioItem.addEventListener("input", event => respondToInputChange(event.target, inputOID, condition, conditionalElement));
                 }
             }
         }
@@ -96,5 +100,17 @@ function normalizeTokens(expression) {
             case " && ": return " and ";
             case " || ": return " or ";
         }
+    });
+}
+
+function escapeOIDDots(expression) {
+    return expression.replace(/\w+\.\d+\S*/g, function(string) {
+        return string.replace(/\./g, "_");
+    });
+}
+
+function unescapeOIDDots(expression) {
+    return expression.replace(/\w+\_\d+\S*/g, function(string) {
+        return string.replace(/\_/g, ".");
     });
 }

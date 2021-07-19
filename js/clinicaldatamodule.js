@@ -387,8 +387,8 @@ async function loadFormMetadata() {
 
 async function addDynamicFormLogic() {
     // First, add real-time logic to process conditional items
-    const determinantItems = conditionHelper.getVariables(metadataHelper.getElementsWithCondition(currentElementID.form));
-    conditionHelper.process(clinicaldataHelper.getDataForItems(determinantItems));
+    const inputOIDs = conditionHelper.getVariables(metadataHelper.getElementsWithCondition(currentElementID.form));
+    conditionHelper.process(clinicaldataHelper.getDataForItems(inputOIDs));
 
     // Second, add real-time logic to validate fields by data type and/or allowed ranges
     validationHelper.process(metadataHelper.getItemsWithRangeChecks(currentElementID.form));
