@@ -108,6 +108,15 @@ export let getConditionDef = (oid, name, description, locale, formalExpression) 
     </ConditionDef>
 `);
 
+export let getMethodDef = (oid, name, description, locale, formalExpression) => template(`
+    <MethodDef OID="${oid}" Name="${name}" Type="Computation">
+        <Description>
+            <TranslatedText xml:lang="${locale}">${description}</TranslatedText>
+        </Description>
+        <FormalExpression Context="OpenEDC">${formalExpression}</FormalExpression>
+    </MethodDef>
+`);
+
 export let getMeasurementUnitRef = (oid) => template(`
     <MeasurementUnitRef MeasurementUnitOID="${oid}"/>
 `);

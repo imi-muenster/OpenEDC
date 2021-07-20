@@ -35,12 +35,20 @@ Element.prototype.getTranslatedDecode = function(locale, codedValueFallback) {
 }
 
 Element.prototype.getFormalExpression = function() {
-    // Since ODM only provides a CollectionExceptionCondition, but a CollectionCondition is much more user friendly, the expression is stored negated
     const formalExpression = this.querySelector("FormalExpression");
     if (formalExpression && formalExpression.getAttribute("Context") == "OpenEDC") {
-        return formalExpression.textContent.getBetween("!(", ")");
+        // Since ODM only provides a CollectionExceptionCondition, but a CollectionCondition is much more user friendly, the expression is stored negated
+        if (this.tagName == "ConditionDef") return formalExpression.textContent.getBetween("!(", ")");
+        else return formalExpression.textContent;
     }
     return null;
+}
+
+String.prototype.getBetween = function(start, end) {
+    return this.substring(
+        this.indexOf(start) + start.length, 
+        this.lastIndexOf(end)
+    );
 }
 
 String.prototype.escapeXML = function() {
@@ -53,13 +61,6 @@ String.prototype.escapeXML = function() {
             case '"': return "&quot;";
         }
     });
-}
-
-String.prototype.getBetween = function(start, end) {
-    return this.substring(
-        this.indexOf(start) + start.length, 
-        this.lastIndexOf(end)
-    );
 }
 
 NodeList.prototype.getLastElement = function() {

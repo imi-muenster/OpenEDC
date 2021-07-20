@@ -297,6 +297,10 @@ export function getConditions() {
     return Array.from($$("ConditionDef"));
 }
 
+export function getMethods() {
+    return Array.from($$("MethodDef"));
+}
+
 export function getElementsWithCondition(formOID) {
     let elementsWithCondition = [];
     for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
@@ -329,6 +333,10 @@ function addElementWithCondition(elementList, elementType, elementOID, condition
 
 export function getElementRefsHavingCondition(conditionOID) {
     return Array.from($$(`[CollectionExceptionConditionOID="${conditionOID}"]`));
+}
+
+export function getElementRefsHavingMethod(methodOID) {
+    return Array.from($$(`[MethodOID="${methodOID}"]`));
 }
 
 export function getItemDefsHavingMeasurementUnit(measuremenUnitOID) {
@@ -506,6 +514,12 @@ export function setConditionFormalExpression(conditionOID, formalExpression) {
     formalExpressionElement.textContent = negatedFormalExpression;
 }
 
+export function setMethodFormalExpression(methodOID, formalExpression) {
+    const formalExpressionElement = $(`MethodDef[OID="${methodOID}"] FormalExpression`);
+    formalExpressionElement.setAttribute("Context", "OpenEDC");
+    formalExpressionElement.textContent = formalExpression;
+}
+
 export function setMeasurementUnitSymbol(measurementUnitOID, symbol) {
     let translatedText = $(`MeasurementUnit[OID="${measurementUnitOID}"] Symbol TranslatedText[*|lang="${languageHelper.getCurrentLocale()}"]`);
     if (translatedText) {
@@ -589,6 +603,11 @@ export function setElementRefCondition(elementRef, conditionOID) {
     else elementRef.removeAttribute("CollectionExceptionConditionOID");
 }
 
+export function setElementRefMethod(elementRef, methodOID) {
+    if (methodOID) elementRef.setAttribute("MethodOID", methodOID);
+    else elementRef.removeAttribute("MethodOID");
+}
+
 export function setItemDefMeasurementUnit(itemDef, measurementUnitOID) {
     let measurementUnitRef = itemDef.querySelector("MeasurementUnitRef");
     if (measurementUnitOID) {
@@ -632,6 +651,7 @@ export function insertStudyEventRef(studyEventRef) {
 }
 
 // TODO: .tagName approach could also be used for insertElementRef
+// TODO: ConditionDefs must be inserted before MethodDefs
 function insertElementDef(elementDef) {
     const insertPositionDef = $$(elementDef.tagName).getLastElement();
     if (insertPositionDef) {
@@ -724,19 +744,24 @@ export function insertCodeListRef(codeListRef, itemOID) {
     }
 }
 
+// Currently, use the generated OID also as name and description for usability purposes (for conditions, methods, and measurement units)
+// Prospectively, a user could be asked to enter a name and description for a new condition
 export function createCondition(formalExpression) {
     const newConditionOID = generateUniqueOID("C.");
-    // Currently, use the generated OID also as name and description for usability purposes
-    // Prospectively, a user could be asked to enter a name and description for a new condition
     insertElementDef(metadataTemplates.getConditionDef(newConditionOID, newConditionOID, newConditionOID, languageHelper.getCurrentLocale(), formalExpression));
     
     return newConditionOID;
 }
 
+export function createMethod(formalExpression) {
+    const newMethodOID = generateUniqueOID("M.");
+    insertElementDef(metadataTemplates.getMethodDef(newMethodOID, newMethodOID, newMethodOID, languageHelper.getCurrentLocale(), formalExpression));
+    
+    return newMethodOID;
+}
+
 export function createMeasurementUnit(symbol) {
     const newMeasurementUnitOID = generateUniqueOID("MU.");
-    // Currently, use the generated OID also as name usability purposes
-    // Prospectively, a user could be asked to enter a name for a new measurement unit
     insertMeasurementUnit(metadataTemplates.getMeasurementUnitDef(newMeasurementUnitOID, newMeasurementUnitOID, symbol, languageHelper.getCurrentLocale()));
 
     return newMeasurementUnitOID;
@@ -851,6 +876,14 @@ export function safeDeleteCondition(conditionOID) {
     if (!$(`[CollectionExceptionConditionOID="${conditionOID}"]`)) {
         let conditionDef = $(`ConditionDef[OID="${conditionOID}"]`);
         if (conditionDef) conditionDef.remove();
+    }
+}
+
+// TODO: Could use safeRemoveElement() here everywhere
+export function safeDeleteMethod(methodOID) {
+    if (!$(`[MethodOID="${methodOID}"]`)) {
+        let methodDef = $(`MethodDef[OID="${methodOID}"]`);
+        if (methodDef) methodDef.remove();
     }
 }
 

@@ -99,7 +99,7 @@ class MetadataSection extends HTMLElement {
                                         <div class="field">
                                             <label class="label" i18n="calculation"></label>
                                             <div class="control has-autocomplete-bottom">
-                                                <input class="input" type="text" id="item-calculation" autocomplete="off" i18n-ph="formal-expression">
+                                                <input class="input" type="text" id="item-method" autocomplete="off" i18n-ph="formal-expression">
                                             </div>
                                         </div>
                                     </div>

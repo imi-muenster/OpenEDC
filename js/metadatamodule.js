@@ -292,8 +292,8 @@ function resetDetailsPanel() {
     $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
 
     // Extended
-    [$("#measurement-unit"), $("#collection-condition"), $("#item-calculation"), $("#add-range-check-button"), $("#add-alias-button")].disableElements();
-    [$("#measurement-unit"), $("#collection-condition"), $("#item-calculation")].emptyInputs();
+    [$("#measurement-unit"), $("#collection-condition"), $("#item-method"), $("#add-range-check-button"), $("#add-alias-button")].disableElements();
+    [$("#measurement-unit"), $("#collection-condition"), $("#item-method")].emptyInputs();
     $$("#range-check-inputs .range-check-input").removeElements();
     $$("#alias-inputs .alias-input").removeElements();
     addEmptyRangeCheckInput(true);
@@ -378,8 +378,8 @@ function fillDetailsPanelExtended() {
             $("#measurement-unit").value = measurementUnit ? measurementUnit.getTranslatedSymbol(locale) : null;
             $("#measurement-unit").disabled = false;
             const method = metadataHelper.getItemMethod(getCurrentElementOID(), getCurrentElementParentOID());
-            $("#item-calculation").value = method ? method.getFormalExpression() : null;
-            $("#item-calculation").disabled = false;
+            $("#item-method").value = method ? method.getFormalExpression() : null;
+            $("#item-method").disabled = false;
     }
 }
 
@@ -545,6 +545,7 @@ function saveDetailsExtended() {
             break;
         case metadataHelper.elementTypes.ITEM:
             if (saveConditionPreCheck()) return;
+            if (saveMethodPreCheck()) return;
             if (saveMeasurementUnitPreCheck()) return;
             saveRangeChecks();
     }
@@ -590,6 +591,46 @@ function saveConditionForElements(formalExpression, currentCondition, elementRef
     }
 
     if (currentCondition && (!formalExpression || currentCondition.getOID() != conditionOID)) metadataHelper.safeDeleteCondition(currentCondition.getOID());
+    if (promptInitiated) saveDetailsExtended();
+}
+
+function saveMethodPreCheck() {
+    const formalExpression = $("#item-method").value;
+    const currentMethod = metadataHelper.getItemMethod(getCurrentElementOID(), getCurrentElementParentOID());
+    if (formalExpression && currentMethod && formalExpression == currentMethod.getFormalExpression()) return;
+
+    const currentElementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), getCurrentElementType(), getCurrentElementParentOID());
+    if (currentMethod) {
+        const elementsHavingMethod = metadataHelper.getElementRefsHavingMethod(currentMethod.getOID());
+        if (elementsHavingMethod.length > 1) {
+            ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("condition-multiple-references-hint"),
+                {
+                    [languageHelper.getTranslation("update-all")]: () => saveMethodForElements(formalExpression, currentMethod, elementsHavingMethod, true, true),
+                    [languageHelper.getTranslation("update-current-only")]: () => saveMethodForElements(formalExpression, currentMethod, [currentElementRef], false, true)
+                }
+            );
+            return true;
+        } else {
+            saveMethodForElements(formalExpression, currentMethod, [currentElementRef], true, false);
+        }
+    } else {
+        saveMethodForElements(formalExpression, null, [currentElementRef], true, false);
+    }
+}
+
+function saveMethodForElements(formalExpression, currentMethod, elementRefs, changeAll, promptInitiated) {
+    const identicalMethod = metadataHelper.getMethods().find(method => method.getFormalExpression() == formalExpression);
+
+    let methodOID;
+    if (formalExpression && currentMethod && changeAll && !identicalMethod) {
+        metadataHelper.setMethodFormalExpression(currentMethod.getOID(), formalExpression);
+    } else {
+        if (identicalMethod) methodOID = identicalMethod.getOID();
+        else if (formalExpression) methodOID = metadataHelper.createMethod(formalExpression);
+        elementRefs.forEach(elementRef => metadataHelper.setElementRefMethod(elementRef, methodOID));
+    }
+
+    if (currentMethod && (!formalExpression || currentMethod.getOID() != methodOID)) metadataHelper.safeDeleteMethod(currentMethod.getOID());
     if (promptInitiated) saveDetailsExtended();
 }
 
