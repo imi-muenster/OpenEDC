@@ -18,8 +18,9 @@ class AutocompleteElement {
 
 export const modes = {
     CONDITION: 1,
-    MEASUREMENTUNIT: 2,
-    ITEMWITHCODELIST: 3
+    METHOD: 2,
+    MEASUREMENTUNIT: 3,
+    ITEMWITHCODELIST: 4
 }
 
 const compounds = ["and", "or", "AND", "OR", "&&", "||"];
@@ -112,18 +113,24 @@ const setCurrentModeAndEnabledParts = input => {
         case modes.CONDITION:
             // Keep all parts
             break;
+        case modes.METHOD:
+            // TODO: In the future, an operator could also be suggested
+            delete enabledParts.COMPARATOR;
+            delete enabledParts.VALUE;
+            break;
         case modes.MEASUREMENTUNIT:
             // Remove comparator and code list values
         case modes.ITEMWITHCODELIST:
             delete enabledParts.COMPARATOR;
             delete enabledParts.VALUE;
+            // TODO: delete enabledParts.OPERATOR;
     }
 }
 
 const setCurrentPartAndInput = input => {
     const substring = input.value.substring(0, input.selectionStart);
     const tokenIndex = substring.split(" ").length - 1;
-    const lastCompoundTokenIndex = getLastIndexOfTokens(substring, compounds);
+    const lastCompoundTokenIndex = getLastIndexOfTokens(substring, compounds.concat(operators));
     const part = tokenIndex - lastCompoundTokenIndex;
 
     if (tokenIndex != currentTokenIndex || input != currentInput) elements = null;
@@ -189,6 +196,7 @@ const getItemElements = () => {
     let items;
     switch (currentMode) {
         case modes.CONDITION:
+        case modes.METHOD:
             items = metadataHelper.getItems();
             break;
         case modes.MEASUREMENTUNIT:
@@ -200,6 +208,7 @@ const getItemElements = () => {
 
     switch (currentMode) {
         case modes.CONDITION:
+        case modes.METHOD:
         case modes.ITEMWITHCODELIST:
             return items.map(item => new AutocompleteElement(
                 item.getOID(),

@@ -764,6 +764,7 @@ function setIOListeners() {
 
     autocompleteHelper.enableAutocomplete($("#collection-condition"), autocompleteHelper.modes.CONDITION);
     autocompleteHelper.enableAutocomplete($("#measurement-unit"), autocompleteHelper.modes.MEASUREMENTUNIT);
+    autocompleteHelper.enableAutocomplete($("#item-method"), autocompleteHelper.modes.METHOD);
 }
 
 function scrollParentToChild(child) {
