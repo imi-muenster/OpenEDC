@@ -3,7 +3,7 @@ import { Parser } from "../../lib/expr-eval.js";
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-let elementsWithExpression = {};
+let elementsWithExpression = [];
 let variableValues = {};
 
 export function getVariables(elementsWithExpressionParam) {
@@ -20,9 +20,9 @@ export function getVariables(elementsWithExpressionParam) {
 }
 
 export function process(variableValuesParam) {
-    // Expr-eval does not support dots in variables names and are therefore replaced with underscores
     variableValues = {};
     for (const [key, value] of Object.entries(variableValuesParam)) {
+        // Expr-eval does not support dots in variables names and are therefore replaced with underscores
         variableValues[escapeOIDDots(key)] = value;
     }
 
@@ -35,8 +35,8 @@ export function process(variableValuesParam) {
 function processCondition(condition) {
     // Select conditional item group or item and hide it
     let conditionalElement;
-    if (condition.elementType == "itemgroup") conditionalElement = $(`[item-group-content-oid="${condition.oid}"]`);
-    else if (condition.elementType == "item") conditionalElement = $(`[item-field-oid="${condition.oid}"]`);
+    if (condition.elementType == "itemgroup") conditionalElement = $(`#clinicaldata-content [item-group-content-oid="${condition.oid}"]`);
+    else if (condition.elementType == "item") conditionalElement = $(`#clinicaldata-content [item-field-oid="${condition.oid}"]`);
     conditionalElement.hide();
 
     // If the expression evaluates to true, show condition element
@@ -44,12 +44,12 @@ function processCondition(condition) {
 
     // Add event listeners to respond to inputs to the determinant items
     for (const inputOID of condition.expression.variables()) {
-        const inputElement = $(`[item-oid="${unescapeOIDDots(inputOID)}"]`);
+        const inputElement = $(`#clinicaldata-content [item-oid="${unescapeOIDDots(inputOID)}"]`);
         if (!inputElement) continue;
         if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "select") {
             inputElement.addEventListener("input", event => respondToInputChangeCondition(event.target, inputOID, condition, conditionalElement));
         } else if (inputElement.getAttribute("type") == "radio") {
-            const radioItems = $$(`[item-oid="${inputOID}"]`);
+            const radioItems = $$(`#clinicaldata-content [item-oid="${inputOID}"]`);
             for (const radioItem of radioItems) {
                 radioItem.addEventListener("input", event => respondToInputChangeCondition(event.target, inputOID, condition, conditionalElement));
             }
@@ -97,9 +97,39 @@ function emptyConditionalElement(conditionalElement) {
 }
 
 function processMethod(method) {
-    
+    // Select conditional item group or item and make it read-only
+    let computedElement = $(`#clinicaldata-content [item-oid="${method.oid}"]`);
+    computedElement.readOnly = true;
+
+    // If a value can already be calculated, assign it
+    computedElement.value = computeExpression(method);
+
+    // Add event listeners to respond to inputs to the determinant items
+    for (const inputOID of method.expression.variables()) {
+        const inputElement = $(`#clinicaldata-content [item-oid="${unescapeOIDDots(inputOID)}"]`);
+        if (!inputElement) continue;
+        if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "select") {
+            inputElement.addEventListener("input", event => respondToInputChangeMethod(event.target, inputOID, method, computedElement));
+        } else if (inputElement.getAttribute("type") == "radio") {
+            const radioItems = $$(`#clinicaldata-content [item-oid="${inputOID}"]`);
+            for (const radioItem of radioItems) {
+                radioItem.addEventListener("input", event => respondToInputChangeMethod(event.target, inputOID, method, computedElement));
+            }
+        }
+    }
 }
 
+function respondToInputChangeMethod(input, inputOID, method, computedElement) {
+    variableValues[inputOID] = !input.value ? "" : input.value;
+    computedElement.value = computeExpression(method);
+}
+
+function computeExpression(method) {
+    const computedValue = method.expression.evaluate(variableValues);
+    return !isNaN(computedValue) && isFinite(computedValue) ? Math.round(computedValue * 100) / 100 : null;
+}
+
+// Helper functions
 function normalizeTokens(expression) {
     return expression.replace(/( AND | OR | && | \|\ )/g, function(string) {
         switch (string) {

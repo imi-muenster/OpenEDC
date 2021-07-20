@@ -299,8 +299,9 @@ a.panel-block:hover {
     margin-bottom: 5px;
 }
 
-.input[disabled], .select select[disabled], .textarea[disabled] {
+.input[disabled], .select select[disabled], .textarea[disabled], .input[readonly] {
     color: #4a4a4a;
+    background-color: #f5f5f5;
 }
 
 .message {
