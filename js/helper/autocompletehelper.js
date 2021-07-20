@@ -217,7 +217,7 @@ const getItemElements = () => {
         case modes.MEASUREMENTUNIT:
             return items.map(item => new AutocompleteElement(
                 item.getTranslatedSymbol(languageHelper.getCurrentLocale())
-            ));
+            )).filter(element => element.value);
     }
 
 }

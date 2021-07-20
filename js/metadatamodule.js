@@ -473,8 +473,8 @@ window.addEmptyAliasInput = function(disabled) {
     if (!disabled && !ioHelper.isMobile()) input.scrollIntoView();
 }
 
-window.saveElement = function() {
-    if (getCurrentDetailsView() == detailsPanelViews.FOUNDATIONAL) saveDetailsFoundational();
+window.saveElement = async function() {
+    if (getCurrentDetailsView() == detailsPanelViews.FOUNDATIONAL) await saveDetailsFoundational();
     else if (getCurrentDetailsView() == detailsPanelViews.EXTENDED) saveDetailsExtended();
 }
 
@@ -696,9 +696,9 @@ function saveAliases() {
     }
 }
 
-window.sidebarOptionClicked = function(event) {
+window.sidebarOptionClicked = async function(event) {
     // Save the element if it has been updated and another sidebar option is selected
-    if ($("#save-button").isHighlighted() && event.target.id != $(".sidebar-option.is-active").id) saveElement();
+    if ($("#save-button").isHighlighted() && event.target.id != $(".sidebar-option.is-active").id) await saveElement();
 
     ioHelper.removeIsActiveFromElement($("#details-panel .sidebar-option.is-active"));
     event.target.activate();

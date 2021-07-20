@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" FileType="Snapshot" FileOID="Exemplary Project" CreationDateTime="2021-03-30T17:57:55.146Z" ODMVersion="1.3.2" SourceSystem="OpenEDC">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" FileType="Snapshot" FileOID="Exemplary Project" CreationDateTime="2021-07-20T15:57:29.895Z" ODMVersion="1.3.2" SourceSystem="OpenEDC">
     <Study OID="S.1">
         <GlobalVariables>
             <StudyName>Exemplary Project</StudyName>
@@ -29,6 +29,12 @@
                 <Symbol>
                     <TranslatedText xml:lang="en">years</TranslatedText>
                     <TranslatedText xml:lang="de">Jahre</TranslatedText>
+                </Symbol>
+            </MeasurementUnit>
+            <MeasurementUnit OID="MU.5" Name="MU.5">
+                <Symbol>
+                    <TranslatedText xml:lang="en">Calculated</TranslatedText>
+                    <TranslatedText xml:lang="de">Berechnet</TranslatedText>
                 </Symbol>
             </MeasurementUnit>
         </BasicDefinitions>
@@ -108,6 +114,7 @@
                 <ItemRef ItemOID="Gender" Mandatory="No"/>
                 <ItemRef ItemOID="I.3" Mandatory="No"/>
                 <ItemRef ItemOID="I.4" Mandatory="No"/>
+                <ItemRef ItemOID="I.18" Mandatory="No" MethodOID="M.1"/>
                 <ItemRef ItemOID="Pregnant" Mandatory="No" CollectionExceptionConditionOID="C.2"/>
                 <ItemRef ItemOID="I.7" Mandatory="No" CollectionExceptionConditionOID="C.5"/>
             </ItemGroupDef>
@@ -151,8 +158,8 @@
             </ItemGroupDef>
             <ItemGroupDef OID="IG.6" Name="QOLPastYearItems" Repeating="No">
                 <Description>
-                    <TranslatedText xml:lang="en">During the course of the past year ...</TranslatedText>
-                    <TranslatedText xml:lang="de">Im Verlauf des letzten Jahres</TranslatedText>
+                    <TranslatedText xml:lang="en">During the course of the _past year_</TranslatedText>
+                    <TranslatedText xml:lang="de">Im Verlauf des _letzten Jahres_</TranslatedText>
                 </Description>
                 <ItemRef ItemOID="I.13" Mandatory="No"/>
                 <ItemRef ItemOID="I.14" Mandatory="No"/>
@@ -160,8 +167,8 @@
             </ItemGroupDef>
             <ItemGroupDef OID="IG.7" Name="QOLPastWeekItems" Repeating="No">
                 <Description>
-                    <TranslatedText xml:lang="en">In the past week ...</TranslatedText>
-                    <TranslatedText xml:lang="de">In der letzten Woche</TranslatedText>
+                    <TranslatedText xml:lang="en">In the _past week_</TranslatedText>
+                    <TranslatedText xml:lang="de">In der _letzten Woche_</TranslatedText>
                 </Description>
                 <ItemRef ItemOID="I.13" Mandatory="No"/>
                 <ItemRef ItemOID="I.14" Mandatory="No"/>
@@ -352,6 +359,13 @@
                     <TranslatedText xml:lang="en">This is an examplary item</TranslatedText>
                 </Question>
             </ItemDef>
+            <ItemDef OID="I.18" Name="BMI" DataType="float">
+                <Question>
+                    <TranslatedText xml:lang="en">BMI</TranslatedText>
+                    <TranslatedText xml:lang="de">BMI</TranslatedText>
+                </Question>
+                <MeasurementUnitRef MeasurementUnitOID="MU.5"/>
+            </ItemDef>
             <CodeList OID="CL.1" Name="CL.1" DataType="text">
                 <CodeListItem CodedValue="Female">
                     <Decode>
@@ -534,6 +548,12 @@
                 </Description>
                 <FormalExpression Context="OpenEDC">!(SymptomsChanged == "1")</FormalExpression>
             </ConditionDef>
+            <MethodDef OID="M.1" Name="M.1" Type="Computation">
+                <Description>
+                    <TranslatedText xml:lang="en">M.1</TranslatedText>
+                </Description>
+                <FormalExpression Context="OpenEDC">I.3 / I.4 ^ 2</FormalExpression>
+            </MethodDef>
         </MetaDataVersion>
     </Study>
 </ODM>

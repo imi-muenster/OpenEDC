@@ -120,7 +120,7 @@ function processMethod(method) {
 }
 
 function respondToInputChangeMethod(input, inputOID, method, computedElement) {
-    variableValues[inputOID] = !input.value ? "" : input.value;
+    variableValues[inputOID] = !input.value ? "" : input.value.replace(",", ".");
     computedElement.value = computeExpression(method);
 }
 
