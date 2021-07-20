@@ -15,7 +15,7 @@ const staticAssets = [
     "./js/helper/metadatahelper.js",
     "./js/helper/admindatahelper.js",
     "./js/helper/clinicaldatahelper.js",
-    "./js/helper/conditionhelper.js",
+    "./js/helper/expressionhelper.js",
     "./js/helper/htmlelements.js",
     "./js/helper/iohelper.js",
     "./js/helper/indexeddbhelper.js",

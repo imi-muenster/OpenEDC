@@ -3,17 +3,17 @@ import { Parser } from "../../lib/expr-eval.js";
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-let conditions = {};
+let elementsWithExpression = {};
 let variableValues = {};
 
-export function getVariables(conditionsParam) {
-    conditions = conditionsParam;
+export function getVariables(elementsWithExpressionParam) {
+    elementsWithExpression = elementsWithExpressionParam;
 
     let variables = new Set();
-    for (let condition of conditions) {
-        const normalizedExpression = escapeOIDDots(normalizeTokens(condition.formalExpression));
-        condition.expression = new Parser.parse(normalizedExpression);
-        condition.expression.variables().forEach(variable => variables.add(unescapeOIDDots(variable)));
+    for (let elementWithExpression of elementsWithExpression) {
+        const normalizedExpression = escapeOIDDots(normalizeTokens(elementWithExpression.formalExpression));
+        elementWithExpression.expression = new Parser.parse(normalizedExpression);
+        elementWithExpression.expression.variables().forEach(variable => variables.add(unescapeOIDDots(variable)));
     }
 
     return Array.from(variables);
@@ -26,33 +26,38 @@ export function process(variableValuesParam) {
         variableValues[escapeOIDDots(key)] = value;
     }
 
-    for (const condition of conditions) {
-        // Select conditional item group or item and hide it
-        let conditionalElement;
-        if (condition.type == "itemgroup") conditionalElement = $(`[item-group-content-oid="${condition.oid}"]`);
-        else if (condition.type == "item") conditionalElement = $(`[item-field-oid="${condition.oid}"]`);
-        conditionalElement.hide();
+    for (const elementWithExpression of elementsWithExpression) {
+        if (elementWithExpression.expressionType == "condition") processCondition(elementWithExpression);
+        else if (elementWithExpression.expressionType == "method") processMethod(elementWithExpression);
+    }
+}
 
-        // If the expression evaluates to true, show condition element
-        if (condition.expression.evaluate(variableValues)) conditionalElement.show();
+function processCondition(condition) {
+    // Select conditional item group or item and hide it
+    let conditionalElement;
+    if (condition.elementType == "itemgroup") conditionalElement = $(`[item-group-content-oid="${condition.oid}"]`);
+    else if (condition.elementType == "item") conditionalElement = $(`[item-field-oid="${condition.oid}"]`);
+    conditionalElement.hide();
 
-        // Add event listeners to respond to inputs to the determinant items
-        for (const inputOID of condition.expression.variables()) {
-            const inputElement = $(`[item-oid="${unescapeOIDDots(inputOID)}"]`);
-            if (!inputElement) continue;
-            if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "select") {
-                inputElement.addEventListener("input", event => respondToInputChange(event.target, inputOID, condition, conditionalElement));
-            } else if (inputElement.getAttribute("type") == "radio") {
-                const radioItems = $$(`[item-oid="${inputOID}"]`);
-                for (const radioItem of radioItems) {
-                    radioItem.addEventListener("input", event => respondToInputChange(event.target, inputOID, condition, conditionalElement));
-                }
+    // If the expression evaluates to true, show condition element
+    if (condition.expression.evaluate(variableValues)) conditionalElement.show();
+
+    // Add event listeners to respond to inputs to the determinant items
+    for (const inputOID of condition.expression.variables()) {
+        const inputElement = $(`[item-oid="${unescapeOIDDots(inputOID)}"]`);
+        if (!inputElement) continue;
+        if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "select") {
+            inputElement.addEventListener("input", event => respondToInputChangeCondition(event.target, inputOID, condition, conditionalElement));
+        } else if (inputElement.getAttribute("type") == "radio") {
+            const radioItems = $$(`[item-oid="${inputOID}"]`);
+            for (const radioItem of radioItems) {
+                radioItem.addEventListener("input", event => respondToInputChangeCondition(event.target, inputOID, condition, conditionalElement));
             }
         }
     }
 }
 
-function respondToInputChange(input, inputOID, condition, conditionalElement) {
+function respondToInputChangeCondition(input, inputOID, condition, conditionalElement) {
     variableValues[inputOID] = !input.value ? "" : input.value;
     showOrHideConditionalElement(conditionalElement, condition.expression.evaluate(variableValues));
 }
@@ -89,6 +94,10 @@ function emptyConditionalElement(conditionalElement) {
             }
         }
     }
+}
+
+function processMethod(method) {
+    
 }
 
 function normalizeTokens(expression) {

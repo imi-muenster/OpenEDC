@@ -3,7 +3,7 @@ import * as metadataHelper from "./helper/metadatahelper.js";
 import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
 import * as admindataHelper from "./helper/admindatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
-import * as conditionHelper from "./helper/conditionhelper.js";
+import * as expressionHelper from "./helper/expressionhelper.js";
 import * as validationHelper from "./helper/validationhelper.js";
 import * as htmlElements from "./helper/htmlelements.js";
 import * as languageHelper from "./helper/languagehelper.js";
@@ -386,9 +386,9 @@ async function loadFormMetadata() {
 }
 
 async function addDynamicFormLogic() {
-    // First, add real-time logic to process conditional items
-    const inputOIDs = conditionHelper.getVariables(metadataHelper.getElementsWithCondition(currentElementID.form));
-    conditionHelper.process(clinicaldataHelper.getDataForItems(inputOIDs));
+    // First, add real-time logic to process items with conditions and methods
+    const inputOIDs = expressionHelper.getVariables(metadataHelper.getElementsWithExpression(currentElementID.form));
+    expressionHelper.process(clinicaldataHelper.getDataForItems(inputOIDs));
 
     // Second, add real-time logic to validate fields by data type and/or allowed ranges
     validationHelper.process(metadataHelper.getItemsWithRangeChecks(currentElementID.form));

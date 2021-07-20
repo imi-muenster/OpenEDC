@@ -301,29 +301,31 @@ export function getMethods() {
     return Array.from($$("MethodDef"));
 }
 
-export function getElementsWithCondition(formOID) {
-    let elementsWithCondition = [];
+export function getElementsWithExpression(formOID) {
+    let elementsWithExpression = [];
     for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
         const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
         const conditionOID = itemGroupRef.getAttribute("CollectionExceptionConditionOID");
-        if (conditionOID) elementsWithCondition = addElementWithCondition(elementsWithCondition, elementTypes.ITEMGROUP, itemGroupOID, conditionOID);
+        if (conditionOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, elementTypes.ITEMGROUP, itemGroupOID, conditionOID);
 
-        for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[CollectionExceptionConditionOID]`)) {
+        for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[CollectionExceptionConditionOID], ItemGroupDef[OID="${itemGroupOID}"] ItemRef[MethodOID]`)) {
             const itemOID = itemRef.getAttribute("ItemOID");
             const conditionOID = itemRef.getAttribute("CollectionExceptionConditionOID");
-            elementsWithCondition = addElementWithCondition(elementsWithCondition, elementTypes.ITEM, itemOID, conditionOID);
+            const methodOID = itemRef.getAttribute("MethodOID");
+            elementsWithExpression = addElementWithExpression(elementsWithExpression, elementTypes.ITEM, itemOID, conditionOID, methodOID);
         }
     }
 
-    return elementsWithCondition;
+    return elementsWithExpression;
 }
 
-function addElementWithCondition(elementList, elementType, elementOID, conditionOID) {
-    const formalExpression = $(`ConditionDef[OID="${conditionOID}"]`).getFormalExpression();
+function addElementWithExpression(elementList, elementType, elementOID, conditionOID, methodOID) {
+    const formalExpression = conditionOID ? $(`ConditionDef[OID="${conditionOID}"]`).getFormalExpression() : $(`MethodDef[OID="${methodOID}"]`).getFormalExpression();
     if (formalExpression) {
         elementList.push({
-            type: elementType,
+            elementType: elementType,
             oid: elementOID,
+            expressionType: conditionOID ? "condition" : "method",
             formalExpression: formalExpression
         });
     }
@@ -343,7 +345,7 @@ export function getItemDefsHavingMeasurementUnit(measuremenUnitOID) {
     return Array.from($$(`[MeasurementUnitOID="${measuremenUnitOID}"]`)).map(measurementUnitRef => measurementUnitRef.parentNode);
 }
 
-// TODO: Introduce own class for the two arrays? If yes, implement it for getElementsWithCondition as well
+// TODO: Introduce own class for the two arrays? If yes, implement it for getElementsWithExpression as well
 // TODO: Could also handle soft and hard RangeChecks
 export function getItemsWithRangeChecks(formOID) {
     let itemOIDSWithRangeCheck = [];
