@@ -55,9 +55,21 @@ class MetadataSection extends HTMLElement {
                                     </div>
                                 </div>
                             </div>
-                            <div class="box-content is-hidden" id="extended-options">
+                            <div class="box-content is-relative is-hidden" id="extended-options">
+                                <button class="button is-link is-light is-rounded is-small" id="more-options-button" onclick="showMoreExtendedOptions()">
+                                    <span i18n="more"></span>
+                                    <span class="icon">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </span>
+                                </button>
+                                <button class="button is-link is-light is-rounded is-small is-hidden" id="less-options-button" onclick="showLessExtendedOptions()">
+                                    <span class="icon">
+                                        <i class="fas fa-arrow-left"></i>
+                                    </span>
+                                    <span i18n="back"></span>
+                                </button>
                                 <div class="columns">
-                                    <div class="column">
+                                    <div class="column" id="condition-alias-column">
                                         <div class="field">
                                             <label class="label" i18n="collection-condition"></label>
                                             <div class="control has-autocomplete-bottom">
@@ -70,7 +82,7 @@ class MetadataSection extends HTMLElement {
                                             <button class="button is-small is-pulled-right mt-2" id="add-alias-button" onclick="addEmptyAliasInput()" i18n="add"></button>
                                         </div>
                                     </div>
-                                    <div class="column">
+                                    <div class="column" id="unit-range-column">
                                         <div class="field">
                                             <label class="label" i18n="measurement-unit"></label>
                                             <div class="control has-autocomplete-bottom">
@@ -81,6 +93,14 @@ class MetadataSection extends HTMLElement {
                                             <label class="label" i18n="range-checks"></label>
                                             <div id="range-check-inputs"></div>
                                             <button class="button is-small is-pulled-right mt-2" id="add-range-check-button" onclick="addEmptyRangeCheckInput()" i18n="add"></button>
+                                        </div>
+                                    </div>
+                                    <div class="column is-hidden" id="calculation-column">
+                                        <div class="field">
+                                            <label class="label" i18n="calculation"></label>
+                                            <div class="control has-autocomplete-bottom">
+                                                <input class="input" type="text" id="field-calculation" autocomplete="off" i18n-ph="formal-expression">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

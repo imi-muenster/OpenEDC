@@ -1151,6 +1151,20 @@ function enableAsyncEditMode() {
     reloadDetailsPanel();
 }
 
+window.showMoreExtendedOptions = function() {
+    $("#more-options-button").hide();
+    $("#less-options-button").show();
+    $("#condition-alias-column").hide();
+    $("#calculation-column").show();
+}
+
+window.showLessExtendedOptions = function() {
+    $("#more-options-button").show();
+    $("#less-options-button").hide();
+    $("#condition-alias-column").show();
+    $("#calculation-column").hide();
+}
+
 window.storeMetadataAsync = function() {
     ioHelper.showMessage(languageHelper.getTranslation("please-confirm"), languageHelper.getTranslation("save-forms-question"),
         {
