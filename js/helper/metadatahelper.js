@@ -383,6 +383,14 @@ export function getElementCondition(elementType, elementOID, parentElementOID) {
     }
 }
 
+export function getItemMethod(itemOID, itemGroupOID) {
+    let methodRef = $(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[ItemOID="${itemOID}"][MethodOID]`);
+    if (methodRef) {
+        let oid = methodRef.getAttribute("MethodOID");
+        return $(`MethodDef[OID="${oid}"]`);
+    }
+}
+
 export function getItemMeasurementUnit(itemOID) {
     let measurementUnitRef = $(`ItemDef[OID="${itemOID}"] MeasurementUnitRef`);
 

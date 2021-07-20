@@ -292,8 +292,8 @@ function resetDetailsPanel() {
     $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
 
     // Extended
-    [$("#measurement-unit"), $("#collection-condition"), $("#add-range-check-button"), $("#add-alias-button")].disableElements();
-    [$("#measurement-unit"), $("#collection-condition")].emptyInputs();
+    [$("#measurement-unit"), $("#collection-condition"), $("#item-calculation"), $("#add-range-check-button"), $("#add-alias-button")].disableElements();
+    [$("#measurement-unit"), $("#collection-condition"), $("#item-calculation")].emptyInputs();
     $$("#range-check-inputs .range-check-input").removeElements();
     $$("#alias-inputs .alias-input").removeElements();
     addEmptyRangeCheckInput(true);
@@ -372,11 +372,14 @@ function fillDetailsPanelExtended() {
         case metadataHelper.elementTypes.ITEM:
             fillItemRangeChecks();
             [$("#range-check-inputs .range-check-comparator-inner"), $("#range-check-inputs .range-check-value"), $("#add-range-check-button")].enableElements();
+            $("#collection-condition").value = condition ? condition.getFormalExpression() : null;
+            $("#collection-condition").disabled = false;
             const measurementUnit = metadataHelper.getItemMeasurementUnit(getCurrentElementOID());
             $("#measurement-unit").value = measurementUnit ? measurementUnit.getTranslatedSymbol(locale) : null;
             $("#measurement-unit").disabled = false;
-            $("#collection-condition").value = condition ? condition.getFormalExpression() : null;
-            $("#collection-condition").disabled = false;
+            const method = metadataHelper.getItemMethod(getCurrentElementOID(), getCurrentElementParentOID());
+            $("#item-calculation").value = method ? method.getFormalExpression() : null;
+            $("#item-calculation").disabled = false;
     }
 }
 
