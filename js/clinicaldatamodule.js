@@ -805,7 +805,7 @@ function surveyViewIsActive() {
 }
 
 function dataHasChanged() {
-    return !skipDataHasChangedCheck && currentElementID.subject && currentElementID.studyEvent && currentElementID.form && clinicaldataHelper.dataHasChanged(getFormData(), currentElementID.studyEvent, currentElementID.form);
+    return !skipDataHasChangedCheck && currentElementID.subject && currentElementID.studyEvent && currentElementID.form && clinicaldataHelper.getFormDataDifference(getFormData(), currentElementID.studyEvent, currentElementID.form).length > 0;
 }
 
 window.showSubjectInfo = function() {

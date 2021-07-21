@@ -245,7 +245,8 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
     const currentDataStatus = getDataStatusForForm(studyEventOID, formOID);
 
     // Do not store data if neither the formdata nor the data status changed
-    if (currentDataStatus == dataStatus && !dataHasChanged(formItemDataList, studyEventOID, formOID)) return;
+    const formDataDifference = getFormDataDifference(formItemDataList, studyEventOID, formOID);
+    if (currentDataStatus == dataStatus && formDataDifference.length == 0) return;
 
     // Do not store data if connected to server and user has no rights to store data
     if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.ADDSUBJECTDATA)) return;
@@ -258,12 +259,13 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
         if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.VALIDATEFORMS)) return;
     }
 
+    // Create a new FormData element and store the data
     let formData = clinicaldataTemplates.getFormData(formOID);
     formData.appendChild(clinicaldataTemplates.getAuditRecord(admindataHelper.getCurrentUserOID(), subject.siteOID, new Date().toISOString()));
     formData.appendChild(clinicaldataTemplates.getFlag(dataStatus, metadataHelper.dataStatusCodeListOID));
 
     let itemGroupData = null;
-    for (let formItemData of formItemDataList) {
+    for (let formItemData of formDataDifference) {
         if (itemGroupData == null || itemGroupData.getAttribute("ItemGroupOID") != formItemData.itemGroupOID) {
             if (itemGroupData) formData.appendChild(itemGroupData);
             itemGroupData = clinicaldataTemplates.getItemGroupData(formItemData.itemGroupOID);
@@ -273,34 +275,32 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
     if (itemGroupData) formData.appendChild(itemGroupData);
 
     let studyEventData = $(`StudyEventData[StudyEventOID="${studyEventOID}"]`) || clinicaldataTemplates.getStudyEventData(studyEventOID);
+    formData.setAttribute("TransactionType", studyEventData.querySelector(`FormData[FormOID="${formOID}"]`) ? "Update" : "Insert");
     studyEventData.appendChild(formData);
     subjectData.appendChild(studyEventData);
 
     await storeSubject();
 }
 
-// TODO: Assumes that the data is ordered chronologically -- should be ensured during import
-function getCurrentFormData(studyEventOID, formOID) {
-    return $$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`).getLastElement();
+function getFormDataElements(studyEventOID, formOID) {
+    return $$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`);
 }
 
+// TODO: Can this be performance improved? (e.g., caching formItemDataList for getFormDataDifference())
 export function getSubjectFormData(studyEventOID, formOID) {
     if (!subject) return [];
 
-    const formData = getCurrentFormData(studyEventOID, formOID);
-    if (!formData) return [];
-
-    return getFormItemDataList(formData);
-}
-
-function getFormItemDataList(formData) {
-    let formItemDataList = [];
-    for (let itemGroupData of formData.querySelectorAll("ItemGroupData")) {
-        let itemGroupOID = itemGroupData.getAttribute("ItemGroupOID");
-        for (let itemData of itemGroupData.querySelectorAll("ItemData")) {
-            let itemOID = itemData.getAttribute("ItemOID");
-            let value = itemData.getAttribute("Value");
-            formItemDataList.push(new FormItemData(itemGroupOID, itemOID, value));
+    const formItemDataList = [];
+    for (const formData of getFormDataElements(studyEventOID, formOID)) {
+        for (const itemGroupData of formData.querySelectorAll("ItemGroupData")) {
+            const itemGroupOID = itemGroupData.getAttribute("ItemGroupOID");
+            for (const itemData of itemGroupData.querySelectorAll("ItemData")) {
+                const itemOID = itemData.getAttribute("ItemOID");
+                const value = itemData.getAttribute("Value");
+                const existingItemData = formItemDataList.find(entry => entry.itemGroupOID == itemGroupOID && entry.itemOID == itemOID);
+                if (existingItemData) existingItemData.value = value;
+                else formItemDataList.push(new FormItemData(itemGroupOID, itemOID, value));
+            }
         }
     }
 
@@ -317,12 +317,26 @@ export function getDataForItems(itemOIDs) {
     return data;
 }
 
-export function dataHasChanged(formItemDataList, studyEventOID, formOID) {
-    console.log("Check if data has changed ...");
+// TODO: Can this be performance improved?
+export function getFormDataDifference(formItemDataList, studyEventOID, formOID) {
+    console.log("Check which data items have changed ...");
+
+    // First, add or edit item data that was entered
+    const formDataDifference = [];
+    const currentItemDataList = getSubjectFormData(studyEventOID, formOID);
+    for (const formItemData of formItemDataList) {
+        const currentItemData = currentItemDataList.find(entry => entry.itemGroupOID == formItemData.itemGroupOID && entry.itemOID == formItemData.itemOID);
+        if (!currentItemData || currentItemData.value != formItemData.value) formDataDifference.push(formItemData);
+    }
+
+    // Second, remove item data that was removed
+    for (const currentItemData of currentItemDataList) {
+        if (!currentItemData.value) continue;
+        const formItemData = formItemDataList.find(entry => entry.itemGroupOID == currentItemData.itemGroupOID && entry.itemOID == currentItemData.itemOID);
+        if (!formItemData) formDataDifference.push(new FormItemData(currentItemData.itemGroupOID, currentItemData.itemOID, ""));
+    }
     
-    const sortedNewData = Array.from(formItemDataList).sort((a, b) => a.itemOID < b.itemOID ? 1 : (a.itemOID > b.itemOID ? -1 : 0));
-    const sortedOldData = getSubjectFormData(studyEventOID, formOID).sort((a, b) => a.itemOID < b.itemOID ? 1 : (a.itemOID > b.itemOID ? -1 : 0));
-    return JSON.stringify(sortedNewData) != JSON.stringify(sortedOldData);
+    return formDataDifference;
 }
 
 export function getAuditRecords() {
@@ -431,11 +445,11 @@ export function getDataStatusForStudyEvent(studyEventOID) {
 }
 
 export function getDataStatusForForm(studyEventOID, formOID) {
-    const formData = getCurrentFormData(studyEventOID, formOID);
-    if (!formData) return dataStatusTypes.EMPTY;
+    const formDataElement = getFormDataElements(studyEventOID, formOID).getLastElement();
+    if (!formDataElement) return dataStatusTypes.EMPTY;
 
     // Return complete even if there is no flag to support versions before 0.1.5 and imported data from other systems without a flag
-    const flag = formData.querySelector("Flag");
+    const flag = formDataElement.querySelector("Flag");
     if (!flag) return dataStatusTypes.COMPLETE;
 
     const flagValue = flag.querySelector("FlagValue");
