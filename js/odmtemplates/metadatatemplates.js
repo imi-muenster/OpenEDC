@@ -30,7 +30,7 @@ export let getQuestion = () => template(`
 `);
 
 export let getTranslatedText = (text, locale) => template(`
-    <TranslatedText xml:lang="${locale}">${text}</TranslatedText>
+    <TranslatedText xml:lang="${locale}">${text.escapeXML()}</TranslatedText>
 `);
 
 export let getItemRef = oid => template(`
@@ -95,25 +95,25 @@ export let getODMTemplate = () => {
 }
 
 export let getAlias = (context, name) => template(`
-    <Alias Context="${context}" Name="${name}"/>
+    <Alias Context="${context.escapeXML()}" Name="${name.escapeXML()}"/>
 `);
 
 // Since ODM only provides a CollectionExceptionCondition, but a CollectionCondition is much more user friendly, the expression is negated
 export let getConditionDef = (oid, name, description, locale, formalExpression) => template(`
     <ConditionDef OID="${oid}" Name="${name}">
         <Description>
-            <TranslatedText xml:lang="${locale}">${description}</TranslatedText>
+            <TranslatedText xml:lang="${locale}">${description.escapeXML()}</TranslatedText>
         </Description>
-        <FormalExpression Context="OpenEDC">!(${formalExpression})</FormalExpression>
+        <FormalExpression Context="OpenEDC">!(${formalExpression.escapeXML()})</FormalExpression>
     </ConditionDef>
 `);
 
 export let getMethodDef = (oid, name, description, locale, formalExpression) => template(`
     <MethodDef OID="${oid}" Name="${name}" Type="Computation">
         <Description>
-            <TranslatedText xml:lang="${locale}">${description}</TranslatedText>
+            <TranslatedText xml:lang="${locale}">${description.escapeXML()}</TranslatedText>
         </Description>
-        <FormalExpression Context="OpenEDC">${formalExpression}</FormalExpression>
+        <FormalExpression Context="OpenEDC">${formalExpression.escapeXML()}</FormalExpression>
     </MethodDef>
 `);
 
@@ -124,7 +124,7 @@ export let getMeasurementUnitRef = (oid) => template(`
 export let getMeasurementUnitDef = (oid, name, symbol, locale) => template(`
     <MeasurementUnit OID="${oid}" Name="${name}">
         <Symbol>
-            <TranslatedText xml:lang="${locale}">${symbol}</TranslatedText>
+            <TranslatedText xml:lang="${locale}">${symbol.escapeXML()}</TranslatedText>
         </Symbol>
     </MeasurementUnit>
 `);

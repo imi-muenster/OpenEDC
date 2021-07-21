@@ -7,8 +7,8 @@ export const getAdminData = () => template(`
 
 export const getUser = (oid, firstName, lastName) => template(`
     <User OID="${oid}">
-        <FirstName>${firstName}</FirstName>
-        <LastName>${lastName}</LastName>
+        <FirstName>${firstName.escapeXML()}</FirstName>
+        <LastName>${lastName.escapeXML()}</LastName>
     </User>
 `);
 

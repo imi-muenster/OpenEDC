@@ -270,7 +270,7 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
             if (itemGroupData) formData.appendChild(itemGroupData);
             itemGroupData = clinicaldataTemplates.getItemGroupData(formItemData.itemGroupOID);
         };
-        itemGroupData.appendChild(clinicaldataTemplates.getItemData(formItemData.itemOID, formItemData.value.escapeXML()));
+        itemGroupData.appendChild(clinicaldataTemplates.getItemData(formItemData.itemOID, formItemData.value));
     }
     if (itemGroupData) formData.appendChild(itemGroupData);
 

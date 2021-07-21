@@ -26,7 +26,7 @@ export const getItemGroupData = itemGroupOID => template(`
 `);
 
 export const getItemData = (itemOID, value) => template(`
-    <ItemData ItemOID="${itemOID}" Value="${value}"/>
+    <ItemData ItemOID="${itemOID}" Value="${value.escapeXML()}"/>
 `);
 
 // The ODM specification currently requires a LocationRef within an AuditRecord which is not always applicable
