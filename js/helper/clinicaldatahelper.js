@@ -288,11 +288,13 @@ function getFormDataElements(studyEventOID, formOID) {
 
 // TODO: Can this be performance improved? (e.g., caching formItemDataList for getFormDataDifference())
 export function getSubjectFormData(studyEventOID, formOID) {
-    if (!subject) return [];
+    return !subject ? [] : getFormItemDataList(getFormDataElements(studyEventOID, formOID));
+}
 
+function getFormItemDataList(formDataElements) {
     const formItemDataList = [];
-    for (const formData of getFormDataElements(studyEventOID, formOID)) {
-        for (const itemGroupData of formData.querySelectorAll("ItemGroupData")) {
+    for (const formDataElement of formDataElements) {
+        for (const itemGroupData of formDataElement.querySelectorAll("ItemGroupData")) {
             const itemGroupOID = itemGroupData.getAttribute("ItemGroupOID");
             for (const itemData of itemGroupData.querySelectorAll("ItemData")) {
                 const itemOID = itemData.getAttribute("ItemOID");
@@ -379,10 +381,13 @@ export function getAuditRecords() {
 }
 
 export function getAuditRecordFormData(studyEventOID, formOID, date) {
-    let dateTimeStamp = Array.from($$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"] AuditRecord DateTimeStamp`)).find(dateTimeStamp => dateTimeStamp.textContent == date.toISOString());
-    let formData = dateTimeStamp ? dateTimeStamp.parentNode.parentNode : null;
+    const formDataElements = [];
+    for (const formDataElement of $$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`)) {
+        const timestamp = formDataElement.querySelector("AuditRecord DateTimeStamp");
+        if (timestamp && new Date(timestamp.textContent) <= date) formDataElements.push(formDataElement);
+    }
 
-    return formData ? getFormItemDataList(formData) : null;
+    return getFormItemDataList(formDataElements);
 }
 
 export async function setSubjectInfo(subjectKey, siteOID) {
