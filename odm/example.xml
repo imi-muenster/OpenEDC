@@ -110,13 +110,13 @@
                     <TranslatedText xml:lang="en">Personal questions</TranslatedText>
                     <TranslatedText xml:lang="de">Persönliche Fragen</TranslatedText>
                 </Description>
-                <ItemRef ItemOID="I.2" Mandatory="No"/>
+                <ItemRef ItemOID="Age" Mandatory="No"/>
                 <ItemRef ItemOID="Gender" Mandatory="No"/>
-                <ItemRef ItemOID="I.3" Mandatory="No"/>
-                <ItemRef ItemOID="I.4" Mandatory="No"/>
-                <ItemRef ItemOID="I.18" Mandatory="No" MethodOID="M.1"/>
+                <ItemRef ItemOID="Weight" Mandatory="No"/>
+                <ItemRef ItemOID="Height" Mandatory="No"/>
+                <ItemRef ItemOID="BMI" Mandatory="No" MethodOID="M.1"/>
                 <ItemRef ItemOID="Pregnant" Mandatory="No" CollectionExceptionConditionOID="C.2"/>
-                <ItemRef ItemOID="I.7" Mandatory="No" CollectionExceptionConditionOID="C.5"/>
+                <ItemRef ItemOID="WeeksPregnant" Mandatory="No" CollectionExceptionConditionOID="C.5"/>
             </ItemGroupDef>
             <ItemGroupDef OID="IG.2" Name="DemographicItems" Repeating="No">
                 <Description>
@@ -188,7 +188,7 @@
                 </Question>
                 <CodeListRef CodeListOID="CL.1"/>
             </ItemDef>
-            <ItemDef OID="I.2" Name="Age" DataType="integer">
+            <ItemDef OID="Age" Name="Age" DataType="integer">
                 <Question>
                     <TranslatedText xml:lang="en">What is your age?</TranslatedText>
                     <TranslatedText xml:lang="de">Wie alt sind Sie?</TranslatedText>
@@ -201,7 +201,7 @@
                     <CheckValue>120</CheckValue>
                 </RangeCheck>
             </ItemDef>
-            <ItemDef OID="I.3" Name="Weight" DataType="float">
+            <ItemDef OID="Weight" Name="Weight" DataType="float">
                 <Question>
                     <TranslatedText xml:lang="en">What is your weight?</TranslatedText>
                     <TranslatedText xml:lang="de">Wie viel wiegen Sie?</TranslatedText>
@@ -214,7 +214,7 @@
                     <CheckValue>160</CheckValue>
                 </RangeCheck>
             </ItemDef>
-            <ItemDef OID="I.4" Name="Height" DataType="float">
+            <ItemDef OID="Height" Name="Height" DataType="float">
                 <Question>
                     <TranslatedText xml:lang="en">What is your height?</TranslatedText>
                     <TranslatedText xml:lang="de">Wie groß sind Sie?</TranslatedText>
@@ -289,7 +289,7 @@
                     <TranslatedText xml:lang="de">... ja, ich hatte Hautkrebs.</TranslatedText>
                 </Question>
             </ItemDef>
-            <ItemDef OID="I.7" Name="PregnancyDuration" DataType="integer">
+            <ItemDef OID="WeeksPregnant" Name="WeeksPregnant" DataType="integer">
                 <Question>
                     <TranslatedText xml:lang="en">For how long are you pregnant now?</TranslatedText>
                     <TranslatedText xml:lang="de">Wie lange sind Sie nun schon schwanger?</TranslatedText>
@@ -359,7 +359,7 @@
                     <TranslatedText xml:lang="en">This is an examplary item</TranslatedText>
                 </Question>
             </ItemDef>
-            <ItemDef OID="I.18" Name="BMI" DataType="float">
+            <ItemDef OID="BMI" Name="BMI" DataType="float">
                 <Question>
                     <TranslatedText xml:lang="en">BMI</TranslatedText>
                     <TranslatedText xml:lang="de">BMI</TranslatedText>
@@ -552,7 +552,7 @@
                 <Description>
                     <TranslatedText xml:lang="en">M.1</TranslatedText>
                 </Description>
-                <FormalExpression Context="OpenEDC">I.3 / I.4 ^ 2</FormalExpression>
+                <FormalExpression Context="OpenEDC">Weight / Height ^ 2</FormalExpression>
             </MethodDef>
         </MetaDataVersion>
     </Study>

@@ -34,6 +34,7 @@ const staticAssets = [
     "./js/tags/projectmodal.js",
     "./js/tags/codelistmodal.js",
     "./js/tags/othermodals.js",
+    "./lib/expr-eval.js",
     "./lib/bulma.css",
     "./lib/fontawesome.css",
     "./lib/webfonts/fa-regular-400.woff2",

@@ -390,7 +390,7 @@ async function addDynamicFormLogic() {
     const itemOIDs = expressionHelper.getVariables(metadataHelper.getElementsWithExpression(currentElementID.form));
     const itemData = clinicaldataHelper.getDataForItems(itemOIDs);
     if (cachedFormData) cachedFormData.forEach(entry => {
-        if (itemData.hasOwnProperty(entry.itemOID)) itemData[entry.itemOID] = entry.value;
+        if (itemOIDs.includes(entry.itemOID)) itemData[entry.itemOID] = entry.value;
     });
     expressionHelper.process(itemData);
 
