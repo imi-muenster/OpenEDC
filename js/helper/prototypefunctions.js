@@ -37,8 +37,10 @@ Element.prototype.getTranslatedDecode = function(locale, codedValueFallback) {
 Element.prototype.getFormalExpression = function() {
     const formalExpression = this.querySelector("FormalExpression");
     // Since ODM only provides a CollectionExceptionCondition, but a CollectionCondition is much more user friendly, the expression is stored negated
-    if (formalExpression && this.tagName == "ConditionDef") return formalExpression.textContent.getBetween("!(", ")");
-    else if (formalExpression) return formalExpression.textContent;
+    if (formalExpression && formalExpression.getAttribute("Context", "OpenEDC")) {
+        if (this.tagName == "ConditionDef") return formalExpression.textContent.getBetween("!(", ")");
+        else if (formalExpression) return formalExpression.textContent;
+    }
 }
 
 String.prototype.getBetween = function(start, end) {

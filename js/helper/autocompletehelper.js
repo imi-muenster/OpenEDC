@@ -231,7 +231,7 @@ const getComparatorElements = () => {
 const getValueElements = () => {
     const itemOID = currentInput.value.split(" ")[currentTokenIndex - currentPart + 1];
     const item = metadataHelper.getElementDefByOID(itemOID);
-    if (item.getDataType() == "boolean") {
+    if (item && item.getDataType() == "boolean") {
         return [
             new AutocompleteElement(
                 "1",

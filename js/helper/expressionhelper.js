@@ -49,7 +49,7 @@ function processCondition(condition) {
         if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "select") {
             inputElement.addEventListener("input", event => respondToInputChangeCondition(event.target, inputOID, condition, conditionalElement));
         } else if (inputElement.getAttribute("type") == "radio") {
-            const radioItems = $$(`#clinicaldata-content [item-oid="${inputOID}"]`);
+            const radioItems = $$(`#clinicaldata-content [item-oid="${unescapeOIDDots(inputOID)}"]`);
             for (const radioItem of radioItems) {
                 radioItem.addEventListener("input", event => respondToInputChangeCondition(event.target, inputOID, condition, conditionalElement));
             }
@@ -143,13 +143,13 @@ function normalizeTokens(expression) {
 }
 
 function escapeOIDDots(expression) {
-    return expression.replace(/\w+\.\d+\S*/g, function(string) {
+    return expression.replace(/\w+\.\w+\S*/g, function(string) {
         return string.replace(/\./g, "_");
     });
 }
 
 function unescapeOIDDots(expression) {
-    return expression.replace(/\w+\_\d+\S*/g, function(string) {
+    return expression.replace(/\w+\_\w+\S*/g, function(string) {
         return string.replace(/\_/g, ".");
     });
 }
