@@ -3,7 +3,7 @@ class ClinicaldataSection extends HTMLElement {
         this.innerHTML = `
             <section class="section is-hidden" id="clinicaldata-section">
                 <div class="columns is-desktop">
-                    <div class="column" id="subjects-column">
+                    <div class="column is-one-fifth-desktop" id="subjects-column">
                         <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" i18n="subjects"></p>
                             <div class="panel-block has-no-padding-bottom has-no-border-bottom subject-key-mode-element">
@@ -71,19 +71,19 @@ class ClinicaldataSection extends HTMLElement {
                             </div>
                         </nav>
                     </div>
-                    <div class="column is-hidden-touch" id="clinicaldata-study-events-column">
+                    <div class="column is-one-fifth-desktop is-hidden-touch" id="clinicaldata-study-events-column">
                         <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" i18n="events"></p>
                             <div class="tree-panel-blocks" id="clinicaldata-study-event-panel-blocks"></div>
                         </nav>
                     </div>
-                    <div class="column is-hidden-touch" id="clinicaldata-forms-column">
+                    <div class="column is-one-fifth-desktop is-hidden-touch" id="clinicaldata-forms-column">
                         <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" i18n="forms"></p>
                             <div class="tree-panel-blocks" id="clinicaldata-form-panel-blocks"></div>
                         </nav>
                     </div>
-                    <div class="column is-two-fifths-desktop is-hidden-touch" id="clinicaldata-column">
+                    <div class="column is-hidden-touch" id="clinicaldata-column">
                         <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" i18n="data"></p>
                             <div class="tree-panel-blocks">

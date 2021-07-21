@@ -95,7 +95,7 @@ export async function importClinicaldata(odmXMLString) {
         subjectDataList.push(xmlSerializer.serializeToString(subjectData));
     }
 
-    await ioHelper.storeSubjectDataBulk(subjectFileNameList, subjectDataList);
+    if (subjectDataList.length) await ioHelper.storeSubjectDataBulk(subjectFileNameList, subjectDataList);
 }
 
 export function getSubject() {
@@ -423,7 +423,7 @@ export function getAutoNumberedSubjectKey() {
     // TODO: Moreover, when connected to a server, the server should be consulted to generate the next auto-numbered key
     // TODO: Alternatively, load the subject list from the server before the auto-numbered key is generated (for the manual mode as well)
     const subjectsWithIntKeys = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY).filter(subject => subject.keyInt);
-    const highestNumber = subjectsWithIntKeys.length > 0 ? subjectsWithIntKeys[subjectsWithIntKeys.length - 1].key : 0;
+    const highestNumber = subjectsWithIntKeys.length ? subjectsWithIntKeys[subjectsWithIntKeys.length - 1].key : 0;
     const subjectKey = parseInt(highestNumber) + 1;
 
     return subjectKey.toString();

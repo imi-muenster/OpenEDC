@@ -194,7 +194,7 @@ export function loadSubjectKeys() {
     const selectedSite = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
     const sortOrder = $("#sort-subject-select-inner").value;
     const subjects = clinicaldataHelper.getSubjects(selectedSite, sortOrder);
-    subjects.length > 0 ? $("#no-subjects-hint").hide() : $("#no-subjects-hint").show();
+    subjects.length ? $("#no-subjects-hint").hide() : $("#no-subjects-hint").show();
 
     for (let subject of subjects) {
         const siteSubtitle = subject.siteOID && !selectedSite ? admindataHelper.getSiteNameByOID(subject.siteOID) : null;
@@ -304,7 +304,7 @@ async function loadFormsByStudyEvent() {
     }
 
     // Automatically start the survey view when activated in project options and the current device is a smartphone or tablet
-    if (ioHelper.isAutoSurveyView() && ioHelper.isMobile() && currentElementID.subject && formDefs.length > 0 && !currentElementID.form) {
+    if (ioHelper.isAutoSurveyView() && ioHelper.isMobile() && currentElementID.subject && formDefs.length && !currentElementID.form) {
         currentElementID.form = formDefs[0].getOID();
         showSurveyView();
         adjustMobileUI();
@@ -466,7 +466,7 @@ function loadFormClinicaldata() {
 function showErrors(metadataNotFoundErrors, hiddenFieldWithValueErrors) {
     // Compose and show the error message
     let errorMessage = "";
-    if (metadataNotFoundErrors.length > 0) {
+    if (metadataNotFoundErrors.length) {
         errorMessage += "<p>" + languageHelper.getTranslation("metadata-not-found-error") + "</p><br>";
         for (let error of metadataNotFoundErrors) {
             errorMessage += "<p>";
@@ -474,10 +474,10 @@ function showErrors(metadataNotFoundErrors, hiddenFieldWithValueErrors) {
             else errorMessage += languageHelper.getTranslation("choices-unique-id") + ": " + error.oid + ", " + languageHelper.getTranslation("coded-value") + ": " + error.value;
             errorMessage += "</p>"
         }
-        if (hiddenFieldWithValueErrors.length > 0) errorMessage += "<br><hr>";
+        if (hiddenFieldWithValueErrors.length) errorMessage += "<br><hr>";
     }
-    if (hiddenFieldWithValueErrors.length > 0) errorMessage += languageHelper.getTranslation("hidden-field-with-value-error");
-    if (errorMessage.length > 0) ioHelper.showMessage(languageHelper.getTranslation("error"), errorMessage);
+    if (hiddenFieldWithValueErrors.length) errorMessage += languageHelper.getTranslation("hidden-field-with-value-error");
+    if (errorMessage.length) ioHelper.showMessage(languageHelper.getTranslation("error"), errorMessage);
 
     // Highlight conditionally hidden fields that contain values
     for (let error of hiddenFieldWithValueErrors) {
@@ -805,7 +805,7 @@ function surveyViewIsActive() {
 }
 
 function dataHasChanged() {
-    return !skipDataHasChangedCheck && currentElementID.subject && currentElementID.studyEvent && currentElementID.form && clinicaldataHelper.getFormDataDifference(getFormData(), currentElementID.studyEvent, currentElementID.form).length > 0;
+    return !skipDataHasChangedCheck && currentElementID.subject && currentElementID.studyEvent && currentElementID.form && clinicaldataHelper.getFormDataDifference(getFormData(), currentElementID.studyEvent, currentElementID.form).length;
 }
 
 window.showSubjectInfo = function() {

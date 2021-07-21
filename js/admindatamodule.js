@@ -21,7 +21,7 @@ export async function loadUsers() {
     [$("#user-site-select-inner"), $("#user-first-name-input"), $("#user-last-name-input"), $("#user-username-input"), $("#user-password-input"), $("#user-save-button"), $("#user-remove-button")].disableElements();
 
     const users = admindataHelper.getUsers();
-    if (users.length > 0) $("#no-users-hint").hide();
+    if (users.length) $("#no-users-hint").hide();
     else $("#no-users-hint").show();
 
     for (let user of users) {
@@ -142,7 +142,7 @@ export function loadSites() {
     [$("#site-name-input"), $("#site-save-button"), $("#site-remove-button")].disableElements();
 
     const sites = admindataHelper.getSites();
-    if (sites.length > 0) $("#no-sites-hint").hide();
+    if (sites.length) $("#no-sites-hint").hide();
     else $("#no-sites-hint").show();
 
     for (let site of sites) {

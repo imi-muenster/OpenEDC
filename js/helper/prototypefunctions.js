@@ -36,18 +36,17 @@ Element.prototype.getTranslatedDecode = function(locale, codedValueFallback) {
 
 Element.prototype.getFormalExpression = function() {
     const formalExpression = this.querySelector("FormalExpression");
-    if (formalExpression && formalExpression.getAttribute("Context") == "OpenEDC") {
-        // Since ODM only provides a CollectionExceptionCondition, but a CollectionCondition is much more user friendly, the expression is stored negated
-        if (this.tagName == "ConditionDef") return formalExpression.textContent.getBetween("!(", ")");
-        else return formalExpression.textContent;
-    }
-    return null;
+    // Since ODM only provides a CollectionExceptionCondition, but a CollectionCondition is much more user friendly, the expression is stored negated
+    if (formalExpression && this.tagName == "ConditionDef") return formalExpression.textContent.getBetween("!(", ")");
+    else if (formalExpression) return formalExpression.textContent;
 }
 
 String.prototype.getBetween = function(start, end) {
+    const startIndex = this.indexOf(start);
+    const endIndex = this.lastIndexOf(end);
     return this.substring(
-        this.indexOf(start) + start.length, 
-        this.lastIndexOf(end)
+        startIndex == -1 || endIndex == -1 ? 0 : startIndex + start.length, 
+        startIndex == -1 || endIndex == -1 ? this.length : endIndex
     );
 }
 
@@ -64,7 +63,7 @@ String.prototype.escapeXML = function() {
 }
 
 NodeList.prototype.getLastElement = function() {
-    if (this.length > 0) return this[this.length - 1];
+    if (this.length) return this[this.length - 1];
     else return null;
 }
 

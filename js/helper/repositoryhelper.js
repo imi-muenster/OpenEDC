@@ -47,7 +47,7 @@ export const getModels = async urlParams => {
         if (tokenParameters.length > 1) tokenParameters.shift();
     }
     
-    return Promise.resolve(models.length > 0 ? models : null);
+    return Promise.resolve(models.length ? models : null);
 }
 
 // Depending on the repository, prepare the downloaded ODM for further processing

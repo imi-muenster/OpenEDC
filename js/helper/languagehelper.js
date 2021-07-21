@@ -94,7 +94,7 @@ export function createLanguageSelect(includeUnavailable) {
     $$("#language-dropdown a").removeElements();
     $$("#language-dropdown hr").removeElements();
 
-    if (localesInODM.length > 0) {
+    if (localesInODM.length) {
         localesInODM.forEach(locale => addLanguageOptionNavbar(locale));
         if (includeUnavailable || localesInODM.includes(untranslatedLocale)) addDividerNavbar();
     }

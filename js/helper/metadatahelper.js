@@ -361,7 +361,7 @@ export function getItemsWithRangeChecks(formOID) {
                     checkValue: rangeCheck.querySelector("CheckValue").textContent
                 });
             }
-            if (rangeChecks.length > 0) {
+            if (rangeChecks.length) {
                 itemOIDSWithRangeCheck.push({
                     itemOID: itemOID,
                     rangeChecks: rangeChecks

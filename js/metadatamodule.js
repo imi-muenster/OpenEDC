@@ -423,7 +423,7 @@ export function reloadDetailsPanel() {
 
 function fillItemRangeChecks() {
     const rangeChecks = metadataHelper.getRangeChecksByItem(currentElementID.item);
-    if (rangeChecks.length > 0) $$("#range-check-inputs .range-check-input").removeElements();
+    if (rangeChecks.length) $$("#range-check-inputs .range-check-input").removeElements();
 
     for (const rangeCheck of rangeChecks) {
         const input = htmlElements.getRangeCheckInputElement(rangeCheck.getAttribute("Comparator"), rangeCheck.querySelector("CheckValue").textContent);
@@ -435,7 +435,7 @@ function fillItemRangeChecks() {
 
 function fillElementAliases() {
     const aliases = metadataHelper.getAliasesByElement(getCurrentElementOID(), currentElementID.codeListItem);
-    if (aliases.length > 0) $$("#alias-inputs .alias-input").removeElements();
+    if (aliases.length) $$("#alias-inputs .alias-input").removeElements();
 
     for (const alias of aliases) {
         const input = htmlElements.getAliasInputElement(alias.getAttribute("Context"), alias.getName());
@@ -1006,7 +1006,7 @@ window.elementDrop = async function(event) {
     if (sourceParentOID != targetParentOID) {
         // Extra if-statement for performance reasons (do not load all subjects when sourceParentOID and targetParentOID are equal)
         const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID, elementTypeOnDrag, sourceParentOID, sourceCodedValue);
-        if (subjectKeys.length > 0) {
+        if (subjectKeys.length) {
             ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("element-not-moved-error"));
             return;
         }
@@ -1056,7 +1056,7 @@ window.elementDrop = async function(event) {
 
 window.showRemoveModal = async function() {
     const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID(), getCurrentElementType(), currentElementID.item, currentElementID.codeListItem);
-    if (subjectKeys.length > 0) {
+    if (subjectKeys.length) {
         ioHelper.showMessage(languageHelper.getTranslation("cannot-be-removed"), languageHelper.getTranslation("cannot-be-removed-text") + subjectKeys.join(", ") + "</strong>");
     } else {
         ioHelper.showMessage(languageHelper.getTranslation("please-confirm"), languageHelper.getTranslation("element-remove-hint"),
