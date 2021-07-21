@@ -820,10 +820,7 @@ function safeDeleteStudyEvent(studyEventOID) {
     // Get all Forms within the StudyEvent and safe-delete them
     let formOIDs = Array.from($$(`StudyEventDef[OID="${studyEventOID}"] FormRef`)).map(item => item.getAttribute("FormOID"));
     // Search for other references of the StudyEvent and delete the Def only if there is no one left
-    if (!$(`StudyEventRef[StudyEventOID="${studyEventOID}"]`)) {
-        let studyEventDef = $(`StudyEventDef[OID="${studyEventOID}"]`);
-        if (studyEventDef) studyEventDef.remove();
-    }
+    if (!$(`StudyEventRef[StudyEventOID="${studyEventOID}"]`)) ioHelper.safeRemoveElement($(`StudyEventDef[OID="${studyEventOID}"]`));
     for (let formOID of formOIDs) {
         safeDeleteForm(formOID);
     }
@@ -833,10 +830,7 @@ function safeDeleteForm(formOID) {
     // Get all ItemGroups within the Form and safe-delete them
     let itemGroupOIDs = Array.from($$(`FormDef[OID="${formOID}"] ItemGroupRef`)).map(item => item.getAttribute("ItemGroupOID"));
     // Search for other references of the Form and delete the Def only if there is no one left
-    if (!$(`FormRef[FormOID="${formOID}"]`)) {
-        let formDef = $(`FormDef[OID="${formOID}"]`);
-        if (formDef) formDef.remove();
-    }
+    if (!$(`FormRef[FormOID="${formOID}"]`)) ioHelper.safeRemoveElement($(`FormDef[OID="${formOID}"]`));
     for (let itemGroupOID of itemGroupOIDs) {
         safeDeleteItemGroup(itemGroupOID);
     }
@@ -846,10 +840,7 @@ function safeDeleteItemGroup(itemGroupOID) {
     // Get all Items within the ItemGroup and safe-delete them
     let itemOIDs = Array.from($$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)).map(item => item.getAttribute("ItemOID"));
     // Search for other references of the ItemGroup and delete the Def only if there is no one left
-    if (!$(`ItemGroupRef[ItemGroupOID="${itemGroupOID}"]`)) {
-        let itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`)
-        if (itemGroupDef) itemGroupDef.remove();
-    }
+    if (!$(`ItemGroupRef[ItemGroupOID="${itemGroupOID}"]`)) ioHelper.safeRemoveElement($(`ItemGroupDef[OID="${itemGroupOID}"]`));
     for (let itemOID of itemOIDs) {
         safeDeleteItem(itemOID);
     }
@@ -859,46 +850,29 @@ function safeDeleteItem(itemOID) {
     // Get the CodeList within the Item and remove it
     let codeListRef = $(`ItemDef[OID="${itemOID}"] CodeListRef`);
     // Search for other references of the Item and delete the Def only if there is no one left
-    if (!$(`ItemRef[ItemOID="${itemOID}"]`)) {
-        let itemDef = $(`ItemDef[OID="${itemOID}"]`);
-        if (itemDef) itemDef.remove();
-    }
+    if (!$(`ItemRef[ItemOID="${itemOID}"]`)) ioHelper.safeRemoveElement($(`ItemDef[OID="${itemOID}"]`));
     if (codeListRef) safeDeleteCodeList(codeListRef.getAttribute("CodeListOID"));
 }
 
 function safeDeleteCodeList(codeListOID) {
     // Search for other references of the CodeList and delete the Def only if there is no one left
-    if (!$(`CodeListRef[CodeListOID="${codeListOID}"]`)) {
-        let codeList = $(`CodeList[OID="${codeListOID}"]`);
-        if (codeList) codeList.remove();
-    }
+    if (!$(`CodeListRef[CodeListOID="${codeListOID}"]`)) ioHelper.safeRemoveElement($(`CodeList[OID="${codeListOID}"]`));
+}
+
+export function deleteCodeListItem(codeListOID, codedValue) {
+    ioHelper.safeRemoveElement($(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"]`));
 }
 
 export function safeDeleteCondition(conditionOID) {
-    if (!$(`[CollectionExceptionConditionOID="${conditionOID}"]`)) {
-        let conditionDef = $(`ConditionDef[OID="${conditionOID}"]`);
-        if (conditionDef) conditionDef.remove();
-    }
+    if (!$(`[CollectionExceptionConditionOID="${conditionOID}"]`)) ioHelper.safeRemoveElement($(`ConditionDef[OID="${conditionOID}"]`));
 }
 
-// TODO: Could use safeRemoveElement() here everywhere
 export function safeDeleteMethod(methodOID) {
-    if (!$(`[MethodOID="${methodOID}"]`)) {
-        let methodDef = $(`MethodDef[OID="${methodOID}"]`);
-        if (methodDef) methodDef.remove();
-    }
+    if (!$(`[MethodOID="${methodOID}"]`)) ioHelper.safeRemoveElement($(`MethodDef[OID="${methodOID}"]`));
 }
 
 export function safeDeleteMeasurementUnit(measurementUnitOID) {
-    if (!$(`MeasurementUnitRef[MeasurementUnitOID="${measurementUnitOID}"]`)) {
-        let measurementUnit = $(`MeasurementUnit[OID="${measurementUnitOID}"]`);
-        if (measurementUnit) measurementUnit.remove();
-    }
-}
-
-
-export function deleteCodeListItem(codeListOID, codedValue) {
-    $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"]`).remove();
+    if (!$(`MeasurementUnitRef[MeasurementUnitOID="${measurementUnitOID}"]`)) ioHelper.safeRemoveElement($(`MeasurementUnit[OID="${measurementUnitOID}"]`));
 }
 
 export function deleteAliasesOfElement(elementOID, codeListItemCodedValue) {

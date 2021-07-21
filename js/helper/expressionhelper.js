@@ -22,7 +22,7 @@ export function getVariables(elementsWithExpressionParam) {
 export function process(variableValuesParam) {
     variableValues = {};
     for (const [key, value] of Object.entries(variableValuesParam)) {
-        // Expr-eval does not support dots in variables names and are therefore replaced with underscores
+        // Expr-eval does not support dots in variables names which are therefore replaced with underscores
         variableValues[escapeOIDDots(key)] = value;
     }
 
