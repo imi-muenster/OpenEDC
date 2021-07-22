@@ -17,13 +17,7 @@ export const elementTypes = {
 
 export const dataStatusCodeListOID = "OpenEDC.DataStatus";
 
-let xsltStylesheet;
 let metadata;
-
-export async function init() {
-    let xsltResponse = await fetch(ioHelper.getBaseURL() + "/xsl/odmtohtml.xsl");
-    xsltStylesheet = await xsltResponse.text();
-}
 
 export async function loadEmptyProject() {
     metadata = metadataTemplates.getODMTemplate();
@@ -83,57 +77,6 @@ export async function getFormAsHTML(formOID, textAsTextarea) {
         no: languageHelper.getTranslation("no"),
         textAsTextarea: textAsTextarea
     });
-
-    // Create a new ODM copy that only includes the required elements for performance reasons
-    // This might look like a lot of code but it increases the performance significantly
-    const prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
-    const reducedODM = new DOMParser().parseFromString(prettifiedODM, "text/xml");
-
-    const itemGroupOIDs = [];
-    for (const formDef of reducedODM.querySelectorAll("FormDef")) {
-        if (formDef.getOID() == formOID) {
-            for (const itemGroupRef of formDef.querySelectorAll("ItemGroupRef")) {
-                itemGroupOIDs.push(itemGroupRef.getAttribute("ItemGroupOID"));
-            }
-        } else formDef.remove();
-    }
-    const itemOIDs = [];
-    for (const itemGroupDef of reducedODM.querySelectorAll("ItemGroupDef")) {
-        if (itemGroupOIDs.includes(itemGroupDef.getOID())) {
-            for (const itemRef of itemGroupDef.querySelectorAll("ItemRef")) {
-                itemOIDs.push(itemRef.getAttribute("ItemOID"));
-            }
-        } else itemGroupDef.remove();
-    }
-    const codeListOIDs = [];
-    for (const itemDef of reducedODM.querySelectorAll("ItemDef")) {
-        if (itemOIDs.includes(itemDef.getOID())) {
-            if (itemDef.querySelector("CodeListRef")) {
-                codeListOIDs.push(itemDef.querySelector("CodeListRef").getAttribute("CodeListOID"));
-            }
-        } else itemDef.remove();
-    }
-    for (const codeList of reducedODM.querySelectorAll("CodeList")) {
-        if (!codeListOIDs.includes(codeList.getOID())) codeList.remove();
-    }
-
-    // Transform markdown to html (bold, italic, and underline)
-    reducedODM.querySelectorAll("ItemGroupDef TranslatedText, ItemDef TranslatedText").forEach(translatedText => {
-        translatedText.textContent = translatedText.textContent.replace(/\*\*(.+)\*\*/g, "<b>$1</b>");
-        translatedText.textContent = translatedText.textContent.replace(/\*(.+)\*/g, "<i>$1</i>");
-        translatedText.textContent = translatedText.textContent.replace(/\_(.+)\_/g, "<u>$1</u>");
-    });
-
-    const xsltProcessor = new XSLTProcessor();
-    xsltProcessor.importStylesheet(new DOMParser().parseFromString(xsltStylesheet, "text/xml"));
-    xsltProcessor.setParameter(null, "formOID", formOID);
-    xsltProcessor.setParameter(null, "locale", languageHelper.getCurrentLocale());
-    xsltProcessor.setParameter(null, "defaultLocale", languageHelper.untranslatedLocale);
-    xsltProcessor.setParameter(null, "yes", languageHelper.getTranslation("yes"));
-    xsltProcessor.setParameter(null, "no", languageHelper.getTranslation("no"));
-    xsltProcessor.setParameter(null, "textAsTextarea", textAsTextarea.toString());
-
-    return xsltProcessor.transformToFragment(reducedODM, document);
 }
 
 export function prepareDownload(dataStatusTypes) {

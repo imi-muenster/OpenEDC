@@ -25,6 +25,7 @@ const staticAssets = [
     "./js/helper/cryptohelper.js",
     "./js/helper/autocompletehelper.js",
     "./js/helper/prototypefunctions.js",
+    "./js/helper/odmtohtml.js",
     "./js/odmtemplates/metadatatemplates.js",
     "./js/odmtemplates/admindatatemplates.js",
     "./js/odmtemplates/clinicaldatatemplates.js",
@@ -40,7 +41,6 @@ const staticAssets = [
     "./lib/webfonts/fa-regular-400.woff2",
     "./lib/webfonts/fa-solid-900.woff2",
     "./odm/example.xml",
-    "./xsl/odmtohtml.xsl",
     "./img/title-logo.png"
 ];
 

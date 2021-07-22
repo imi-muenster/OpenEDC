@@ -34,8 +34,6 @@ let locale = null;
 
 export function init() {
     createDatatypeMandatorySelect();
-
-    metadataHelper.init();
     setIOListeners();
 }
 

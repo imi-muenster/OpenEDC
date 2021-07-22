@@ -4,7 +4,6 @@ const $$ = query => odm.querySelectorAll(query);
 let odm = null;
 let options = {};
 
-// TODO: Handle defaultLocale
 export function getFormAsHTML(odmParam, formOID, optionsParam) {
     odm = odmParam;
     options = optionsParam;
@@ -124,8 +123,6 @@ const getSelectInput = (codeListItems, itemOID) => {
     return selectContainer;
 }
 
-// TODO: Test radioContainer.innerHTML = ``; performance
-// TODO: Could also take all codeListItems, iterate, add <br> and return entire element
 const getRadioInput = (value, translatedText, itemOID, itemGroupOID) => {
     const radioContainer = document.createElement("label");
     radioContainer.className = "radio";
