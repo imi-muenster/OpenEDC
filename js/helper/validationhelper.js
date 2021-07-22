@@ -7,6 +7,7 @@ const $$ = query => document.querySelectorAll(query);
 export function process(itemsWithRangeChecks) {
     // First, handle data types (e.g., integer and float)
     for (let input of $$("#clinicaldata-content [inputmode='numeric'], #clinicaldata-content [inputmode='decimal'], #clinicaldata-content [type='date'], #clinicaldata-content [type='time'], #clinicaldata-content [type='datetime-local']")) {
+        if (input.readOnly) continue;
         input.addEventListener("focusout", event => {
             let type = input.getAttribute("inputmode") || input.getAttribute("type");
             switch (type) {
@@ -47,6 +48,7 @@ export function process(itemsWithRangeChecks) {
     // Second, handle range checks
     for (let item of itemsWithRangeChecks) {
         let input = $(`#clinicaldata-content [item-oid='${item.itemOID}']`);
+        if (input.readOnly) continue;
         input.addEventListener("focusout", event => {
             for (let rangeCheck of item.rangeChecks) {
                 switch (rangeCheck.comparator) {

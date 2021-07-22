@@ -17,7 +17,7 @@ export function getFormAsHTML(odmParam, formOID, optionsParam) {
 
         const itemGroupContent = document.createElement("div");
         itemGroupContent.className = "item-group-content";
-        itemGroupContent.id = itemGroupOID;
+        itemGroupContent.setAttribute("item-group-content-oid", itemGroupOID);
 
         const itemGroupDescr = document.createElement("h2");
         itemGroupDescr.className = "subtitle";
@@ -30,7 +30,6 @@ export function getFormAsHTML(odmParam, formOID, optionsParam) {
 
             const itemField = document.createElement("div");
             itemField.className = "item-field";
-            itemField.id = itemOID;
             itemField.setAttribute("item-field-oid", itemOID);
             itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
 
@@ -107,6 +106,7 @@ const getSelectInput = (codeListItems, itemOID) => {
     const selectContainer = document.createElement("div");
     selectContainer.className = "select is-fullwidth";
     const select = document.createElement("select");
+    select.setAttribute("type", "select");
     select.setAttribute("item-oid", itemOID);
 
     const option = document.createElement("option");
@@ -157,7 +157,8 @@ const getTextInput = itemDef => {
     } else if (dataType == "string" && options.textAsTextarea) {
         input = document.createElement("textarea");
         input.className = "textarea";
-        input.type = "textarea";
+        input.setAttribute("type", "textarea");
+        input.setAttribute("item-oid", itemDef.getAttribute("OID"));
     }
 
     return input;
