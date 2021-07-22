@@ -21,7 +21,7 @@ export function getFormAsHTML(odmParam, formOID, optionsParam) {
 
         const itemGroupDescr = document.createElement("h2");
         itemGroupDescr.className = "subtitle";
-        itemGroupDescr.textContent = itemGroupDef.getTranslatedDescription(options.locale, false, options.defaultLocale);
+        itemGroupDescr.innerHTML = processMarkdown(itemGroupDef.getTranslatedDescription(options.locale, false, options.defaultLocale));
         itemGroupContent.appendChild(itemGroupDescr);
 
         for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
@@ -36,8 +36,8 @@ export function getFormAsHTML(odmParam, formOID, optionsParam) {
 
             const itemQuestion = document.createElement("label");
             itemQuestion.className = "label";
-            itemQuestion.textContent = itemDef.getTranslatedQuestion(options.locale, false, options.defaultLocale);
-            itemQuestion.textContent += itemRef.getAttribute("mandatory") == "Yes" ? " (*)" : "";
+            itemQuestion.innerHTML = processMarkdown(itemDef.getTranslatedQuestion(options.locale, false, options.defaultLocale));
+            itemQuestion.innerHTML += itemRef.getAttribute("Mandatory") == "Yes" ? " (*)" : "";
             itemField.appendChild(itemQuestion);
 
             const itemInput = getItemInput(itemDef, itemGroupOID);
@@ -161,4 +161,13 @@ const getTextInput = itemDef => {
     }
 
     return input;
+}
+
+const processMarkdown = translatedText => {
+    if (!translatedText) return "";
+
+    translatedText = translatedText.replace(/\*\*(.+)\*\*/g, "<b>$1</b>");
+    translatedText = translatedText.replace(/\*(.+)\*/g, "<i>$1</i>");
+    translatedText = translatedText.replace(/\_(.+)\_/g, "<u>$1</u>");
+    return translatedText;
 }
