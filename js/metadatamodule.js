@@ -555,7 +555,7 @@ function saveDetailsExtended() {
 }
 
 function saveConditionPreCheck() {
-    const formalExpression = $("#collection-condition").value;
+    const formalExpression = $("#collection-condition").value.trim();
     const currentCondition = metadataHelper.getElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID());
     if (formalExpression && currentCondition && formalExpression == currentCondition.getFormalExpression()) return;
 
@@ -595,7 +595,7 @@ function saveConditionForElements(formalExpression, currentCondition, elementRef
 }
 
 function saveMethodPreCheck() {
-    const formalExpression = $("#item-method").value;
+    const formalExpression = $("#item-method").value.trim();
     const currentMethod = metadataHelper.getItemMethod(getCurrentElementOID(), getCurrentElementParentOID());
     if (formalExpression && currentMethod && formalExpression == currentMethod.getFormalExpression()) return;
 

@@ -23,7 +23,7 @@ export const modes = {
     ITEMWITHCODELIST: 4
 }
 
-const compounds = ["and", "or", "AND", "OR", "&&", "||"];
+const compounds = ["AND", "OR"];
 const comparators = ["==", "!=", "<", "<=", ">", ">="];
 const operators = ["+", "-", "*", "/", "^"];
 
@@ -149,10 +149,9 @@ const elementSelected = element => {
     currentInput.value = expressionParts.join(" ");
 
     closeLists();
-    if (currentTokenIndex == expressionParts.length - 1 && currentPart != Object.keys(enabledParts).length) {
+    if ((currentTokenIndex == expressionParts.length - 1 && currentPart != Object.keys(enabledParts).length) || currentMode == modes.METHOD) {
         currentInput.value += " ";
-        currentInput.focus();
-        currentInput.click();
+        currentInput.dispatchEvent(new CustomEvent("input", { detail: { skipRender: false } }));
     } else {
         currentInput.dispatchEvent(new CustomEvent("input", { detail: { skipRender: true } }));
     }
@@ -186,6 +185,9 @@ const setElements = () => {
             break;
         case enabledParts.VALUE:
             elements = getValueElements();
+            break;
+        case Object.keys(enabledParts).length + 1:
+            elements = getEndOfExpressionElements();
             break;
         default:
             elements = [];
@@ -248,6 +250,18 @@ const getValueElements = () => {
             codeListItem.getCodedValue(),
             codeListItem.getTranslatedDecode(languageHelper.getCurrentLocale())
         ));
+    }
+}
+
+const getEndOfExpressionElements = () => {
+    switch (currentMode) {
+        case modes.CONDITION:
+            return compounds.map(compound => new AutocompleteElement(compound));
+        case modes.METHOD:
+            return operators.map(operator => new AutocompleteElement(operator));
+        case modes.ITEMWITHCODELIST:
+        case modes.MEASUREMENTUNIT:
+            return [];
     }
 }
 
