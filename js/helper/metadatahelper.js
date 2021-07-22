@@ -73,6 +73,7 @@ export async function getFormAsHTML(formOID, textAsTextarea) {
     return odmToHTML.getFormAsHTML(metadata, formOID, {
         locale: languageHelper.getCurrentLocale(),
         defaultLocale: languageHelper.untranslatedLocale,
+        missingTranslation: languageHelper.getTranslation("missing-translation"),
         yes: languageHelper.getTranslation("yes"),
         no: languageHelper.getTranslation("no"),
         textAsTextarea: textAsTextarea
@@ -611,7 +612,7 @@ function insertElementDef(elementDef) {
         insertPositionDef.insertAdjacentElement("afterend", elementDef);
     } else {
         // CodeLists must be inserted before Conditions and Conditions before Methods (the order of other elements is naturally preserved)
-        if (elementDef.tagName == "CodeList") $("ItemDef") ? $$("itemDef").getLastElement().insertAdjacentElement("afterend", elementDef) : $("MetaDataVersion").appendChild(elementDef);
+        if (elementDef.tagName == "CodeList") $("ItemDef") ? $$("ItemDef").getLastElement().insertAdjacentElement("afterend", elementDef) : $("MetaDataVersion").appendChild(elementDef);
         else if (elementDef.tagName == "ConditionDef") $("MethodDef") ? $("MethodDef").insertAdjacentElement("beforebegin", elementDef) : $("MetaDataVersion").appendChild(elementDef);
         else $("MetaDataVersion").appendChild(elementDef);
     }
