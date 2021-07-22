@@ -605,13 +605,15 @@ export function insertStudyEventRef(studyEventRef) {
 }
 
 // TODO: .tagName approach could also be used for insertElementRef
-// TODO: ConditionDefs must be inserted before MethodDefs
 function insertElementDef(elementDef) {
     const insertPositionDef = $$(elementDef.tagName).getLastElement();
     if (insertPositionDef) {
         insertPositionDef.insertAdjacentElement("afterend", elementDef);
     } else {
-        $("MetaDataVersion").appendChild(elementDef);
+        // CodeLists must be inserted before Conditions and Conditions before Methods (the order of other elements is naturally preserved)
+        if (elementDef.tagName == "CodeList") $("ItemDef") ? $$("itemDef").getLastElement().insertAdjacentElement("afterend", elementDef) : $("MetaDataVersion").appendChild(elementDef);
+        else if (elementDef.tagName == "ConditionDef") $("MethodDef") ? $("MethodDef").insertAdjacentElement("beforebegin", elementDef) : $("MetaDataVersion").appendChild(elementDef);
+        else $("MetaDataVersion").appendChild(elementDef);
     }
 }
 
