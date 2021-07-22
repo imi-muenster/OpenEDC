@@ -9,10 +9,12 @@ let variableValues = {};
 export function getVariables(elementsWithExpressionParam) {
     elementsWithExpression = elementsWithExpressionParam;
 
-    let variables = new Set();
+    const parser = new Parser();
+    const variables = new Set();
+
     for (let elementWithExpression of elementsWithExpression) {
         const normalizedExpression = escapeOIDDots(normalizeTokens(elementWithExpression.formalExpression));
-        elementWithExpression.expression = new Parser.parse(normalizedExpression);
+        elementWithExpression.expression = parser.parse(normalizedExpression);
         elementWithExpression.expression.variables().forEach(variable => variables.add(unescapeOIDDots(variable)));
     }
 
@@ -128,6 +130,10 @@ function respondToInputChangeMethod(input, inputOID, method, computedElement) {
 function computeExpression(method) {
     const computedValue = method.expression.evaluate(variableValues);
     return !isNaN(computedValue) && isFinite(computedValue) ? Math.round(computedValue * 100) / 100 : null;
+}
+
+export function parse(formalExpression) {
+    return new Parser( { operators: { assignment: false } } ).parse(escapeOIDDots(normalizeTokens(formalExpression)));
 }
 
 // Helper functions

@@ -3,6 +3,7 @@ import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
 import * as metadataHelper from "./helper/metadatahelper.js";
 import * as admindataHelper from "./helper/admindatahelper.js";
 import * as ioHelper from "./helper/iohelper.js";
+import * as expressionHelper from "./helper/expressionhelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 import * as htmlElements from "./helper/htmlelements.js";
 import * as autocompleteHelper from "./helper/autocompletehelper.js";
@@ -556,6 +557,7 @@ function saveConditionPreCheck() {
     const formalExpression = $("#collection-condition").value.trim();
     const currentCondition = metadataHelper.getElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID());
     if (formalExpression && currentCondition && formalExpression == currentCondition.getFormalExpression()) return;
+    if (formalExpressionContainsError(formalExpression)) return true;
 
     const currentElementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), getCurrentElementType(), getCurrentElementParentOID());
     if (currentCondition) {
@@ -596,6 +598,7 @@ function saveMethodPreCheck() {
     const formalExpression = $("#item-method").value.trim();
     const currentMethod = metadataHelper.getItemMethod(getCurrentElementOID(), getCurrentElementParentOID());
     if (formalExpression && currentMethod && formalExpression == currentMethod.getFormalExpression()) return;
+    if (formalExpressionContainsError(formalExpression)) return true;
 
     const currentElementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), getCurrentElementType(), getCurrentElementParentOID());
     if (currentMethod) {
@@ -691,6 +694,15 @@ function saveAliases() {
         if (context && name) {
             metadataHelper.setElementAlias(getCurrentElementOID(), currentElementID.codeListItem, context, name);
         }
+    }
+}
+
+function formalExpressionContainsError(formalExpression) {
+    try {
+        if (formalExpression) expressionHelper.parse(formalExpression);
+    } catch (error) {
+        ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("formal-expression-error"));
+        return true;
     }
 }
 
