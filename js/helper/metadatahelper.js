@@ -76,10 +76,6 @@ export function removeMetadata() {
 }
 
 export async function getFormAsHTML(formOID, textAsTextarea) {
-    // Create a new ODM copy that only includes the required elements for performance reasons
-    // This might look like a lot of code but it increases the performance significantly
-    const prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
-    const reducedODM = new DOMParser().parseFromString(prettifiedODM, "text/xml");
     return odmToHTML.getFormAsHTML(metadata, formOID, {
         locale: languageHelper.getCurrentLocale(),
         defaultLocale: languageHelper.untranslatedLocale,
@@ -87,6 +83,11 @@ export async function getFormAsHTML(formOID, textAsTextarea) {
         no: languageHelper.getTranslation("no"),
         textAsTextarea: textAsTextarea
     });
+
+    // Create a new ODM copy that only includes the required elements for performance reasons
+    // This might look like a lot of code but it increases the performance significantly
+    const prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
+    const reducedODM = new DOMParser().parseFromString(prettifiedODM, "text/xml");
 
     const itemGroupOIDs = [];
     for (const formDef of reducedODM.querySelectorAll("FormDef")) {

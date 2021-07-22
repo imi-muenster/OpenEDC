@@ -22,8 +22,7 @@ export function getFormAsHTML(odmParam, formOID, optionsParam) {
 
         const itemGroupDescr = document.createElement("h2");
         itemGroupDescr.className = "subtitle";
-        const description = itemGroupDef.querySelector("Description");
-        itemGroupDescr.textContent = description ? description.getTranslatedDescription(options.locale) : null;
+        itemGroupDescr.textContent = itemGroupDef.getTranslatedDescription(options.locale, false, options.defaultLocale);
         itemGroupContent.appendChild(itemGroupDescr);
 
         for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
@@ -38,8 +37,7 @@ export function getFormAsHTML(odmParam, formOID, optionsParam) {
 
             const itemQuestion = document.createElement("label");
             itemQuestion.className = "label";
-            const question = itemDef.querySelector("Question");
-            itemQuestion.textContent = question ? question.getTranslatedQuestion(options.locale) : null;
+            itemQuestion.textContent = itemDef.getTranslatedQuestion(options.locale, false, options.defaultLocale);
             itemQuestion.textContent += itemRef.getAttribute("mandatory") == "Yes" ? " (*)" : "";
             itemField.appendChild(itemQuestion);
 
@@ -71,8 +69,7 @@ function getItemInput(itemDef, itemGroupOID) {
             inputContainer.appendChild(selectInput);
         } else {
             for (let codeListItem of codeListItems) {
-                const decode = codeListItem.querySelector("Decode");
-                const translatedText = decode ? decode.getTranslatedDecode(options.locale) : null;
+                const translatedText = codeListItem.getTranslatedDecode(options.locale, false, options.defaultLocale);
                 const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), translatedText, itemDef.getAttribute("OID"), itemGroupOID);
                 inputContainer.appendChild(radioInput);
                 inputContainer.appendChild(document.createElement("br"));
@@ -95,8 +92,8 @@ function getItemInput(itemDef, itemGroupOID) {
         addonUnit.className = "control";
         const unit = document.createElement("a");
         unit.className = "button is-static";
-        const symbol = $(`MeasurementUnit[OID="${measurementUnitRef.getAttribute("MeasurementUnitOID")}"] Symbol`);
-        unit.textContent = symbol ? symbol.getTranslatedSymbol(options.locale) : null;
+        const measurementUnitDef = $(`MeasurementUnit[OID="${measurementUnitRef.getAttribute("MeasurementUnitOID")}"]`);
+        unit.textContent = measurementUnitDef.getTranslatedSymbol(options.locale, false, options.defaultLocale);
         addonUnit.appendChild(unit);
         inputContainer.appendChild(addonUnit);
     } else {
@@ -119,8 +116,7 @@ const getSelectInput = (codeListItems, itemOID) => {
     for (let codeListItem of codeListItems) {
         const option = document.createElement("option");
         option.value = codeListItem.getAttribute("CodedValue");
-        const decode = codeListItem.querySelector("Decode");
-        option.textContent = decode ? decode.getTranslatedDecode(options.locale) : null;
+        option.textContent = codeListItem.getTranslatedDecode(options.locale, false, options.defaultLocale);
         select.appendChild(option);
     }
 
