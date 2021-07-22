@@ -1,4 +1,5 @@
 import * as metadataTemplates from "../odmtemplates/metadatatemplates.js";
+import * as odmToHTML from "./odmtohtml.js";
 import * as languageHelper from "./languagehelper.js";
 import * as ioHelper from "./iohelper.js";
 
@@ -79,6 +80,13 @@ export async function getFormAsHTML(formOID, textAsTextarea) {
     // This might look like a lot of code but it increases the performance significantly
     const prettifiedODM = ioHelper.prettifyContent(getSerializedMetadata());
     const reducedODM = new DOMParser().parseFromString(prettifiedODM, "text/xml");
+    return odmToHTML.getFormAsHTML(metadata, formOID, {
+        locale: languageHelper.getCurrentLocale(),
+        defaultLocale: languageHelper.untranslatedLocale,
+        yes: languageHelper.getTranslation("yes"),
+        no: languageHelper.getTranslation("no"),
+        textAsTextarea: textAsTextarea
+    });
 
     const itemGroupOIDs = [];
     for (const formDef of reducedODM.querySelectorAll("FormDef")) {

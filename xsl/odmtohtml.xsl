@@ -77,7 +77,6 @@
                     <div class="control is-expanded">
                         <xsl:call-template name="input">
                             <xsl:with-param name="item" select="$item"/>
-                            <xsl:with-param name="itemGroupOID" select="$itemGroupOID"/>
                         </xsl:call-template>
                     </div>
                     <xsl:variable name="measurementUnitOID" select="$item/odm:MeasurementUnitRef/@MeasurementUnitOID"/>
@@ -90,7 +89,6 @@
                 <div class="field">
                     <xsl:call-template name="input">
                         <xsl:with-param name="item" select="$item"/>
-                        <xsl:with-param name="itemGroupOID" select="$itemGroupOID"/>
                     </xsl:call-template>
                 </div>
             </xsl:otherwise>
@@ -148,13 +146,13 @@
                 <input class="input" type="text" inputmode="decimal" item-oid="{$item/@OID}"/>
             </xsl:when>
             <xsl:when test="$item/@DataType = 'date'">
-                <input class="input" type="date" placeholder="yyyy-mm-dd" item-oid="{$item/@OID}"/>
+                <input class="input" type="date" item-oid="{$item/@OID}"/>
             </xsl:when>
             <xsl:when test="$item/@DataType = 'time'">
-                <input class="input" type="time" placeholder="hh:mm" item-oid="{$item/@OID}"/>
+                <input class="input" type="time" item-oid="{$item/@OID}"/>
             </xsl:when>
             <xsl:when test="$item/@DataType = 'datetime'">
-                <input class="input" type="datetime-local" placeholder="yyyy-mm-dd[T]hh:mm" item-oid="{$item/@OID}"/>
+                <input class="input" type="datetime-local" item-oid="{$item/@OID}"/>
             </xsl:when>
             <xsl:when test="$item/@DataType = 'string' and $textAsTextarea = 'true'">
                 <textarea class="textarea" type="textarea" item-oid="{$item/@OID}"></textarea>
