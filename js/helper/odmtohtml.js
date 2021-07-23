@@ -167,8 +167,8 @@ const getTextInput = itemDef => {
 const processMarkdown = translatedText => {
     if (!translatedText) return "";
 
-    translatedText = translatedText.replace(/ \*\*(.+?)\*\*/g, " <b>$1</b>");
-    translatedText = translatedText.replace(/ \*(.+?)\*/g, " <i>$1</i>");
-    translatedText = translatedText.replace(/ \_(.+?)\_/g, " <u>$1</u>");
+    translatedText = translatedText.replace(/\*\*(.+?)\*\*(?!\w)/g, "<b>$1</b>");
+    translatedText = translatedText.replace(/\*(.+?)\*(?!\w|\*)/g, "<i>$1</i>");
+    translatedText = translatedText.replace(/\_(.+?)\_(?!\w)/g, "<u>$1</u>");
     return translatedText;
 }

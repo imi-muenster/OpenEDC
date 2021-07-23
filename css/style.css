@@ -457,6 +457,10 @@ a.panel-block:hover {
         width: 80%;
     }
 
+    #clinicaldata-form-title {
+        text-align: center;
+    }
+
     #survey-view-button {
         margin-left: 0px !important;
     }

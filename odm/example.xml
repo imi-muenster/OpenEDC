@@ -90,13 +90,14 @@
                 </Description>
                 <ItemGroupRef ItemGroupOID="IG.5" Mandatory="No"/>
             </FormDef>
-            <FormDef OID="F.4" Name="Quality of life" Repeating="No">
+            <FormDef OID="F.4" Name="WHO-5" Repeating="No">
                 <Description>
-                    <TranslatedText xml:lang="en">Quality of life</TranslatedText>
-                    <TranslatedText xml:lang="de">Lebensqualität</TranslatedText>
+                    <TranslatedText xml:lang="de">WHO-5 Wohlbefinden</TranslatedText>
+                    <TranslatedText xml:lang="en">WHO-5 Well-Being</TranslatedText>
                 </Description>
-                <ItemGroupRef ItemGroupOID="IG.7" Mandatory="No"/>
+                <ItemGroupRef ItemGroupOID="IG.9" Mandatory="No"/>
                 <ItemGroupRef ItemGroupOID="IG.6" Mandatory="No"/>
+                <ItemGroupRef ItemGroupOID="IG.7" Mandatory="No"/>
             </FormDef>
             <FormDef OID="F.5" Name="Placeholder" Repeating="No">
                 <Description>
@@ -156,30 +157,36 @@
                 <ItemRef ItemOID="SymptomsChanged" Mandatory="No"/>
                 <ItemRef ItemOID="I.5" Mandatory="No" CollectionExceptionConditionOID="C.7"/>
             </ItemGroupDef>
-            <ItemGroupDef OID="IG.6" Name="QOLPastYearItems" Repeating="No">
-                <Description>
-                    <TranslatedText xml:lang="en">During the course of the _past year_</TranslatedText>
-                    <TranslatedText xml:lang="de">Im Verlauf des _letzten Jahres_</TranslatedText>
-                </Description>
-                <ItemRef ItemOID="I.13" Mandatory="No"/>
-                <ItemRef ItemOID="I.14" Mandatory="No"/>
-                <ItemRef ItemOID="I.15" Mandatory="No"/>
-            </ItemGroupDef>
-            <ItemGroupDef OID="IG.7" Name="QOLPastWeekItems" Repeating="No">
-                <Description>
-                    <TranslatedText xml:lang="en">In the _past week_</TranslatedText>
-                    <TranslatedText xml:lang="de">In der _letzten Woche_</TranslatedText>
-                </Description>
-                <ItemRef ItemOID="I.13" Mandatory="No"/>
-                <ItemRef ItemOID="I.14" Mandatory="No"/>
-                <ItemRef ItemOID="I.15" Mandatory="No"/>
-            </ItemGroupDef>
             <ItemGroupDef OID="IG.8" Name="PlaceholderIG" Repeating="No">
                 <Description>
                     <TranslatedText xml:lang="de">Gruppe noch zu benennen ...</TranslatedText>
                     <TranslatedText xml:lang="en">Item group to be named ...</TranslatedText>
                 </Description>
                 <ItemRef ItemOID="I.17" Mandatory="No"/>
+            </ItemGroupDef>
+            <ItemGroupDef OID="IG.6" Name="WHO-5 ItemGroup" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="en">Over the last two weeks ...</TranslatedText>
+                    <TranslatedText xml:lang="de">In den letzten zwei Wochen ...</TranslatedText>
+                </Description>
+                <ItemRef ItemOID="WHO.1" Mandatory="No"/>
+                <ItemRef ItemOID="WHO.2" Mandatory="No"/>
+                <ItemRef ItemOID="WHO.3" Mandatory="No"/>
+                <ItemRef ItemOID="WHO.4" Mandatory="No"/>
+                <ItemRef ItemOID="WHO.5" Mandatory="No"/>
+            </ItemGroupDef>
+            <ItemGroupDef OID="IG.7" Name="IG.7" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="de">WHO-5 Wohlbefindens-Index</TranslatedText>
+                    <TranslatedText xml:lang="en">WHO-5 Well-Being Index</TranslatedText>
+                </Description>
+                <ItemRef ItemOID="I.2" Mandatory="No" MethodOID="M.2"/>
+            </ItemGroupDef>
+            <ItemGroupDef OID="IG.9" Name="WHO-5 Introduction" Repeating="No">
+                <Description>
+                    <TranslatedText xml:lang="de">💡 *Bitte beantworten Sie alle Fragen um Ihren Score unten zu sehen.*</TranslatedText>
+                    <TranslatedText xml:lang="en">💡 *Please answer all questions to see your score below.*</TranslatedText>
+                </Description>
             </ItemGroupDef>
             <ItemDef OID="Gender" Name="Gender" DataType="text">
                 <Question>
@@ -255,8 +262,8 @@
             </ItemDef>
             <ItemDef OID="CardiovascularDiseases" Name="CardiovascularDiseases" DataType="boolean">
                 <Question>
-                    <TranslatedText xml:lang="en">Have you had cardiovascular diseases?</TranslatedText>
-                    <TranslatedText xml:lang="de">Hatten Sie in der Vergangenheit Erkrankungen des Herzkreislaufsystems?</TranslatedText>
+                    <TranslatedText xml:lang="en">Have you had _cardiovascular diseases_ in the past?</TranslatedText>
+                    <TranslatedText xml:lang="de">Hatten Sie in der Vergangenheit Erkrankungen des _Herzkreislaufsystems_?</TranslatedText>
                 </Question>
             </ItemDef>
             <ItemDef OID="I.8" Name="HeartAttackStents" DataType="boolean">
@@ -273,8 +280,8 @@
             </ItemDef>
             <ItemDef OID="TumorDiseases" Name="TumorDiseases" DataType="boolean">
                 <Question>
-                    <TranslatedText xml:lang="en">Have you had a tumor?</TranslatedText>
-                    <TranslatedText xml:lang="de">Wurde in der Vergangenheit ein bösartiger Tumor oder Krebs bei Ihnen diagnostiziert?</TranslatedText>
+                    <TranslatedText xml:lang="en">Have you had a _tumor or cancerous disease_?</TranslatedText>
+                    <TranslatedText xml:lang="de">Wurde in der Vergangenheit ein _bösartiger Tumor oder Krebs_ bei Ihnen diagnostiziert?</TranslatedText>
                 </Question>
             </ItemDef>
             <ItemDef OID="I.10" Name="BreastCancer" DataType="boolean">
@@ -326,27 +333,6 @@
                     <TranslatedText xml:lang="de">Wie hat sich das Symptom verändert?</TranslatedText>
                 </Question>
             </ItemDef>
-            <ItemDef OID="I.13" Name="Happy" DataType="text">
-                <Question>
-                    <TranslatedText xml:lang="en">... I was happy</TranslatedText>
-                    <TranslatedText xml:lang="de">... war ich glücklich</TranslatedText>
-                </Question>
-                <CodeListRef CodeListOID="CL.8"/>
-            </ItemDef>
-            <ItemDef OID="I.14" Name="Productive" DataType="text">
-                <Question>
-                    <TranslatedText xml:lang="en">... I was productive</TranslatedText>
-                    <TranslatedText xml:lang="de">... war ich produktiv</TranslatedText>
-                </Question>
-                <CodeListRef CodeListOID="CL.8"/>
-            </ItemDef>
-            <ItemDef OID="I.15" Name="Energy" DataType="text">
-                <Question>
-                    <TranslatedText xml:lang="en">... I had enough energy to do whatever I wanted to do</TranslatedText>
-                    <TranslatedText xml:lang="de">... hatte ich genügend Energie um alles zu tun, was ich tun wollte</TranslatedText>
-                </Question>
-                <CodeListRef CodeListOID="CL.8"/>
-            </ItemDef>
             <ItemDef OID="I.16" Name="Graduation" DataType="date">
                 <Question>
                     <TranslatedText xml:lang="en">When did you graduate from school?</TranslatedText>
@@ -363,6 +349,68 @@
                 <Question>
                     <TranslatedText xml:lang="en">BMI</TranslatedText>
                     <TranslatedText xml:lang="de">BMI</TranslatedText>
+                </Question>
+                <MeasurementUnitRef MeasurementUnitOID="MU.5"/>
+            </ItemDef>
+            <ItemDef OID="WHO.1" Name="WHO.1" DataType="integer">
+                <Description>
+                    <TranslatedText xml:lang="en">I have felt cheerful and in good spirits</TranslatedText>
+                    <TranslatedText xml:lang="de">… war ich froh und guter Laune</TranslatedText>
+                </Description>
+                <Question>
+                    <TranslatedText xml:lang="en">I have felt cheerful and in good spirits</TranslatedText>
+                    <TranslatedText xml:lang="de">… war ich froh und guter Laune</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.3"/>
+            </ItemDef>
+            <ItemDef OID="WHO.2" Name="WHO.2" DataType="integer">
+                <Description>
+                    <TranslatedText xml:lang="en">I have felt calm and relaxed</TranslatedText>
+                    <TranslatedText xml:lang="de">… habe ich mich ruhig und entspannt gefühlt</TranslatedText>
+                </Description>
+                <Question>
+                    <TranslatedText xml:lang="en">I have felt calm and relaxed</TranslatedText>
+                    <TranslatedText xml:lang="de">… habe ich mich ruhig und entspannt gefühlt</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.3"/>
+            </ItemDef>
+            <ItemDef OID="WHO.3" Name="WHO.3" DataType="integer">
+                <Description>
+                    <TranslatedText xml:lang="en">I have felt active and vigorous</TranslatedText>
+                    <TranslatedText xml:lang="de">… habe ich mich energisch und aktiv gefühlt</TranslatedText>
+                </Description>
+                <Question>
+                    <TranslatedText xml:lang="en">I have felt active and vigorous</TranslatedText>
+                    <TranslatedText xml:lang="de">… habe ich mich energisch und aktiv gefühlt</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.3"/>
+            </ItemDef>
+            <ItemDef OID="WHO.4" Name="WHO.4" DataType="integer">
+                <Description>
+                    <TranslatedText xml:lang="en">I woke up feeling fresh and rested</TranslatedText>
+                    <TranslatedText xml:lang="de">… habe ich mich beim Aufwachen frisch und ausgeruht gefühlt</TranslatedText>
+                </Description>
+                <Question>
+                    <TranslatedText xml:lang="en">I woke up feeling fresh and rested</TranslatedText>
+                    <TranslatedText xml:lang="de">… habe ich mich beim Aufwachen frisch und ausgeruht gefühlt</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.3"/>
+            </ItemDef>
+            <ItemDef OID="WHO.5" Name="WHO.5" DataType="integer">
+                <Description>
+                    <TranslatedText xml:lang="en">My daily life has been filled with things that interest me</TranslatedText>
+                    <TranslatedText xml:lang="de">… war mein Alltag voller Dinge, die mich interessieren</TranslatedText>
+                </Description>
+                <Question>
+                    <TranslatedText xml:lang="en">My daily life has been filled with things that interest me</TranslatedText>
+                    <TranslatedText xml:lang="de">… war mein Alltag voller Dinge, die mich interessieren</TranslatedText>
+                </Question>
+                <CodeListRef CodeListOID="CL.3"/>
+            </ItemDef>
+            <ItemDef OID="I.2" Name="WHO-5 Score" DataType="integer">
+                <Question>
+                    <TranslatedText xml:lang="de">Berechneter Index (0 – 100)</TranslatedText>
+                    <TranslatedText xml:lang="en">Calculated Index (0 – 100)</TranslatedText>
                 </Question>
                 <MeasurementUnitRef MeasurementUnitOID="MU.5"/>
             </ItemDef>
@@ -480,14 +528,14 @@
                     </Decode>
                 </CodeListItem>
             </CodeList>
-            <CodeList OID="CL.8" Name="CL.8" DataType="text">
-                <CodeListItem CodedValue="1">
+            <CodeList OID="CL.3" Name="WHO-5 CodeList" DataType="integer">
+                <CodeListItem CodedValue="5">
                     <Decode>
-                        <TranslatedText xml:lang="en">All the time</TranslatedText>
-                        <TranslatedText xml:lang="de">Immer</TranslatedText>
+                        <TranslatedText xml:lang="en">All of the time</TranslatedText>
+                        <TranslatedText xml:lang="de">Die ganze Zeit</TranslatedText>
                     </Decode>
                 </CodeListItem>
-                <CodeListItem CodedValue="2">
+                <CodeListItem CodedValue="4">
                     <Decode>
                         <TranslatedText xml:lang="en">Most of the time</TranslatedText>
                         <TranslatedText xml:lang="de">Meistens</TranslatedText>
@@ -495,14 +543,26 @@
                 </CodeListItem>
                 <CodeListItem CodedValue="3">
                     <Decode>
-                        <TranslatedText xml:lang="en">Sometimes</TranslatedText>
-                        <TranslatedText xml:lang="de">Manchmal</TranslatedText>
+                        <TranslatedText xml:lang="en">More than half of the time</TranslatedText>
+                        <TranslatedText xml:lang="de">Etwas mehr als die Hälfte der Zeit</TranslatedText>
                     </Decode>
                 </CodeListItem>
-                <CodeListItem CodedValue="4">
+                <CodeListItem CodedValue="2">
                     <Decode>
-                        <TranslatedText xml:lang="en">Rarely</TranslatedText>
-                        <TranslatedText xml:lang="de">Selten</TranslatedText>
+                        <TranslatedText xml:lang="en">Less than half of the time</TranslatedText>
+                        <TranslatedText xml:lang="de">Etwas weniger als die Hälfte der Zeit</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="1">
+                    <Decode>
+                        <TranslatedText xml:lang="en">Some of the time</TranslatedText>
+                        <TranslatedText xml:lang="de">Ab und zu</TranslatedText>
+                    </Decode>
+                </CodeListItem>
+                <CodeListItem CodedValue="0">
+                    <Decode>
+                        <TranslatedText xml:lang="en">At no time</TranslatedText>
+                        <TranslatedText xml:lang="de">Zu keinem Zeitpunkt</TranslatedText>
                     </Decode>
                 </CodeListItem>
             </CodeList>
@@ -553,6 +613,12 @@
                     <TranslatedText xml:lang="en">M.1</TranslatedText>
                 </Description>
                 <FormalExpression Context="OpenEDC">Weight / Height ^ 2</FormalExpression>
+            </MethodDef>
+            <MethodDef OID="M.2" Name="M.2" Type="Computation">
+                <Description>
+                    <TranslatedText xml:lang="de">M.1</TranslatedText>
+                </Description>
+                <FormalExpression Context="OpenEDC">(WHO.1 + WHO.2 + WHO.3 + WHO.4 + WHO.5) * 4</FormalExpression>
             </MethodDef>
         </MetaDataVersion>
     </Study>
