@@ -15,6 +15,11 @@ export const elementTypes = {
     CODELISTITEM: "codelistitem"
 }
 
+const expressionTypes = {
+    CONDITION: "condition",
+    METHOD: "method"
+}
+
 export const dataStatusCodeListOID = "OpenEDC.DataStatus";
 
 let metadata;
@@ -265,23 +270,18 @@ export function getElementsWithExpression(formOID) {
             const itemOID = itemRef.getAttribute("ItemOID");
             const conditionOID = itemRef.getAttribute("CollectionExceptionConditionOID");
             const methodOID = itemRef.getAttribute("MethodOID");
-            elementsWithExpression = addElementWithExpression(elementsWithExpression, elementTypes.ITEM, itemOID, conditionOID, methodOID);
+            if (conditionOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, elementTypes.ITEM, itemOID, conditionOID, expressionTypes.CONDITION);
+            if (methodOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, elementTypes.ITEM, itemOID, methodOID, expressionTypes.METHOD);
         }
     }
 
     return elementsWithExpression;
 }
 
-function addElementWithExpression(elementList, elementType, elementOID, conditionOID, methodOID) {
-    const formalExpression = conditionOID ? $(`ConditionDef[OID="${conditionOID}"]`).getFormalExpression() : $(`MethodDef[OID="${methodOID}"]`).getFormalExpression();
-    if (formalExpression) {
-        elementList.push({
-            elementType: elementType,
-            oid: elementOID,
-            expressionType: conditionOID ? "condition" : "method",
-            formalExpression: formalExpression
-        });
-    }
+function addElementWithExpression(elementList, elementType, elementOID, expressionOID, expressionType) {
+    const expressionElement = expressionType == expressionTypes.CONDITION ? $(`ConditionDef[OID="${expressionOID}"]`) : $(`MethodDef[OID="${expressionOID}"]`);
+    const formalExpression = expressionElement ? expressionElement.getFormalExpression() : null;
+    if (formalExpression) elementList.push({ elementType, elementOID, expressionType, formalExpression });
 
     return elementList;
 }

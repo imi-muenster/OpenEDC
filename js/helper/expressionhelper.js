@@ -49,17 +49,17 @@ export function process(variables) {
         if (value != "") methodVariables[escapeOIDDots(key)] = value;
     }
 
-    for (const elementWithExpression of expressionElements) {
-        if (elementWithExpression.expressionType == "condition") processCondition(elementWithExpression);
-        else if (elementWithExpression.expressionType == "method") processMethod(elementWithExpression);
+    for (const expressionElement of expressionElements) {
+        if (expressionElement.expressionType == "condition") processCondition(expressionElement);
+        else if (expressionElement.expressionType == "method") processMethod(expressionElement);
     }
 }
 
 function processCondition(condition) {
     // Select conditional item group or item and hide it
     let conditionalElement;
-    if (condition.elementType == "itemgroup") conditionalElement = $(`#clinicaldata-content [item-group-content-oid="${condition.oid}"]`);
-    else if (condition.elementType == "item") conditionalElement = $(`#clinicaldata-content [item-field-oid="${condition.oid}"]`);
+    if (condition.elementType == "itemgroup") conditionalElement = $(`#clinicaldata-content [item-group-content-oid="${condition.elementOID}"]`);
+    else if (condition.elementType == "item") conditionalElement = $(`#clinicaldata-content [item-field-oid="${condition.elementOID}"]`);
     conditionalElement.hide();
 
     // If the expression evaluates to true, show condition element
@@ -121,7 +121,7 @@ function emptyConditionalElement(conditionalElement) {
 
 function processMethod(method) {
     // Select conditional item group or item and make it read-only
-    let computedElement = $(`#clinicaldata-content [item-oid="${method.oid}"]`);
+    let computedElement = $(`#clinicaldata-content [item-oid="${method.elementOID}"]`);
     computedElement.readOnly = true;
 
     // If a value can already be calculated, assign it
