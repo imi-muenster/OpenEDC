@@ -134,7 +134,7 @@ function processMethod(method) {
         if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "select") {
             inputElement.addEventListener("input", event => respondToInputChangeMethod(event.target, inputOID, method, computedElement));
         } else if (inputElement.getAttribute("type") == "radio") {
-            const radioItems = $$(`#clinicaldata-content [item-oid="${inputOID}"]`);
+            const radioItems = $$(`#clinicaldata-content [item-oid="${unescapeOIDDots(inputOID)}"]`);
             for (const radioItem of radioItems) {
                 radioItem.addEventListener("input", event => respondToInputChangeMethod(event.target, inputOID, method, computedElement));
             }
@@ -172,13 +172,13 @@ function normalizeTokens(expression) {
 }
 
 function escapeOIDDots(expression) {
-    return expression.replace(/\w+\.\w+\S*/g, function(string) {
+    return expression.replace(/[a-zA-Z]+\.[a-zA-Z0-9\.]+/g, function(string) {
         return string.replace(/\./g, "_");
     });
 }
 
 function unescapeOIDDots(expression) {
-    return expression.replace(/\w+\_\w+\S*/g, function(string) {
+    return expression.replace(/[a-zA-Z]+\_[a-zA-Z0-9\.]+/g, function(string) {
         return string.replace(/\_/g, ".");
     });
 }

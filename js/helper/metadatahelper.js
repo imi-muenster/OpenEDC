@@ -264,7 +264,7 @@ export function getElementsWithExpression(formOID) {
     for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
         const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
         const conditionOID = itemGroupRef.getAttribute("CollectionExceptionConditionOID");
-        if (conditionOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, elementTypes.ITEMGROUP, itemGroupOID, conditionOID);
+        if (conditionOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, elementTypes.ITEMGROUP, itemGroupOID, conditionOID, expressionTypes.CONDITION);
 
         for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[CollectionExceptionConditionOID], ItemGroupDef[OID="${itemGroupOID}"] ItemRef[MethodOID]`)) {
             const itemOID = itemRef.getAttribute("ItemOID");

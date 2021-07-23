@@ -451,7 +451,7 @@ function loadFormClinicaldata() {
         }
 
         let fieldElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [item-field-oid="${formItemData.itemOID}"]`);
-        if (!fieldElement.isVisible() || !fieldElement.parentNode.isVisible()) {
+        if (!inputElement.readOnly && (!fieldElement.isVisible() || !fieldElement.parentNode.isVisible())) {
             hiddenFieldWithValueErrors.push({ itemOID: formItemData.itemOID, itemGroupOID: formItemData.itemGroupOID });
         }
     }
