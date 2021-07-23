@@ -698,9 +698,7 @@ function saveAliases() {
 }
 
 function formalExpressionContainsError(formalExpression) {
-    try {
-        if (formalExpression) expressionHelper.parse(formalExpression);
-    } catch (error) {
+    if (formalExpression && !expressionHelper.parse(formalExpression)) {
         ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("formal-expression-error"));
         return true;
     }

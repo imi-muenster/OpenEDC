@@ -3,20 +3,37 @@ import { Parser } from "../../lib/expr-eval.js";
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-let elementsWithExpression = [];
+let parser = null;
+
+let expressionElements = [];
 let conditionVariables = {};
 let methodVariables = {};
 
-export function getVariables(elementsWithExpressionParam) {
-    elementsWithExpression = elementsWithExpressionParam;
+function getParser() {
+    if (!parser) parser = new Parser( { operators: { assignment: false } } );
+    return parser;
+}
 
-    const parser = new Parser();
+export function parse(formalExpression) {
+    try {
+        // Expr-eval does not support dots in variables names which are therefore replaced with underscores
+        return getParser().parse(escapeOIDDots(normalizeTokens(formalExpression)));
+    } catch (error) {
+        // Error while parsing the formal expressions
+    }
+}
+
+export function getVariables(elements) {
+    expressionElements = [];
     const variables = new Set();
 
-    for (let elementWithExpression of elementsWithExpression) {
-        const normalizedExpression = escapeOIDDots(normalizeTokens(elementWithExpression.formalExpression));
-        elementWithExpression.expression = parser.parse(normalizedExpression);
-        elementWithExpression.expression.variables().forEach(variable => variables.add(unescapeOIDDots(variable)));
+    for (let element of elements) {
+        const expression = parse(element.formalExpression);
+        if (expression) {
+            element.expression = expression;
+            element.expression.variables().forEach(variable => variables.add(unescapeOIDDots(variable)));
+            expressionElements.push(element);
+        }
     }
 
     return Array.from(variables);
@@ -25,14 +42,14 @@ export function getVariables(elementsWithExpressionParam) {
 export function process(variables) {
     conditionVariables = {};
     methodVariables = {};
+    
     for (const [key, value] of Object.entries(variables)) {
-        // Expr-eval does not support dots in variables names which are therefore replaced with underscores
         conditionVariables[escapeOIDDots(key)] = value;
         // Only evaluate method expressions where all variables have a value != ""
         if (value != "") methodVariables[escapeOIDDots(key)] = value;
     }
 
-    for (const elementWithExpression of elementsWithExpression) {
+    for (const elementWithExpression of expressionElements) {
         if (elementWithExpression.expressionType == "condition") processCondition(elementWithExpression);
         else if (elementWithExpression.expressionType == "method") processMethod(elementWithExpression);
     }
@@ -126,11 +143,8 @@ function processMethod(method) {
 }
 
 function respondToInputChangeMethod(input, inputOID, method, computedElement) {
-    if (input.value) {
-        methodVariables[inputOID] = input.value.replace(",", ".");
-    } else {
-        if (methodVariables.hasOwnProperty(inputOID)) delete methodVariables[inputOID];
-    }
+    if (input.value) methodVariables[inputOID] = input.value.replace(",", ".");
+    else delete methodVariables[inputOID];
 
     computedElement.value = computeExpression(method);
     computedElement.dispatchEvent(new Event("input"));
@@ -143,10 +157,6 @@ function computeExpression(method) {
     } catch (error) {
         return "";
     }
-}
-
-export function parse(formalExpression) {
-    return new Parser( { operators: { assignment: false } } ).parse(escapeOIDDots(normalizeTokens(formalExpression)));
 }
 
 // Helper functions
