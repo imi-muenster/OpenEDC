@@ -78,6 +78,7 @@ let settings = {
 
 export async function init() {
     await indexedDBHelper.init();
+    await loadSettings();
 
     // Check if app is served by an OpenEDC Server instance
     // For development purposes, check for an ?server= query string parameter and use it instead of the current url

@@ -4,7 +4,8 @@ const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
 let elementsWithExpression = [];
-let variableValues = {};
+let conditionVariables = {};
+let methodVariables = {};
 
 export function getVariables(elementsWithExpressionParam) {
     elementsWithExpression = elementsWithExpressionParam;
@@ -21,11 +22,14 @@ export function getVariables(elementsWithExpressionParam) {
     return Array.from(variables);
 }
 
-export function process(variableValuesParam) {
-    variableValues = {};
-    for (const [key, value] of Object.entries(variableValuesParam)) {
+export function process(variables) {
+    conditionVariables = {};
+    methodVariables = {};
+    for (const [key, value] of Object.entries(variables)) {
         // Expr-eval does not support dots in variables names which are therefore replaced with underscores
-        variableValues[escapeOIDDots(key)] = value;
+        conditionVariables[escapeOIDDots(key)] = value;
+        // Only evaluate method expressions where all variables have a value != ""
+        if (value != "") methodVariables[escapeOIDDots(key)] = value;
     }
 
     for (const elementWithExpression of elementsWithExpression) {
@@ -42,7 +46,7 @@ function processCondition(condition) {
     conditionalElement.hide();
 
     // If the expression evaluates to true, show condition element
-    if (condition.expression.evaluate(variableValues)) conditionalElement.show();
+    if (condition.expression.evaluate(conditionVariables)) conditionalElement.show();
 
     // Add event listeners to respond to inputs to the determinant items
     for (const inputOID of condition.expression.variables()) {
@@ -60,8 +64,8 @@ function processCondition(condition) {
 }
 
 function respondToInputChangeCondition(input, inputOID, condition, conditionalElement) {
-    variableValues[inputOID] = !input.value ? "" : input.value;
-    showOrHideConditionalElement(conditionalElement, condition.expression.evaluate(variableValues));
+    conditionVariables[inputOID] = !input.value ? "" : input.value;
+    showOrHideConditionalElement(conditionalElement, condition.expression.evaluate(conditionVariables));
 }
 
 function showOrHideConditionalElement(conditionalElement, show) {
@@ -122,14 +126,23 @@ function processMethod(method) {
 }
 
 function respondToInputChangeMethod(input, inputOID, method, computedElement) {
-    variableValues[inputOID] = !input.value ? "" : input.value.replace(",", ".");
+    if (input.value) {
+        methodVariables[inputOID] = input.value.replace(",", ".");
+    } else {
+        if (methodVariables.hasOwnProperty(inputOID)) delete methodVariables[inputOID];
+    }
+
     computedElement.value = computeExpression(method);
     computedElement.dispatchEvent(new Event("input"));
 }
 
 function computeExpression(method) {
-    const computedValue = method.expression.evaluate(variableValues);
-    return !isNaN(computedValue) && isFinite(computedValue) ? Math.round(computedValue * 100) / 100 : null;
+    try {
+        const computedValue = method.expression.evaluate(methodVariables);
+        return !isNaN(computedValue) && isFinite(computedValue) ? Math.round(computedValue * 100) / 100 : null;
+    } catch (error) {
+        return "";
+    }
 }
 
 export function parse(formalExpression) {

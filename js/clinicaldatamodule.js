@@ -436,10 +436,10 @@ function loadFormClinicaldata() {
             case "text":
             case "date":
             case "select":
-                inputElement.value = formItemData.value;
+                if (!inputElement.readOnly) inputElement.value = formItemData.value;
                 break;
             case "textarea":
-                inputElement.value = formItemData.value.replace(/\\n/g, "\n");
+                if (!inputElement.readOnly) inputElement.value = formItemData.value.replace(/\\n/g, "\n");
                 break;
             case "radio":
                 inputElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [item-oid="${formItemData.itemOID}"][value="${formItemData.value}"]`);
@@ -603,7 +603,7 @@ function checkMandatoryFields(formItemDataList) {
     let mandatoryFieldsAnswered = true;
     for (let mandatoryField of $$(".item-group-content:not(.is-hidden) .item-field[mandatory='Yes']:not(.is-hidden)")) {
         if (!formItemDataList.find(formItemData => formItemData.itemGroupOID == mandatoryField.parentNode.getAttribute("item-group-content-oid") && formItemData.itemOID == mandatoryField.getAttribute("item-field-oid"))) {
-            mandatoryField.highlight();
+            if (!skipMandatoryCheck) mandatoryField.highlight();
             mandatoryFieldsAnswered = false;
         }
     }
