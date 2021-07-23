@@ -46,6 +46,8 @@ html, body {
     border-top: none;
     box-shadow: 0 8px 8px rgba(10, 10, 10, .1), 0 0 0 1px rgba(10, 10, 10, .1);
     top: calc(100% - 4px);
+    max-height: 500px;
+    overflow-y: auto;
 }
 
 #mobile-back-button {
