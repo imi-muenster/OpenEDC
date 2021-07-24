@@ -1204,18 +1204,11 @@ function enableAsyncEditMode() {
     reloadDetailsPanel();
 }
 
-window.showMoreExtendedOptions = function() {
-    $("#more-options-button").hide();
-    $("#less-options-button").show();
-    $("#condition-alias-column").hide();
-    $("#calculation-column").show();
-}
-
-window.showLessExtendedOptions = function() {
-    $("#more-options-button").show();
-    $("#less-options-button").hide();
-    $("#condition-alias-column").show();
-    $("#calculation-column").hide();
+window.toggleMoreExtendedOptions = function() {
+    for (const element of $$("#extended-options-button .icon, #extended-options-button .button-text, #condition-alias-column, #calculation-column")) {
+        element.classList.toggle("is-hidden")
+    }
+    document.activeElement.blur();
 }
 
 window.storeMetadataAsync = function() {

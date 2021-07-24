@@ -112,6 +112,7 @@ a.panel-block {
     flex-direction: column;
     height: 100%;
     padding: .5rem 0 .5rem 0;
+    overflow-x: hidden;
     max-width: 3rem;
     transition: max-width .5s 1.25s;
 }
@@ -182,7 +183,7 @@ a.panel-block {
     resize: none;
 }
 
-#more-options-button, #less-options-button {
+#extended-options-button {
     position: absolute;
     right: 0;
     top: 0;

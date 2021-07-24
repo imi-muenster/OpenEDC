@@ -56,17 +56,15 @@ class MetadataSection extends HTMLElement {
                                 </div>
                             </div>
                             <div class="box-content is-relative is-hidden" id="extended-options">
-                                <button class="button is-link is-light is-rounded is-small" id="more-options-button" onclick="showMoreExtendedOptions()">
-                                    <span i18n="more"></span>
+                                <button class="button is-link is-outlined is-rounded is-small" id="extended-options-button" onclick="toggleMoreExtendedOptions()">
+                                    <span class="icon is-hidden">
+                                        <i class="fas fa-arrow-left"></i>
+                                    </span>
+                                    <span class="button-text is-hidden" i18n="back"></span>
+                                    <span class="button-text" i18n="more"></span>
                                     <span class="icon">
                                         <i class="fas fa-arrow-right"></i>
                                     </span>
-                                </button>
-                                <button class="button is-link is-light is-rounded is-small is-hidden" id="less-options-button" onclick="showLessExtendedOptions()">
-                                    <span class="icon">
-                                        <i class="fas fa-arrow-left"></i>
-                                    </span>
-                                    <span i18n="back"></span>
                                 </button>
                                 <div class="columns">
                                     <div class="column" id="condition-alias-column">

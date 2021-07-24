@@ -550,7 +550,7 @@ export function showToast(message, duration, toastType) {
     toast.insertAdjacentElement("afterbegin", closeButton);
 
     fadeInToast(toast);
-    if (duration) window.setTimeout(() => fadeOutToast(toast), duration);
+    if (duration) setTimeout(() => fadeOutToast(toast), duration);
 }
 
 function fadeInToast(toast) {
