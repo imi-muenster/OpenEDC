@@ -173,12 +173,12 @@ function normalizeTokens(expression) {
 
 function escapeOIDDots(expression) {
     return expression.replace(/[a-zA-Z][a-zA-Z0-9]*\.[a-zA-Z0-9\.]+/g, function(string) {
-        return string.replace(/\./g, "_");
+        return string.replace(/\./g, "__");
     });
 }
 
 function unescapeOIDDots(expression) {
     return expression.replace(/[a-zA-Z][a-zA-Z0-9]*\_[a-zA-Z0-9\.]+/g, function(string) {
-        return string.replace(/\_/g, ".");
+        return string.replace(/__/g, ".");
     });
 }

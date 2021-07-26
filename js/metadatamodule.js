@@ -757,18 +757,25 @@ function setIOListeners() {
     let inputElements = $$("#details-panel input, #details-panel textarea, #details-panel select");
     for (const inputElement of inputElements) {
         inputElement.oninput = () => highlightSaveButton();
-        inputElement.onkeydown = keyEvent => {
-            if (keyEvent.code == "Escape") {
-                keyEvent.preventDefault();
+        inputElement.onkeydown = event => {
+            if (event.code == "Escape") {
+                event.preventDefault();
                 document.activeElement.blur();
-            } else if (keyEvent.code == "Enter" && !keyEvent.shiftKey) {
+            } else if (event.code == "Enter" && !event.shiftKey) {
                 if ($(".autocomplete-list")) return;
-                keyEvent.preventDefault();
+                event.preventDefault();
                 document.activeElement.blur();
                 saveElement();
             }
         };
     }
+    $("#id-input").addEventListener("keydown", event => {
+        if (["-", " ", "(", ")", "/", "#"].includes(event.key)) {
+            event.preventDefault();
+            if (event.target.selectionStart > 0 && event.target.value[event.target.selectionStart - 1] == "_") return;
+            event.target.setRangeText("_", event.target.selectionStart, event.target.selectionEnd, "end");
+        };
+    });
 
     autocompleteHelper.enableAutocomplete($("#collection-condition"), autocompleteHelper.modes.CONDITION);
     autocompleteHelper.enableAutocomplete($("#measurement-unit"), autocompleteHelper.modes.MEASUREMENTUNIT);
