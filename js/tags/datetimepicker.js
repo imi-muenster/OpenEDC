@@ -51,29 +51,63 @@ class Calendar {
 }
 
 class DateTimePicker extends HTMLElement {
+    locale = "en";
+
     connectedCallback() {
         this.render();
     }
 
+    get style() {
+        return `
+            #day-grid-heading, #day-grid {
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                grid-gap: .25rem;
+            }
+        `;
+    }
+
     render() {
         this.innerHTML = `
+            <style>${this.style}</style>
             <div class="modal" id="datetime-picker">
                 <div class="modal-background"></div>
                 <div class="modal-content is-small">
                     <div class="box has-text-centered">
                         <h1 class="title">Date</h1>
-                        <div id="date-grid">
-                        </div>
+                        <div id="day-grid-heading" class="mb-3"></div>
+                        <div id="day-grid"></div>
                     </div>
                 </div>
             </div>
         `;
+
+        const calendar = new Calendar();
+
+        // First, add short names of weekdays
+        for (let weekday of calendar.weekDays) {
+            this.querySelector("#day-grid-heading").insertAdjacentHTML("beforeend", this.getDayGridHeading(weekday));
+        }
+
+        // Second, add invisible days to grid from previous month
+        const firstDayOffset = calendar.month.firstDayOffset;
+        for (let i = 0; i < firstDayOffset; i++) {
+            this.querySelector("#day-grid").insertAdjacentHTML("beforeend", this.getDayGridButton());
+        }
+
+        // Third, add the days of the current month to grid
+        for (let day of calendar.month.days) {
+            this.querySelector("#day-grid").insertAdjacentHTML("beforeend", this.getDayGridButton(day));
+        }
+    }
+
+    getDayGridHeading(day) {
+        return `<span>${day.date.toLocaleDateString(this.locale, { weekday: "short" })}</span>`;
+    }
+
+    getDayGridButton(day) {
+        return `<button class="button day-grid-button p-1 ${day ? "" : "is-invisible"}">${day ? day.numberInMonth : ""}</button>`;
     }
 }
 
 window.customElements.define("datetime-picker", DateTimePicker);
-
-new Calendar(2021, 2).month.days.forEach(day => console.log(day.date.toLocaleDateString()));
-console.log("First day offset:", new Calendar(2021, 9).month.firstDayOffset);
-
-new Calendar().weekDays.forEach(day => console.log(day.date.toLocaleDateString("de", { weekday: "short" })));
