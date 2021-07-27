@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.6.0
+
+- Support for calculated items using ODM MethodDefs
+- Support for complex conditions including AND, OR, and parentheses
+- Calculations and conditions now work across events and forms
+- Improved autocomplete support while entering calculation formulas and conditions
+- Validation of formal expressions before saving
+- Performance improvements for large metadata models by replacing XSLT with native JavaScript rendering
+
 ## 0.5.3
 
 - Replaced LocalStorage with IndexedDB to be able to store more subjects offline
