@@ -92,8 +92,8 @@
             </FormDef>
             <FormDef OID="F.4" Name="WHO-5" Repeating="No">
                 <Description>
-                    <TranslatedText xml:lang="de">WHO-5 Wohlbefinden</TranslatedText>
-                    <TranslatedText xml:lang="en">WHO-5 Well-Being</TranslatedText>
+                    <TranslatedText xml:lang="de">Wohlbefinden</TranslatedText>
+                    <TranslatedText xml:lang="en">Well-Being</TranslatedText>
                 </Description>
                 <ItemGroupRef ItemGroupOID="IG.9" Mandatory="No"/>
                 <ItemGroupRef ItemGroupOID="IG.6" Mandatory="No"/>
@@ -177,15 +177,19 @@
             </ItemGroupDef>
             <ItemGroupDef OID="IG.7" Name="IG.7" Repeating="No">
                 <Description>
-                    <TranslatedText xml:lang="de">WHO-5 Wohlbefindens-Index</TranslatedText>
+                    <TranslatedText xml:lang="de">WHO-5 Wohlbefinden-Index</TranslatedText>
                     <TranslatedText xml:lang="en">WHO-5 Well-Being Index</TranslatedText>
                 </Description>
                 <ItemRef ItemOID="I.2" Mandatory="No" MethodOID="M.2"/>
             </ItemGroupDef>
             <ItemGroupDef OID="IG.9" Name="WHO-5 Introduction" Repeating="No">
                 <Description>
-                    <TranslatedText xml:lang="de">💡 *Bitte beantworten Sie alle Fragen um Ihren Score unten zu sehen.*</TranslatedText>
-                    <TranslatedText xml:lang="en">💡 *Please answer all questions to see your score below.*</TranslatedText>
+                    <TranslatedText xml:lang="de">*WHO-5 Wohlbefinden-Index*
+
+*Nachdem alle Fragen beantwortet wurden, wird das Ergebnis unten angezeigt.*</TranslatedText>
+                    <TranslatedText xml:lang="en">*WHO-5 Well-Being Index*
+
+*After all questions have been answered, the result will be displayed below.*</TranslatedText>
                 </Description>
             </ItemGroupDef>
             <ItemDef OID="Gender" Name="Gender" DataType="text">
@@ -412,7 +416,6 @@
                     <TranslatedText xml:lang="de">Berechneter Index (0 – 100)</TranslatedText>
                     <TranslatedText xml:lang="en">Calculated Index (0 – 100)</TranslatedText>
                 </Question>
-                <MeasurementUnitRef MeasurementUnitOID="MU.5"/>
             </ItemDef>
             <CodeList OID="CL.1" Name="CL.1" DataType="text">
                 <CodeListItem CodedValue="Female">

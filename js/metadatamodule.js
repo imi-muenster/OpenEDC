@@ -770,7 +770,7 @@ function setIOListeners() {
         };
     }
     $("#id-input").addEventListener("keydown", event => {
-        if (["-", " ", "(", ")", "/", "#"].includes(event.key)) {
+        if (["-", "_", "(", ")", "/", "#", " "].includes(event.key)) {
             event.preventDefault();
             if (event.target.selectionStart > 0 && event.target.value[event.target.selectionStart - 1] == "_") return;
             event.target.setRangeText("_", event.target.selectionStart, event.target.selectionEnd, "end");
