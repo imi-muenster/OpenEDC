@@ -14,7 +14,7 @@ class Time {
 }
 
 class Day {
-    constructor(date) {
+    constructor(date, initial) {
         if (!date) date = new Date();
 
         this.numberInMonth = date.getDate();
@@ -23,6 +23,7 @@ class Day {
         this.year = date.getFullYear();
         this.time = new Time(date.getHours(), date.getMinutes());
         this.date = date;
+        this.initial = initial;
     }
 
     equals(day) {
@@ -193,7 +194,7 @@ class DateTimePicker extends HTMLElement {
                         <div class="buttons is-centered are-small">
                             <button class="button is-link is-hidden" id="picker-save-button">${this.translations.save}</button>
                             <button class="button is-link" id="picker-today-button">${this.translations.today}</button>
-                            <button class="button is-danger" id="picker-clear-button">${this.translations.clear}</button>
+                            <button class="button is-danger is-hidden" id="picker-clear-button">${this.translations.clear}</button>
                             <button class="button" id="picker-close-button">${this.translations.close}</button>
                         </div>
                     </div>
@@ -213,6 +214,8 @@ class DateTimePicker extends HTMLElement {
         if (this.options.enableDate) this.setDateIOListeners();
         if (this.options.enableTime) this.setTimeIOListeners();
         this.setGeneralIOListeners();
+
+        if (!this.selectedDay.initial) this.showClearButton();
     }
 
     renderDateStaticElements() {
@@ -302,7 +305,7 @@ class DateTimePicker extends HTMLElement {
         button.className = "button day-grid-button p-1";
         button.textContent = day ? day.numberInMonth : "";
 
-        if (!disabled && day.equals(this.selectedDay) && this.input.value) button.classList.add("is-link");
+        if (!disabled && !this.selectedDay.initial && day.equals(this.selectedDay)) button.classList.add("is-link");
         else if (!disabled && day.isToday) button.classList.add("is-link", "is-light");
 
         if (!disabled) button.onclick = () => this.daySelected(day);
@@ -317,7 +320,7 @@ class DateTimePicker extends HTMLElement {
             this.renderDayGrid();
             this.showSaveButton();
         } else {
-            this.input.value = day.localeDateISOString;
+            this.saveValue();
             this.remove();
         }
     }
@@ -327,11 +330,16 @@ class DateTimePicker extends HTMLElement {
         this.querySelector("#picker-today-button").classList.add("is-hidden");
     }
 
+    showClearButton() {
+        this.querySelector("#picker-clear-button").classList.remove("is-hidden");
+    }
+
     parseDateString(string) {
-        let day = new Day();
+        let day = new Day(new Date(), true);
         if (string && this.isTime(string)) {
             day.time.hours = string.split(":")[0];
             day.time.minutes = string.split(":")[1];
+            day.initial = false;
         } else if (string) {
             day = new Day(new Date(string));
         }
