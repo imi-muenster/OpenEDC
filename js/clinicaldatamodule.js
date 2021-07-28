@@ -428,11 +428,12 @@ function showDateTimePicker(event) {
     picker.setLocale(languageHelper.getCurrentLocale());
     picker.setTranslations({
         heading: languageHelper.getTranslation("date"),
-        clear: languageHelper.getTranslation("clear"),
-        now: languageHelper.getTranslation("now")
+        today: languageHelper.getTranslation("today"),
+        clear: languageHelper.getTranslation("remove"),
+        close: languageHelper.getTranslation("close")
     });
     if (event.target.value) picker.parseISOString(event.target.value);
-    
+
     document.body.appendChild(picker);
 }
 

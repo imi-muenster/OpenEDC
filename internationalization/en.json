@@ -112,6 +112,8 @@
     "finish": "Finish",
     "close": "Close",
     "mark-form-validated": "Mark form as validated?",
+    "today": "Today",
+    "now": "Now",
     "whole-number-warning": "Please enter a whole number.",
     "number-warning": "Please enter a number.",
     "date-warning": "Please enter a date (format: yyyy-mm-dd) or use the date picker.",

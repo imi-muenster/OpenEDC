@@ -117,6 +117,7 @@ class DateTimePicker extends HTMLElement {
 
     parseISOString(isoString) {
         this.selectedDay = new Day(new Date(isoString));
+        this.calendar = new Calendar(this.selectedDay.year, this.selectedDay.month);
     }
 
     setLocale(locale) {
@@ -141,6 +142,9 @@ class DateTimePicker extends HTMLElement {
                 display: grid;
                 grid-template-columns: repeat(7, 1fr);
                 grid-gap: .25rem;
+            }
+            #day-grid .button.is-static {
+                border: none;
             }
         `;
     }
@@ -180,8 +184,9 @@ class DateTimePicker extends HTMLElement {
                             </div>
                         </div>
                         <div class="buttons is-centered are-small">
-                            <button class="button is-danger is-light">${this.translations.clear}</button>
-                            <button class="button is-link is-light">${this.translations.now}</button>
+                            <button class="button is-link" id="picker-today-button">${this.translations.today}</button>
+                            <button class="button is-danger" id="picker-clear-button">${this.translations.clear}</button>
+                            <button class="button" id="picker-close-button">${this.translations.close}</button>
                         </div>
                     </div>
                 </div>
@@ -267,7 +272,7 @@ class DateTimePicker extends HTMLElement {
 
     getDayGridButton(day, disabled) {
         const button = document.createElement("button");
-        button.className = "button day-grid-button p-3";
+        button.className = "button day-grid-button p-1";
         button.textContent = day ? day.numberInMonth : "";
 
         if (!disabled && this.selectedDay && day.equals(this.selectedDay)) button.classList.add("is-link");
@@ -316,6 +321,24 @@ class DateTimePicker extends HTMLElement {
 
         this.querySelector("#picker-minutes-select select").addEventListener("input", event => {
             this.day.time.minutes = parseInt(event.target.value);
+        });
+
+        this.querySelector("#picker-today-button").addEventListener("click", () => {
+            this.input.value = this.calendar.today.localeDateISOString;
+            this.remove();
+        });
+
+        this.querySelector("#picker-clear-button").addEventListener("click", () => {
+            this.input.value = "";
+            this.remove();
+        });
+
+        this.querySelector("#picker-close-button").addEventListener("click", () => {
+            this.remove();
+        });
+
+        this.querySelector("#datetime-picker .modal-background").addEventListener("click", () => {
+            this.remove();
         });
     }
 }

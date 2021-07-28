@@ -111,6 +111,8 @@
     "finish": "Beenden",
     "close": "Schließen",
     "mark-form-validated": "Form als validiert markieren?",
+    "today": "Heute",
+    "now": "Jetzt",
     "whole-number-warning": "Bitte geben Sie eine ganze Zahl ein.",
     "number-warning": "Bitte geben Sie eine Zahl ein.",
     "date-warning": "Bitte geben Sie ein Datum ein (Format: jjjj-mm-tt) oder nutzen Sie Datumsauswahl.",
