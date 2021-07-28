@@ -403,7 +403,7 @@ async function addDynamicFormLogic() {
     });
 
     // Fourth, add date focus event listeners
-    $$("input[type='date'], input[type='datetime-local']").forEach(dateInput => {
+    $$("input[type='date'], input[type='time'], input[type='datetime-local']").forEach(dateInput => {
         dateInput.addEventListener("click", showDateTimePicker);
     });
 }
@@ -423,20 +423,20 @@ function uncheckRadioItem(event) {
 function showDateTimePicker(event) {
     event.preventDefault();
 
-    const enableTime = event.target.getAttribute("type") == "datetime-local";
-
+    const mode = event.target.getAttribute("type").split("-")[0];
     const picker = document.createElement("datetime-picker");
     picker.setInput(event.target);
     picker.setLocale(languageHelper.getCurrentLocale());
     picker.setTranslations({
-        heading: languageHelper.getTranslation(enableTime ? "datetime" : "date"),
-        today: languageHelper.getTranslation(enableTime ? "now" : "today"),
+        heading: languageHelper.getTranslation(mode),
+        today: languageHelper.getTranslation(mode == "time" || mode == "datetime" ? "now" : "today"),
         clear: languageHelper.getTranslation("remove"),
         save: languageHelper.getTranslation("save"),
         close: languageHelper.getTranslation("close")
     });
     picker.setOptions({
-        enableTime: enableTime,
+        enableDate: mode == "date" || mode == "datetime",
+        enableTime: mode == "datetime" || mode == "time",
         enablePartialEntry: false
     });
 

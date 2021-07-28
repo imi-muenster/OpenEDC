@@ -43,7 +43,11 @@ class Day {
     }
 
     get localeDateISOString() {
-        return this.localDateTimeISOString.substring(0, 10);
+        return this.localDateTimeISOString.split("T")[0];
+    }
+
+    get localeTimeISOString() {
+        return this.localDateTimeISOString.split("T")[1];
     }
 }
 
@@ -163,23 +167,25 @@ class DateTimePicker extends HTMLElement {
                 <div class="modal-content is-small">
                     <div class="box has-text-centered">
                         <h1 class="title">${this.translations.heading}</h1>
-                        <div class="mb-5" id="year-month-select">
-                            <button class="button is-link is-inverted is-hidden-mobile" id="previous-month-button">
-                                <span class="icon">
-                                    <i class="fas fa-xs fa-arrow-left"></i>
-                                </span>
-                            </button>
-                            <div class="select" id="picker-years-select"></div>
-                            <div class="select" id="picker-months-select"></div>
-                            <button class="button is-link is-inverted is-hidden-mobile" id="next-month-button">
-                                <span class="icon">
-                                    <i class="fas fa-xs fa-arrow-right"></i>
-                                </span>
-                            </button>
+                        <div class="is-hidden mb-3" id="picker-date">
+                            <div class="mb-5" id="year-month-select">
+                                <button class="button is-link is-inverted is-hidden-mobile" id="previous-month-button">
+                                    <span class="icon">
+                                        <i class="fas fa-xs fa-arrow-left"></i>
+                                    </span>
+                                </button>
+                                <div class="select" id="picker-years-select"></div>
+                                <div class="select" id="picker-months-select"></div>
+                                <button class="button is-link is-inverted is-hidden-mobile" id="next-month-button">
+                                    <span class="icon">
+                                        <i class="fas fa-xs fa-arrow-right"></i>
+                                    </span>
+                                </button>
+                            </div>
+                            <div id="day-grid-heading"></div>
+                            <div class="mb-5" id="day-grid"></div>
                         </div>
-                        <div id="day-grid-heading" class="mb-3"></div>
-                        <div class="mb-5" id="day-grid"></div>
-                        <div class="mb-5 is-hidden" id="hours-minutes-select">
+                        <div class="mb-5 is-hidden" id="picker-time">
                             <div class="field has-addons is-justify-content-center">
                                 <div class="control">
                                     <div class="select" id="picker-hours-select"></div>
@@ -201,13 +207,20 @@ class DateTimePicker extends HTMLElement {
         `;
 
         // Render static elements, day grid, and set current select values as well as listen to inputs
-        this.renderStaticElements();
-        this.setSelectValues();
-        this.renderDayGrid();
-        this.setIOListeners();
+        if (this.options.enableDate) this.renderDateStaticElements();
+        if (this.options.enableTime) this.renderTimeStaticElements();
+
+        if (this.options.enableDate)this.setDateSelectValues();
+        if (this.options.enableTime)this.setTimeSelectValues();
+
+        if (this.options.enableDate) this.renderDayGrid();
+        
+        if (this.options.enableDate) this.setDateIOListeners();
+        if (this.options.enableTime) this.setTimeIOListeners();
+        this.setGeneralIOListeners();
     }
 
-    renderStaticElements() {
+    renderDateStaticElements() {
         // Add year select
         const years = Array.from({ length: 110 }, (_, i) => i + (this.calendar.year - 100));
         this.querySelector("#picker-years-select").appendChild(this.getSelect(years));
@@ -222,20 +235,27 @@ class DateTimePicker extends HTMLElement {
             this.querySelector("#day-grid-heading").insertAdjacentElement("beforeend", this.getDayGridHeading(weekday));
         }
 
-        // Add time selects
-        if (!this.options.enableTime) return;
-        const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
-        const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
-        this.querySelector("#picker-hours-select").appendChild(this.getSelect(hours));
-        this.querySelector("#picker-minutes-select").appendChild(this.getSelect(minutes));
-        this.querySelector("#hours-minutes-select").classList.remove("is-hidden");
+        this.querySelector("#picker-date").classList.remove("is-hidden");
     }
 
-    setSelectValues() {
+    renderTimeStaticElements() {
+        // Add hours select
+        const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
+        this.querySelector("#picker-hours-select").appendChild(this.getSelect(hours));
+
+        // Add minutes select
+        const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
+        this.querySelector("#picker-minutes-select").appendChild(this.getSelect(minutes));
+
+        this.querySelector("#picker-time").classList.remove("is-hidden");
+    }
+
+    setDateSelectValues() {
         this.querySelector("#picker-years-select select").value = this.calendar.year;
         this.querySelector("#picker-months-select select").value = this.calendar.month.number;
+    }
 
-        if (!this.options.enableTime) return;
+    setTimeSelectValues() {
         this.querySelector("#picker-hours-select select").value = this.selectedDay.time.paddedHours;
         this.querySelector("#picker-minutes-select select").value = this.selectedDay.time.paddedMinutes;
     }
@@ -312,39 +332,51 @@ class DateTimePicker extends HTMLElement {
         this.querySelector("#picker-today-button").classList.add("is-hidden");
     }
 
-    setIOListeners() {
+    setDateIOListeners() {
         this.querySelector("#picker-years-select select").addEventListener("input", event => {
             this.calendar = new Calendar(event.target.value, this.calendar.month.number);
-            this.setSelectValues();
             this.renderDayGrid();
         });
 
         this.querySelector("#picker-months-select select").addEventListener("input", event => {
             this.calendar = new Calendar(this.calendar.year, event.target.value);
-            this.setSelectValues();
             this.renderDayGrid();
         });
 
         this.querySelector("#previous-month-button").addEventListener("click", () => {
             this.calendar.setPreviousMonth();
-            this.setSelectValues();
+            this.setDateSelectValues();
             this.renderDayGrid();
         });
 
         this.querySelector("#next-month-button").addEventListener("click", () => {
             this.calendar.setNextMonth();
-            this.setSelectValues();
+            this.setDateSelectValues();
             this.renderDayGrid();
         });
+    }
 
+    setTimeIOListeners() {
+        this.querySelector("#picker-hours-select select").addEventListener("input", event => {
+            this.selectedDay.time.hours = parseInt(event.target.value);
+            this.showSaveButton();
+        });
+
+        this.querySelector("#picker-minutes-select select").addEventListener("input", event => {
+            this.selectedDay.time.minutes = parseInt(event.target.value);
+            this.showSaveButton();
+        });
+    }
+
+    setGeneralIOListeners() {
         this.querySelector("#picker-save-button").addEventListener("click", () => {
             if (!this.options.enableTime) return;
-            this.input.value = this.selectedDay.localDateTimeISOString;
+            this.input.value = this.options.enableDate && this.options.enableTime ? this.selectedDay.localDateTimeISOString : this.selectedDay.localeTimeISOString;
             this.remove();
         });
 
         this.querySelector("#picker-today-button").addEventListener("click", () => {
-            this.input.value = this.options.enableTime ? this.calendar.today.localDateTimeISOString : this.calendar.today.localeDateISOString;
+            this.input.value = this.options.enableDate && this.options.enableTime ? this.selectedDay.localDateTimeISOString : this.selectedDay.localeTimeISOString;
             this.remove();
         });
 
@@ -359,17 +391,6 @@ class DateTimePicker extends HTMLElement {
 
         this.querySelector("#datetime-picker .modal-background").addEventListener("click", () => {
             this.remove();
-        });
-
-        if (!this.options.enableTime) return;
-        this.querySelector("#picker-hours-select select").addEventListener("input", event => {
-            this.selectedDay.time.hours = parseInt(event.target.value);
-            this.showSaveButton();
-        });
-
-        this.querySelector("#picker-minutes-select select").addEventListener("input", event => {
-            this.selectedDay.time.minutes = parseInt(event.target.value);
-            this.showSaveButton();
         });
     }
 }
