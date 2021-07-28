@@ -2,17 +2,28 @@ class Time {
     constructor(date) {
         if (!date) date = new Date();
 
-        this.hours = date.getHours();
-        this.minutes = date.getMinutes();
+        this._hours = date.getHours();
+        this._minutes = date.getMinutes();
         this.date = date;
+        this.date.setSeconds(0);
+    }
+
+    set hours(hours) {
+        this._hours = hours;
+        this.date.setHours(hours);
+    }
+
+    set minutes(minutes) {
+        this._minutes = minutes;
+        this.date.setMinutes(minutes);
     }
 
     get paddedHours() {
-        return String(this.hours).padStart(2, "0")
+        return String(this._hours).padStart(2, "0")
     }
 
     get paddedMinutes() {
-        return String(this.minutes).padStart(2, "0")
+        return String(this._minutes).padStart(2, "0")
     }
 }
 
@@ -56,6 +67,16 @@ class Month {
     get firstDayOffset() {
         return this.days[0].numberInWeek - 1;
     }
+
+    get previousMonth() {
+        if (this.number == 1) return new Month(new Date(this.year - 1, 11));
+        else return new Month(new Date(this.year, this.number - 2));
+    }
+
+    get nextMonth() {
+        if (this.number == 12) return new Month(new Date(this.year + 1, 0));
+        else return new Month(new Date(this.year, this.number));
+    }
 }
 
 class Calendar {
@@ -78,27 +99,21 @@ class Calendar {
         return months;
     }
 
-    setNextMonth() {
-        if (this.month.number == 12) {
-            this.year++;
-            this.month = new Month(new Date(this.year, 0));
-        } else {
-            this.month = new Month(new Date(this.year, this.month.number));
-        }
+    setPreviousMonth() {
+        this.month = this.month.previousMonth;
+        this.year = this.month.year;
     }
 
-    setPreviousMonth() {
-        if (this.month.number == 1) {
-            this.year--;
-            this.month = new Month(new Date(this.year, 11));
-        } else {
-            this.month = new Month(new Date(this.year, this.month.number - 2));
-        }
+    setNextMonth() {
+        this.month = this.month.nextMonth;
+        this.year = this.month.year;
     }
 }
 
 class DateTimePicker extends HTMLElement {
     calendar = new Calendar();
+    day = new Day();
+    time = new Time();
     locale = "en";
 
     connectedCallback() {
@@ -118,7 +133,7 @@ class DateTimePicker extends HTMLElement {
     render() {
         this.innerHTML = `
             <style>${this.style}</style>
-            <div class="modal" id="datetime-picker">
+            <div class="modal is-active" id="datetime-picker">
                 <div class="modal-background"></div>
                 <div class="modal-content is-small">
                     <div class="box has-text-centered">
@@ -143,13 +158,6 @@ class DateTimePicker extends HTMLElement {
                             <div class="field has-addons is-justify-content-center">
                                 <div class="control">
                                     <div class="select" id="picker-hours-select"></div>
-                                </div>
-                                <div class="control">
-                                    <button class="button is-static p-2">
-                                        <span class="icon">
-                                            <i class="far fa-xs fa-circle"></i>
-                                        </span>
-                                    </button>
                                 </div>
                                 <div class="control">
                                     <div class="select" id="picker-minutes-select"></div>
@@ -203,20 +211,23 @@ class DateTimePicker extends HTMLElement {
     renderDayGrid() {
         this.querySelector("#day-grid").innerHTML = "";
 
-        // Add invisible days to grid from previous month
+        // Add last days from previous month
         const firstDayOffset = this.calendar.month.firstDayOffset;
-        for (let i = 0; i < firstDayOffset; i++) {
-            this.querySelector("#day-grid").insertAdjacentElement("beforeend", this.getDayGridButton());
+        const lastDaysPreviousMonth = firstDayOffset ? this.calendar.month.previousMonth.days.slice(-firstDayOffset) : [];
+        for (let i = 0; i < lastDaysPreviousMonth.length; i++) {
+            this.querySelector("#day-grid").insertAdjacentElement("beforeend", this.getDayGridButton(lastDaysPreviousMonth[i], true));
         }
 
-        // Add the days of the current month to grid
+        // Add days of current month
         for (let day of this.calendar.month.days) {
             this.querySelector("#day-grid").insertAdjacentElement("beforeend", this.getDayGridButton(day));
         }
 
-        // Add invisible days to grid to have same height for all months
-        for (let i = 0; i < 8 - firstDayOffset; i++) {
-            this.querySelector("#day-grid").insertAdjacentElement("beforeend", this.getDayGridButton());
+        // Add first days from next month
+        const requiredDays = 42 - firstDayOffset - this.calendar.month.days.length;
+        const firstDaysNextMonth = this.calendar.month.nextMonth.days.slice(0, requiredDays);
+        for (let i = 0; i < firstDaysNextMonth.length; i++) {
+            this.querySelector("#day-grid").insertAdjacentElement("beforeend", this.getDayGridButton(firstDaysNextMonth[i], true));
         }
     }
 
@@ -239,12 +250,13 @@ class DateTimePicker extends HTMLElement {
         return heading;
     }
 
-    getDayGridButton(day) {
+    getDayGridButton(day, disabled) {
         const button = document.createElement("button");
         button.className = "button day-grid-button p-3";
-        if (day && day.isToday) button.classList.add("is-link", "is-light");
-        if (!day) button.classList.add("is-invisible");
         button.textContent = day ? day.numberInMonth : "";
+        if (!disabled && day.isToday) button.classList.add("is-link", "is-light");
+        if (!disabled) button.onclick = () => this.day = day;
+        else button.classList.add("is-static");
         
         return button;
     }
@@ -272,6 +284,14 @@ class DateTimePicker extends HTMLElement {
             this.calendar.setNextMonth();
             this.setSelectValues();
             this.renderDayGrid();
+        });
+
+        this.querySelector("#picker-hours-select select").addEventListener("input", event => {
+            this.time.hours = parseInt(event.target.value);
+        });
+
+        this.querySelector("#picker-minutes-select select").addEventListener("input", event => {
+            this.time.minutes = parseInt(event.target.value);
         });
     }
 }
