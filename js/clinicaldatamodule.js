@@ -403,7 +403,7 @@ async function addDynamicFormLogic() {
     });
 
     // Fourth, add date focus event listeners
-    $$("input[type='date']").forEach(dateInput => {
+    $$("input[type='date'], input[type='datetime-local']").forEach(dateInput => {
         dateInput.addEventListener("click", showDateTimePicker);
     });
 }
@@ -423,16 +423,22 @@ function uncheckRadioItem(event) {
 function showDateTimePicker(event) {
     event.preventDefault();
 
+    const enableTime = event.target.getAttribute("type") == "datetime-local";
+
     const picker = document.createElement("datetime-picker");
     picker.setInput(event.target);
     picker.setLocale(languageHelper.getCurrentLocale());
     picker.setTranslations({
-        heading: languageHelper.getTranslation("date"),
-        today: languageHelper.getTranslation("today"),
+        heading: languageHelper.getTranslation(enableTime ? "datetime" : "date"),
+        today: languageHelper.getTranslation(enableTime ? "now" : "today"),
         clear: languageHelper.getTranslation("remove"),
+        save: languageHelper.getTranslation("save"),
         close: languageHelper.getTranslation("close")
     });
-    if (event.target.value) picker.parseISOString(event.target.value);
+    picker.setOptions({
+        enableTime: enableTime,
+        enablePartialEntry: false
+    });
 
     document.body.appendChild(picker);
 }
