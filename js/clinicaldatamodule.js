@@ -398,13 +398,18 @@ async function addDynamicFormLogic() {
     validationHelper.process(metadataHelper.getItemsWithRangeChecks(currentElementID.form));
     
     // Third, allow the user to uncheck an already checked group of radio items
-    document.querySelectorAll("#clinicaldata-content label.radio").forEach(radioItem => {
-        radioItem.addEventListener("mouseup", mouseEvent => uncheckRadioItem(mouseEvent.target));
+    $$("#clinicaldata-content label.radio").forEach(radioItem => {
+        radioItem.addEventListener("mouseup", uncheckRadioItem);
+    });
+
+    // Fourth, add date focus event listeners
+    $$("input[type='date']").forEach(dateInput => {
+        dateInput.addEventListener("click", showDateTimePicker);
     });
 }
 
-function uncheckRadioItem(radioItem) {
-    radioItem = radioItem.querySelector("input") ? radioItem.querySelector("input") : radioItem;
+function uncheckRadioItem(event) {
+    const radioItem = event.target.querySelector("input") ? event.target.querySelector("input") : event.target;
     if (radioItem.checked) {
         setTimeout(() => {
             radioItem.checked = false;
@@ -413,6 +418,22 @@ function uncheckRadioItem(radioItem) {
             radioItem.dispatchEvent(inputEvent);
         }, 100);
     }
+}
+
+function showDateTimePicker(event) {
+    event.preventDefault();
+
+    const picker = document.createElement("datetime-picker");
+    picker.setInput(event.target);
+    picker.setLocale(languageHelper.getCurrentLocale());
+    picker.setTranslations({
+        heading: languageHelper.getTranslation("date"),
+        clear: languageHelper.getTranslation("clear"),
+        now: languageHelper.getTranslation("now")
+    });
+    if (event.target.value) picker.parseISOString(event.target.value);
+    
+    document.body.appendChild(picker);
 }
 
 function loadFormClinicaldata() {
@@ -545,7 +566,7 @@ function isFormValidated() {
 
 function scrollToFormStart() {
     // Scroll to the beginning of the form on desktop and mobile
-    document.querySelector("#clinicaldata-form-data").scrollIntoView();
+    $("#clinicaldata-form-data").scrollIntoView();
     document.documentElement.scrollTop = 0;
 }
 
@@ -789,15 +810,15 @@ function showAuditRecordHint() {
 }
 
 function disableInputElements() {
-    document.querySelectorAll("#clinicaldata-content input").forEach(input => input.disabled = true);
-    document.querySelectorAll("#clinicaldata-content select").forEach(input => input.disabled = true);
-    document.querySelectorAll("#clinicaldata-content textarea").forEach(input => input.disabled = true);
+    $$("#clinicaldata-content input").forEach(input => input.disabled = true);
+    $$("#clinicaldata-content select").forEach(input => input.disabled = true);
+    $$("#clinicaldata-content textarea").forEach(input => input.disabled = true);
 }
 
 function enableInputElements() {
-    document.querySelectorAll("#clinicaldata-content input").forEach(input => input.disabled = false);
-    document.querySelectorAll("#clinicaldata-content select").forEach(input => input.disabled = false);
-    document.querySelectorAll("#clinicaldata-content textarea").forEach(input => input.disabled = false);
+    $$("#clinicaldata-content input").forEach(input => input.disabled = false);
+    $$("#clinicaldata-content select").forEach(input => input.disabled = false);
+    $$("#clinicaldata-content textarea").forEach(input => input.disabled = false);
 }
 
 function surveyViewIsActive() {
@@ -956,7 +977,7 @@ function setIOListeners() {
 
 function filterSubjects(searchString) {
     searchString = searchString.toUpperCase();
-    for (let subject of document.querySelectorAll("#subject-panel-blocks a")) {
+    for (let subject of $$("#subject-panel-blocks a")) {
         if (subject.textContent.toUpperCase().includes(searchString)) {
             subject.show();
         } else {

@@ -1,29 +1,19 @@
 class Time {
+    // TODO: Only minutes and seconds?
     constructor(date) {
         if (!date) date = new Date();
 
-        this._hours = date.getHours();
-        this._minutes = date.getMinutes();
+        this.hours = date.getHours();
+        this.minutes = date.getMinutes();
         this.date = date;
-        this.date.setSeconds(0);
-    }
-
-    set hours(hours) {
-        this._hours = hours;
-        this.date.setHours(hours);
-    }
-
-    set minutes(minutes) {
-        this._minutes = minutes;
-        this.date.setMinutes(minutes);
     }
 
     get paddedHours() {
-        return String(this._hours).padStart(2, "0")
+        return String(this.hours).padStart(2, "0")
     }
 
     get paddedMinutes() {
-        return String(this._minutes).padStart(2, "0")
+        return String(this.minutes).padStart(2, "0")
     }
 }
 
@@ -39,9 +29,21 @@ class Day {
         this.date = date;
     }
 
+    equals(day) {
+        return this.numberInMonth == day.numberInMonth && this.month == day.month && this.year == day.year;
+    }
+
     get isToday() {
-        const today = new Day();
-        return this.numberInMonth == today.numberInMonth && this.month == today.month && this.year == today.year;
+        return this.equals(new Day());
+    }
+
+    get localDateTimeISOString() {
+        const timezoneOffset = new Date().getTimezoneOffset() * 60000;
+        return new Date(this.date.getTime() - timezoneOffset).toISOString().slice(0, -1);
+    }
+
+    get localeDateISOString() {
+        return this.localDateTimeISOString.substring(0, 10);
     }
 }
 
@@ -112,9 +114,22 @@ class Calendar {
 
 class DateTimePicker extends HTMLElement {
     calendar = new Calendar();
-    day = new Day();
-    time = new Time();
-    locale = "en";
+
+    parseISOString(isoString) {
+        this.selectedDay = new Day(new Date(isoString));
+    }
+
+    setLocale(locale) {
+        this.locale = locale;
+    }
+
+    setTranslations(translations) {
+        this.translations = translations;
+    }
+
+    setInput(input) {
+        this.input = input;
+    }
 
     connectedCallback() {
         this.render();
@@ -137,7 +152,7 @@ class DateTimePicker extends HTMLElement {
                 <div class="modal-background"></div>
                 <div class="modal-content is-small">
                     <div class="box has-text-centered">
-                        <h1 class="title">Date</h1>
+                        <h1 class="title">${this.translations.heading}</h1>
                         <div class="mb-5" id="year-month-select">
                             <button class="button is-link is-inverted is-hidden-mobile" id="previous-month-button">
                                 <span class="icon">
@@ -154,7 +169,7 @@ class DateTimePicker extends HTMLElement {
                         </div>
                         <div id="day-grid-heading" class="mb-3"></div>
                         <div class="mb-5" id="day-grid"></div>
-                        <div class="mb-5" id="hour-minute-select">
+                        <div class="mb-5 is-hidden" id="hour-minute-select">
                             <div class="field has-addons is-justify-content-center">
                                 <div class="control">
                                     <div class="select" id="picker-hours-select"></div>
@@ -165,8 +180,8 @@ class DateTimePicker extends HTMLElement {
                             </div>
                         </div>
                         <div class="buttons is-centered are-small">
-                            <button class="button is-danger is-light">Clear</button>
-                            <button class="button is-link is-light">Today</button>
+                            <button class="button is-danger is-light">${this.translations.clear}</button>
+                            <button class="button is-link is-light">${this.translations.now}</button>
                         </div>
                     </div>
                 </div>
@@ -254,11 +269,20 @@ class DateTimePicker extends HTMLElement {
         const button = document.createElement("button");
         button.className = "button day-grid-button p-3";
         button.textContent = day ? day.numberInMonth : "";
-        if (!disabled && day.isToday) button.classList.add("is-link", "is-light");
-        if (!disabled) button.onclick = () => this.day = day;
+
+        if (!disabled && this.selectedDay && day.equals(this.selectedDay)) button.classList.add("is-link");
+        else if (!disabled && day.isToday) button.classList.add("is-link", "is-light");
+
+        if (!disabled) button.onclick = () => this.daySelected(day);
         else button.classList.add("is-static");
         
         return button;
+    }
+
+    daySelected(day) {
+        this.day = day;
+        this.input.value = day.localeDateISOString;
+        this.remove();
     }
 
     setIOListeners() {
@@ -287,11 +311,11 @@ class DateTimePicker extends HTMLElement {
         });
 
         this.querySelector("#picker-hours-select select").addEventListener("input", event => {
-            this.time.hours = parseInt(event.target.value);
+            this.day.time.hours = parseInt(event.target.value);
         });
 
         this.querySelector("#picker-minutes-select select").addEventListener("input", event => {
-            this.time.minutes = parseInt(event.target.value);
+            this.day.time.minutes = parseInt(event.target.value);
         });
     }
 }
