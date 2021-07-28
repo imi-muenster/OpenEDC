@@ -160,26 +160,26 @@ class DateTimePicker extends HTMLElement {
             <style>${this.style}</style>
             <div class="modal is-active" id="datetime-picker">
                 <div class="modal-background"></div>
-                <div class="modal-content is-small">
+                <div class="modal-content is-small is-fullheight-mobile">
                     <div class="box has-text-centered">
                         <h1 class="title">${this.translations.heading}</h1>
-                        <div class="is-hidden mb-3" id="picker-date">
+                        <div class="is-hidden mb-5" id="picker-date">
                             <div class="mb-5" id="year-month-select">
-                                <button class="button is-link is-inverted is-hidden-mobile" id="previous-month-button">
+                                <button class="button is-link is-inverted" id="previous-month-button">
                                     <span class="icon">
                                         <i class="fas fa-xs fa-arrow-left"></i>
                                     </span>
                                 </button>
                                 <div class="select" id="picker-years-select"></div>
                                 <div class="select" id="picker-months-select"></div>
-                                <button class="button is-link is-inverted is-hidden-mobile" id="next-month-button">
+                                <button class="button is-link is-inverted" id="next-month-button">
                                     <span class="icon">
                                         <i class="fas fa-xs fa-arrow-right"></i>
                                     </span>
                                 </button>
                             </div>
-                            <div id="day-grid-heading"></div>
-                            <div class="mb-5" id="day-grid"></div>
+                            <div class="mb-2" id="day-grid-heading"></div>
+                            <div id="day-grid"></div>
                         </div>
                         <div class="mb-5 is-hidden" id="picker-time">
                             <div class="field has-addons is-justify-content-center">
@@ -405,6 +405,7 @@ class DateTimePicker extends HTMLElement {
         });
 
         this.querySelector("#picker-today-button").addEventListener("click", () => {
+            this.selectedDay = this.calendar.today;
             this.saveValue();
             this.remove();
         });

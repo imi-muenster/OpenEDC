@@ -403,6 +403,8 @@ async function addDynamicFormLogic() {
     });
 
     // Fourth, add date focus event listeners
+    // TODO: Currently, the custom date picker is not used on mobile devices because of a Safari issue
+    if (ioHelper.isMobile()) return;
     $$("input[type='date'], input[type='time'], input[type='datetime-local']").forEach(dateInput => {
         dateInput.addEventListener("click", showDateTimePicker);
     });
