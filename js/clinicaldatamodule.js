@@ -432,7 +432,7 @@ function showDateTimePicker(event) {
     picker.setTranslations({
         heading: languageHelper.getTranslation(mode),
         today: languageHelper.getTranslation(mode == "time" || mode == "datetime" ? "now" : "today"),
-        clear: languageHelper.getTranslation("remove"),
+        reset: languageHelper.getTranslation("reset"),
         save: languageHelper.getTranslation("save"),
         close: languageHelper.getTranslation("close")
     });

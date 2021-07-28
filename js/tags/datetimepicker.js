@@ -170,8 +170,8 @@ class DateTimePicker extends HTMLElement {
                                         <i class="fas fa-xs fa-arrow-left"></i>
                                     </span>
                                 </button>
-                                <div class="select" id="picker-years-select"></div>
-                                <div class="select" id="picker-months-select"></div>
+                                <div class="select is-rounded" id="picker-years-select"></div>
+                                <div class="select is-rounded" id="picker-months-select"></div>
                                 <button class="button is-link is-inverted" id="next-month-button">
                                     <span class="icon">
                                         <i class="fas fa-xs fa-arrow-right"></i>
@@ -184,17 +184,17 @@ class DateTimePicker extends HTMLElement {
                         <div class="mb-5 is-hidden" id="picker-time">
                             <div class="field has-addons is-justify-content-center">
                                 <div class="control">
-                                    <div class="select" id="picker-hours-select"></div>
+                                    <div class="select is-rounded" id="picker-hours-select"></div>
                                 </div>
                                 <div class="control">
-                                    <div class="select" id="picker-minutes-select"></div>
+                                    <div class="select is-rounded" id="picker-minutes-select"></div>
                                 </div>
                             </div>
                         </div>
                         <div class="buttons is-centered are-small">
                             <button class="button is-link is-hidden" id="picker-save-button">${this.translations.save}</button>
                             <button class="button is-link" id="picker-today-button">${this.translations.today}</button>
-                            <button class="button is-danger is-hidden" id="picker-clear-button">${this.translations.clear}</button>
+                            <button class="button is-danger is-hidden" id="picker-reset-button">${this.translations.reset}</button>
                             <button class="button" id="picker-close-button">${this.translations.close}</button>
                         </div>
                     </div>
@@ -215,7 +215,7 @@ class DateTimePicker extends HTMLElement {
         if (this.options.enableTime) this.setTimeIOListeners();
         this.setGeneralIOListeners();
 
-        if (!this.selectedDay.initial) this.showClearButton();
+        if (!this.selectedDay.initial) this.showResetButton();
     }
 
     renderDateStaticElements() {
@@ -330,8 +330,8 @@ class DateTimePicker extends HTMLElement {
         this.querySelector("#picker-today-button").classList.add("is-hidden");
     }
 
-    showClearButton() {
-        this.querySelector("#picker-clear-button").classList.remove("is-hidden");
+    showResetButton() {
+        this.querySelector("#picker-reset-button").classList.remove("is-hidden");
     }
 
     parseDateString(string) {
@@ -410,7 +410,7 @@ class DateTimePicker extends HTMLElement {
             this.remove();
         });
 
-        this.querySelector("#picker-clear-button").addEventListener("click", () => {
+        this.querySelector("#picker-reset-button").addEventListener("click", () => {
             this.input.value = "";
             this.remove();
         });
