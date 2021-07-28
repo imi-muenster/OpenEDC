@@ -58,9 +58,28 @@ class Calendar {
 
         return months;
     }
+
+    setNextMonth() {
+        if (this.month.number == 12) {
+            this.year++;
+            this.month = new Month(new Date(this.year, 0));
+        } else {
+            this.month = new Month(new Date(this.year, this.month.number));
+        }
+    }
+
+    setPreviousMonth() {
+        if (this.month.number == 1) {
+            this.year--;
+            this.month = new Month(new Date(this.year, 11));
+        } else {
+            this.month = new Month(new Date(this.year, this.month.number - 2));
+        }
+    }
 }
 
 class DateTimePicker extends HTMLElement {
+    calendar = new Calendar();
     locale = "en";
 
     connectedCallback() {
@@ -80,20 +99,20 @@ class DateTimePicker extends HTMLElement {
     render() {
         this.innerHTML = `
             <style>${this.style}</style>
-            <div class="modal" id="datetime-picker">
+            <div class="modal is-active" id="datetime-picker">
                 <div class="modal-background"></div>
                 <div class="modal-content is-small">
                     <div class="box has-text-centered">
                         <h1 class="title">Date</h1>
                         <div class="mb-5" id="year-month-select">
-                            <button class="button is-link is-inverted">
+                            <button class="button is-link is-inverted" id="previous-month-button">
                                 <span class="icon">
                                     <i class="fas fa-xs fa-arrow-left"></i>
                                 </span>
                             </button>
                             <div class="select" id="picker-year-select"></div>
                             <div class="select" id="picker-month-select"></div>
-                            <button class="button is-link is-inverted">
+                            <button class="button is-link is-inverted" id="next-month-button">
                                 <span class="icon">
                                     <i class="fas fa-xs fa-arrow-right"></i>
                                 </span>
@@ -106,40 +125,51 @@ class DateTimePicker extends HTMLElement {
             </div>
         `;
 
-        const calendar = new Calendar();
-
         // Fill year select
-        const years = Array.from({ length: 110 }, (_, i) => i + (calendar.year - 100));
-        this.querySelector("#picker-year-select").appendChild(this.getSelect(years, calendar.year));
+        const years = Array.from({ length: 110 }, (_, i) => i + (this.calendar.year - 100));
+        this.querySelector("#picker-year-select").appendChild(this.getSelect(years));
 
         // Fill month select
         const monthNumbers = Array.from({ length: 12 }, (_, i) => i + 1);
-        const monthNames = calendar.months.map(month => month.date.toLocaleDateString(this.locale, { month: "long" }));
-        this.querySelector("#picker-month-select").appendChild(this.getSelect(monthNumbers, calendar.month.number, monthNames));
+        const monthNames = this.calendar.months.map(month => month.date.toLocaleDateString(this.locale, { month: "long" }));
+        this.querySelector("#picker-month-select").appendChild(this.getSelect(monthNumbers, monthNames));
 
         // Add short names of weekdays
-        for (let weekday of calendar.weekDays) {
-            this.querySelector("#day-grid-heading").insertAdjacentHTML("beforeend", this.getDayGridHeading(weekday));
+        for (let weekday of this.calendar.weekDays) {
+            this.querySelector("#day-grid-heading").insertAdjacentElement("beforeend", this.getDayGridHeading(weekday));
         }
 
+        // Render day grid, set current select values and listen to input
+        this.setSelectValues();
+        this.renderDayGrid();
+        this.setIOListeners();
+    }
+
+    setSelectValues() {
+        this.querySelector("#picker-year-select select").value = this.calendar.year;
+        this.querySelector("#picker-month-select select").value = this.calendar.month.number;
+    }
+
+    renderDayGrid() {
+        this.querySelector("#day-grid").innerHTML = "";
+
         // Add invisible days to grid from previous month
-        const firstDayOffset = calendar.month.firstDayOffset;
+        const firstDayOffset = this.calendar.month.firstDayOffset;
         for (let i = 0; i < firstDayOffset; i++) {
-            this.querySelector("#day-grid").insertAdjacentHTML("beforeend", this.getDayGridButton());
+            this.querySelector("#day-grid").insertAdjacentElement("beforeend", this.getDayGridButton());
         }
 
         // Add the days of the current month to grid
-        for (let day of calendar.month.days) {
-            this.querySelector("#day-grid").insertAdjacentHTML("beforeend", this.getDayGridButton(day));
+        for (let day of this.calendar.month.days) {
+            this.querySelector("#day-grid").insertAdjacentElement("beforeend", this.getDayGridButton(day));
         }
     }
 
-    getSelect(values, selectedValue, textContents) {
+    getSelect(values, textContents) {
         const select = document.createElement("select");
         for (let i = 0; i < values.length; i++) {
             const option = document.createElement("option");
             option.value = values[i];
-            if (values[i] == selectedValue) option.selected = true;
             option.textContent = textContents && textContents.length > i ? textContents[i] : values[i];
             select.appendChild(option);
         }
@@ -148,11 +178,46 @@ class DateTimePicker extends HTMLElement {
     }
 
     getDayGridHeading(day) {
-        return `<span>${day.date.toLocaleDateString(this.locale, { weekday: "short" })}</span>`;
+        const heading = document.createElement("span");
+        heading.textContent = day.date.toLocaleDateString(this.locale, { weekday: "short" });
+
+        return heading;
     }
 
     getDayGridButton(day) {
-        return `<button class="button day-grid-button p-1 ${day ? "" : "is-invisible"}">${day ? day.numberInMonth : ""}</button>`;
+        const button = document.createElement("button");
+        button.className = "button day-grid-button p-3";
+        if (day && day.isToday) button.classList.add("is-primary");
+        if (!day) button.classList.add("is-invisible");
+        button.textContent = day ? day.numberInMonth : "";
+        
+        return button;
+    }
+
+    setIOListeners() {
+        this.querySelector("#picker-year-select select").addEventListener("input", event => {
+            this.calendar = new Calendar(event.target.value, this.calendar.month.number);
+            this.setSelectValues();
+            this.renderDayGrid();
+        });
+
+        this.querySelector("#picker-month-select select").addEventListener("input", event => {
+            this.calendar = new Calendar(this.calendar.year, event.target.value);
+            this.setSelectValues();
+            this.renderDayGrid();
+        });
+
+        this.querySelector("#previous-month-button").addEventListener("click", () => {
+            this.calendar.setPreviousMonth();
+            this.setSelectValues();
+            this.renderDayGrid();
+        });
+
+        this.querySelector("#next-month-button").addEventListener("click", () => {
+            this.calendar.setNextMonth();
+            this.setSelectValues();
+            this.renderDayGrid();
+        });
     }
 }
 
