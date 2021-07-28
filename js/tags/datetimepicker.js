@@ -22,6 +22,7 @@ class Month {
         this.numberOfDays = new Date(day.year, day.month, 0).getDate();
         this.number = day.month;
         this.year = day.year;
+        this.date = date;
     }
 
     get days() {
@@ -47,6 +48,15 @@ class Calendar {
 
     get weekDays() {
         return this.month.days.slice(0, 7).sort((a, b) => a.numberInWeek > b.numberInWeek ? 1 : (a.numberInWeek < b.numberInWeek ? -1 : 0));
+    }
+
+    get months() {
+        const months = [];
+        for (let i = 0; i <= 11; i++) {
+            months.push(new Month(new Date(this.year, i, 1)));
+        }
+
+        return months;
     }
 }
 
@@ -75,6 +85,20 @@ class DateTimePicker extends HTMLElement {
                 <div class="modal-content is-small">
                     <div class="box has-text-centered">
                         <h1 class="title">Date</h1>
+                        <div class="mb-5" id="year-month-select">
+                            <button class="button is-link is-inverted">
+                                <span class="icon">
+                                    <i class="fas fa-xs fa-arrow-left"></i>
+                                </span>
+                            </button>
+                            <div class="select" id="picker-year-select"></div>
+                            <div class="select" id="picker-month-select"></div>
+                            <button class="button is-link is-inverted">
+                                <span class="icon">
+                                    <i class="fas fa-xs fa-arrow-right"></i>
+                                </span>
+                            </button>
+                        </div>
                         <div id="day-grid-heading" class="mb-3"></div>
                         <div id="day-grid"></div>
                     </div>
@@ -84,21 +108,43 @@ class DateTimePicker extends HTMLElement {
 
         const calendar = new Calendar();
 
-        // First, add short names of weekdays
+        // Fill year select
+        const years = Array.from({ length: 110 }, (_, i) => i + (calendar.year - 100));
+        this.querySelector("#picker-year-select").appendChild(this.getSelect(years, calendar.year));
+
+        // Fill month select
+        const monthNumbers = Array.from({ length: 12 }, (_, i) => i + 1);
+        const monthNames = calendar.months.map(month => month.date.toLocaleDateString(this.locale, { month: "long" }));
+        this.querySelector("#picker-month-select").appendChild(this.getSelect(monthNumbers, calendar.month.number, monthNames));
+
+        // Add short names of weekdays
         for (let weekday of calendar.weekDays) {
             this.querySelector("#day-grid-heading").insertAdjacentHTML("beforeend", this.getDayGridHeading(weekday));
         }
 
-        // Second, add invisible days to grid from previous month
+        // Add invisible days to grid from previous month
         const firstDayOffset = calendar.month.firstDayOffset;
         for (let i = 0; i < firstDayOffset; i++) {
             this.querySelector("#day-grid").insertAdjacentHTML("beforeend", this.getDayGridButton());
         }
 
-        // Third, add the days of the current month to grid
+        // Add the days of the current month to grid
         for (let day of calendar.month.days) {
             this.querySelector("#day-grid").insertAdjacentHTML("beforeend", this.getDayGridButton(day));
         }
+    }
+
+    getSelect(values, selectedValue, textContents) {
+        const select = document.createElement("select");
+        for (let i = 0; i < values.length; i++) {
+            const option = document.createElement("option");
+            option.value = values[i];
+            if (values[i] == selectedValue) option.selected = true;
+            option.textContent = textContents && textContents.length > i ? textContents[i] : values[i];
+            select.appendChild(option);
+        }
+
+        return select;
     }
 
     getDayGridHeading(day) {
