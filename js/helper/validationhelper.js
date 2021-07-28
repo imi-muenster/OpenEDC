@@ -88,7 +88,7 @@ function isDate(value) {
 }
 
 function isTime(value) {
-    return new RegExp(/^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/).test(value);
+    return new RegExp(/^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/).test(value);
 }
 
 function rangeCheckValue(value) {

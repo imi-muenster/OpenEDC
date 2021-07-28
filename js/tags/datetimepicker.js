@@ -42,11 +42,11 @@ class Day {
         return new Date(this.date.getTime() - timezoneOffset).toISOString().slice(0, -5);
     }
 
-    get localeDateISOString() {
+    get localDateISOString() {
         return this.localDateTimeISOString.split("T")[0];
     }
 
-    get localeTimeISOString() {
+    get localTimeISOString() {
         return this.localDateTimeISOString.split("T")[1];
     }
 }
@@ -120,13 +120,8 @@ class DateTimePicker extends HTMLElement {
     calendar = new Calendar();
 
     setInput(input) {
-        if (input.value) {
-            this.selectedDay = new Day(new Date(input.value));
-            this.calendar = new Calendar(this.selectedDay.year, this.selectedDay.month);
-        } else {
-            this.selectedDay = new Day();
-        }
-        
+        this.selectedDay = this.parseDateString(input.value);
+        this.calendar = new Calendar(this.selectedDay.year, this.selectedDay.month);
         this.input = input;
     }
 
@@ -332,6 +327,33 @@ class DateTimePicker extends HTMLElement {
         this.querySelector("#picker-today-button").classList.add("is-hidden");
     }
 
+    parseDateString(string) {
+        let day = new Day();
+        if (string && this.isTime(string)) {
+            day.time.hours = string.split(":")[0];
+            day.time.minutes = string.split(":")[1];
+        } else if (string) {
+            day = new Day(new Date(string));
+        }
+
+        return day;
+    }
+
+    // TODO: In validationHelper as well -- could be transformed to string prototype function
+    isTime(string) {
+        return new RegExp(/^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/).test(string);
+    }
+
+    saveValue() {
+        if (this.options.enableDate && this.options.enableTime) {
+            this.input.value = this.selectedDay.localDateTimeISOString;
+        } else if (this.options.enableDate) {
+            this.input.value = this.selectedDay.localDateISOString;
+        } else if (this.options.enableTime) {
+            this.input.value = this.selectedDay.localTimeISOString;
+        }
+    }
+
     setDateIOListeners() {
         this.querySelector("#picker-years-select select").addEventListener("input", event => {
             this.calendar = new Calendar(event.target.value, this.calendar.month.number);
@@ -370,13 +392,12 @@ class DateTimePicker extends HTMLElement {
 
     setGeneralIOListeners() {
         this.querySelector("#picker-save-button").addEventListener("click", () => {
-            if (!this.options.enableTime) return;
-            this.input.value = this.options.enableDate && this.options.enableTime ? this.selectedDay.localDateTimeISOString : this.selectedDay.localeTimeISOString;
+            this.saveValue();
             this.remove();
         });
 
         this.querySelector("#picker-today-button").addEventListener("click", () => {
-            this.input.value = this.options.enableDate && this.options.enableTime ? this.selectedDay.localDateTimeISOString : this.selectedDay.localeTimeISOString;
+            this.saveValue();
             this.remove();
         });
 
