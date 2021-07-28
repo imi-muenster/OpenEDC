@@ -1,7 +1,26 @@
+class Time {
+    constructor(date) {
+        if (!date) date = new Date();
+
+        this.hours = date.getHours();
+        this.minutes = date.getMinutes();
+        this.date = date;
+    }
+
+    get paddedHours() {
+        return String(this.hours).padStart(2, "0")
+    }
+
+    get paddedMinutes() {
+        return String(this.minutes).padStart(2, "0")
+    }
+}
+
 class Day {
     constructor(date) {
         if (!date) date = new Date();
 
+        this.time = new Time(date);
         this.numberInMonth = date.getDate();
         this.numberInWeek = date.getDay() || 7;
         this.month = date.getMonth() + 1;
@@ -99,27 +118,48 @@ class DateTimePicker extends HTMLElement {
     render() {
         this.innerHTML = `
             <style>${this.style}</style>
-            <div class="modal is-active" id="datetime-picker">
+            <div class="modal" id="datetime-picker">
                 <div class="modal-background"></div>
                 <div class="modal-content is-small">
                     <div class="box has-text-centered">
                         <h1 class="title">Date</h1>
                         <div class="mb-5" id="year-month-select">
-                            <button class="button is-link is-inverted" id="previous-month-button">
+                            <button class="button is-link is-inverted is-hidden-mobile" id="previous-month-button">
                                 <span class="icon">
                                     <i class="fas fa-xs fa-arrow-left"></i>
                                 </span>
                             </button>
-                            <div class="select" id="picker-year-select"></div>
-                            <div class="select" id="picker-month-select"></div>
-                            <button class="button is-link is-inverted" id="next-month-button">
+                            <div class="select" id="picker-years-select"></div>
+                            <div class="select" id="picker-months-select"></div>
+                            <button class="button is-link is-inverted is-hidden-mobile" id="next-month-button">
                                 <span class="icon">
                                     <i class="fas fa-xs fa-arrow-right"></i>
                                 </span>
                             </button>
                         </div>
                         <div id="day-grid-heading" class="mb-3"></div>
-                        <div id="day-grid"></div>
+                        <div class="mb-5" id="day-grid"></div>
+                        <div class="mb-5" id="hour-minute-select">
+                            <div class="field has-addons is-justify-content-center">
+                                <div class="control">
+                                    <div class="select" id="picker-hours-select"></div>
+                                </div>
+                                <div class="control">
+                                    <button class="button is-static p-2">
+                                        <span class="icon">
+                                            <i class="far fa-xs fa-circle"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="control">
+                                    <div class="select" id="picker-minutes-select"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="buttons is-centered are-small">
+                            <button class="button is-danger is-light">Clear</button>
+                            <button class="button is-link is-light">Today</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -127,17 +167,25 @@ class DateTimePicker extends HTMLElement {
 
         // Fill year select
         const years = Array.from({ length: 110 }, (_, i) => i + (this.calendar.year - 100));
-        this.querySelector("#picker-year-select").appendChild(this.getSelect(years));
+        this.querySelector("#picker-years-select").appendChild(this.getSelect(years));
 
         // Fill month select
         const monthNumbers = Array.from({ length: 12 }, (_, i) => i + 1);
         const monthNames = this.calendar.months.map(month => month.date.toLocaleDateString(this.locale, { month: "long" }));
-        this.querySelector("#picker-month-select").appendChild(this.getSelect(monthNumbers, monthNames));
+        this.querySelector("#picker-months-select").appendChild(this.getSelect(monthNumbers, monthNames));
 
         // Add short names of weekdays
         for (let weekday of this.calendar.weekDays) {
             this.querySelector("#day-grid-heading").insertAdjacentElement("beforeend", this.getDayGridHeading(weekday));
         }
+
+        // Add hour select
+        const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
+        this.querySelector("#picker-hours-select").appendChild(this.getSelect(hours));
+
+        // Add minute select
+        const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
+        this.querySelector("#picker-minutes-select").appendChild(this.getSelect(minutes));
 
         // Render day grid, set current select values and listen to input
         this.setSelectValues();
@@ -146,8 +194,10 @@ class DateTimePicker extends HTMLElement {
     }
 
     setSelectValues() {
-        this.querySelector("#picker-year-select select").value = this.calendar.year;
-        this.querySelector("#picker-month-select select").value = this.calendar.month.number;
+        this.querySelector("#picker-years-select select").value = this.calendar.year;
+        this.querySelector("#picker-months-select select").value = this.calendar.month.number;
+        this.querySelector("#picker-hours-select select").value = this.calendar.today.time.paddedHours;
+        this.querySelector("#picker-minutes-select select").value = this.calendar.today.time.paddedMinutes;
     }
 
     renderDayGrid() {
@@ -162,6 +212,11 @@ class DateTimePicker extends HTMLElement {
         // Add the days of the current month to grid
         for (let day of this.calendar.month.days) {
             this.querySelector("#day-grid").insertAdjacentElement("beforeend", this.getDayGridButton(day));
+        }
+
+        // Add invisible days to grid to have same height for all months
+        for (let i = 0; i < 8 - firstDayOffset; i++) {
+            this.querySelector("#day-grid").insertAdjacentElement("beforeend", this.getDayGridButton());
         }
     }
 
@@ -187,7 +242,7 @@ class DateTimePicker extends HTMLElement {
     getDayGridButton(day) {
         const button = document.createElement("button");
         button.className = "button day-grid-button p-3";
-        if (day && day.isToday) button.classList.add("is-primary");
+        if (day && day.isToday) button.classList.add("is-link", "is-light");
         if (!day) button.classList.add("is-invisible");
         button.textContent = day ? day.numberInMonth : "";
         
@@ -195,13 +250,13 @@ class DateTimePicker extends HTMLElement {
     }
 
     setIOListeners() {
-        this.querySelector("#picker-year-select select").addEventListener("input", event => {
+        this.querySelector("#picker-years-select select").addEventListener("input", event => {
             this.calendar = new Calendar(event.target.value, this.calendar.month.number);
             this.setSelectValues();
             this.renderDayGrid();
         });
 
-        this.querySelector("#picker-month-select select").addEventListener("input", event => {
+        this.querySelector("#picker-months-select select").addEventListener("input", event => {
             this.calendar = new Calendar(this.calendar.year, event.target.value);
             this.setSelectValues();
             this.renderDayGrid();
