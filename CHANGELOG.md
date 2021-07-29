@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.6.1
+
+- Custom date, time, and datetime picker for improved consistency across browsers
+
 ## 0.6.0
 
 - Support for calculated items using ODM MethodDefs
