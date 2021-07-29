@@ -465,6 +465,8 @@ function loadFormClinicaldata() {
         switch (inputElement.getAttribute("type")) {
             case "text":
             case "date":
+            case "time":
+            case "datetime-local":
             case "select":
                 if (!inputElement.readOnly) inputElement.value = formItemData.value;
                 break;
@@ -612,6 +614,8 @@ function getFormData() {
             switch (inputElement.getAttribute("type")) {
                 case "text":
                 case "date":
+                case "time":
+                case "datetime-local":
                 case "select":
                     if (value) formItemDataList.push(new clinicaldataHelper.FormItemData(itemGroupOID, itemOID, value));
                     break;
