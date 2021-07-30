@@ -426,8 +426,6 @@ a.panel-block:hover {
     align-items: center;
     text-transform: uppercase;
     color: var(--dark-color);
-    font-size: 0.8rem;
-    margin: 2rem 0 1.5rem 0;
 }
 
 .text-divider::before, .text-divider::after {

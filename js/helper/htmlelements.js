@@ -206,7 +206,7 @@ export function getSelect(name, isUnique, isFullwidth, values, selectedValue, di
 
 // TODO: Used the DOMParser as alternative to document.createElement. Check if the performance is not significantly worse
 // TODO: Not very legible -- should be edited
-export function getAuditRecord(type, studyEvent, form, dataStatus, user, site, dateTime) {
+export function getAuditRecord(type, studyEvent, form, dataStatus, user, site, dateTime, dataChanges) {
     return new DOMParser().parseFromString(`
         <div class="notification">
             <p class="mb-3"><strong>${languageHelper.getTranslation(type)}</strong></p>
@@ -215,6 +215,8 @@ export function getAuditRecord(type, studyEvent, form, dataStatus, user, site, d
             ${dataStatus ? '<p>' + languageHelper.getTranslation('data-status') + ': <strong>' + languageHelper.getTranslation(dataStatus) + '</strong></p>': ''}
             ${user ? '<p>' + languageHelper.getTranslation('user') + ': <strong>' + user + '</strong></p>': ''}
             ${site ? '<p>' + languageHelper.getTranslation('site') + ': <strong>' + site + '</strong></p>': ''}
+            ${dataChanges && dataChanges.length ? '<div class="text-divider is-size-7 mt-3 mb-1">' + languageHelper.getTranslation("changed-data") + '</div>' : ''}
+            ${dataChanges && dataChanges.length ? '<p class="is-size-7">' + dataChanges.map(item => item.itemOID + " <b>" + (item.value || languageHelper.getTranslation("removed")) + "</b>").join("<br>") + '</p>' : ''}
             ${form ? '<button class="button is-small mt-3">' + languageHelper.getTranslation('view-data') + '</button>' : ''}
         </div>
     `, "text/html").body.firstChild;

@@ -250,6 +250,8 @@
     "incomplete": "Incomplete",
     "complete": "Complete",
     "validated": "Validated",
+    "changed-data": "Changed Data",
+    "removed": "Removed",
     "view-data": "View Data",
     "remove-subject": "Remove Subject",
 

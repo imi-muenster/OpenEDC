@@ -850,7 +850,7 @@ window.showSubjectInfo = function() {
         const formName = auditRecord.formOID ? metadataHelper.getElementDefByOID(auditRecord.formOID).getTranslatedDescription(locale, true) : null;
         const userName = admindataHelper.getUserFullName(auditRecord.userOID);
         const siteName = admindataHelper.getSiteNameByOID(auditRecord.locationOID);
-        let auditRecordElement = htmlElements.getAuditRecord(auditRecord.type, studyEventName, formName, auditRecord.dataStatus, userName, siteName, auditRecord.date);
+        let auditRecordElement = htmlElements.getAuditRecord(auditRecord.type, studyEventName, formName, auditRecord.dataStatus, userName, siteName, auditRecord.date, auditRecord.dataChanges);
         if (auditRecord.formOID) auditRecordElement.querySelector("button").onclick = () => showAuditRecordFormData(auditRecord.studyEventOID, auditRecord.formOID, auditRecord.date);
         $("#audit-records").appendChild(auditRecordElement);
     }

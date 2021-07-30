@@ -34,7 +34,7 @@ export class FormItemData {
 }
 
 export class AuditRecord {
-    constructor(type, studyEventOID, formOID, userOID, locationOID, date, dataStatus) {
+    constructor(type, studyEventOID, formOID, userOID, locationOID, date, dataStatus, dataChanges) {
         this.type = type;
         this.studyEventOID = studyEventOID;
         this.formOID = formOID;
@@ -42,6 +42,7 @@ export class AuditRecord {
         this.locationOID = locationOID;
         this.date = date;
         this.dataStatus = dataStatus;
+        this.dataChanges = dataChanges;
     }
 }
 
@@ -361,7 +362,8 @@ export function getAuditRecords() {
                 auditRecord.querySelector("UserRef").getAttribute("UserOID"),
                 auditRecord.querySelector("LocationRef").getAttribute("LocationOID"),
                 new Date(auditRecord.querySelector("DateTimeStamp").textContent),
-                dataStatusName.toLowerCase()
+                dataStatusName.toLowerCase(),
+                getFormItemDataList([formData])
             ));
         }
     }

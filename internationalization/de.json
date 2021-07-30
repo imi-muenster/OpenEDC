@@ -249,6 +249,8 @@
     "incomplete": "Unvollständig",
     "complete": "Vollständig",
     "validated": "Validiert",
+    "changed-data": "Geänderte Daten",
+    "removed": "Gelöscht",
     "view-data": "Daten ansehen",
     "remove-subject": "Proband löschen",
 
