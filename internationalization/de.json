@@ -237,8 +237,7 @@
     "address_4": "48149 Münster, Deutschland",
 
     "for-subject": "Für Proband",
-    "subject-options": "Probandoptionen",
-    "key": "Name",
+    "key": "Kennung",
     "audit-trail": "Audit Trail",
     "subject-created": "Proband erstellt",
     "form-edited": "Formular bearbeitet",

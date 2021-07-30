@@ -259,6 +259,10 @@ export function getMethods() {
     return Array.from($$("MethodDef"));
 }
 
+export function getItemOIDsWithDataType(dataType) {
+    return Array.from($$(`ItemDef[DataType="${dataType}"]`)).map(item => item.getOID());
+}
+
 export function getElementsWithExpression(formOID) {
     let elementsWithExpression = [];
     for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {

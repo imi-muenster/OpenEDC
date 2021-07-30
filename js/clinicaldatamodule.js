@@ -845,7 +845,21 @@ function dataHasChanged() {
 window.showSubjectInfo = function() {
     // Create audit record entries
     $$("#audit-records .notification").removeElements();
+
+    const dateItemOIDs = metadataHelper.getItemOIDsWithDataType("date");
+    const dateTimeItemOIDs = metadataHelper.getItemOIDsWithDataType("datetime");
+    const booleanItemOIDs = metadataHelper.getItemOIDsWithDataType("boolean");
+    const localizedYes = languageHelper.getTranslation("yes");
+    const localizedNo = languageHelper.getTranslation("no");
     for (let auditRecord of clinicaldataHelper.getAuditRecords()) {
+        // Improve readability of audit record data changes
+        if (auditRecord.dataChanges) auditRecord.dataChanges.forEach(dataItem =>  {
+            if (dateItemOIDs.includes(dataItem.itemOID)) dataItem.value = new Date(dataItem.value).toLocaleDateString();
+            if (dateTimeItemOIDs.includes(dataItem.itemOID)) dataItem.value = new Date(dataItem.value).toLocaleString();
+            if (booleanItemOIDs.includes(dataItem.itemOID)) dataItem.value = dataItem.value.replace("1", localizedYes).replace("0", localizedNo);
+        });
+
+        // Render audit record
         const studyEventName = auditRecord.studyEventOID ? metadataHelper.getElementDefByOID(auditRecord.studyEventOID).getTranslatedDescription(locale, true) : null;
         const formName = auditRecord.formOID ? metadataHelper.getElementDefByOID(auditRecord.formOID).getTranslatedDescription(locale, true) : null;
         const userName = admindataHelper.getUserFullName(auditRecord.userOID);
