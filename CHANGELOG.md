@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.6.2
+
+- Show updated item values within audit trail
+
 ## 0.6.1
 
 - Custom date, time, and datetime picker for improved consistency across browsers

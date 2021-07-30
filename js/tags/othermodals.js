@@ -143,7 +143,7 @@ class SubjectModal extends HTMLElement {
         this.innerHTML = `
             <div class="modal" id="subject-modal">
                 <div class="modal-background" onclick="hideSubjectInfo()"></div>
-                <div class="modal-content is-medium">
+                <div class="modal-content is-large">
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <h1 class="title" i18n="options-and-audit-trail"></h1>

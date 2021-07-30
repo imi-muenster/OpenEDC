@@ -217,7 +217,7 @@ export function getAuditRecord(type, studyEvent, form, dataStatus, user, site, d
             ${site ? '<p>' + languageHelper.getTranslation('site') + ': <strong>' + site + '</strong></p>': ''}
             ${dataChanges && dataChanges.length ? '<div class="text-divider is-size-7 mt-3 mb-1">' + languageHelper.getTranslation("changed-data") + '</div>' : ''}
             ${dataChanges && dataChanges.length ? '<p class="is-size-7">' + dataChanges.map(item => item.translatedQuestion + " <b>" + (item.value || languageHelper.getTranslation("removed")) + "</b>").join("<br>") + '</p>' : ''}
-            ${form ? '<button class="button is-small mt-3">' + languageHelper.getTranslation('view-data') + '</button>' : ''}
+            ${form ? '<button class="button is-small mt-4">' + languageHelper.getTranslation('view-data') + '</button>' : ''}
         </div>
     `, "text/html").body.firstChild;
 }
