@@ -219,6 +219,7 @@ export function getCodeListOIDByItem(itemOID) {
 }
 
 export function getCodeListItem(codeListOID, codedValue) {
+    if (!codeListOID || !codedValue) return;
     return $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"]`);
 }
 

@@ -854,9 +854,12 @@ window.showSubjectInfo = function() {
     for (let auditRecord of clinicaldataHelper.getAuditRecords()) {
         // Improve readability of audit record data changes
         if (auditRecord.dataChanges) auditRecord.dataChanges.forEach(dataItem =>  {
+            const codeListItem = metadataHelper.getCodeListItem(metadataHelper.getCodeListOIDByItem(dataItem.itemOID), dataItem.value);
+            if (codeListItem) dataItem.value = codeListItem.getTranslatedDecode(locale, true);
             if (dateItemOIDs.includes(dataItem.itemOID)) dataItem.value = new Date(dataItem.value).toLocaleDateString();
             if (dateTimeItemOIDs.includes(dataItem.itemOID)) dataItem.value = new Date(dataItem.value).toLocaleString();
             if (booleanItemOIDs.includes(dataItem.itemOID)) dataItem.value = dataItem.value.replace("1", localizedYes).replace("0", localizedNo);
+            dataItem.translatedQuestion = metadataHelper.getElementDefByOID(dataItem.itemOID).getTranslatedQuestion(locale, true);
         });
 
         // Render audit record
