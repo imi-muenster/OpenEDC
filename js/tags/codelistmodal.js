@@ -20,14 +20,14 @@ class CodeListModal extends HTMLElement {
                                 <textarea class="textarea" id="textitems-textarea" rows="8" i18n-ph="coded-value-translated-choice"></textarea>
                             </div>
                             <div id="codelist-reference-field">
-                                <div class="text-divider is-size-7 mt-5 mb-4" i18n="or"></div>
+                                <div class="text-divider is-size-6 mt-5 mb-3" i18n="or"></div>
                                 <label class="label" i18n="choices-reference-hint"></label>
                                 <div class="field is-grouped is-fullwidth">
                                     <div class="control is-expanded has-autocomplete-top">
                                         <input class="input" id="codelist-reference-input" type="text" autocomplete="off" i18n-ph="item-with-choices">
                                     </div>
                                     <div class="control">
-                                        <button class="button" i18n="reference" onclick="referenceCodeList()"></button>
+                                        <button class="button" i18n="use" onclick="referenceCodeList()"></button>
                                     </div>
                                 </div>
                             </div>
