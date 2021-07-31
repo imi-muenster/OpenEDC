@@ -232,18 +232,18 @@ export function getTable(data) {
 
 // TODO: Used the DOMParser as alternative to document.createElement. Check if the performance is not significantly worse
 // TODO: Not very legible -- should be edited
-export function getAuditRecord(type, studyEvent, form, dataStatus, user, site, dateTime, dataChanges) {
+export function getAuditRecord(auditRecord) {
     return new DOMParser().parseFromString(`
         <div class="notification">
-            <p class="mb-3"><strong>${languageHelper.getTranslation(type)}</strong></p>
-            <p>${languageHelper.getTranslation("timestamp")}: <strong>${dateTime.toLocaleString()}</strong></p>
-            ${form && studyEvent ? "<p>" + languageHelper.getTranslation("form") + ": <strong>" + studyEvent + ", " + form + "</strong></p>": ""}
-            ${dataStatus ? "<p>" + languageHelper.getTranslation("data-status") + ": <strong>" + languageHelper.getTranslation(dataStatus) + "</strong></p>": ""}
-            ${user ? "<p>" + languageHelper.getTranslation("user") + ": <strong>" + user + "</strong></p>": ""}
-            ${site ? "<p>" + languageHelper.getTranslation("site") + ": <strong>" + site + "</strong></p>": ""}
-            ${dataChanges && dataChanges.length ? "<div class='text-divider is-size-7 mt-3 mb-1'>" + languageHelper.getTranslation("changed-data") + "</div>" : ""}
-            ${dataChanges && dataChanges.length ? "<p class='is-size-7'>" + dataChanges.map(item => item.translatedQuestion + " <b>" + (item.value || languageHelper.getTranslation("removed")) + "</b>").join("<br>") + "</p>" : ""}
-            ${form ? "<button class='button is-small mt-4'>" + languageHelper.getTranslation("view-data") + "</button>" : ""}
+            <p class="mb-3"><strong>${languageHelper.getTranslation(auditRecord.type)}</strong></p>
+            <p>${languageHelper.getTranslation("timestamp")}: <strong>${auditRecord.date.toLocaleString()}</strong></p>
+            ${auditRecord.formOID && auditRecord.studyEventOID ? "<p>" + languageHelper.getTranslation("form") + ": <strong>" + auditRecord.studyEventName + ", " + auditRecord.formName + "</strong></p>": ""}
+            ${auditRecord.dataStatus ? "<p>" + languageHelper.getTranslation("data-status") + ": <strong>" + languageHelper.getTranslation(auditRecord.dataStatus) + "</strong></p>": ""}
+            ${auditRecord.userOID ? "<p>" + languageHelper.getTranslation("user") + ": <strong>" + auditRecord.userName + "</strong></p>": ""}
+            ${auditRecord.siteOID ? "<p>" + languageHelper.getTranslation("site") + ": <strong>" + auditRecord.siteName + "</strong></p>": ""}
+            ${auditRecord.dataChanges && auditRecord.dataChanges.length ? "<div class='text-divider is-size-7 mt-3 mb-1'>" + languageHelper.getTranslation("changed-data") + "</div>" : ""}
+            ${auditRecord.dataChanges && auditRecord.dataChanges.length ? "<p class='is-size-7'>" + auditRecord.dataChanges.map(item => item.translatedQuestion + " <b>" + (item.value || languageHelper.getTranslation("removed")) + "</b>").join("<br>") + "</p>" : ""}
+            ${auditRecord.formOID ? "<button class='button is-small mt-4'>" + languageHelper.getTranslation("view-data") + "</button>" : ""}
         </div>
     `, "text/html").body.firstChild;
 }

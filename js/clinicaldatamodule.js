@@ -443,11 +443,11 @@ function showItemAuditTrail(event) {
 
     const table = htmlElements.getTable({
         [languageHelper.getTranslation("timestamp")]: auditRecords.map(auditRecord => auditRecord.date.toLocaleString()),
-        [languageHelper.getTranslation("user")]: auditRecords.map(auditRecord => auditRecord.userOID),
+        [languageHelper.getTranslation("user")]: auditRecords.map(auditRecord => auditRecord.userName),
         [languageHelper.getTranslation("value")]: auditRecords.map(auditRecord => auditRecord.dataChanges[0].value)
     });
 
-    ioHelper.showMessage(languageHelper.getTranslation("audit-trail"), table.outerHTML);
+    ioHelper.showMessage(languageHelper.getTranslation("audit-trail"), auditRecords.length ? table.outerHTML : languageHelper.getTranslation("no-data"));
 }
 
 function showDateTimePicker(event) {
@@ -891,11 +891,7 @@ window.showSubjectInfo = function() {
         });
 
         // Render audit record
-        const studyEventName = auditRecord.studyEventOID ? metadataHelper.getElementDefByOID(auditRecord.studyEventOID).getTranslatedDescription(locale, true) : null;
-        const formName = auditRecord.formOID ? metadataHelper.getElementDefByOID(auditRecord.formOID).getTranslatedDescription(locale, true) : null;
-        const userName = admindataHelper.getUserFullName(auditRecord.userOID);
-        const siteName = admindataHelper.getSiteNameByOID(auditRecord.locationOID);
-        let auditRecordElement = htmlElements.getAuditRecord(auditRecord.type, studyEventName, formName, auditRecord.dataStatus, userName, siteName, auditRecord.date, auditRecord.dataChanges);
+        const auditRecordElement = htmlElements.getAuditRecord(auditRecord);
         if (auditRecord.formOID) auditRecordElement.querySelector("button").onclick = () => showAuditRecordFormData(auditRecord.studyEventOID, auditRecord.formOID, auditRecord.date);
         $("#audit-records").appendChild(auditRecordElement);
     }

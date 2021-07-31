@@ -44,6 +44,22 @@ export class AuditRecord {
         this.dataStatus = dataStatus;
         this.dataChanges = dataChanges;
     }
+
+    get studyEventName() {
+        return this.studyEventOID ? metadataHelper.getElementDefByOID(this.studyEventOID).getTranslatedDescription(languageHelper.getCurrentLocale(), true) : null
+    }
+
+    get formName() {
+        return this.formOID ? metadataHelper.getElementDefByOID(this.formOID).getTranslatedDescription(languageHelper.getCurrentLocale(), true) : null;
+    }
+
+    get userName() {
+        return admindataHelper.getUserFullName(this.userOID);
+    }
+
+    get siteName() {
+        return admindataHelper.getSiteNameByOID(this.locationOID)
+    }
 }
 
 const auditRecordTypes = {
@@ -388,8 +404,8 @@ export function getAuditRecords(filter) {
 
     // Add subject created audit record
     if (!filter && $("AuditRecord")) {
-        const userOID = auditRecord.querySelector("UserRef").getAttribute("UserOID");
-        const locationOID = auditRecord.querySelector("LocationRef").getAttribute("LocationOID");
+        const userOID = $("AuditRecord UserRef").getAttribute("UserOID");
+        const locationOID = $("AuditRecord LocationRef").getAttribute("LocationOID");
         const date = new Date($("AuditRecord DateTimeStamp").textContent);
         auditRecords.push(
             new AuditRecord(auditRecordTypes.SUBJECTCREATED, null, null, userOID, locationOID, date)
