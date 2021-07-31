@@ -204,6 +204,32 @@ export function getSelect(name, isUnique, isFullwidth, values, selectedValue, di
     return select;
 }
 
+export function getTable(data) {
+    const keys = Object.keys(data);
+    const table = document.createElement("table");
+    table.className = "table is-fullwidth is-bordered is-hoverable";
+
+    // Add header
+    const header = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    keys.forEach(key => headerRow.insertAdjacentHTML("beforeend", `<th>${key}</th>`));
+    header.appendChild(headerRow);
+    table.appendChild(header);
+
+    // Add body
+    const body = document.createElement("tbody");
+    for (let y = 0; y < data[keys[0]].length ; y++) {
+        const bodyRow = document.createElement("tr");
+        for (let x = 0; x < keys.length; x++) {
+            bodyRow.insertAdjacentHTML("beforeend", `<td>${data[keys[x]][y]}</td>`);
+        }
+        body.appendChild(bodyRow);
+    }
+    table.appendChild(body);
+
+    return table;
+}
+
 // TODO: Used the DOMParser as alternative to document.createElement. Check if the performance is not significantly worse
 // TODO: Not very legible -- should be edited
 export function getAuditRecord(type, studyEvent, form, dataStatus, user, site, dateTime, dataChanges) {

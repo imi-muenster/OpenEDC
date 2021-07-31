@@ -441,7 +441,13 @@ function showItemAuditTrail(event) {
         itemOID: event.target.parentNode.parentNode.getAttribute("item-field-oid")
     });
 
-    ioHelper.showMessage("TODO", "TODO");
+    const table = htmlElements.getTable({
+        [languageHelper.getTranslation("timestamp")]: auditRecords.map(auditRecord => auditRecord.date.toLocaleString()),
+        [languageHelper.getTranslation("user")]: auditRecords.map(auditRecord => auditRecord.userOID),
+        [languageHelper.getTranslation("value")]: auditRecords.map(auditRecord => auditRecord.dataChanges[0].value)
+    });
+
+    ioHelper.showMessage(languageHelper.getTranslation("audit-trail"), table.outerHTML);
 }
 
 function showDateTimePicker(event) {
