@@ -409,8 +409,8 @@ function addDynamicFormLogicPost() {
     // Add a history button to show the audit trail for one specific item
     if (currentElementID.subject) $$("#clinicaldata-content .item-field .label").forEach(itemFieldLabel => {
         const historyButton = document.createElement("div");
-        historyButton.className = "icon is-history-button is-pulled-right has-text-link";
-        historyButton.innerHTML = "<i class='far fa-circle'></i>";
+        historyButton.className = "icon is-history-button is-pulled-right";
+        historyButton.innerHTML = "<i class='far fa-clock'></i>";
         historyButton.addEventListener("click", showItemAuditTrail);
         itemFieldLabel.appendChild(historyButton);
     });
