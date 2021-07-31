@@ -446,7 +446,7 @@ function showItemAuditTrail(event) {
     const table = htmlElements.getTable({
         [languageHelper.getTranslation("timestamp")]: auditRecords.map(auditRecord => auditRecord.date.toLocaleString()),
         [languageHelper.getTranslation("user")]: auditRecords.map(auditRecord => auditRecord.userName),
-        [languageHelper.getTranslation("value")]: auditRecords.map(auditRecord => auditRecord.dataChanges[0].value)
+        [languageHelper.getTranslation("value")]: auditRecords.map(auditRecord => auditRecord.dataChanges[0].localizedValue)
     });
 
     ioHelper.showMessage(metadataHelper.getElementDefByOID(itemOID).getTranslatedQuestion(locale, true), auditRecords.length ? table.outerHTML : languageHelper.getTranslation("no-audit-trail-data-hint"));
@@ -875,24 +875,7 @@ function dataHasChanged() {
 window.showSubjectInfo = function() {
     // Create audit record entries
     $$("#audit-records .notification").removeElements();
-
-    const dateItemOIDs = metadataHelper.getItemOIDsWithDataType("date");
-    const dateTimeItemOIDs = metadataHelper.getItemOIDsWithDataType("datetime");
-    const booleanItemOIDs = metadataHelper.getItemOIDsWithDataType("boolean");
-    const localizedYes = languageHelper.getTranslation("yes");
-    const localizedNo = languageHelper.getTranslation("no");
-    for (let auditRecord of clinicaldataHelper.getAuditRecords()) {
-        // Improve readability of audit record data changes
-        if (auditRecord.dataChanges) auditRecord.dataChanges.forEach(dataItem =>  {
-            const codeListItem = metadataHelper.getCodeListItem(metadataHelper.getCodeListOIDByItem(dataItem.itemOID), dataItem.value);
-            if (codeListItem) dataItem.value = codeListItem.getTranslatedDecode(locale, true);
-            if (dateItemOIDs.includes(dataItem.itemOID)) dataItem.value = new Date(dataItem.value).toLocaleDateString();
-            if (dateTimeItemOIDs.includes(dataItem.itemOID)) dataItem.value = new Date(dataItem.value).toLocaleString();
-            if (booleanItemOIDs.includes(dataItem.itemOID)) dataItem.value = dataItem.value.replace("1", localizedYes).replace("0", localizedNo);
-            dataItem.translatedQuestion = metadataHelper.getElementDefByOID(dataItem.itemOID).getTranslatedQuestion(locale, true);
-        });
-
-        // Render audit record
+    for (const auditRecord of clinicaldataHelper.getAuditRecords()) {
         const auditRecordElement = htmlElements.getAuditRecord(auditRecord);
         if (auditRecord.formOID) auditRecordElement.querySelector("button").onclick = () => showAuditRecordFormData(auditRecord.studyEventOID, auditRecord.formOID, auditRecord.date);
         $("#audit-records").appendChild(auditRecordElement);

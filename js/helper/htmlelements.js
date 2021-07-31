@@ -242,7 +242,7 @@ export function getAuditRecord(auditRecord) {
             ${auditRecord.userOID ? "<p>" + languageHelper.getTranslation("user") + ": <strong>" + auditRecord.userName + "</strong></p>": ""}
             ${auditRecord.siteOID ? "<p>" + languageHelper.getTranslation("site") + ": <strong>" + auditRecord.siteName + "</strong></p>": ""}
             ${auditRecord.dataChanges && auditRecord.dataChanges.length ? "<div class='text-divider is-size-7 mt-3 mb-1'>" + languageHelper.getTranslation("changed-data") + "</div>" : ""}
-            ${auditRecord.dataChanges && auditRecord.dataChanges.length ? "<p class='is-size-7'>" + auditRecord.dataChanges.map(item => item.translatedQuestion + " <b>" + (item.value || languageHelper.getTranslation("removed")) + "</b>").join("<br>") + "</p>" : ""}
+            ${auditRecord.dataChanges && auditRecord.dataChanges.length ? "<p class='is-size-7'>" + auditRecord.dataChanges.map(item => item.translatedQuestion + " <b>" + (item.localizedValue || languageHelper.getTranslation("removed")) + "</b>").join("<br>") + "</p>" : ""}
             ${auditRecord.formOID ? "<button class='button is-small mt-4'>" + languageHelper.getTranslation("view-data") + "</button>" : ""}
         </div>
     `, "text/html").body.firstChild;
