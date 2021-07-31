@@ -289,6 +289,20 @@ a.panel-block:hover {
     white-space: pre-line;
 }
 
+.item-field .icon.is-history-button {
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .5s .5s;
+}
+
+.item-field:hover .icon.is-history-button {
+    opacity: 1;
+}
+
+.item-field .icon.is-history-button i {
+    pointer-events: none;
+}
+
 #clinicaldata-content .subtitle {
     white-space: pre-line;
 }

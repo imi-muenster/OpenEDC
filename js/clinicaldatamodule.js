@@ -330,9 +330,12 @@ async function loadFormData() {
 
     resetFormUIElements();
 
+    // Render the form, add dynamic form logic such as conditions, and add clinical data
     await loadFormMetadata();
+    addDynamicFormLogicPre();
     loadFormClinicaldata();
     $("#clinicaldata-form-data").show();
+    addDynamicFormLogicPost();
 
     // Show a hint if no subject is selected
     if (!currentElementID.subject) showNoSubjectHint();
@@ -368,13 +371,10 @@ async function loadFormMetadata() {
     const formDef = metadataHelper.getElementDefByOID(currentElementID.form);
     $("#clinicaldata-form-title .subtitle").textContent = formDef.getTranslatedDescription(locale, true);
 
-    // Add the form skeleton
+    // Add the empty form
     let form = await metadataHelper.getFormAsHTML(currentElementID.form, ioHelper.isTextAsTextarea());
     ioHelper.safeRemoveElement($("#odm-html-content"));
     $("#clinicaldata-content").appendChild(form);
-
-    // Add dynamic form logic async (conditional items, field validation, uncheck of radio buttons)
-    addDynamicFormLogic();
 
     // Adjust the form navigation buttons
     $("#clinicaldata-previous-button").disabled = getPreviousFormOID(currentElementID.form) ? false : true;
@@ -385,27 +385,38 @@ async function loadFormMetadata() {
     }
 }
 
-async function addDynamicFormLogic() {
-    // First, add real-time logic to process items with conditions and methods
+// Must be in place before clinical data is added to the form's input elements
+function addDynamicFormLogicPre() {
+    // Add real-time logic to process items with conditions and methods
     const itemOIDs = expressionHelper.getVariables(metadataHelper.getElementsWithExpression(currentElementID.form));
     const itemData = clinicaldataHelper.getDataForItems(itemOIDs);
     if (cachedFormData) cachedFormData.forEach(entry => {
         if (itemOIDs.includes(entry.itemOID)) itemData[entry.itemOID] = entry.value;
     });
     expressionHelper.process(itemData);
+}
 
-    // Second, add real-time logic to validate fields by data type and/or allowed ranges
+// Added after the form has been rendered for performance purposes
+function addDynamicFormLogicPost() {
+    // Add real-time logic to validate fields by data type and/or allowed ranges
     validationHelper.process(metadataHelper.getItemsWithRangeChecks(currentElementID.form));
-    
-    // Third, allow the user to uncheck an already checked group of radio items
+        
+    // Allow the user to uncheck an already checked group of radio items
     $$("#clinicaldata-content label.radio").forEach(radioItem => {
         radioItem.addEventListener("mouseup", uncheckRadioItem);
     });
 
-    // Fourth, add date focus event listeners
-    // TODO: Currently, the custom date picker is not used on mobile devices because of a Safari issue
-    if (ioHelper.isMobile()) return;
-    $$("input[type='date'], input[type='time'], input[type='datetime-local']").forEach(dateInput => {
+    // Add a history button to show the audit trail for one specific item
+    if (currentElementID.subject) $$("#clinicaldata-content .item-field .label").forEach(itemFieldLabel => {
+        const historyButton = document.createElement("div");
+        historyButton.className = "icon is-history-button is-pulled-right has-text-link";
+        historyButton.innerHTML = "<i class='far fa-circle'></i>";
+        historyButton.addEventListener("click", showItemAuditTrail);
+        itemFieldLabel.appendChild(historyButton);
+    });
+
+    // Fourth, add date focus event listeners (currently not used on mobile devices because of a Safari issue)
+    if (!ioHelper.isMobile()) $$("clinicaldata-content input[type='date'], clinicaldata-content input[type='time'], clinicaldata-content input[type='datetime-local']").forEach(dateInput => {
         dateInput.addEventListener("click", showDateTimePicker);
     });
 }
@@ -420,6 +431,17 @@ function uncheckRadioItem(event) {
             radioItem.dispatchEvent(inputEvent);
         }, 100);
     }
+}
+
+function showItemAuditTrail(event) {
+    const auditRecords = clinicaldataHelper.getAuditRecords({
+        studyEventOID: currentElementID.studyEvent,
+        formOID: currentElementID.form,
+        itemGroupOID: event.target.parentNode.parentNode.parentNode.getAttribute("item-group-content-oid"),
+        itemOID: event.target.parentNode.parentNode.getAttribute("item-field-oid")
+    });
+
+    ioHelper.showMessage("TODO", "TODO");
 }
 
 function showDateTimePicker(event) {

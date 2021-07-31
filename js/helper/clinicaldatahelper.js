@@ -342,41 +342,58 @@ export function getFormDataDifference(formItemDataList, studyEventOID, formOID) 
     return formDataDifference;
 }
 
-export function getAuditRecords() {
+// A filter may contain a studyEventOID, formOID, itemGroupOID, itemOID, userOID, and month
+export function getAuditRecords(filter) {
     const auditRecords = [];
 
     for (let studyEventData of $$("StudyEventData")) {
+        // Filter studyEvent
         const studyEventOID = studyEventData.getAttribute("StudyEventOID");
+        if (filter && filter.studyEventOID && filter.studyEventOID != studyEventOID) continue;
+
         for (let formData of studyEventData.querySelectorAll("FormData")) {
+            // Filter form
             const formOID = formData.getAttribute("FormOID");
+            if (filter && filter.formOID && filter.formOID != formOID) continue;
+
             const auditRecord = formData.querySelector("AuditRecord");
+            if (!auditRecord) continue;
+
+            // Filter itemGroup and item
+            let formItemData = getFormItemDataList([formData]);
+            if (filter && filter.itemGroupOID && filter.itemOID) {
+                formItemData = formItemData.filter(itemData => itemData.itemGroupOID == filter.itemGroupOID && itemData.itemOID == filter.itemOID);
+                if (!formItemData.length) continue;
+            }
+
+            // Filter user
+            const userOID = auditRecord.querySelector("UserRef").getAttribute("UserOID");
+            if (filter && filter.userOID && filter.userOID != userOID) continue;
+
+            // Filter date
+            const date = new Date(auditRecord.querySelector("DateTimeStamp").textContent);
+            // TODO: Implement month filter
+            
+            // Add form edited audit record
+            const locationOID = auditRecord.querySelector("LocationRef").getAttribute("LocationOID");
             const flag = formData.querySelector("Flag");
             const flagValue = flag ? flag.querySelector("FlagValue") : null;
             const dataStatus = flagValue ? parseInt(flagValue.textContent) : null;
             const dataStatusName = Object.keys(dataStatusTypes).find(key => dataStatusTypes[key] == dataStatus);
-            if (!auditRecord) continue;
-            auditRecords.push(new AuditRecord(
-                auditRecordTypes.FORMEDITED,
-                studyEventOID,
-                formOID,
-                auditRecord.querySelector("UserRef").getAttribute("UserOID"),
-                auditRecord.querySelector("LocationRef").getAttribute("LocationOID"),
-                new Date(auditRecord.querySelector("DateTimeStamp").textContent),
-                dataStatusName.toLowerCase(),
-                getFormItemDataList([formData])
-            ));
+            auditRecords.push(
+                new AuditRecord(auditRecordTypes.FORMEDITED, studyEventOID, formOID, userOID, locationOID, date, dataStatusName.toLowerCase(), formItemData)
+            );
         }
     }
 
-    if ($("AuditRecord")) {
-        auditRecords.push(new AuditRecord(
-            auditRecordTypes.SUBJECTCREATED,
-            null,
-            null,
-            $("AuditRecord UserRef").getAttribute("UserOID"),
-            $("AuditRecord LocationRef").getAttribute("LocationOID"),
-            new Date($("AuditRecord DateTimeStamp").textContent)
-        ));
+    // Add subject created audit record
+    if (!filter && $("AuditRecord")) {
+        const userOID = auditRecord.querySelector("UserRef").getAttribute("UserOID");
+        const locationOID = auditRecord.querySelector("LocationRef").getAttribute("LocationOID");
+        const date = new Date($("AuditRecord DateTimeStamp").textContent);
+        auditRecords.push(
+            new AuditRecord(auditRecordTypes.SUBJECTCREATED, null, null, userOID, locationOID, date)
+        );
     }
 
     return auditRecords.sort((a, b) => a.date < b.date ? 1 : (a.date > b.date ? -1 : 0));
