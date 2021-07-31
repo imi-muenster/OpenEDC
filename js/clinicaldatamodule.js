@@ -446,10 +446,10 @@ function showItemAuditTrail(event) {
     const table = htmlElements.getTable({
         [languageHelper.getTranslation("timestamp")]: auditRecords.map(auditRecord => auditRecord.date.toLocaleString()),
         [languageHelper.getTranslation("user")]: auditRecords.map(auditRecord => auditRecord.userName),
-        [languageHelper.getTranslation("value")]: auditRecords.map(auditRecord => auditRecord.dataChanges[0].localizedValue)
+        [languageHelper.getTranslation("value")]: auditRecords.map(auditRecord => auditRecord.dataChanges[0].localizedValue || languageHelper.getTranslation("removed"))
     });
 
-    ioHelper.showMessage(metadataHelper.getElementDefByOID(itemOID).getTranslatedQuestion(locale, true), auditRecords.length ? table.outerHTML : languageHelper.getTranslation("no-audit-trail-data-hint"));
+    ioHelper.showMessage(languageHelper.getTranslation("audit-trail-for-item"), auditRecords.length ? table.outerHTML : languageHelper.getTranslation("no-audit-trail-hint"), null, null, null, null, true);
 }
 
 function showDateTimePicker(event) {

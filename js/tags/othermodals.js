@@ -197,6 +197,7 @@ class SurveyCodeModal extends HTMLElement {
     }
 }
 
+// TODO: Move in own component .js file
 class MessageModal extends HTMLElement {
     setHeading(heading) { this.heading = heading; }
     setMessage(message) { this.message = message; }
@@ -204,12 +205,13 @@ class MessageModal extends HTMLElement {
     setCallbackType(callbackType) { this.callbackType = callbackType; }
     setCloseText(closeText) { this.closeText = closeText; }
     setCloseCallback(closeCallback) { this.closeCallback = closeCallback; }
+    setSize(size) { this.size = size; }
 
     connectedCallback() {
         this.innerHTML = `
             <div class="modal is-active" id="message-modal">
                 <div class="modal-background"></div>
-                <div class="modal-content is-small">
+                <div class="modal-content ${this.size}">
                     <div class="box has-text-centered">
                         <h2 class="subtitle">${this.heading}</h2>
                         <div class="mb-5">${this.message}</div>

@@ -253,7 +253,9 @@
     "removed": "Gelöscht",
     "view-data": "Daten ansehen",
     "remove-subject": "Proband löschen",
-    "no-audit-trail-data-hint": "Keine Daten im Audit Trail vorhanden.",
+    "audit-trail-for-item": "Audit Trail für Element",
+    "value": "Wert",
+    "no-audit-trail-hint": "Keine Daten im Audit Trail vorhanden.",
 
     "note": "Hinweis",
     "error": "Fehler",
