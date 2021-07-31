@@ -45,11 +45,11 @@ export class AuditRecord {
         this.dataChanges = dataChanges;
     }
 
-    get studyEventName() {
+    get studyEventDescription() {
         return this.studyEventOID ? metadataHelper.getElementDefByOID(this.studyEventOID).getTranslatedDescription(languageHelper.getCurrentLocale(), true) : null
     }
 
-    get formName() {
+    get formDescription() {
         return this.formOID ? metadataHelper.getElementDefByOID(this.formOID).getTranslatedDescription(languageHelper.getCurrentLocale(), true) : null;
     }
 

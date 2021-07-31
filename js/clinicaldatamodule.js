@@ -434,11 +434,13 @@ function uncheckRadioItem(event) {
 }
 
 function showItemAuditTrail(event) {
+    const itemGroupOID = event.target.parentNode.parentNode.parentNode.getAttribute("item-group-content-oid");
+    const itemOID = event.target.parentNode.parentNode.getAttribute("item-field-oid");
     const auditRecords = clinicaldataHelper.getAuditRecords({
         studyEventOID: currentElementID.studyEvent,
         formOID: currentElementID.form,
-        itemGroupOID: event.target.parentNode.parentNode.parentNode.getAttribute("item-group-content-oid"),
-        itemOID: event.target.parentNode.parentNode.getAttribute("item-field-oid")
+        itemGroupOID: itemGroupOID,
+        itemOID: itemOID
     });
 
     const table = htmlElements.getTable({
@@ -447,7 +449,7 @@ function showItemAuditTrail(event) {
         [languageHelper.getTranslation("value")]: auditRecords.map(auditRecord => auditRecord.dataChanges[0].value)
     });
 
-    ioHelper.showMessage(languageHelper.getTranslation("audit-trail"), auditRecords.length ? table.outerHTML : languageHelper.getTranslation("no-data"));
+    ioHelper.showMessage(metadataHelper.getElementDefByOID(itemOID).getTranslatedQuestion(locale, true), auditRecords.length ? table.outerHTML : languageHelper.getTranslation("no-audit-trail-data-hint"));
 }
 
 function showDateTimePicker(event) {

@@ -254,6 +254,7 @@
     "removed": "Removed",
     "view-data": "View Data",
     "remove-subject": "Remove Subject",
+    "no-audit-trail-data-hint": "No audit trail data available.",
 
     "note": "Note",
     "error": "Error",
