@@ -135,7 +135,7 @@ function showDecryptionKeyModal() {
     // Set the click handler when clicking on the Open button
     $("#login-button").onclick = clickEvent => {
         clickEvent.preventDefault();
-        clickEvent.target.classList.add("is-loading");
+        clickEvent.target.showLoading();
         const password = $("#login-password-input").value;
         ioHelper.setDecryptionKey(password)
             .then(() => loginSuccessful())
@@ -158,7 +158,7 @@ function showLoginModal() {
     // Set the click handler when clicking on the open button
     $("#login-button").onclick = clickEvent => {
         clickEvent.preventDefault();
-        clickEvent.target.classList.add("is-loading");
+        clickEvent.target.showLoading();
         const username = $("#login-username-input").value;
         const password = $("#login-password-input").value;
         const confirmPassword = $("#login-confirm-password-input").value;
@@ -194,7 +194,7 @@ async function loginSuccessful() {
 
 function loginNotSuccessful(error) {
     $("#login-password-input").value = "";
-    $("#login-button").classList.remove("is-loading");
+    $("#login-button").hideLoading();
 
     switch (error) {
         case ioHelper.loginStatus.USERHASINITIALPASSWORD:
@@ -259,7 +259,7 @@ window.newProject = function() {
 
 window.openODM = async function() {
     // Animate loading process
-    $("#open-odm-button .button").classList.add("is-loading");
+    $("#open-odm-button .button").showLoading();
 
     const file = $("#open-odm-button .file-input");
     const content = await ioHelper.getFileContent(file.files[0]);
@@ -272,7 +272,7 @@ window.openODM = async function() {
     }
 
     // Remove loading animation
-    $("#open-odm-button .button").classList.remove("is-loading");
+    $("#open-odm-button .button").hideLoading();
 }
 
 function validateODM(content) {
@@ -434,10 +434,10 @@ window.encryptData = function(event) {
         return;
     }
 
-    event.target.classList.add("is-loading");
+    event.target.showLoading();
     ioHelper.encryptXMLData(credentials.password)
         .then(() => logout())
-        .catch(() => event.target.classList.remove("is-loading"));
+        .catch(() => event.target.hideLoading());
 }
 
 window.setSurveyCode = function() {

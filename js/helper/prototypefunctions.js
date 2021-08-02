@@ -114,6 +114,14 @@ HTMLElement.prototype.unhighlight = function() {
     this.classList.remove("is-highlighted");
 }
 
+HTMLElement.prototype.showLoading = function() {
+    this.classList.add("is-loading");
+}
+
+HTMLElement.prototype.hideLoading = function() {
+    this.classList.remove("is-loading");
+}
+
 HTMLElement.prototype.isVisible = function() {
     return !this.classList.contains("is-hidden");
 }
