@@ -543,7 +543,7 @@ window.removeClinicaldata = async function() {
 }
 
 window.logout = function() {
-    // Since the decryption key and the user's hashed password are only stored as a temporary variable, reloading the app equals a logout
+    // Since the decryption and authentication keys are only stored as a temporary variable, reloading the app equals a logout
     window.location.reload();
 }
 

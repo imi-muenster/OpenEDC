@@ -339,8 +339,8 @@ export async function initializeServer(url, userOID, credentials) {
     // Create a random key that is used for data encryption and encrypt it with the password of the user
     const decryptionKey = await cryptoHelper.AES.generateKey();
     const encryptedDecryptionKey = await cryptoHelper.AES.encrypt.withPassword(decryptionKey, credentials.password);
-    const hashedPassword = await cryptoHelper.SHA.hash(credentials.password);
-    const userRequest = { username: credentials.username, hashedPassword, encryptedDecryptionKey};
+    const authenticationKey = await cryptoHelper.PBKDF2.generateAuthenticationKey(credentials.username, credentials.password);
+    const userRequest = { username: credentials.username, authenticationKey, encryptedDecryptionKey };
 
     // Create the owner user on the server
     const userResponse = await fetch(url + "/api/users/initialize/" + userOID, {
@@ -390,9 +390,9 @@ export async function initializeServer(url, userOID, credentials) {
 }
 
 export async function loginToServer(credentials) {
-    const hashedPassword = await cryptoHelper.SHA.hash(credentials.password);
+    const authenticationKey = await cryptoHelper.PBKDF2.generateAuthenticationKey(credentials.username, credentials.password);
     const userResponse = await fetch(serverURL + "/api/users/me", {
-        headers: { "Authorization" : `Basic ${btoa(credentials.username + ":" + hashedPassword)}` }
+        headers: { "Authorization" : `Basic ${btoa(credentials.username + ":" + authenticationKey)}` }
     });
     if (!userResponse.ok) return Promise.reject(loginStatus.WRONGCREDENTIALS);
     user = await userResponse.json();
@@ -412,8 +412,8 @@ export async function loginToServer(credentials) {
 
 export async function setOwnPassword(credentials) {
     const encryptedDecryptionKey = await cryptoHelper.AES.encrypt.withPassword(decryptionKey, credentials.password);
-    const hashedPassword = await cryptoHelper.SHA.hash(credentials.password);
-    const userRequest = { username: credentials.username, hashedPassword, encryptedDecryptionKey };
+    const authenticationKey = await cryptoHelper.PBKDF2.generateAuthenticationKey(credentials.username, credentials.password);
+    const userRequest = { username: credentials.username, authenticationKey, encryptedDecryptionKey };
     
     const userResponse = await fetch(serverURL + "/api/users/me", {
         method: "PUT",
@@ -431,8 +431,8 @@ export async function setUserOnServer(oid, credentials, rights, site) {
     let userRequest = null;
     if (credentials.username && credentials.password) {
         const encryptedDecryptionKey = await cryptoHelper.AES.encrypt.withPassword(decryptionKey, credentials.password);
-        const hashedPassword = await cryptoHelper.SHA.hash(credentials.password);
-        userRequest = { username: credentials.username, hashedPassword, encryptedDecryptionKey, rights, site };
+        const authenticationKey = await cryptoHelper.PBKDF2.generateAuthenticationKey(credentials.username, credentials.password);
+        userRequest = { username: credentials.username, authenticationKey, encryptedDecryptionKey, rights, site };
     } else {
         userRequest = { rights, site };
     }
@@ -464,7 +464,7 @@ export async function deleteUserOnServer(oid) {
 
 async function getHeaders(authorization, contentTypeJSON) {
     let headers = {};
-    if (authorization) headers["Authorization"] = `Basic ${btoa(user.username + ":" + user.hashedPassword)}`;
+    if (authorization) headers["Authorization"] = `Basic ${btoa(user.username + ":" + user.authenticationKey)}`;
     if (contentTypeJSON) headers["Content-Type"] = "application/json";
 
     return headers;

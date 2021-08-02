@@ -26,6 +26,10 @@ export const SHA = {
     hash: async data => await shaHashData(data)
 }
 
+export const PBKDF2 = {
+    generateAuthenticationKey: async (username, password) => await pbkdfGenerateAuthenticationKey(username, password)
+}
+
 //
 // Definition of cryptographic primitives
 //
@@ -36,7 +40,7 @@ const aesEncryptDataSalted = async (data, password) => {
 
     // Derive salted AES key
     const salt = window.crypto.getRandomValues(new Uint8Array(32));
-    const aesKey = await deriveAES256Key(passwordAsBytes, salt);
+    const aesKey = await pbkdf2DeriveKey(passwordAsBytes, salt, { extractable: false });
 
     // Encrypt data
     const initializationVector = window.crypto.getRandomValues(new Uint8Array(12));
@@ -66,7 +70,7 @@ const aesDecryptDataSalted = async (data, password) => {
     const passwordAsBytes = encodeUTF8(password);
 
     // Derive salted AES key
-    const aesKey = await deriveAES256Key(passwordAsBytes, salt);
+    const aesKey = await pbkdf2DeriveKey(passwordAsBytes, salt, { extractable: false });
 
     // Decrypt data
     const decryptedContent = await window.crypto.subtle.decrypt(
@@ -82,7 +86,26 @@ const aesDecryptDataSalted = async (data, password) => {
     return decodeUTF8(new Uint8Array(decryptedContent));
 };
 
-const deriveAES256Key = async (passwordAsBytes, salt) => {
+const pbkdfGenerateAuthenticationKey = async (username, password) => {
+    // Authentication key used to make brute-force attacks far more difficult compared to simple password hashing
+    const usernameHash = await shaHashData(username);
+
+    // Transform inputs to bytes while using part of the username's hash as salt
+    const salt = encodeUTF8(usernameHash.slice(0, 32));
+    const passwordAsBytes = encodeUTF8(password);
+
+    // Derive salted AES key 
+    const aesKey = await pbkdf2DeriveKey(passwordAsBytes, salt, { extractable: true });
+
+    // Return key as Base64-encoded string
+    const keyAsBytes = await crypto.subtle.exportKey(
+        "raw",
+        aesKey
+    );
+    return bytesToBase64(new Uint8Array(keyAsBytes));
+}
+
+const pbkdf2DeriveKey = async (passwordAsBytes, salt, options) => {
     // Create a password key to derive the encryption key later on
     const passwordKey = await window.crypto.subtle.importKey(
         "raw",
@@ -105,7 +128,7 @@ const deriveAES256Key = async (passwordAsBytes, salt) => {
             name: "AES-GCM",
             length: 256
         },
-        false,
+        options.extractable,
         ["encrypt", "decrypt"]
     );
 }
@@ -286,14 +309,14 @@ const rsaGenerateKeyPair = async () => {
     }
 }
 
-const shaHashData = async password => {
+const shaHashData = async data => {
     // Transform password to a Uint8Array containing UTF-8 encoded text
-    const passwordAsBytes = encodeUTF8(password);
+    const dataAsBytes = encodeUTF8(data);
 
     // Calculate hash
     const hash = await crypto.subtle.digest(
         "SHA-256",
-        passwordAsBytes
+        dataAsBytes
     );
 
     // Return hash as Base64-encoded string
