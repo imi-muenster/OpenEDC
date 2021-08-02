@@ -133,8 +133,9 @@ function showDecryptionKeyModal() {
     $("#login-incorrect-hint .message-body").textContent = languageHelper.getTranslation("password-incorrect-error");
 
     // Set the click handler when clicking on the Open button
-    $("#login-modal #open-button").onclick = clickEvent => {
+    $("#login-button").onclick = clickEvent => {
         clickEvent.preventDefault();
+        clickEvent.target.classList.add("is-loading");
         const password = $("#login-password-input").value;
         ioHelper.setDecryptionKey(password)
             .then(() => loginSuccessful())
@@ -155,8 +156,9 @@ function showLoginModal() {
     $("#login-incorrect-hint .message-body").textContent = languageHelper.getTranslation("username-password-incorrect-error");
 
     // Set the click handler when clicking on the open button
-    $("#login-modal #open-button").onclick = clickEvent => {
+    $("#login-button").onclick = clickEvent => {
         clickEvent.preventDefault();
+        clickEvent.target.classList.add("is-loading");
         const username = $("#login-username-input").value;
         const password = $("#login-password-input").value;
         const confirmPassword = $("#login-confirm-password-input").value;
@@ -184,7 +186,7 @@ function showLoginModal() {
 }
 
 async function loginSuccessful() {
-    $("#login-modal").remove();
+    $("login-modal").remove();
 
     await metadataHelper.loadStoredMetadata();
     await startApp();
@@ -192,6 +194,7 @@ async function loginSuccessful() {
 
 function loginNotSuccessful(error) {
     $("#login-password-input").value = "";
+    $("#login-button").classList.remove("is-loading");
 
     switch (error) {
         case ioHelper.loginStatus.USERHASINITIALPASSWORD:
@@ -415,7 +418,7 @@ window.initializeServer = function(event) {
         .catch(error => ioHelper.showMessage(languageHelper.getTranslation("Error"), error));
 }
 
-window.encryptData = function() {
+window.encryptData = function(event) {
     if (!$("#confirm-encryption-password-input").parentNode.parentNode.isVisible()) {
         $("#confirm-encryption-password-input").parentNode.parentNode.show();
         return;
@@ -431,7 +434,10 @@ window.encryptData = function() {
         return;
     }
 
-    ioHelper.encryptXMLData(credentials.password).then(() => logout());
+    event.target.classList.add("is-loading");
+    ioHelper.encryptXMLData(credentials.password)
+        .then(() => logout())
+        .catch(() => event.target.classList.remove("is-loading"));
 }
 
 window.setSurveyCode = function() {

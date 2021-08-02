@@ -54,7 +54,7 @@ class ProjectModal extends HTMLElement {
                                             <input class="input is-small" id="confirm-encryption-password-input" type="password" autocomplete="new-password" i18n-ph="password-confirm">
                                         </div>
                                         <div class="control">
-                                            <a class="button is-link is-small" onclick="encryptData()" i18n="confirm"></a>
+                                            <a class="button is-link is-small" onclick="encryptData(event)" i18n="confirm"></a>
                                         </div>
                                     </div>
                                 </form>

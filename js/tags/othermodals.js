@@ -75,7 +75,7 @@ class LoginModal extends HTMLElement {
                                         </span>
                                     </div>
                                 </div>
-                                <button class="button is-link mt-3" id="open-button" type="submit" i18n="open"></button>
+                                <button class="button is-link mt-3" id="login-button" type="submit" i18n="open"></button>
                             </form>
                             <div class="buttons is-centered mt-3">
                                 <button class="button is-text is-small" onclick="showForgotPasswordModal()" i18n="forgot-password-question"></button>
