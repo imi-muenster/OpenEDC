@@ -26,11 +26,18 @@ class Subject {
 }
 
 export class FormItemData {
-    constructor(itemGroupOID, itemOID, value, localizedValue) {
+    constructor(itemGroupOID, itemOID, value) {
         this.itemGroupOID = itemGroupOID;
         this.itemOID = itemOID;
         this.value = value;
-        this.localizedValue = localizedValue;
+    }
+
+    set localizedValue(localizedValue) {
+        this._localizedValue = localizedValue ?? this.value;
+    }
+
+    get localizedValue() {
+        return this._localizedValue ? this._localizedValue : `-${languageHelper.getTranslation("removed")}-`;
     }
 
     get translatedQuestion() {
@@ -313,17 +320,7 @@ export function getSubjectFormData(studyEventOID, formOID) {
     return !subject ? [] : getFormItemDataList(getFormDataElements(studyEventOID, formOID));
 }
 
-function getFormItemDataList(formDataElements, includeLocalizedValue) {
-    // Used to produce the localized value
-    let dateItemOIDs, dateTimeItemOIDs, booleanItemOIDs, localizedYes, localizedNo;
-    if (includeLocalizedValue) {
-        dateItemOIDs = metadataHelper.getItemOIDsWithDataType("date");
-        dateTimeItemOIDs = metadataHelper.getItemOIDsWithDataType("datetime");
-        booleanItemOIDs = metadataHelper.getItemOIDsWithDataType("boolean");
-        localizedYes = languageHelper.getTranslation("yes");
-        localizedNo = languageHelper.getTranslation("no");
-    }
-    
+function getFormItemDataList(formDataElements) {
     const formItemDataList = [];
     for (const formDataElement of formDataElements) {
         for (const itemGroupData of formDataElement.querySelectorAll("ItemGroupData")) {
@@ -331,20 +328,9 @@ function getFormItemDataList(formDataElements, includeLocalizedValue) {
             for (const itemData of itemGroupData.querySelectorAll("ItemData")) {
                 const itemOID = itemData.getAttribute("ItemOID");
                 const value = itemData.getAttribute("Value");
-
-                // Get localized value
-                let localizedValue = value;
-                if (includeLocalizedValue) {
-                    const codeListItem = metadataHelper.getCodeListItem(metadataHelper.getCodeListOIDByItem(itemOID), value);
-                    if (codeListItem) localizedValue = codeListItem.getTranslatedDecode(languageHelper.getCurrentLocale(), true);
-                    if (dateItemOIDs.includes(itemOID)) localizedValue = new Date(value).toLocaleDateString();
-                    if (dateTimeItemOIDs.includes(itemOID)) localizedValue = new Date(value).toLocaleString();
-                    if (booleanItemOIDs.includes(itemOID)) localizedValue = value == "1" || value == "true" ? localizedYes : localizedNo;
-                }
-
                 const existingItemData = formItemDataList.find(entry => entry.itemGroupOID == itemGroupOID && entry.itemOID == itemOID);
                 if (existingItemData) existingItemData.value = value;
-                else formItemDataList.push(new FormItemData(itemGroupOID, itemOID, value, localizedValue));
+                else formItemDataList.push(new FormItemData(itemGroupOID, itemOID, value));
             }
         }
     }
@@ -402,7 +388,7 @@ export function getAuditRecords(filter) {
             if (!auditRecord) continue;
 
             // Filter itemGroup and item
-            let formItemData = getFormItemDataList([formData], true);
+            let formItemData = getFormItemDataList([formData]);
             if (filter && filter.itemGroupOID && filter.itemOID) {
                 formItemData = formItemData.filter(itemData => itemData.itemGroupOID == filter.itemGroupOID && itemData.itemOID == filter.itemOID);
                 if (!formItemData.length) continue;
@@ -436,6 +422,22 @@ export function getAuditRecords(filter) {
         auditRecords.push(
             new AuditRecord(auditRecordTypes.SUBJECTCREATED, null, null, userOID, locationOID, date)
         );
+    }
+
+    // Localize item values
+    const dateItemOIDs = metadataHelper.getItemOIDsWithDataType("date");
+    const dateTimeItemOIDs = metadataHelper.getItemOIDsWithDataType("datetime");
+    const booleanItemOIDs = metadataHelper.getItemOIDsWithDataType("boolean");
+    for (let auditRecord of auditRecords) {
+        if (auditRecord.dataChanges) auditRecord.dataChanges.forEach(dataItem =>  {
+            let localizedValue;
+            const codeListItem = metadataHelper.getCodeListItem(metadataHelper.getCodeListOIDByItem(dataItem.itemOID), dataItem.value);
+            if (codeListItem) localizedValue = codeListItem.getTranslatedDecode(languageHelper.getCurrentLocale(), true);
+            if (dateItemOIDs.includes(dataItem.itemOID)) localizedValue = new Date(dataItem.value).toLocaleDateString();
+            if (dateTimeItemOIDs.includes(dataItem.itemOID)) localizedValue = new Date(dataItem.value).toLocaleString();
+            if (booleanItemOIDs.includes(dataItem.itemOID)) localizedValue = value == "1" ? languageHelper.getTranslation("yes") : languageHelper.getTranslation("no");
+            dataItem.localizedValue = localizedValue;
+        });
     }
 
     return auditRecords.sort((a, b) => a.date < b.date ? 1 : (a.date > b.date ? -1 : 0));
