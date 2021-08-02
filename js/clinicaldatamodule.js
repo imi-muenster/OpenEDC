@@ -409,7 +409,7 @@ function addDynamicFormLogicPost() {
     // Add a history button to show the audit trail for one specific item
     if (currentElementID.subject) $$("#clinicaldata-content .item-field .label").forEach(itemFieldLabel => {
         const historyButton = document.createElement("div");
-        historyButton.className = "icon is-history-button is-pulled-right";
+        historyButton.className = "icon is-history-button is-pulled-right is-hidden-survey-view";
         historyButton.innerHTML = "<i class='far fa-clock'></i>";
         historyButton.addEventListener("click", showItemAuditTrail);
         itemFieldLabel.appendChild(historyButton);
@@ -718,13 +718,9 @@ window.showSurveyView = function() {
     $("#clinicaldata-forms-column").hide();
     $("#clinicaldata-column .panel").classList.add("is-shadowless");
     $("#clinicaldata-column .panel-heading").hide();
-    $("#clinicaldata-column").classList.remove("is-two-fifths-desktop");
-    $("#clinicaldata-column").classList.add("is-full");
     $("#clinicaldata-column .tree-panel-blocks").classList.add("is-survey-view");
     $("#clinicaldata-section").classList.add("p-3");
     $("#clinicaldata-form-title").classList.add("is-centered");
-    $("#survey-view-button").hide();
-    $("#form-validate-level").hide();
     scrollToFormStart();
 }
 
@@ -736,8 +732,6 @@ function hideSurveyView() {
     $("#clinicaldata-forms-column").show();
     $("#clinicaldata-column .panel").classList.remove("is-shadowless");
     $("#clinicaldata-column .panel-heading").show();
-    $("#clinicaldata-column").classList.add("is-two-fifths-desktop");
-    $("#clinicaldata-column").classList.remove("is-full");
     $("#clinicaldata-column .tree-panel-blocks").classList.remove("is-survey-view");
     $("#clinicaldata-section").classList.remove("p-3");
     $("#clinicaldata-form-title").classList.remove("is-centered");

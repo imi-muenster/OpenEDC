@@ -342,10 +342,14 @@ a.panel-block:hover {
 }
 
 .is-survey-view {
-    max-width: 500px;
+    max-width: 600px;
     margin: 0 auto;
     overflow-y: visible;
     max-height: none !important;
+}
+
+.is-survey-view .is-hidden-survey-view {
+    display: none;
 }
 
 .item-field.is-highlighted {

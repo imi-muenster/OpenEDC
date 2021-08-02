@@ -97,7 +97,7 @@ class ClinicaldataSection extends HTMLElement {
                                                 <h1 class="subtitle is-3"></h1>
                                             </div>
                                         </div>
-                                        <div class="level-right ml-5" id="survey-view-button">
+                                        <div class="level-right ml-5 is-hidden-survey-view" id="survey-view-button">
                                             <div class="level-item">
                                                 <button class="button is-link is-light is-small" onclick="showSurveyView()">
                                                     <span class="icon">
@@ -125,7 +125,7 @@ class ClinicaldataSection extends HTMLElement {
                                             </div>
                                         </div>
                                     </nav>
-                                    <nav class="level is-mobile mt-3" id="form-validate-level">
+                                    <nav class="level is-mobile mt-3 is-hidden-survey-view" id="form-validate-level">
                                         <div class="level-left"></div>
                                         <div class="level-right">
                                             <div class="level-item">
