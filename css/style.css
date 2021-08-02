@@ -290,6 +290,7 @@ a.panel-block:hover {
 }
 
 .item-field .icon.is-history-button {
+    padding-top: 1px;
     cursor: pointer;
     opacity: 0;
     transition: opacity .5s .5s;

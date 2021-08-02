@@ -407,12 +407,12 @@ function addDynamicFormLogicPost() {
     });
 
     // Add a history button to show the audit trail for one specific item
-    if (currentElementID.subject) $$("#clinicaldata-content .item-field .label").forEach(itemFieldLabel => {
+    if (currentElementID.subject) $$("#clinicaldata-content .item-field").forEach(itemField => {
         const historyButton = document.createElement("div");
         historyButton.className = "icon is-history-button is-pulled-right is-hidden-survey-view";
         historyButton.innerHTML = "<i class='far fa-clock'></i>";
         historyButton.addEventListener("click", showItemAuditTrail);
-        itemFieldLabel.appendChild(historyButton);
+        itemField.insertAdjacentElement("afterbegin", historyButton);
     });
 
     // Fourth, add date focus event listeners (currently not used on mobile devices because of a Safari issue)
@@ -435,8 +435,8 @@ function uncheckRadioItem(event) {
 }
 
 function showItemAuditTrail(event) {
-    const itemGroupOID = event.target.parentNode.parentNode.parentNode.getAttribute("item-group-content-oid");
-    const itemOID = event.target.parentNode.parentNode.getAttribute("item-field-oid");
+    const itemGroupOID = event.target.parentNode.parentNode.getAttribute("item-group-content-oid");
+    const itemOID = event.target.parentNode.getAttribute("item-field-oid");
     const auditRecords = clinicaldataHelper.getAuditRecords({
         studyEventOID: currentElementID.studyEvent,
         formOID: currentElementID.form,

@@ -435,7 +435,7 @@ export function getAuditRecords(filter) {
             if (codeListItem) localizedValue = codeListItem.getTranslatedDecode(languageHelper.getCurrentLocale(), true);
             if (dateItemOIDs.includes(dataItem.itemOID)) localizedValue = new Date(dataItem.value).toLocaleDateString();
             if (dateTimeItemOIDs.includes(dataItem.itemOID)) localizedValue = new Date(dataItem.value).toLocaleString();
-            if (booleanItemOIDs.includes(dataItem.itemOID)) localizedValue = value == "1" ? languageHelper.getTranslation("yes") : languageHelper.getTranslation("no");
+            if (booleanItemOIDs.includes(dataItem.itemOID)) localizedValue = dataItem.value == "1" ? languageHelper.getTranslation("yes") : languageHelper.getTranslation("no");
             dataItem.localizedValue = localizedValue;
         });
     }
