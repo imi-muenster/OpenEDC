@@ -416,7 +416,8 @@ function addDynamicFormLogicPost() {
     });
 
     // Fourth, add date focus event listeners (currently not used on mobile devices because of a Safari issue)
-    if (!ioHelper.isMobile()) $$("clinicaldata-content input[type='date'], clinicaldata-content input[type='time'], clinicaldata-content input[type='datetime-local']").forEach(dateInput => {
+    if (ioHelper.isMobile()) return;
+    $$("#clinicaldata-content input[type='date'], #clinicaldata-content input[type='time'], #clinicaldata-content input[type='datetime-local']").forEach(dateInput => {
         dateInput.addEventListener("click", showDateTimePicker);
     });
 }
