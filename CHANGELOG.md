@@ -2,9 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.6.3
+
+- New item-specific audit trail that can be viewed with a button next to each item
+
 ## 0.6.2
 
-- Show updated item values within audit trail
+- Show updated item values within the audit trail
 
 ## 0.6.1
 

@@ -1,4 +1,4 @@
-const staticCacheName = "static-cache-0.6.2";
+const staticCacheName = "static-cache-0.6.3";
 const dynamicCacheName = "dynamic-cache";
 const messageQueueName = "message-queue";
 
