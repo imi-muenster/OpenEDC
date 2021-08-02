@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.6.4
+
+- Use of PBKDF2-based authentication key instead of simple password hash to impede brute-force attacks
+
 ## 0.6.3
 
 - New item-specific audit trail that can be viewed with a button next to each item
