@@ -347,19 +347,23 @@ export async function initializeServer(url, userOID, credentials) {
     user = await userResponse.json();
 
     // Send all existing metadata encrypted to the server
-    let metadataString = new XMLSerializer().serializeToString(await getMetadata());
+    const metadataFileName = await getODMFileName(fileNames.metadata);
+    const metadataXMLData = await getXMLData(metadataFileName);
+    let metadataString = new XMLSerializer().serializeToString(metadataXMLData);
     metadataString = await cryptoHelper.AES.encrypt.withKey(metadataString, decryptionKey);
-    const metadataResponse = await fetch(url + "/api/metadata", {
+    const metadataResponse = await fetch(url + "/api/metadata/" + metadataFileName, {
         method: "PUT",
         headers: getHeaders(true),
         body: metadataString
     });
     if (!metadataResponse.ok) return Promise.reject(await metadataResponse.text());
 
-    // Send all existing metadata encrypted to the server
-    let admindataString = new XMLSerializer().serializeToString(await getAdmindata());
+    // Send all existing admindata encrypted to the server
+    const admindataFileName = await getODMFileName(fileNames.admindata);
+    const admindataXMLData = await getXMLData(admindataFileName);
+    let admindataString = new XMLSerializer().serializeToString(admindataXMLData.documentElement);
     admindataString = await cryptoHelper.AES.encrypt.withKey(admindataString, decryptionKey);
-    const admindataResponse = await fetch(url + "/api/admindata", {
+    const admindataResponse = await fetch(url + "/api/admindata/" + admindataFileName, {
         method: "PUT",
         headers: getHeaders(true),
         body: admindataString
@@ -367,10 +371,10 @@ export async function initializeServer(url, userOID, credentials) {
     if (!admindataResponse.ok) return Promise.reject(await admindataResponse.text());
 
     // Send all existing clinicaldata encrypted to the server
-    // TODO: Naming -- subjectData vs subjectdata?
     const subjectFileNames = await getSubjectFileNames();
     for (const subjectFileName of subjectFileNames) {
-        let subjectDataString = new XMLSerializer().serializeToString(await getSubjectData(subjectFileName));
+        const subjectDataXMLData = await getXMLData(subjectFileName);
+        let subjectDataString = new XMLSerializer().serializeToString(subjectDataXMLData.documentElement);
         subjectDataString = await cryptoHelper.AES.encrypt.withKey(subjectDataString, decryptionKey);
         const clinicaldataResponse = await fetch(url + "/api/clinicaldata/" + subjectFileName, {
             method: "PUT",
