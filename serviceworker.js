@@ -1,4 +1,5 @@
 const staticCacheName = "static-cache-0.6.4";
+const odmCacheName = "odm-cache";
 const dynamicCacheName = "dynamic-cache";
 const messageQueueName = "message-queue";
 
@@ -44,6 +45,14 @@ const staticAssets = [
     "./img/title-logo.png"
 ];
 
+const odmRequestURLs = [
+    "/metadata/",
+    "/clinicaldata/",
+    "/admindata/"
+];
+
+const cacheFirstURLs = staticAssets.map(asset => asset.slice(1)).concat(odmRequestURLs);
+
 // Cache static assets
 self.addEventListener("install", installEvent => {
     installEvent.waitUntil(
@@ -72,25 +81,26 @@ self.addEventListener("activate", activateEvent => {
 // Return static and dynamic assets
 self.addEventListener("fetch", fetchEvent => {
     fetchEvent.respondWith(
-        caches.match(fetchEvent.request, { cacheName: staticCacheName, ignoreVary: true }).then(async staticCacheResponse => {
+        caches.match(fetchEvent.request, { ignoreVary: true }).then(async cacheResponse => {
             const requestBody = await fetchEvent.request.clone().text();
-            return staticCacheResponse || fetch(fetchEvent.request)
+            const isCacheFirst = cacheFirstURLs.some(url => cacheResponse ? cacheResponse.url.includes(url) : false);
+            return isCacheFirst && cacheResponse ? cacheResponse : fetch(fetchEvent.request)
                 .then(async fetchResponse => {
-                    const dynamicCache = await caches.open(dynamicCacheName);
+                    const isODMRequest = odmRequestURLs.some(url => fetchEvent.request.url.includes(url));
+                    const cache = await caches.open(isODMRequest ? odmCacheName : dynamicCacheName);
                     if (fetchEvent.request.method == "GET" && !fetchEvent.request.url.includes("version.json")) {
-                        dynamicCache.put(fetchEvent.request.url, fetchResponse.clone());
-                    } else if (fetchEvent.request.method == "PUT") {
-                        dynamicCache.put(fetchEvent.request.url, new Response(requestBody, { status: fetchResponse.status, statusText: fetchResponse.statusText, headers: fetchResponse.headers }));
+                        cache.put(fetchEvent.request.url, fetchResponse.clone());
+                    } else if (isODMRequest && fetchEvent.request.method == "PUT") {
+                        cache.put(fetchEvent.request.url, new Response(requestBody, { status: fetchResponse.status, statusText: fetchResponse.statusText, headers: fetchResponse.headers }));
                         updateCachedSubjectList(true, fetchEvent.request.url);
                         removeFromMessageQueue(fetchEvent.request.url);
-                    } else if (fetchEvent.request.method == "DELETE") {
-                        dynamicCache.delete(fetchEvent.request.url);
+                    } else if (isODMRequest && fetchEvent.request.method == "DELETE") {
+                        cache.delete(fetchEvent.request.url);
                         updateCachedSubjectList(false, fetchEvent.request.url);
                     }
                     return fetchResponse;
                 })
                 .catch(async () => {
-                    const cacheResponse = await caches.match(fetchEvent.request, { ignoreVary: true });
                     if (fetchEvent.request.method == "GET" || cacheResponse) {
                         return cacheResponse;
                     } else {
