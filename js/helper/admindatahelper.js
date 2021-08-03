@@ -60,7 +60,7 @@ export function getAdmindata(studyOID) {
 
 export async function loadStoredAdmindata() {
     admindataFile = AdmindataFile.parse(await ioHelper.getODMFileName(ioHelper.fileNames.admindata));
-    const xmlData = await ioHelper.getStoredXMLData(admindataFile.fileName);
+    const xmlData = await ioHelper.getXMLData(admindataFile.fileName);
     admindata = xmlData.documentElement;
 }
 

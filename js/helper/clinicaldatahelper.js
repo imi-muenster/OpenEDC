@@ -139,7 +139,7 @@ export async function importClinicaldata(odmXMLString) {
 }
 
 async function loadStoredSubjectData(fileName) {
-    const xmlData = await ioHelper.getStoredXMLData(fileName);
+    const xmlData = await ioHelper.getXMLData(fileName);
     return xmlData.documentElement;
 }
 

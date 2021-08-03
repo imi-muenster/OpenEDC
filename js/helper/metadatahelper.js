@@ -72,7 +72,7 @@ export async function loadExample() {
 
 export async function loadStoredMetadata() {
     metadataFile = MetadataFile.parse(await ioHelper.getODMFileName(ioHelper.fileNames.metadata));
-    metadata = await ioHelper.getStoredXMLData(metadataFile.fileName);
+    metadata = await ioHelper.getXMLData(metadataFile.fileName);
 }
 
 export async function storeMetadata() {

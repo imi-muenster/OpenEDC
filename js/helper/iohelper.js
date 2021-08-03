@@ -89,7 +89,7 @@ export async function init() {
     return await getServerStatus(devServer ? devServer : getBaseURL(), true).catch(() => console.log("No OpenEDC Server found. It seems that this is a standalone OpenEDC App."));
 }
 
-export async function getStoredXMLData(fileName) {
+export async function getXMLData(fileName) {
     let xmlString = null;
 
     if (serverURL) {
@@ -126,8 +126,6 @@ export async function storeXMLData(fileName, xmlDocument) {
     if (decryptionKey) xmlString = await cryptoHelper.AES.encrypt.withKey(xmlString, decryptionKey);
 
     if (serverURL) {
-        // TODO: Error handling
-        // TODO: Consider that this function is async -- adjust the callers when needed
         await fetch(getURLForFileName(fileName), {
             method: "PUT",
             headers: await getHeaders(true),
@@ -147,6 +145,11 @@ export async function removeXMLData(fileName) {
     } else {
         await indexedDBHelper.remove(fileName);
     }
+}
+
+// For performance reasons of IndexedDB, only used for local storage
+export async function storeXMLDataBulk(fileNameList, dataList) {
+    await indexedDBHelper.putBulk(fileNameList, dataList);
 }
 
 function getURLForFileName(fileName) {
@@ -227,11 +230,6 @@ export async function setDecryptionKey(password) {
     } catch (error) {
         return Promise.reject(error);
     }
-}
-
-// For performance reasons of IndexedDB, only used for local storage
-export async function storeXMLDataBulk(fileNameList, dataList) {
-    await indexedDBHelper.putBulk(fileNameList, dataList);
 }
 
 export async function removeAllLocalData() {
