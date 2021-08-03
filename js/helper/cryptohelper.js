@@ -86,53 +86,6 @@ const aesDecryptDataSalted = async (data, password) => {
     return decodeUTF8(new Uint8Array(decryptedContent));
 };
 
-const pbkdfGenerateAuthenticationKey = async (username, password) => {
-    // Authentication key used to make brute-force attacks far more difficult compared to simple password hashing
-    const usernameHash = await shaHashData(username);
-
-    // Transform inputs to bytes while using part of the username's hash as salt
-    const salt = encodeUTF8(usernameHash.slice(0, 32));
-    const passwordAsBytes = encodeUTF8(password);
-
-    // Derive salted AES key 
-    const aesKey = await pbkdf2DeriveKey(passwordAsBytes, salt, { extractable: true });
-
-    // Return key as Base64-encoded string
-    const keyAsBytes = await crypto.subtle.exportKey(
-        "raw",
-        aesKey
-    );
-    return bytesToBase64(new Uint8Array(keyAsBytes));
-}
-
-const pbkdf2DeriveKey = async (passwordAsBytes, salt, options) => {
-    // Create a password key to derive the encryption key later on
-    const passwordKey = await window.crypto.subtle.importKey(
-        "raw",
-        passwordAsBytes,
-        "PBKDF2",
-        false,
-        ["deriveKey"]
-    );
-
-    // Derive the salted AES key
-    return await window.crypto.subtle.deriveKey(
-        {
-            name: "PBKDF2",
-            salt: salt,
-            iterations: iterationsPBKDF2,
-            hash: "SHA-256"
-        },
-        passwordKey,
-        {
-            name: "AES-GCM",
-            length: 256
-        },
-        options.extractable,
-        ["encrypt", "decrypt"]
-    );
-}
-
 const aesEncryptDataUnsalted = async (data, key) => {
     // Transform data and key to Uint8Arrays containing UTF-8 encoded text
     const dataAsBytes = encodeUTF8(data);
@@ -321,6 +274,53 @@ const shaHashData = async data => {
 
     // Return hash as Base64-encoded string
     return bytesToBase64(new Uint8Array(hash));
+}
+
+const pbkdfGenerateAuthenticationKey = async (username, password) => {
+    // Authentication key used to make brute-force attacks far more difficult compared to simple password hashing
+    const usernameHash = await shaHashData(username);
+
+    // Transform inputs to bytes while using part of the username's hash as salt
+    const salt = encodeUTF8(usernameHash.slice(0, 32));
+    const passwordAsBytes = encodeUTF8(password);
+
+    // Derive salted AES key 
+    const aesKey = await pbkdf2DeriveKey(passwordAsBytes, salt, { extractable: true });
+
+    // Return key as Base64-encoded string
+    const keyAsBytes = await crypto.subtle.exportKey(
+        "raw",
+        aesKey
+    );
+    return bytesToBase64(new Uint8Array(keyAsBytes));
+}
+
+const pbkdf2DeriveKey = async (passwordAsBytes, salt, options) => {
+    // Create a password key to derive the encryption key later on
+    const passwordKey = await window.crypto.subtle.importKey(
+        "raw",
+        passwordAsBytes,
+        "PBKDF2",
+        false,
+        ["deriveKey"]
+    );
+
+    // Derive the salted AES key
+    return await window.crypto.subtle.deriveKey(
+        {
+            name: "PBKDF2",
+            salt: salt,
+            iterations: iterationsPBKDF2,
+            hash: "SHA-256"
+        },
+        passwordKey,
+        {
+            name: "AES-GCM",
+            length: 256
+        },
+        options.extractable,
+        ["encrypt", "decrypt"]
+    );
 }
 
 //

@@ -50,10 +50,9 @@ self.addEventListener("install", installEvent => {
         caches.open(staticCacheName).then(cache => {
             // It seems that cache.addAll sometimes adds old cached assets to the new cache
             // Therefore, cache.add with a custom request is used
-            staticAssets.forEach(asset => {
-                const request = new Request(asset, { cache: "reload" });
-                cache.add(request);
-            });
+            return Promise.all(staticAssets
+                .map(asset => cache.add(new Request(asset, { cache: "reload" })))
+            );
         })
     );
 });
