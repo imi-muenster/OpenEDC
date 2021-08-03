@@ -155,10 +155,8 @@ export async function storeXMLDataBulk(fileNameList, dataList) {
 function getURLForFileName(fileName) {
     let url = serverURL + "/api/";
 
-    if (Object.values(fileNames).includes(fileName)) url += fileName;
-    else url += "clinicaldata/" + fileName;
-
-    return url;
+    const type = Object.values(fileNames).find(entry => fileName.includes(entry));
+    return url + (type ? type : fileNames.clinicaldata) + "/" + fileName;
 }
 
 export async function getLastServerUpdate() {
@@ -186,7 +184,7 @@ export async function getSubjectFileNames() {
     let subjectFileNames = [];
 
     if (serverURL) {
-        const response = await fetch(getURLForFileName(fileNames.clinicaldata), { headers: getHeaders(true) });
+        const response = await fetch(serverURL + "/api/clinicaldata", { headers: getHeaders(true) });
         subjectFileNames = await response.json();
     } else {
         for (const fileName of await indexedDBHelper.getKeys()) {
