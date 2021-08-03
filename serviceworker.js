@@ -29,6 +29,7 @@ const staticAssets = [
     "./js/odmtemplates/metadatatemplates.js",
     "./js/odmtemplates/admindatatemplates.js",
     "./js/odmtemplates/clinicaldatatemplates.js",
+    "./js/tags/datetimepicker.js",
     "./js/tags/navigationbar.js",
     "./js/tags/metadatasection.js",
     "./js/tags/clinicaldatasection.js",
@@ -40,7 +41,6 @@ const staticAssets = [
     "./lib/fontawesome.css",
     "./lib/webfonts/fa-regular-400.woff2",
     "./lib/webfonts/fa-solid-900.woff2",
-    "./odm/example.xml",
     "./img/title-logo.png"
 ];
 
