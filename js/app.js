@@ -413,9 +413,10 @@ window.initializeServer = function(event) {
     // The user account will be linked to the default/first user, which, in the most cases, is the only user since adding users is prohibited without a server connection
     const serverURL = $("#server-url-input").value;
     const userOID = admindataHelper.getCurrentUserOID();
+    event.target.showLoading();
     ioHelper.initializeServer(serverURL, userOID, credentials)
         .then(serverURL => window.location.replace(serverURL))
-        .catch(error => ioHelper.showMessage(languageHelper.getTranslation("Error"), error));
+        .catch(() => event.target.hideLoading());
 }
 
 window.encryptData = function(event) {

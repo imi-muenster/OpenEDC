@@ -260,14 +260,14 @@ export function clearSubject() {
 }
 
 export async function removeSubject() {
-    await ioHelper.removeSubjectData(subject.fileName);
+    await ioHelper.removeXMLData(subject.fileName);
     clearSubject();
     await loadSubjects();
 }
 
 export async function removeClinicaldata() {
     for (let subject of subjects) {
-        await ioHelper.removeSubjectData(subject.fileName);
+        await ioHelper.removeXMLData(subject.fileName);
     }
 }
 
@@ -478,7 +478,7 @@ export async function setSubjectInfo(subjectKey, siteOID) {
     }
     
     await storeSubject();
-    await ioHelper.removeSubjectData(previousFileName);
+    await ioHelper.removeXMLData(previousFileName);
     await loadSubjects();
 
     return Promise.resolve();
