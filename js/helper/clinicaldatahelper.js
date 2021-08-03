@@ -14,6 +14,7 @@ class Subject {
 
         // Used since a subject's key can be ambigous when data conflicts are present (i.e., multiple users edited the same subject at the same)
         this.uniqueKey = key.toLowerCase();
+        this.hasConflict = false;
     }
 
     get fileName() {
@@ -154,8 +155,8 @@ export async function loadSubjects() {
     subjects = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY);
     for (let i = 0; i < subjects.length-1; i++) {
         if (subjects[i].key == subjects[i+1].key) {
-            subjects[i].status = dataStatusTypes.CONFLICT;
-            subjects[i+1].status = dataStatusTypes.CONFLICT;
+            subjects[i].hasConflict = true;
+            subjects[i+1].hasConflict = true;
             subjects[i+1].uniqueKey = subjects[i+1].key + fileNameSeparator + i;
             
             // Show a warning that data conflicts exist when the user has manage subjects right and the warning has not shown before

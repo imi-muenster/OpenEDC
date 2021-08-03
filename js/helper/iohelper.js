@@ -471,8 +471,8 @@ async function getHeaders(authorization, contentTypeJSON) {
 }
 
 export async function emptyMessageQueue() {
-    const dynamicCache = await caches.open("dynamic-cache");
-    const dynamicCacheEntries = await dynamicCache.keys();
+    const odmCache = await caches.open("odm-cache");
+    const odmCacheEntries = await odmCache.keys();
     const messageQueue = await caches.open("message-queue");
     const messageQueueEntries = await messageQueue.keys();
 
@@ -486,14 +486,14 @@ export async function emptyMessageQueue() {
         });
 
         // When cinical subject data from the message queue was sent to the server, a previous version might still be stored there which needs to be removed
-        // While this works fine, it should be refactored
+        // TODO: While this works fine, it should be refactored
         if (!messageQueueEntry.url.includes("clinicaldata")) continue;
         const lastSlashPosition = messageQueueEntry.url.lastIndexOf("/");
         const fileName = messageQueueEntry.url.substring(lastSlashPosition + 1);
         const subjectKey = fileName.split("__")[0];
-        for (let dynamicCacheEntry of dynamicCacheEntries) {
-            if (dynamicCacheEntry.url.includes("/" + subjectKey + "__")) {
-                await fetch(dynamicCacheEntry.url, {
+        for (let odmCacheEntry of odmCacheEntries) {
+            if (odmCacheEntry.url.includes("/" + subjectKey + "__")) {
+                await fetch(odmCacheEntry.url, {
                     method: "DELETE",
                     headers: await getHeaders(true)
                 });

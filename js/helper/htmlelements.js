@@ -57,14 +57,14 @@ export function getMetadataPanelBlock(elementOID, elementType, titleText, fallba
     return panelBlock;
 }
 
-export function getClinicaldataPanelBlock(elementOID, titleText, fallbackText, subtitleText, dataStatus) {
+export function getClinicaldataPanelBlock(elementOID, titleText, fallbackText, subtitleText, dataStatus, hasConflict) {
     let panelBlock = document.createElement("a");
     panelBlock.className = "panel-block";
     panelBlock.setAttribute("oid", elementOID);
 
     if (dataStatus) {
         let dot = document.createElement("span");
-        dot.className = dataStatus == 5 ? "panel-icon has-text-danger" : "panel-icon has-text-link";
+        dot.className = hasConflict ? "panel-icon has-text-danger" : "panel-icon has-text-link";
         let dotIcon = document.createElement("i");
 
         switch (dataStatus) {
@@ -79,9 +79,6 @@ export function getClinicaldataPanelBlock(elementOID, titleText, fallbackText, s
                 break;
             case 4:
                 dotIcon.className = "fas fa-check-circle";
-                break;
-            case 5:
-                dotIcon.className = "fas fa-circle";
         }
 
         dot.appendChild(dotIcon);

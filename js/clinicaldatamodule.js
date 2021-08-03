@@ -198,7 +198,7 @@ export function loadSubjectKeys() {
 
     for (let subject of subjects) {
         const siteSubtitle = subject.siteOID && !selectedSite ? admindataHelper.getSiteNameByOID(subject.siteOID) : null;
-        let panelBlock = htmlElements.getClinicaldataPanelBlock(subject.uniqueKey, subject.key, null, siteSubtitle, subject.status);
+        let panelBlock = htmlElements.getClinicaldataPanelBlock(subject.uniqueKey, subject.key, null, siteSubtitle, subject.status, subject.hasConflict);
         panelBlock.onclick = () => subjectClicked(subject.uniqueKey);
         $("#subject-panel-blocks").appendChild(panelBlock);
     }

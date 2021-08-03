@@ -51,7 +51,10 @@ const odmRequestURLs = [
     "/admindata/"
 ];
 
-const cacheFirstURLs = staticAssets.map(asset => asset.slice(1)).concat(odmRequestURLs);
+const cacheFirstURLs = staticAssets
+    .filter(asset => asset.length > 2)
+    .map(asset => asset.slice(1))
+    .concat(odmRequestURLs);
 
 // Cache static assets
 self.addEventListener("install", installEvent => {
