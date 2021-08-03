@@ -93,7 +93,7 @@ export async function getXMLData(fileName) {
     let xmlString = null;
 
     if (serverURL) {
-        const xmlResponse = await fetch(getURLForFileName(fileName), { headers: await getHeaders(true) });
+        const xmlResponse = await fetch(getURLForFileName(fileName), { headers: getHeaders(true) });
         if (!xmlResponse.ok) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
         xmlString = await xmlResponse.text();
     } else {
@@ -128,7 +128,7 @@ export async function storeXMLData(fileName, xmlDocument) {
     if (serverURL) {
         await fetch(getURLForFileName(fileName), {
             method: "PUT",
-            headers: await getHeaders(true),
+            headers: getHeaders(true),
             body: xmlString
         });
     } else {
@@ -140,7 +140,7 @@ export async function removeXMLData(fileName) {
     if (serverURL) {
         await fetch(getURLForFileName(fileName), {
             method: "DELETE",
-            headers: await getHeaders(true)
+            headers: getHeaders(true)
         });
     } else {
         await indexedDBHelper.remove(fileName);
@@ -162,16 +162,16 @@ function getURLForFileName(fileName) {
 }
 
 export async function getLastServerUpdate() {
-    // TODO
+    const lastUpdateResponse = await fetch(serverURL + "/api/lastupdate", { headers: getHeaders(true) });
+    return await lastUpdateResponse.json();
 }
 
 export async function getODMFileName(fileName) {
     let odmFileName;
 
     if (serverURL) {
-        const response = await getLastServerUpdate();
-        serverUpdates = await response.json();
-        odmFileName = fileName + fileNameSeparator + serverUpdates[fileName];
+        const lastUpdate = await getLastServerUpdate();
+        odmFileName = fileName + fileNameSeparator + lastUpdate[fileName];
     } else {
         for (const localFileName of await indexedDBHelper.getKeys()) {
             if (localFileName.includes(fileName)) odmFileName = localFileName;
@@ -186,7 +186,7 @@ export async function getSubjectFileNames() {
     let subjectFileNames = [];
 
     if (serverURL) {
-        const response = await fetch(getURLForFileName(fileNames.clinicaldata), { headers: await getHeaders(true) });
+        const response = await fetch(getURLForFileName(fileNames.clinicaldata), { headers: getHeaders(true) });
         subjectFileNames = await response.json();
     } else {
         for (const fileName of await indexedDBHelper.getKeys()) {
@@ -238,7 +238,7 @@ export async function removeAllLocalData() {
 
 export async function loadSettings() {
     if (serverURL) {
-        const settingsResponse = await fetch(getURLForFileName(fileNames.settings), { headers: await getHeaders(true) });
+        const settingsResponse = await fetch(getURLForFileName(fileNames.settings), { headers: getHeaders(true) });
         if (settingsResponse.ok && settingsResponse.status != 204) settings = await settingsResponse.json();
     } else {
         const settingsString = await indexedDBHelper.get(fileNames.settings);
@@ -250,7 +250,7 @@ async function storeSettings() {
     if (serverURL) {
         await fetch(getURLForFileName(fileNames.settings), {
             method: "PUT",
-            headers: await getHeaders(true),
+            headers: getHeaders(true),
             body: JSON.stringify(settings)
         });
     } else {
@@ -340,7 +340,7 @@ export async function initializeServer(url, userOID, credentials) {
     // Create the owner user on the server
     const userResponse = await fetch(url + "/api/users/initialize/" + userOID, {
             method: "PUT",
-            headers: await getHeaders(false, true),
+            headers: getHeaders(false, true),
             body: JSON.stringify(userRequest)
         });
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
@@ -351,7 +351,7 @@ export async function initializeServer(url, userOID, credentials) {
     metadataString = await cryptoHelper.AES.encrypt.withKey(metadataString, decryptionKey);
     const metadataResponse = await fetch(url + "/api/metadata", {
         method: "PUT",
-        headers: await getHeaders(true),
+        headers: getHeaders(true),
         body: metadataString
     });
     if (!metadataResponse.ok) return Promise.reject(await metadataResponse.text());
@@ -361,7 +361,7 @@ export async function initializeServer(url, userOID, credentials) {
     admindataString = await cryptoHelper.AES.encrypt.withKey(admindataString, decryptionKey);
     const admindataResponse = await fetch(url + "/api/admindata", {
         method: "PUT",
-        headers: await getHeaders(true),
+        headers: getHeaders(true),
         body: admindataString
     });
     if (!admindataResponse.ok) return Promise.reject(await admindataResponse.text());
@@ -374,7 +374,7 @@ export async function initializeServer(url, userOID, credentials) {
         subjectDataString = await cryptoHelper.AES.encrypt.withKey(subjectDataString, decryptionKey);
         const clinicaldataResponse = await fetch(url + "/api/clinicaldata/" + subjectFileName, {
             method: "PUT",
-            headers: await getHeaders(true),
+            headers: getHeaders(true),
             body: subjectDataString
         });
         if (!clinicaldataResponse.ok) return Promise.reject(await admindataResponse.text());
@@ -412,7 +412,7 @@ export async function setOwnPassword(credentials) {
     
     const userResponse = await fetch(serverURL + "/api/users/me", {
         method: "PUT",
-        headers: await getHeaders(true, true),
+        headers: getHeaders(true, true),
         body: JSON.stringify(userRequest)
     });
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
@@ -434,14 +434,14 @@ export async function setUserOnServer(oid, credentials, rights, site) {
 
     const userResponse = await fetch(serverURL + "/api/users/" + oid, {
         method: "PUT",
-        headers: await getHeaders(true, true),
+        headers: getHeaders(true, true),
         body: JSON.stringify(userRequest)
     });
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
 }
 
 export async function getUserOnServer(oid) {
-    const userResponse = await fetch(serverURL + "/api/users/" + oid, { headers: await getHeaders(true) });
+    const userResponse = await fetch(serverURL + "/api/users/" + oid, { headers: getHeaders(true) });
     if (!userResponse.ok) return Promise.reject();
 
     const user = await userResponse.json();
@@ -451,13 +451,13 @@ export async function getUserOnServer(oid) {
 export async function deleteUserOnServer(oid) {
     await fetch(serverURL + "/api/users/" + oid, {
         method: "DELETE",
-        headers: await getHeaders(true)
+        headers: getHeaders(true)
     }).catch(() => Promise.reject());
 
     return Promise.resolve();
 }
 
-async function getHeaders(authorization, contentTypeJSON) {
+function getHeaders(authorization, contentTypeJSON) {
     let headers = {};
     if (authorization) headers["Authorization"] = `Basic ${btoa(user.username + ":" + user.authenticationKey)}`;
     if (contentTypeJSON) headers["Content-Type"] = "application/json";
@@ -476,7 +476,7 @@ export async function emptyMessageQueue() {
         const requestBody = await cacheResponse.text();
         await fetch(messageQueueEntry.url, {
             method: "PUT",
-            headers: await getHeaders(true),
+            headers: getHeaders(true),
             body: requestBody
         });
 
@@ -490,7 +490,7 @@ export async function emptyMessageQueue() {
             if (odmCacheEntry.url.includes("/" + subjectKey + fileNameSeparator)) {
                 await fetch(odmCacheEntry.url, {
                     method: "DELETE",
-                    headers: await getHeaders(true)
+                    headers: getHeaders(true)
                 });
             }
         }
