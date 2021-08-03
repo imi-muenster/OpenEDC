@@ -76,6 +76,8 @@ let settings = {
     subjectKeyMode: subjectKeyModes.MANUAL
 };
 
+export const fileNameSeparator = "__";
+
 export async function init() {
     await indexedDBHelper.init();
     await loadSettings();
@@ -87,7 +89,6 @@ export async function init() {
 }
 
 async function getStoredXMLData(fileName) {
-    // TODO: Why is this function sometimes called twice for metadata and admindata? -> deactivate login button after pressing it once
     let xmlString = null;
 
     if (serverURL) {
@@ -237,7 +238,7 @@ export async function removeSubjectData(fileName) {
     }
 }
 
-export async function removeAllData() {
+export async function removeAllLocalData() {
     await indexedDBHelper.clear();
 }
 
@@ -384,7 +385,7 @@ export async function initializeServer(url, userOID, credentials) {
         });
         if (!clinicaldataResponse.ok) return Promise.reject(await admindataResponse.text());
     }
-    await removeAllData();
+    await removeAllLocalData();
     
     return Promise.resolve(url);
 }
@@ -490,9 +491,9 @@ export async function emptyMessageQueue() {
         if (!messageQueueEntry.url.includes("clinicaldata")) continue;
         const lastSlashPosition = messageQueueEntry.url.lastIndexOf("/");
         const fileName = messageQueueEntry.url.substring(lastSlashPosition + 1);
-        const subjectKey = fileName.split("__")[0];
+        const subjectKey = fileName.split(fileNameSeparator)[0];
         for (let odmCacheEntry of odmCacheEntries) {
-            if (odmCacheEntry.url.includes("/" + subjectKey + "__")) {
+            if (odmCacheEntry.url.includes("/" + subjectKey + fileNameSeparator)) {
                 await fetch(odmCacheEntry.url, {
                     method: "DELETE",
                     headers: await getHeaders(true)

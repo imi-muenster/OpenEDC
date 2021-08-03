@@ -537,7 +537,7 @@ window.removeAllData = async function() {
         await clinicaldataHelper.removeClinicaldata();
         await metadataHelper.loadEmptyProject();
     } else {
-        await ioHelper.removeAllData();
+        await ioHelper.removeAllLocalData();
     }
 
     logout();

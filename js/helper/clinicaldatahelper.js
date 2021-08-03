@@ -18,6 +18,7 @@ class Subject {
     }
 
     get fileName() {
+        const fileNameSeparator = ioHelper.fileNameSeparator;
         return this.key + fileNameSeparator + (this.siteOID || "") + fileNameSeparator + this.createdDate.getTime() + fileNameSeparator + this.modifiedDate.getTime() + fileNameSeparator + this.status;
     }
 
@@ -104,8 +105,6 @@ export const errors = {
     SUBJECTKEYEXISTENTOTHERSITE: 3
 }
 
-const fileNameSeparator = "__";
-
 let subjects = [];
 let subject = null;
 let subjectData = null;
@@ -157,7 +156,7 @@ export async function loadSubjects() {
         if (subjects[i].key == subjects[i+1].key) {
             subjects[i].hasConflict = true;
             subjects[i+1].hasConflict = true;
-            subjects[i+1].uniqueKey = subjects[i+1].key + fileNameSeparator + i;
+            subjects[i+1].uniqueKey = subjects[i+1].key + ioHelper.fileNameSeparator + i;
             
             // Show a warning that data conflicts exist when the user has manage subjects right and the warning has not shown before
             if (ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.MANAGESUBJECTS) && !document.querySelector(".panel-icon.has-text-danger")) {
@@ -259,7 +258,7 @@ export async function removeClinicaldata() {
 }
 
 function fileNameToSubject(fileName) {
-    const fileNameParts = fileName.split(fileNameSeparator);
+    const fileNameParts = fileName.split(ioHelper.fileNameSeparator);
     const key = fileNameParts[0];
     const siteOID = fileNameParts[1] || null;
     const createdDate = fileNameParts[2];
