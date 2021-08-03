@@ -17,9 +17,20 @@ class Subject {
         this.hasConflict = false;
     }
 
+    static parse(fileName) {
+        const fileNameParts = fileName.split(ioHelper.fileNameSeparator);
+        const key = fileNameParts[0];
+        const siteOID = fileNameParts[1] || null;
+        const createdDate = new Date(parseInt(fileNameParts[2]));
+        const modifiedDate = new Date(parseInt(fileNameParts[3]));
+        const status = parseInt(fileNameParts[4]) || null;
+    
+        return new Subject(key, siteOID, createdDate, modifiedDate, status);
+    }
+
     get fileName() {
-        const fileNameSeparator = ioHelper.fileNameSeparator;
-        return this.key + fileNameSeparator + (this.siteOID || "") + fileNameSeparator + this.createdDate.getTime() + fileNameSeparator + this.modifiedDate.getTime() + fileNameSeparator + this.status;
+        const separator = ioHelper.fileNameSeparator;
+        return this.key + separator + (this.siteOID || "") + separator + this.createdDate.getTime() + separator + this.modifiedDate.getTime() + separator + this.status;
     }
 
     get keyInt() {
@@ -124,7 +135,12 @@ export async function importClinicaldata(odmXMLString) {
         subjectDataList.push(xmlSerializer.serializeToString(subjectData));
     }
 
-    if (subjectDataList.length) await ioHelper.storeSubjectDataBulk(subjectFileNameList, subjectDataList);
+    if (subjectDataList.length) await ioHelper.storeXMLDataBulk(subjectFileNameList, subjectDataList);
+}
+
+async function loadStoredSubjectData(fileName) {
+    const xmlData = await ioHelper.getStoredXMLData(fileName);
+    return xmlData.documentElement;
 }
 
 export function getSubject() {
@@ -136,7 +152,7 @@ export async function getClinicalData(studyOID, metadataVersionOID) {
 
     subjects = sortSubjects(subjects, sortOrderTypes.CREATEDDATE);
     for (let subject of subjects) {
-        clinicalData.appendChild(await ioHelper.getSubjectData(subject.fileName));
+        clinicalData.appendChild(await loadStoredSubjectData(subject.fileName));
     }
 
     return clinicalData;
@@ -144,10 +160,8 @@ export async function getClinicalData(studyOID, metadataVersionOID) {
 
 export async function loadSubjects() {
     subjects = [];
-
-    const subjectFileNames = await ioHelper.getSubjectFileNames();
-    for (let fileName of subjectFileNames) {
-        subjects.push(fileNameToSubject(fileName));
+    for (let fileName of await ioHelper.getSubjectFileNames()) {
+        subjects.push(Subject.parse(fileName));
     }
 
     // Evaluate whether data conflicts are present (i.e., multiple users edited the same subject at the same time)
@@ -219,7 +233,7 @@ export async function loadSubject(subjectKey) {
     }
 
     subject = subjects.find(subject => subject.uniqueKey == subjectKey.toLowerCase());
-    if (subject) subjectData = await ioHelper.getSubjectData(subject.fileName);
+    if (subject) subjectData = await loadStoredSubjectData(subject.fileName);
     else subjectData = null;
     
     return subject;
@@ -233,11 +247,11 @@ export async function storeSubject() {
 
     subject.status = getDataStatus();
     subject.modifiedDate = new Date();
-    await ioHelper.storeSubjectData(subject.fileName, subjectData);
+    await ioHelper.storeXMLData(subject.fileName, subjectData);
 
     // This mechanism helps to prevent possible data loss when multiple users edit the same subject data at the same time (especially important for the offline mode)
     // If the previousFileName cannot be removed, the system keeps multiple current versions of the subject data and the user is notified that conflicting data exists
-    if (previousFileName != subject.fileName) ioHelper.removeSubjectData(previousFileName);
+    if (previousFileName != subject.fileName) ioHelper.removeXMLData(previousFileName);
 }
 
 export function clearSubject() {
@@ -255,17 +269,6 @@ export async function removeClinicaldata() {
     for (let subject of subjects) {
         await ioHelper.removeSubjectData(subject.fileName);
     }
-}
-
-function fileNameToSubject(fileName) {
-    const fileNameParts = fileName.split(ioHelper.fileNameSeparator);
-    const key = fileNameParts[0];
-    const siteOID = fileNameParts[1] || null;
-    const createdDate = fileNameParts[2];
-    const modifiedDate = fileNameParts[3];
-    const status = parseInt(fileNameParts[4]) || null;
-
-    return new Subject(key, siteOID, new Date(parseInt(createdDate)), new Date(parseInt(modifiedDate)), status);
 }
 
 export async function storeSubjectFormData(studyEventOID, formOID, formItemDataList, dataStatus) {
@@ -529,7 +532,7 @@ export async function getSubjectsHavingDataForElement(elementOID, elementType, i
 
     let subjectKeys = [];
     for (const subject of subjects) {
-        const subjectData = await ioHelper.getSubjectData(subject.fileName);
+        const subjectData = await loadStoredSubjectData(subject.fileName);
         switch (elementType) {
             case metadataHelper.elementTypes.STUDYEVENT:
                 if (subjectData.querySelector(`StudyEventData[StudyEventOID="${elementOID}"]`)) subjectKeys.push(subject.key);

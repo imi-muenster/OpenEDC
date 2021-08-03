@@ -4,6 +4,21 @@ import * as admindataTemplates from "../odmtemplates/admindatatemplates.js";
 import * as languageHelper from "./languagehelper.js";
 import * as ioHelper from "./iohelper.js";
 
+class AdmindataFile {
+    constructor(modifiedDate) {
+        this.modifiedDate = modifiedDate || new Date();
+    }
+
+    static parse(fileName) {
+        const modifiedDate = new Date(parseInt(fileName.split(ioHelper.fileNameSeparator)[1]));
+        return new AdmindataFile(modifiedDate);
+    }
+
+    get fileName() {
+        return ioHelper.fileNames.admindata + ioHelper.fileNameSeparator + this.modifiedDate.getTime();
+    }
+}
+
 const $ = query => admindata.querySelector(query);
 const $$ = query => admindata.querySelectorAll(query);
 
@@ -21,11 +36,12 @@ export const errors = {
 }
 
 let admindata = null;
+let admindataFile = null;
 
 export function loadEmptyProject() {
     admindata = admindataTemplates.getAdminData();
     addUser();
-    ioHelper.storeAdmindata(admindata);
+    storeAdmindata();
 }
 
 export function importAdmindata(odmXMLString) {
@@ -33,7 +49,7 @@ export function importAdmindata(odmXMLString) {
     if (odm.querySelector("AdminData")) {
         admindata = odm.querySelector("AdminData");
         if (getUsers().length == 0) addUser();
-        ioHelper.storeAdmindata(admindata);
+        storeAdmindata();
     }
 }
 
@@ -43,7 +59,18 @@ export function getAdmindata(studyOID) {
 }
 
 export async function loadStoredAdmindata() {
-    admindata = await ioHelper.getAdmindata();
+    admindataFile = AdmindataFile.parse(await ioHelper.getODMFileName(ioHelper.fileNames.admindata));
+    const xmlData = await ioHelper.getStoredXMLData(admindataFile.fileName);
+    admindata = xmlData.documentElement;
+}
+
+export async function storeAdmindata() {
+    const previousFileName = admindataFile ? admindataFile.fileName : null;
+
+    admindataFile = new AdmindataFile();
+    await ioHelper.storeXMLData(admindataFile.fileName, admindata);
+
+    if (previousFileName && previousFileName != admindataFile.fileName) ioHelper.removeXMLData(previousFileName);
 }
 
 export function getUsers() {
@@ -82,9 +109,8 @@ export function addUser() {
     } else {
         admindata.appendChild(newUser);
     }
-
-    ioHelper.storeAdmindata(admindata);
-
+    storeAdmindata();
+    
     return newUserOID;
 }
 
@@ -103,13 +129,13 @@ export function setUserInfo(userOID, firstName, lastName, locationOID) {
         if (locationRef) locationRef.remove();
     }
     
-    ioHelper.storeAdmindata(admindata);
+    storeAdmindata();
 }
 
 export function removeUser(userOID) {
     const user = getUser(userOID);
     if (user) user.remove();
-    ioHelper.storeAdmindata(admindata);
+    storeAdmindata();
 }
 
 export function getSite(siteOID) {
@@ -140,8 +166,7 @@ export function addSite() {
     } else {
         admindata.appendChild(newSite);
     }
-
-    ioHelper.storeAdmindata(admindata);
+    storeAdmindata();
 
     return newSiteOID;
 }
@@ -149,7 +174,7 @@ export function addSite() {
 export function setSiteName(siteOID, name) {
     const site = getSite(siteOID);
     if (site) site.setAttribute("Name", name);
-    ioHelper.storeAdmindata(admindata);
+    storeAdmindata();
 }
 
 export function removeSite(siteOID) {
@@ -158,7 +183,7 @@ export function removeSite(siteOID) {
 
     const site = getSite(siteOID);
     if (site) site.remove();
-    ioHelper.storeAdmindata(admindata);
+    storeAdmindata();
 
     return Promise.resolve();
 }

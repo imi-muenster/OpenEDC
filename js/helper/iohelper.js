@@ -51,9 +51,10 @@ export const interactionTypes = {
 
 const $ = query => document.querySelector(query);
 
-const fileNames = {
+export const fileNames = {
     metadata: "metadata",
     admindata: "admindata",
+    clinicaldata: "clinicaldata",
     settings: "settings",
     localkey: "localkey"
 }
@@ -88,11 +89,11 @@ export async function init() {
     return await getServerStatus(devServer ? devServer : getBaseURL(), true).catch(() => console.log("No OpenEDC Server found. It seems that this is a standalone OpenEDC App."));
 }
 
-async function getStoredXMLData(fileName) {
+export async function getStoredXMLData(fileName) {
     let xmlString = null;
 
     if (serverURL) {
-        const xmlResponse = await fetch(getApiUrlFromFileName(fileName), { headers: await getHeaders(true) });
+        const xmlResponse = await fetch(getURLForFileName(fileName), { headers: await getHeaders(true) });
         if (!xmlResponse.ok) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
         xmlString = await xmlResponse.text();
     } else {
@@ -120,14 +121,14 @@ async function getStoredXMLData(fileName) {
     }
 }
 
-async function storeXMLData(fileName, xmlDocument) {
+export async function storeXMLData(fileName, xmlDocument) {
     let xmlString = new XMLSerializer().serializeToString(xmlDocument);
     if (decryptionKey) xmlString = await cryptoHelper.AES.encrypt.withKey(xmlString, decryptionKey);
 
     if (serverURL) {
         // TODO: Error handling
         // TODO: Consider that this function is async -- adjust the callers when needed
-        await fetch(getApiUrlFromFileName(fileName), {
+        await fetch(getURLForFileName(fileName), {
             method: "PUT",
             headers: await getHeaders(true),
             body: xmlString
@@ -137,24 +138,56 @@ async function storeXMLData(fileName, xmlDocument) {
     }
 }
 
-function getApiUrlFromFileName(fileName) {
-    let apiUrl = serverURL + "/api/";
+export async function removeXMLData(fileName) {
+    if (serverURL) {
+        await fetch(getURLForFileName(fileName), {
+            method: "DELETE",
+            headers: await getHeaders(true)
+        });
+    } else {
+        await indexedDBHelper.remove(fileName);
+    }
+}
 
-    if (Object.values(fileNames).includes(fileName)) apiUrl += fileName;
-    else apiUrl += "clinicaldata/" + fileName;
+function getURLForFileName(fileName) {
+    let url = serverURL + "/api/";
 
-    return apiUrl;
+    if (Object.values(fileNames).includes(fileName)) url += fileName;
+    else url += "clinicaldata/" + fileName;
+
+    return url;
+}
+
+export async function getLastServerUpdate() {
+    // TODO
+}
+
+export async function getODMFileName(fileName) {
+    let odmFileName;
+
+    if (serverURL) {
+        const response = await getLastServerUpdate();
+        serverUpdates = await response.json();
+        odmFileName = fileName + fileNameSeparator + serverUpdates[fileName];
+    } else {
+        for (const localFileName of await indexedDBHelper.getKeys()) {
+            if (localFileName.includes(fileName)) odmFileName = localFileName;
+        }
+    }
+
+    if (!odmFileName) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
+    return odmFileName;
 }
 
 export async function getSubjectFileNames() {
     let subjectFileNames = [];
 
     if (serverURL) {
-        const response = await fetch(serverURL + "/api/clinicaldata", { headers: await getHeaders(true) });
+        const response = await fetch(getURLForFileName(fileNames.clinicaldata), { headers: await getHeaders(true) });
         subjectFileNames = await response.json();
     } else {
-        for (let fileName of await indexedDBHelper.getKeys()) {
-            if (!Object.values(fileNames).includes(fileName)) subjectFileNames.push(fileName);
+        for (const fileName of await indexedDBHelper.getKeys()) {
+            if (fileName.split(fileNameSeparator).length > 2) subjectFileNames.push(fileName);
         }
     }
 
@@ -196,46 +229,9 @@ export async function setDecryptionKey(password) {
     }
 }
 
-export async function getMetadata() {
-    return await getStoredXMLData(fileNames.metadata);
-}
-
-export async function storeMetadata(metadata) {
-    await storeXMLData(fileNames.metadata, metadata);
-}
-
-export async function getAdmindata() {
-    const admindata = await getStoredXMLData(fileNames.admindata);
-    return admindata.documentElement;
-}
-
-export function storeAdmindata(admindata) {
-    storeXMLData(fileNames.admindata, admindata);
-}
-
-export async function getSubjectData(fileName) {
-    const subjectData = await getStoredXMLData(fileName);
-    return subjectData.documentElement;
-}
-
-export async function storeSubjectData(fileName, subjectData) {
-    await storeXMLData(fileName, subjectData);
-}
-
 // For performance reasons of IndexedDB, only used for local storage
-export async function storeSubjectDataBulk(fileNameList, subjectDataList) {
-    await indexedDBHelper.putBulk(fileNameList, subjectDataList);
-}
-
-export async function removeSubjectData(fileName) {
-    if (serverURL) {
-        await fetch(getApiUrlFromFileName(fileName), {
-            method: "DELETE",
-            headers: await getHeaders(true)
-        });
-    } else {
-        await indexedDBHelper.remove(fileName);
-    }
+export async function storeXMLDataBulk(fileNameList, dataList) {
+    await indexedDBHelper.putBulk(fileNameList, dataList);
 }
 
 export async function removeAllLocalData() {
@@ -244,7 +240,7 @@ export async function removeAllLocalData() {
 
 export async function loadSettings() {
     if (serverURL) {
-        const settingsResponse = await fetch(getApiUrlFromFileName(fileNames.settings), { headers: await getHeaders(true) });
+        const settingsResponse = await fetch(getURLForFileName(fileNames.settings), { headers: await getHeaders(true) });
         if (settingsResponse.ok && settingsResponse.status != 204) settings = await settingsResponse.json();
     } else {
         const settingsString = await indexedDBHelper.get(fileNames.settings);
@@ -254,7 +250,7 @@ export async function loadSettings() {
 
 async function storeSettings() {
     if (serverURL) {
-        await fetch(getApiUrlFromFileName(fileNames.settings), {
+        await fetch(getURLForFileName(fileNames.settings), {
             method: "PUT",
             headers: await getHeaders(true),
             body: JSON.stringify(settings)

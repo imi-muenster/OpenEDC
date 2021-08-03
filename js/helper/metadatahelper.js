@@ -3,6 +3,21 @@ import * as odmToHTML from "./odmtohtml.js";
 import * as languageHelper from "./languagehelper.js";
 import * as ioHelper from "./iohelper.js";
 
+class MetadataFile {
+    constructor(modifiedDate) {
+        this.modifiedDate = modifiedDate || new Date();
+    }
+
+    static parse(fileName) {
+        const modifiedDate = new Date(parseInt(fileName.split(ioHelper.fileNameSeparator)[1]));
+        return new MetadataFile(modifiedDate);
+    }
+
+    get fileName() {
+        return ioHelper.fileNames.metadata + ioHelper.fileNameSeparator + this.modifiedDate.getTime();
+    }
+}
+
 const $ = query => metadata.querySelector(query);
 const $$ = query => metadata.querySelectorAll(query);
 
@@ -22,7 +37,8 @@ const expressionTypes = {
 
 export const dataStatusCodeListOID = "OpenEDC.DataStatus";
 
-let metadata;
+let metadata = null;
+let metadataFile = null;
 
 export async function loadEmptyProject() {
     metadata = metadataTemplates.getODMTemplate();
@@ -55,11 +71,17 @@ export async function loadExample() {
 }
 
 export async function loadStoredMetadata() {
-    metadata = await ioHelper.getMetadata();
+    metadataFile = MetadataFile.parse(await ioHelper.getODMFileName(ioHelper.fileNames.metadata));
+    metadata = await ioHelper.getStoredXMLData(metadataFile.fileName);
 }
 
 export async function storeMetadata() {
-    await ioHelper.storeMetadata(metadata);
+    const previousFileName = metadataFile ? metadataFile.fileName : null;
+
+    metadataFile = new MetadataFile();
+    await ioHelper.storeXMLData(metadataFile.fileName, metadata);
+
+    if (previousFileName && previousFileName != metadataFile.fileName) ioHelper.removeXMLData(previousFileName);
 }
 
 export function getSerializedMetadata() {
