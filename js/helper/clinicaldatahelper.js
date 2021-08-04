@@ -4,6 +4,17 @@ import * as admindataHelper from "./admindatahelper.js";
 import * as languageHelper from "./languagehelper.js";
 import * as ioHelper from "./iohelper.js";
 
+class ClinicaldataFile {
+    constructor(modifiedDate) {
+        this.modifiedDate = modifiedDate || new Date();
+    }
+
+    static parse(fileName) {
+        const modifiedDate = new Date(parseInt(fileName.split(ioHelper.fileNameSeparator)[1]));
+        return new ClinicaldataFile(modifiedDate);
+    }
+}
+
 class Subject {
     constructor(key, siteOID, createdDate, modifiedDate, status) {
         this.key = key;
@@ -119,6 +130,7 @@ export const errors = {
 let subjects = [];
 let subject = null;
 let subjectData = null;
+let clinicaldataFile = null;
 
 export async function importClinicaldata(odmXMLString) {
     // For performance reasons of IndexedDB, store serialized clinical data in bulk
@@ -147,6 +159,10 @@ export function getSubject() {
     return subject;
 }
 
+export function getLastUpdate() {
+    return clinicaldataFile.modifiedDate.getTime();
+}
+
 export async function getClinicalData(studyOID, metadataVersionOID) {
     let clinicalData = clinicaldataTemplates.getClinicalData(studyOID, metadataVersionOID);
 
@@ -163,6 +179,13 @@ export async function loadSubjects() {
     for (let fileName of await ioHelper.getSubjectFileNames()) {
         subjects.push(Subject.parse(fileName));
     }
+
+    // The following logic is only valid when connected to a server
+    if (!ioHelper.hasServerURL()) return;
+
+    // Store date of subject list last update
+    const lastUpdate = await ioHelper.getLastServerUpdate();
+    clinicaldataFile = new ClinicaldataFile(new Date(lastUpdate.clinicaldata));
 
     // Evaluate whether data conflicts are present (i.e., multiple users edited the same subject at the same time)
     subjects = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY);
@@ -244,9 +267,11 @@ export async function storeSubject() {
     console.log("Store subject ...");
 
     const previousFileName = subject.fileName;
-
+    const modifiedDate = new Date();
+    
     subject.status = getDataStatus();
-    subject.modifiedDate = new Date();
+    subject.modifiedDate = modifiedDate;
+    clinicaldataFile = new ClinicaldataFile(modifiedDate);
     await ioHelper.storeXMLData(subject.fileName, subjectData);
 
     // This mechanism helps to prevent possible data loss when multiple users edit the same subject data at the same time (especially important for the offline mode)

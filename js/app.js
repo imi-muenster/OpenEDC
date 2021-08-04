@@ -648,27 +648,28 @@ function reloadLanguageSelect() {
 async function subscribeToServerUpdates() {
     if (!ioHelper.hasServerURL()) return;
 
-    let lastClinicaldataUpdate = (await ioHelper.getLastServerUpdate()).clinicaldata;
+    const lastHintShowed = {}
     setInterval(async () => {
         const lastUpdate = await ioHelper.getLastServerUpdate();
 
         // Test whether the metadata was updated
-        if (metadataHelper.getLastUpdate() != lastUpdate.metadata) {
+        if (metadataHelper.getLastUpdate() != lastUpdate.metadata && lastHintShowed.metadata != lastUpdate.metadata) {
             ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("metadata-updated-question"),
                 {
                     [languageHelper.getTranslation("reload")]: () => logout()
                 }
             );
+            lastHintShowed.metadata = lastUpdate.metadata;
         };
 
         // Test whether the clinicaldata was updated
-        if (lastClinicaldataUpdate != lastUpdate.clinicaldata) {
+        if (clinicaldataHelper.getLastUpdate() != lastUpdate.clinicaldata && lastHintShowed.clinicaldata != lastUpdate.clinicaldata) {
             if (clinicaldataHelper.getSubject()) {
                 ioHelper.showToast(languageHelper.getTranslation("clinicaldata-updated-hint"), 5000);
+                lastHintShowed.clinicaldata = lastUpdate.clinicaldata;
             } else {
                 await clinicaldataHelper.loadSubjects();
                 clinicaldataModule.loadSubjectKeys();
-                lastClinicaldataUpdate = lastUpdate.clinicaldata;
             }
         };
 
