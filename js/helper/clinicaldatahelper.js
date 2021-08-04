@@ -190,12 +190,12 @@ export async function loadSubjects() {
     const lastUpdate = await ioHelper.getLastServerUpdate();
     clinicaldataFile = new ClinicaldataFile(new Date(lastUpdate.clinicaldata));
 
-    // Check whether a currently edited subject still exists
+    // Check whether a currently opened subject was edited by another user
     if (subject && !fileNames.includes(subject.fileName)) {
         ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("subject-edited-error"), {
             [languageHelper.getTranslation("reload")]: async () => {
                 await loadSubject(subject.uniqueKey);
-                document.dispatchEvent(new CustomEvent("SubjectChanged"));
+                document.dispatchEvent(new CustomEvent("SubjectEdited"));
             }
         });
     }

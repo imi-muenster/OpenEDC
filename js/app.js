@@ -66,11 +66,11 @@ document.addEventListener("LanguageChanged", languageEvent => {
     metadataModule.setLanguage(languageEvent.detail);
     clinicaldataModule.setLanguage(languageEvent.detail);
     
-    reloadApp(true);
+    reloadApp({ cacheFormData: true });
     ioHelper.hideMenu();
 });
 
-document.addEventListener("SubjectChanged", () => {    
+document.addEventListener("SubjectEdited", () => {    
     reloadApp();
 });
 
@@ -635,12 +635,14 @@ function mergeMetadataModels(models) {
     else if (getCurrentState() == appStates.EMPTY) startApp();
 }
 
-function reloadApp(cacheFormData) {
+async function reloadApp(options) {
+    if (options && options.reloadMetadata) await metadataHelper.loadStoredMetadata();
+
     if (getCurrentMode() == appModes.METADATA) {
         metadataModule.reloadTree();
         metadataModule.reloadDetailsPanel();
     } else if (getCurrentMode() == appModes.CLINICALDATA) {
-        if (cacheFormData) clinicaldataModule.cacheFormData();
+        if (options && options.cacheFormData) clinicaldataModule.cacheFormData();
         clinicaldataModule.reloadTree();
     }
 }
@@ -663,7 +665,7 @@ async function subscribeToServerUpdates() {
         if (metadataHelper.getLastUpdate() != lastUpdate.metadata && lastHintShowed.metadata != lastUpdate.metadata) {
             ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("metadata-reload-question"),
                 {
-                    [languageHelper.getTranslation("reload")]: () => logout()
+                    [languageHelper.getTranslation("reload")]: () => reloadApp({ reloadMetadata: true })
                 }
             );
             lastHintShowed.metadata = lastUpdate.metadata;
