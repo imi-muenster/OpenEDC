@@ -636,6 +636,20 @@ export function prettifyContent(content) {
     return formatted.substring(1, formatted.length-3);
 }
 
+export function scrollParentToChild(child) {
+    let parent = child.parentNode;
+    let parentRect = parent.getBoundingClientRect();
+    let childRect = child.getBoundingClientRect();
+    let isVisibleTop = (childRect.top >= parentRect.top);
+    let isVisibleBottom = (childRect.bottom <= parentRect.bottom);
+
+    if (!isVisibleTop) {
+        parent.scrollTop = (childRect.top + parent.scrollTop) - parentRect.top;
+    } else if (!isVisibleBottom) {
+        parent.scrollTop = (childRect.bottom + parent.scrollTop) - parentRect.bottom;
+    }
+}
+
 export function setTreeMaxHeight() {
     const offset = 30;
     const minHeight = 250;

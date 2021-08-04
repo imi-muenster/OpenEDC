@@ -782,26 +782,12 @@ function setIOListeners() {
     autocompleteHelper.enableAutocomplete($("#item-method"), autocompleteHelper.modes.METHOD);
 }
 
-function scrollParentToChild(child) {
-    let parent = child.parentNode;
-    let parentRect = parent.getBoundingClientRect();
-    let childRect = child.getBoundingClientRect();
-    let isVisibleTop = (childRect.top >= parentRect.top);
-    let isVisibleBottom = (childRect.bottom <= parentRect.bottom);
-
-    if (!isVisibleTop) {
-        parent.scrollTop = (childRect.top + parent.scrollTop) - parentRect.top;
-    } else if (!isVisibleBottom) {
-        parent.scrollTop = (childRect.bottom + parent.scrollTop) - parentRect.bottom;
-    }
-}
-
 window.addStudyEvent = function(event) {
     currentElementID.studyEvent = metadataHelper.createStudyEvent();
     loadStudyEvents();
     loadFormsByStudyEvent(true);
     reloadDetailsPanel();
-    scrollParentToChild($(`[OID="${currentElementID.studyEvent}"]`));
+    ioHelper.scrollParentToChild($(`[OID="${currentElementID.studyEvent}"]`));
     metadataHelper.storeMetadata();
     event.target.blur();
 
@@ -814,7 +800,7 @@ window.addForm = function(event) {
     loadFormsByStudyEvent();
     loadItemGroupsByForm(true);
     reloadDetailsPanel();
-    scrollParentToChild($(`[OID="${currentElementID.form}"]`));
+    ioHelper.scrollParentToChild($(`[OID="${currentElementID.form}"]`));
     metadataHelper.storeMetadata();
     event.target.blur();
 }
@@ -824,7 +810,7 @@ window.addItemGroup = function(event) {
     loadItemGroupsByForm();
     loadItemsByItemGroup(true);
     reloadDetailsPanel();
-    scrollParentToChild($(`[OID="${currentElementID.itemGroup}"]`));
+    ioHelper.scrollParentToChild($(`[OID="${currentElementID.itemGroup}"]`));
     metadataHelper.storeMetadata();
     event.target.blur();
 }
@@ -834,7 +820,7 @@ window.addItem = function(event) {
     loadItemsByItemGroup();
     loadCodeListItemsByItem(true);
     reloadDetailsPanel();
-    scrollParentToChild($(`[OID="${currentElementID.item}"]`));
+    ioHelper.scrollParentToChild($(`[OID="${currentElementID.item}"]`));
     metadataHelper.storeMetadata();
     event.target.blur();
 }
@@ -846,7 +832,7 @@ window.addCodeListItem = function(event) {
         currentElementID.codeList = codeListOID;
         loadCodeListItemsByItem();
         reloadDetailsPanel();
-        scrollParentToChild($(`[coded-value="${currentElementID.codeListItem}"]`));
+        ioHelper.scrollParentToChild($(`[coded-value="${currentElementID.codeListItem}"]`));
     }
     metadataHelper.storeMetadata();
     event.target.blur();

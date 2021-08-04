@@ -239,6 +239,7 @@ async function loadSubjectData(subjectKey) {
 
     ioHelper.removeIsActiveFromElement($("#subject-panel-blocks a.is-active"));
     if (currentElementID.subject) $(`#subject-panel-blocks [oid="${currentElementID.subject}"]`).activate();
+    if (currentElementID.subject) ioHelper.scrollParentToChild($(`#subject-panel-blocks [oid="${currentElementID.subject}"]`));
     $("#subject-info-button").disabled = currentElementID.subject ? false : true;
     if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.MANAGESUBJECTS)) $("#subject-info-button").disabled = true;
 
