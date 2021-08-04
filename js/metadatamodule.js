@@ -782,13 +782,14 @@ function setIOListeners() {
     autocompleteHelper.enableAutocomplete($("#item-method"), autocompleteHelper.modes.METHOD);
 }
 
+// TODO: The next five functions should use reloadAndStoreMetadata()
 window.addStudyEvent = function(event) {
     currentElementID.studyEvent = metadataHelper.createStudyEvent();
     loadStudyEvents();
     loadFormsByStudyEvent(true);
     reloadDetailsPanel();
     ioHelper.scrollParentToChild($(`[OID="${currentElementID.studyEvent}"]`));
-    metadataHelper.storeMetadata();
+    if (!asyncEditMode) metadataHelper.storeMetadata();
     event.target.blur();
 
     // Show the first study event help message
@@ -801,7 +802,7 @@ window.addForm = function(event) {
     loadItemGroupsByForm(true);
     reloadDetailsPanel();
     ioHelper.scrollParentToChild($(`[OID="${currentElementID.form}"]`));
-    metadataHelper.storeMetadata();
+    if (!asyncEditMode) metadataHelper.storeMetadata();
     event.target.blur();
 }
 
@@ -811,7 +812,7 @@ window.addItemGroup = function(event) {
     loadItemsByItemGroup(true);
     reloadDetailsPanel();
     ioHelper.scrollParentToChild($(`[OID="${currentElementID.itemGroup}"]`));
-    metadataHelper.storeMetadata();
+    if (!asyncEditMode) metadataHelper.storeMetadata();
     event.target.blur();
 }
 
@@ -821,7 +822,7 @@ window.addItem = function(event) {
     loadCodeListItemsByItem(true);
     reloadDetailsPanel();
     ioHelper.scrollParentToChild($(`[OID="${currentElementID.item}"]`));
-    metadataHelper.storeMetadata();
+    if (!asyncEditMode) metadataHelper.storeMetadata();
     event.target.blur();
 }
 
@@ -834,7 +835,7 @@ window.addCodeListItem = function(event) {
         reloadDetailsPanel();
         ioHelper.scrollParentToChild($(`[coded-value="${currentElementID.codeListItem}"]`));
     }
-    metadataHelper.storeMetadata();
+    if (!asyncEditMode) metadataHelper.storeMetadata();
     event.target.blur();
 }
 
@@ -1176,8 +1177,7 @@ function reloadAndStoreMetadata() {
     reloadDetailsPanel();
 
     // If connected to an actively used server, only submit the metadata if according button is pressed
-    if (asyncEditMode) return;
-    metadataHelper.storeMetadata();
+    if (!asyncEditMode) metadataHelper.storeMetadata();
 }
 
 function getCurrentDetailsView() {

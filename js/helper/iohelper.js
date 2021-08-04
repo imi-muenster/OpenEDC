@@ -81,7 +81,6 @@ export const fileNameSeparator = "__";
 
 export async function init() {
     await indexedDBHelper.init();
-    await loadSettings();
 
     // Check if app is served by an OpenEDC Server instance
     // For development purposes, check for an ?server= query string parameter and use it instead of the current url
@@ -236,7 +235,7 @@ export async function removeAllLocalData() {
 
 export async function loadSettings() {
     if (serverURL) {
-        const settingsResponse = await fetch(getURLForFileName(fileNames.settings), { headers: getHeaders(true) });
+        const settingsResponse = await fetch(serverURL + "/api/" + fileNames.settings, { headers: getHeaders(true) });
         if (settingsResponse.ok && settingsResponse.status != 204) settings = await settingsResponse.json();
     } else {
         const settingsString = await indexedDBHelper.get(fileNames.settings);
@@ -246,7 +245,7 @@ export async function loadSettings() {
 
 async function storeSettings() {
     if (serverURL) {
-        await fetch(getURLForFileName(fileNames.settings), {
+        await fetch(serverURL + "/api/" + fileNames.settings, {
             method: "PUT",
             headers: getHeaders(true),
             body: JSON.stringify(settings)

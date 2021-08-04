@@ -86,6 +86,8 @@
     "measurement-unit-multiple-references-hint": "Diese Messeinheit wird auch für andere Fragen verwendet. Möchten Sie die Messeinheit für alle Fragen anpassen?",
     "update-all": "Alle anpassen",
     "update-current-only": "Nur Aktuelles anpassen",
+    "metadata-reload-question": "Die Formulare wurden gerade von einem anderen Benutzer aktualisiert. Wir empfehlen Ihnen, die Formulardefinitionen neu zu laden. Möchten Sie dies jetzt tun?",
+    "reload": "Neu laden",
 
     "subjects": "Probanden",
     "new-subject": "Neuer Proband",

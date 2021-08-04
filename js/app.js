@@ -82,6 +82,8 @@ const startApp = async () => {
     await clinicaldataModule.init();
     clinicaldataModule.setLanguage(languageHelper.getCurrentLocale());
 
+    await ioHelper.loadSettings();
+
     // Last UI adjustments
     setTitles();
     hideStartModal();
@@ -647,14 +649,15 @@ function reloadLanguageSelect() {
 // Currently, updates are reloaded every 5 seconds -- this should be improved in the future by means of a websocket or server-sent events
 async function subscribeToServerUpdates() {
     if (!ioHelper.hasServerURL()) return;
+    const lastHintShowed = {};
 
-    const lastHintShowed = {}
     setInterval(async () => {
+        if (clinicaldataModule.surveyViewIsActive()) return;
         const lastUpdate = await ioHelper.getLastServerUpdate();
 
         // Test whether the metadata was updated
         if (metadataHelper.getLastUpdate() != lastUpdate.metadata && lastHintShowed.metadata != lastUpdate.metadata) {
-            ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("metadata-updated-question"),
+            ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("metadata-reload-question"),
                 {
                     [languageHelper.getTranslation("reload")]: () => logout()
                 }
@@ -663,14 +666,9 @@ async function subscribeToServerUpdates() {
         };
 
         // Test whether the clinicaldata was updated
-        if (clinicaldataHelper.getLastUpdate() != lastUpdate.clinicaldata && lastHintShowed.clinicaldata != lastUpdate.clinicaldata) {
-            if (clinicaldataHelper.getSubject()) {
-                ioHelper.showToast(languageHelper.getTranslation("clinicaldata-updated-hint"), 5000);
-                lastHintShowed.clinicaldata = lastUpdate.clinicaldata;
-            } else {
-                await clinicaldataHelper.loadSubjects();
-                clinicaldataModule.loadSubjectKeys();
-            }
+        if (clinicaldataHelper.getLastUpdate() != lastUpdate.clinicaldata) {
+            await clinicaldataHelper.loadSubjects();
+            clinicaldataModule.loadSubjectKeys();
         };
 
         // Also, empty the message queue

@@ -857,7 +857,7 @@ function enableInputElements() {
     $$("#clinicaldata-content textarea").forEach(input => input.disabled = false);
 }
 
-function surveyViewIsActive() {
+export function surveyViewIsActive() {
     return !$(".navbar").isVisible();
 }
 

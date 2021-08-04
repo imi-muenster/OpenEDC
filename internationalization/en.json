@@ -87,6 +87,8 @@
     "measurement-unit-multiple-references-hint": "This measurement unit is used for other items as well. Do you want to update it for all items?",
     "update-all": "Update all",
     "update-current-only": "Update current only",
+    "metadata-reload-question": "The forms have just been updated by another user. We recommend that you reload the form definitions. Do you want to do this now?",
+    "reload": "Reload",
 
     "subjects": "Subjects",
     "new-subject": "New Subject",

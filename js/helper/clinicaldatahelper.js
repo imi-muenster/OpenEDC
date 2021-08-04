@@ -196,7 +196,7 @@ export async function loadSubjects() {
             subjects[i+1].uniqueKey = subjects[i+1].key + ioHelper.fileNameSeparator + i;
             
             // Show a warning that data conflicts exist when the user has manage subjects right and the warning has not shown before
-            if (ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.MANAGESUBJECTS) && !document.querySelector(".panel-icon.has-text-danger")) {
+            if (!subject && ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.MANAGESUBJECTS) && !document.querySelector(".panel-icon.has-text-danger")) {
                 ioHelper.showMessage(languageHelper.getTranslation("data-conflicts-present"), languageHelper.getTranslation("data-conflicts-present-error"));
             }
         }
@@ -268,7 +268,7 @@ export async function storeSubject() {
 
     const previousFileName = subject.fileName;
     const modifiedDate = new Date();
-    
+
     subject.status = getDataStatus();
     subject.modifiedDate = modifiedDate;
     clinicaldataFile = new ClinicaldataFile(modifiedDate);
