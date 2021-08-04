@@ -1027,29 +1027,20 @@ window.elementDrop = async function(event) {
             targetElementRef = metadataHelper.getElementRefByOID(targetElementOID, elementTypeOnDrag, targetParentOID);
         }
 
-        if (event.offsetY/event.target.offsetHeight >= 0.5) {
+        // Needed because of event.offsetY inconsistencies accross browsers
+        const offsetY = event.clientY - event.target.getBoundingClientRect().top;
+        if (offsetY/event.target.clientHeight >= 0.5) {
             targetElementRef.parentNode.insertBefore(sourceElementRef, targetElementRef.nextSibling);
-        } else if (event.offsetY/event.target.offsetHeight < 0.5) {
+        } else if (offsetY/event.target.clientHeight < 0.5) {
             targetElementRef.parentNode.insertBefore(sourceElementRef, targetElementRef);
         }
     } else {
-        // Allows the movement of an element into an empty parent element by dropping it on the column title
-        switch (elementTypeOnDrag) {
-            case metadataHelper.elementTypes.STUDYEVENT:
-                metadataHelper.insertStudyEventRef(sourceElementRef);
-                break;
-            case metadataHelper.elementTypes.FORM:
-                metadataHelper.insertFormRef(sourceElementRef, targetParentOID);
-                break;
-            case metadataHelper.elementTypes.ITEMGROUP:
-                metadataHelper.insertItemGroupRef(sourceElementRef, targetParentOID);
-                break;
-            case metadataHelper.elementTypes.ITEM:
-                metadataHelper.insertItemRef(sourceElementRef, targetParentOID);
-                break;
-            case metadataHelper.elementTypes.CODELISTITEM:
-                metadataHelper.insertCodeListItem(sourceElementRef, metadataHelper.getCodeListOIDByItem(targetParentOID));
-        }
+        // Allows the movement of an element into an empty parent element by dropping it on the add button
+        if (elementTypeOnDrag == metadataHelper.elementTypes.STUDYEVENT) metadataHelper.insertStudyEventRef(sourceElementRef);
+        else if (elementTypeOnDrag == metadataHelper.elementTypes.FORM) metadataHelper.insertFormRef(sourceElementRef, targetParentOID);
+        else if (elementTypeOnDrag == metadataHelper.elementTypes.ITEMGROUP) metadataHelper.insertItemGroupRef(sourceElementRef, targetParentOID);
+        else if (elementTypeOnDrag == metadataHelper.elementTypes.ITEM) metadataHelper.insertFormRef(sourceElementRef, targetParentOID);
+        else if (elementTypeOnDrag == metadataHelper.elementTypes.CODELISTITEM) metadataHelper.insertCodeListItem(sourceElementRef, metadataHelper.getCodeListOIDByItem(targetParentOID));
     }
 
     elementTypeOnDrag = null;
