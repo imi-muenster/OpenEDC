@@ -87,7 +87,7 @@ self.addEventListener("fetch", fetchEvent => {
         caches.match(fetchEvent.request, { ignoreVary: true }).then(async cacheResponse => {
             const requestBody = await fetchEvent.request.clone().text();
             const isCacheFirst = cacheFirstURLs.some(url => cacheResponse ? cacheResponse.url.includes(url) : false);
-            return isCacheFirst && cacheResponse ? cacheResponse : fetch(fetchEvent.request)
+            return isCacheFirst && cacheResponse ? cacheResponse : fetch(new Request(fetchEvent.request, { cache: "reload" }))
                 .then(async fetchResponse => {
                     const isODMRequest = odmRequestURLs.some(url => fetchEvent.request.url.includes(url));
                     const cache = await caches.open(isODMRequest ? odmCacheName : dynamicCacheName);

@@ -499,7 +499,7 @@ export async function emptyMessageQueue() {
 }
 
 export async function getAppVersion() {
-    const versionReponse = await fetch(new Request(getBaseURL() + "/version.json", { cache: "reload" }));
+    const versionReponse = await fetch(getBaseURL() + "/version.json");
     const versionObject = await versionReponse.json();
     
     return versionObject.version; 
