@@ -32,9 +32,6 @@ export async function init() {
     
     await clinicaldataHelper.loadSubjects();
     setIOListeners();
-
-    // Currently, the subjects are reloaded every 10 seconds -- this should be improved in the future by means of server-sent events or a websocket
-    setLoadSubjectsTimer();
 }
 
 export function show() {
@@ -1018,19 +1015,4 @@ function filterSubjects(searchString) {
             subject.hide();
         }
     }
-}
-
-// Currently, the subjects are reloaded every 5 seconds -- this should be improved in the future by means of server-sent events or a websocket
-function setLoadSubjectsTimer() {
-    if (!ioHelper.hasServerURL()) return;
-     
-    setInterval(async () => {
-        if (!$("#clinicaldata-section").isVisible()) return;
-        
-        await ioHelper.emptyMessageQueue();
-        if (!clinicaldataHelper.getSubject()) {
-            await clinicaldataHelper.loadSubjects();
-            loadSubjectKeys();
-        }
-    }, 5000);
 }

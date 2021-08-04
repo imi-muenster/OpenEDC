@@ -74,7 +74,7 @@ self.addEventListener("activate", activateEvent => {
     activateEvent.waitUntil(
         caches.keys().then(keys => {
             return Promise.all(keys
-                .filter(key => key != staticCacheName && key != dynamicCacheName && key != messageQueueName)
+                .filter(key => key != staticCacheName && key != odmCacheName && key != dynamicCacheName && key != messageQueueName)
                 .map(key => caches.delete(key))
             )
         })

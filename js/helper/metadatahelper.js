@@ -92,6 +92,10 @@ export function getMetadata() {
     return metadata;
 }
 
+export function getLastUpdate() {
+    return metadataFile.modifiedDate.getTime();
+}
+
 export function removeMetadata() {
     metadata = null;
 }

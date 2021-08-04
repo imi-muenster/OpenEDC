@@ -103,8 +103,9 @@ const startApp = async () => {
     // Only required because of a bug in Safari (selects without a value show a value if the textContent of their option elements is changed -- which happens during localize())
     if (getCurrentMode() == appModes.METADATA) metadataModule.reloadDetailsPanel();
 
-    // After all, check app version or whether app is currently offline
+    // After all, check app version or whether app is currently offline and subscribe to server updates
     checkAppVersion();
+    subscribeToServerUpdates();
 }
 
 const setTitles = () => {
@@ -641,6 +642,39 @@ function reloadApp() {
 function reloadLanguageSelect() {
     languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
     languageHelper.createLanguageSelect(getCurrentMode() == appModes.METADATA);
+}
+
+// Currently, updates are reloaded every 5 seconds -- this should be improved in the future by means of a websocket or server-sent events
+async function subscribeToServerUpdates() {
+    if (!ioHelper.hasServerURL()) return;
+
+    let lastClinicaldataUpdate = (await ioHelper.getLastServerUpdate()).clinicaldata;
+    setInterval(async () => {
+        const lastUpdate = await ioHelper.getLastServerUpdate();
+
+        // Test whether the metadata was updated
+        if (metadataHelper.getLastUpdate() != lastUpdate.metadata) {
+            ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("metadata-updated-question"),
+                {
+                    [languageHelper.getTranslation("reload")]: () => logout()
+                }
+            );
+        };
+
+        // Test whether the clinicaldata was updated
+        if (lastClinicaldataUpdate != lastUpdate.clinicaldata) {
+            if (clinicaldataHelper.getSubject()) {
+                ioHelper.showToast(languageHelper.getTranslation("clinicaldata-updated-hint"), 5000);
+            } else {
+                await clinicaldataHelper.loadSubjects();
+                clinicaldataModule.loadSubjectKeys();
+                lastClinicaldataUpdate = lastUpdate.clinicaldata;
+            }
+        };
+
+        // Also, empty the message queue
+        await ioHelper.emptyMessageQueue();
+    }, 5000);
 }
 
 function getCurrentMode() {

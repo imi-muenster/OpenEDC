@@ -73,6 +73,10 @@ export async function storeAdmindata() {
     if (previousFileName && previousFileName != admindataFile.fileName) ioHelper.removeXMLData(previousFileName);
 }
 
+export function getLastUpdate() {
+    return admindataFile.modifiedDate.getTime();
+}
+
 export function getUsers() {
     return $$("User");
 }
