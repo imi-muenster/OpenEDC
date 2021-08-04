@@ -175,8 +175,11 @@ export async function getClinicalData(studyOID, metadataVersionOID) {
 }
 
 export async function loadSubjects() {
+    console.log("Load subjects ...");
+
     subjects = [];
-    for (let fileName of await ioHelper.getSubjectFileNames()) {
+    const fileNames = await ioHelper.getSubjectFileNames()
+    for (const fileName of fileNames) {
         subjects.push(Subject.parse(fileName));
     }
 
@@ -186,6 +189,16 @@ export async function loadSubjects() {
     // Store date of subject list last update
     const lastUpdate = await ioHelper.getLastServerUpdate();
     clinicaldataFile = new ClinicaldataFile(new Date(lastUpdate.clinicaldata));
+
+    // Check whether a currently edited subject still exists
+    if (subject && !fileNames.includes(subject.fileName)) {
+        ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("subject-edited-error"), {
+            [languageHelper.getTranslation("reload")]: async () => {
+                await loadSubject(subject.uniqueKey);
+                document.dispatchEvent(new CustomEvent("SubjectChanged"));
+            }
+        });
+    }
 
     // Evaluate whether data conflicts are present (i.e., multiple users edited the same subject at the same time)
     subjects = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY);
@@ -197,7 +210,7 @@ export async function loadSubjects() {
             
             // Show a warning that data conflicts exist when the user has manage subjects right and the warning has not shown before
             if (!subject && ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.MANAGESUBJECTS) && !document.querySelector(".panel-icon.has-text-danger")) {
-                ioHelper.showMessage(languageHelper.getTranslation("data-conflicts-present"), languageHelper.getTranslation("data-conflicts-present-error"));
+                ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("data-conflicts-present-error"));
             }
         }
     }

@@ -282,7 +282,7 @@
     "cannot-be-removed-text": "<p>Sie können dieses Element derzeit nicht entfernen, da ihm klinische Daten für die folgenden Probanden zugeordnet sind:</p><br><strong>",
     "subject-not-loaded-title": "Proband konnte nicht geladen werden",
     "subject-not-loaded-error": "Der ausgewählte Proband konnte nicht geladen werden. Sie sind entweder offline und öffnen den Datensatz zum ersten Mal oder jemand hat den Datensatz gerade erst bearbeitet.<br><br>Bitte warten Sie ein paar Sekunden und versuchen Sie es erneut.",
-    "data-conflicts-present": "Datenkonflikte existieren",
+    "subject-edited-error": "Ihr aktuell geöffneter Proband wurde von einem anderen Benutzer bearbeitet. Wir empfehlen Ihnen, den Probanden neu zu laden, um Datenkonflikte zu vermeiden. Wenn Sie wesentliche Änderungen vorgenommen haben, können Sie Ihre Änderungen speichern und den Konflikt zu einem späteren Zeitpunkt lösen.",
     "data-conflicts-present-error": "Ein Proband existiert mehrfach in Ihren Daten. Dies kann passieren, wenn mehrere Benutzer gleichzeitig denselben Proband bearbeitet haben oder wenn ein Benutzer über einen längeren Zeitraum offline gearbeitet hat.<br><br>Die betroffenen Probanden sind mit einem roten Punkt markiert. Bitte überprüfen Sie die Daten und entfernen Sie die Daten, die Sie nicht behalten möchten. Sie können im Audit Trail nachsehen, welche Person welche Instanz auditiert hat.",
     "server-initialized-hint": "Der Server ist bereits initialisiert worden. Möchten Sie zum Server navigieren?",
     "open-server": "Zum Server navigieren",

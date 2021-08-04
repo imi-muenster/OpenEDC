@@ -66,8 +66,12 @@ document.addEventListener("LanguageChanged", languageEvent => {
     metadataModule.setLanguage(languageEvent.detail);
     clinicaldataModule.setLanguage(languageEvent.detail);
     
-    reloadApp();
+    reloadApp(true);
     ioHelper.hideMenu();
+});
+
+document.addEventListener("SubjectChanged", () => {    
+    reloadApp();
 });
 
 const startApp = async () => {
@@ -631,12 +635,12 @@ function mergeMetadataModels(models) {
     else if (getCurrentState() == appStates.EMPTY) startApp();
 }
 
-function reloadApp() {
+function reloadApp(cacheFormData) {
     if (getCurrentMode() == appModes.METADATA) {
         metadataModule.reloadTree();
         metadataModule.reloadDetailsPanel();
     } else if (getCurrentMode() == appModes.CLINICALDATA) {
-        clinicaldataModule.cacheFormData();
+        if (cacheFormData) clinicaldataModule.cacheFormData();
         clinicaldataModule.reloadTree();
     }
 }

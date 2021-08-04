@@ -283,7 +283,7 @@
     "cannot-be-removed-text": "<p>You cannot currently remove this element since it has clinical data assigned for the following subjects:</p><br><strong>",
     "subject-not-loaded-title": "Subject could not be loaded",
     "subject-not-loaded-error": "The selected subject could not be loaded. Your are either offline and open the subject for the first time or someone just recently edited the subject.<br><br>Please wait a few seconds and try again.",
-    "data-conflicts-present": "Data conflicts present",
+    "subject-edited-error": "Your currently opened subject has been edited by another user. We suggest that you reload the subject to prevent data conflicts. If you have made substantial changes, you can also save your changes and resolve the conflict later on.",
     "data-conflicts-present-error": "One subject exists multiple times in your data. This can happen when multiple users edited the same subject at the same time or if a user worked offline over an extended period of time.<br><br>The affected subjects are marked with a red dot. Please review the data and remove the subject instance(s) that you do not want to keep. You can look in the audit trail to see which person audited which instance.",
     "server-initialized-hint": "The server has already been initialized. Do you want to navigate to the server?",
     "open-server": "Open Server",
