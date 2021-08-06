@@ -131,9 +131,9 @@ function processMethod(method) {
     for (const inputOID of method.expression.variables()) {
         const inputElement = $(`#clinicaldata-content [item-oid="${unescapeOIDDots(inputOID)}"]`);
         if (!inputElement) continue;
-        if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "select") {
+        if (inputElement.getAttribute("type") != "radio") {
             inputElement.addEventListener("input", event => respondToInputChangeMethod(event.target, inputOID, method, computedElement));
-        } else if (inputElement.getAttribute("type") == "radio") {
+        } else {
             const radioItems = $$(`#clinicaldata-content [item-oid="${unescapeOIDDots(inputOID)}"]`);
             for (const radioItem of radioItems) {
                 radioItem.addEventListener("input", event => respondToInputChangeMethod(event.target, inputOID, method, computedElement));
@@ -153,7 +153,8 @@ function respondToInputChangeMethod(input, inputOID, method, computedElement) {
 function computeExpression(method) {
     try {
         const computedValue = method.expression.evaluate(methodVariables);
-        return !isNaN(computedValue) && isFinite(computedValue) ? Math.round(computedValue * 100) / 100 : null;
+        if (!isNaN(computedValue)) return isFinite(computedValue) ? Math.round(computedValue * 100) / 100 : null;
+        else return computedValue;
     } catch (error) {
         return "";
     }

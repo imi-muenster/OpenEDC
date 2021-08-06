@@ -452,6 +452,7 @@ function showItemAuditTrail(event) {
 }
 
 function showDateTimePicker(event) {
+    if (event.target.readOnly) return;
     event.preventDefault();
 
     const mode = event.target.getAttribute("type").split("-")[0];

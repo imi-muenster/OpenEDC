@@ -360,6 +360,7 @@ class DateTimePicker extends HTMLElement {
         } else if (this.options.enableTime) {
             this.input.value = this.selectedDay.localTimeISOString;
         }
+        this.input.dispatchEvent(new Event("input"));
     }
 
     setDateIOListeners() {
@@ -412,6 +413,7 @@ class DateTimePicker extends HTMLElement {
 
         this.querySelector("#picker-reset-button").addEventListener("click", () => {
             this.input.value = "";
+            this.input.dispatchEvent(new Event("input"));
             this.remove();
         });
 
