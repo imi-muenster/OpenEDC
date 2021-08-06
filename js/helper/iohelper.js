@@ -466,11 +466,27 @@ function getHeaders(authorization, contentTypeJSON) {
     return headers;
 }
 
+export async function disposeExpiredCaches() {
+    // Cleans expired cached ODM files that were updated remotely by another user
+    // A file may be metadata, admindata, or a subject's clinical data
+    const filesFound = [];
+
+    caches.open("odm-cache").then(odmCache => {
+        odmCache.keys().then(keys => {
+            keys.reverse().forEach(key => {
+                const file = key.url.substring(key.url.lastIndexOf("/") + 1).split(fileNameSeparator)[0];
+                if (filesFound.includes(file)) odmCache.delete(key);
+                else filesFound.push(file);
+            });
+        });
+    });   
+}
+
 export async function emptyMessageQueue() {
-    const odmCache = await caches.open("odm-cache");
-    const odmCacheEntries = await odmCache.keys();
     const messageQueue = await caches.open("message-queue");
     const messageQueueEntries = await messageQueue.keys();
+    const odmCache = messageQueueEntries.length ? await caches.open("odm-cache") : null;
+    const odmCacheEntries = odmCache ? await odmCache.keys() : [];
 
     for (let messageQueueEntry of messageQueueEntries) {
         const cacheResponse = await messageQueue.match(messageQueueEntry);
@@ -484,9 +500,7 @@ export async function emptyMessageQueue() {
         // When cinical subject data from the message queue was sent to the server, a previous version might still be stored there which needs to be removed
         // TODO: While this works fine, it should be refactored
         if (!messageQueueEntry.url.includes("clinicaldata")) continue;
-        const lastSlashPosition = messageQueueEntry.url.lastIndexOf("/");
-        const fileName = messageQueueEntry.url.substring(lastSlashPosition + 1);
-        const subjectKey = fileName.split(fileNameSeparator)[0];
+        const subjectKey = messageQueueEntry.url.substring(messageQueueEntry.url.lastIndexOf("/") + 1).split(fileNameSeparator)[0];
         for (let odmCacheEntry of odmCacheEntries) {
             if (odmCacheEntry.url.includes("/" + subjectKey + fileNameSeparator)) {
                 await fetch(odmCacheEntry.url, {

@@ -680,6 +680,9 @@ async function subscribeToServerUpdates() {
         // Also, empty the message queue
         await ioHelper.emptyMessageQueue();
     }, 5000);
+
+    // Finally, remove expired ODM cache entries
+    ioHelper.disposeExpiredCaches();
 }
 
 function getCurrentMode() {
