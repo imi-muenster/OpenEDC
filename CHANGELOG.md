@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.7.0
+
+- This update largely improves the server synchronization mechanism
+- A notification shows up if metadata or a currently opened subject was edited remotely by another user
+- After an app restart, metadata and subject data is only fetched from the server if it has changed to reduce data consumption
+
 ## 0.6.4
 
 - Use of PBKDF2-based authentication key instead of simple password hash to impede brute-force attacks
