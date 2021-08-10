@@ -2,11 +2,11 @@
 class ProjectModal extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
-            <div class="modal is-active" id="project-modal">
+            <div class="modal" id="project-modal">
                 <div class="modal-background" onclick="hideProjectModal()"></div>
                 <div class="modal-content is-large">
-                    <div class="box is-relative">
-                        <button class="delete is-large is-fixed-relative" onclick="hideProjectModal()"></button>
+                    <button class="delete is-large is-top-left" onclick="hideProjectModal()"></button>
+                    <div class="box">
                         <div class="tabs is-centered" id="project-tabs">
                             <ul>
                                 <li class="is-active" id="general-options-tab" onclick="projectTabClicked(event)"><a i18n="general-options"></a></li>

@@ -99,6 +99,7 @@ class AboutModal extends HTMLElement {
             <div class="modal" id="about-modal">
                 <div class="modal-background" onclick="hideAboutModal()"></div>
                 <div class="modal-content is-medium is-fullheight-mobile">
+                    <button class="delete is-large is-top-left" onclick="hideAboutModal()"></button>
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <div class="openedc-title">
@@ -122,7 +123,7 @@ class AboutModal extends HTMLElement {
                                 <p i18n="address_3"></p>
                                 <p i18n="address_4"></p>
                             </div>
-                            <div class="buttons">
+                            <div class="buttons mb-1">
                                 <a class="button is-link is-small is-rounded" target="_blank" i18n-href="privacy-policy-url">
                                     <span class="icon">
                                         <i class="far fa-arrow-right"></i>
@@ -130,7 +131,6 @@ class AboutModal extends HTMLElement {
                                     <span i18n="privacy-policy"></span>
                                 </a>
                             </div>
-                            <button class="button" onclick="hideAboutModal()" i18n="close"></button>
                         </div>
                     </div>
                 </div>
