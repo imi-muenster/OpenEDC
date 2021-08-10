@@ -160,20 +160,24 @@ class ProjectModal extends HTMLElement {
                                         <label class="label" i18n="site"></label>
                                         <div class="control" id="user-site-control"></div>
                                     </div>
-                                    <hr>
-                                    <div class="field">
-                                        <label class="label" i18n="username"></label>
-                                        <input class="input" id="user-username-input" type="text">
+                                    <div class="mt-5 is-hidden" id="user-login-inputs">
+                                        <hr>
+                                        <div class="field">
+                                            <label class="label" i18n="username"></label>
+                                            <input class="input" id="user-username-input" type="text">
+                                        </div>
+                                        <div class="field">
+                                            <label class="label" i18n="initial-password"></label>
+                                            <input class="input" id="user-password-input" type="text">
+                                        </div>
                                     </div>
-                                    <div class="field">
-                                        <label class="label" i18n="initial-password"></label>
-                                        <input class="input" id="user-password-input" type="text">
+                                    <div class="mt-5" id="user-rights-inputs">
+                                        <hr>
+                                        <div class="field" id="user-rights">
+                                            <label class="label" i18n="user-rights"></label>
+                                        </div>
                                     </div>
-                                    <hr>
-                                    <div class="field" id="user-rights">
-                                        <label class="label" i18n="user-rights"></label>
-                                    </div>
-                                    <div class="buttons">
+                                    <div class="buttons mt-5">
                                         <button class="button is-link" id="user-save-button" onclick="saveUser()" i18n="save"></button>
                                         <button class="button is-danger" id="user-remove-button" onclick="removeUser()" i18n="remove"></button>
                                     </div>
