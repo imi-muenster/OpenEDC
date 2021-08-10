@@ -70,8 +70,12 @@ document.addEventListener("LanguageChanged", languageEvent => {
     ioHelper.hideMenu();
 });
 
-document.addEventListener("SubjectEdited", () => {    
+document.addEventListener("CurrentSubjectEdited", () => {    
     reloadApp();
+});
+
+document.addEventListener("CurrentUserEdited", () => {    
+    adjustUIToUser();
 });
 
 const startApp = async () => {
@@ -504,7 +508,7 @@ window.showRemoveDataModal = function(complete) {
 }
 
 window.showLogoutMessage = function() {
-    if (false) {
+    if (ioHelper.hasDecryptionKey()) {
         ioHelper.showMessage(languageHelper.getTranslation("logout"), languageHelper.getTranslation("logout-question"), {
             [languageHelper.getTranslation("logout")]: () => window.location.reload()
         });

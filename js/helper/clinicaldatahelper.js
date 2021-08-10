@@ -195,7 +195,7 @@ export async function loadSubjects() {
         ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("subject-edited-error"), {
             [languageHelper.getTranslation("reload")]: async () => {
                 await loadSubject(subject.uniqueKey);
-                document.dispatchEvent(new CustomEvent("SubjectEdited"));
+                document.dispatchEvent(new CustomEvent("CurrentSubjectEdited"));
             }
         });
     }

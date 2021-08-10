@@ -116,6 +116,8 @@ window.saveUser = function() {
         ioHelper.setUserOnServer(userOID, credentials, rights, locationOID).catch(error => console.log(error));
     }
 
+    if (userOID == admindataHelper.getCurrentUserOID()) document.dispatchEvent(new CustomEvent("CurrentUserEdited"));
+    
     loadUsers();
 }
 
