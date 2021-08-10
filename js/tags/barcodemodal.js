@@ -11,7 +11,7 @@ class BarcodeModal extends HTMLElement {
                 <div class="modal-content is-medium is-fullheight-mobile">
                     <div class="box">
                         <div class="width-is-two-thirds">
-                            <div class="title-has-delete">
+                            <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
                                 <h1 class="title mb-0">${this.heading}</h1>
                                 <button class="delete is-large"></button>
                             </div>
