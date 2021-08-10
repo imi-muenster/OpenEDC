@@ -35,7 +35,6 @@
     "project-options": "Projektoptionen",
     "capture-data": "Datenerfassung",
     "design-forms": "Formularentwurf",
-    "log-out":"Ausloggen",
 
     "foundational": "Grundlegend",
     "extended": "Erweitert",
@@ -231,8 +230,6 @@
     "open": "Öffnen",
     "example": "Beispiel",
     "exemplary-project": "Beispielprojekt",
-    "forgot-password-question": "Passwort vergessen?",
-    "remove-data-question": "Daten löschen?",
 
     "address_1": "Institut für Medizinische Informatik",
     "address_2": "Direktor: Prof. Dr. Martin Dugas",
@@ -310,11 +307,14 @@
     "app-offline-hint": "Sie nutzen die Anwendung aktuell offline. Dies ist in Ordnung, aber versuchen Sie dennoch die Anwendung bald mit einer Internetverbindung zu öffnen, damit offline gespeicherte Daten synchronisiert werden können.",
     "barcode": "Strichcode",
     "barcode-help-text": "Wenn Ihr Gerät nicht über eine Kamera verfügt oder das Lesen des Strichcodes nicht funktioniert, können Sie unten manuell den Wert des Strichcodes eingeben.",
-    "server-uninitialized": "Server uninitialisiert",
     "server-uninitialized-hint": "Dieser OpenEDC Server wurde noch nicht initialisiert.<br><br>Sie können entweder zu <a target='_blank' href='https://openedc.org'>openedc.org</a> gehen, um diesen Server mit Daten zu initialisieren, die Sie dort bereits lokal erfasst haben, oder alternativ diesen Hinweis schließen, hier ein neues lokales Projekt starten und den Server auch von hier aus initialisieren.<br><br>Verwenden Sie bitte in beiden Fällen die Schaltfläche <i>Projektoptionen</i> oben rechts in der App und folgen Sie den Anweisungen, um diesen Server zu initialisieren.",
-    "forgot-password": "Passwort vergessen",
     "forgot-password-server-hint": "Alle Daten innerhalb von OpenEDC werden Ende-zu-Ende-verschlüsselt gespeichert und übertragen. Daher ist es derzeit leider nicht möglich, ein vergessenes Passwort automatisch zurückzusetzen.<br><br>Wenn Sie Ihr Passwort vergessen haben, wenden Sie sich bitte an die Person, die Ihnen Ihre Anmeldedaten gegeben hat. Diese Person ist in der Lage, Ihr Passwort mit einem neuen Initialpasswort zurückzusetzen.",
     "forgot-password-encrypted-hint": "Sie haben alle Daten innerhalb von OpenEDC verschlüsselt. Daher können die gespeicherten Daten ohne Ihr Passwort nicht eingesehen oder bearbeitet werden.<br><br>Wenn Sie Ihr Passwort vergessen haben, müssen Sie leider alle Daten löschen, um OpenEDC wieder zu verwenden.",
+    "forgot-password-question": "Passwort vergessen?",
+    "remove-data-question": "Daten löschen?",
+    "logout": "Abmelden",
+    "logout-question": "Möchten Sie sich abmelden?",
+    "no-server-or-encryption-hint": "Sie nutzen OpenEDC gerade lokal auf Ihrem Computer. Alle Daten werden ausschließlich auf Ihrem Computer gespeichert und verarbeitet. Zu keiner Zeit werden Daten an uns oder Dritte übertragen.<br><br>Um sich im lokalen Modus ausloggen zu können, müssen Sie ein Passwort zur Datenverschlüsselung in den Projektoptionen festlegen.",
 
     "metadata-edit-mode-question": "Es scheint, dass Ihr OpenEDC Server aktiv genutzt wird. Um an dieser Stelle Formulare bearbeiten zu können, müssen Sie in einen speziellen Bearbeitungsmodus wechseln. Das Aktivieren dieses Modus kann einige Zeit in Anspruch nehmen, abhängig von der Anzahl der Probanden. Wir informieren Sie, wenn der Bearbeitungsmodus aktiviert wurde. Alternativ können Sie auch in einen reinen Ansichtsmodus wechseln, in dem Sie Formulare zwar ansehen, aber nicht bearbeiten können.",
     "view-only-mode": "Ansichtsmodus",

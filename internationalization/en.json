@@ -36,7 +36,6 @@
     "project-options": "Project Options",
     "capture-data": "Capture Data",
     "design-forms": "Design Forms",
-    "log-out":"Log Out",
 
     "foundational": "Foundational",
     "extended": "Extended",
@@ -232,8 +231,6 @@
     "open": "Open",
     "example": "Example",
     "exemplary-project": "Exemplary Project",
-    "forgot-password-question": "Forgot password?",
-    "remove-data-question": "Remove data?",
 
     "address_1": "Institute for Medical Informatics",
     "address_2": "Director: Prof. Dr. Martin Dugas",
@@ -311,11 +308,14 @@
     "app-offline-hint": "You are currently using the application offline. While is fine, please still try to open the application soon with an Internet connection so that data stored offline can be synchronized.",
     "barcode": "Barcode",
     "barcode-help-text": "If your device does not provide a camera or the barcode scan does not work, you can manually enter the barcode value below.",
-    "server-uninitialized": "Server uninitialized",
     "server-uninitialized-hint": "This OpenEDC Server has not yet been initialized.<br><br>You can either go to <a target='_blank' href='https://openedc.org'>openedc.org</a> to initialize this server with data that you have already locally captured there, or, alternatively, close this hint, start a new local project here, and initialize the server from here as well.<br><br>In both cases, use the <i>Project Options</i> button in the top right corner of the app and follow the instructions to initialize this server.",
-    "forgot-password": "Forgot password",
     "forgot-password-server-hint": "All data within OpenEDC is stored and transferred end-to-end encrypted. Therefore, it is currently not possible to automatically reset a forgotten password, unfortunately.<br><br>If you forgot your password, please contact the person that gave you your login credentials. This person is able to reset your password with a new initial password.",
     "forgot-password-encrypted-hint": "You encrypted all data within OpenEDC. Therefore, the stored data cannot be viewed or edited without your password.<br><br>If you forgot your password, you have to remove all data to use OpenEDC again, unfortunately.",
+    "forgot-password-question": "Forgot password?",
+    "remove-data-question": "Remove data?",
+    "logout": "Logout",
+    "logout-question": "Do you want to log out?",
+    "no-server-or-encryption-hint": "You are currently using OpenEDC locally on your computer. All data is stored and processed exclusively on your computer. At no time will data be transferred to us or a third party.<br><br>In order to log out in local mode, you must set a password for data encryption in the project options.",
 
     "metadata-edit-mode-question": "It seems that your OpenEDC Server is actively used. In order to edit forms at this point, you must switch into a special editing mode. Activating this mode can take some time depending on the number of subjects. We will let you know, if the editing mode was enabled. Alternatively, you can go into a view-only mode, where you can view but not edit forms.",
     "view-only-mode": "View-only mode",

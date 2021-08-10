@@ -238,22 +238,21 @@ function adjustUIToUser() {
             $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(user.site);
             $("#filter-site-select-inner").disabled = true;
         }
-    } else {
-        const user = admindataHelper.getUser(admindataHelper.getCurrentUserOID());
-        const locationRef = user.querySelector("LocationRef");
-        if (locationRef) $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(locationRef.getAttribute("LocationOID"));
+        $("#logout-button-name").textContent = admindataHelper.getUserFullName(user.oid);
+    } else {      
+        const siteOID = admindataHelper.getCurrentUserSiteOID();
+        if (siteOID) $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(siteOID);
+        $("#logout-button-name").textContent = admindataHelper.getUserFullName(admindataHelper.getCurrentUserOID());
     }
-
-    if (ioHelper.hasDecryptionKey()) $("#logout-button").show();
 }
 
 function showUninitializedHint() {
-    ioHelper.showMessage(languageHelper.getTranslation("server-uninitialized"), languageHelper.getTranslation("server-uninitialized-hint"));
+    ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("server-uninitialized-hint"));
 }
 
 window.showForgotPasswordModal = function() {
-    if (ioHelper.hasServerURL()) ioHelper.showMessage(languageHelper.getTranslation("forgot-password"), languageHelper.getTranslation("forgot-password-server-hint"));
-    else ioHelper.showMessage(languageHelper.getTranslation("forgot-password"), languageHelper.getTranslation("forgot-password-encrypted-hint"));
+    if (ioHelper.hasServerURL()) ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("forgot-password-server-hint"));
+    else ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("forgot-password-encrypted-hint"));
 }
 
 window.newProject = function() {
@@ -444,7 +443,7 @@ window.encryptData = function(event) {
 
     event.target.showLoading();
     ioHelper.encryptXMLData(credentials.password)
-        .then(() => logout())
+        .then(() => window.location.reload())
         .catch(() => event.target.hideLoading());
 }
 
@@ -504,6 +503,16 @@ window.showRemoveDataModal = function(complete) {
     }
 }
 
+window.showLogoutMessage = function() {
+    if (false) {
+        ioHelper.showMessage(languageHelper.getTranslation("logout"), languageHelper.getTranslation("logout-question"), {
+            [languageHelper.getTranslation("logout")]: () => window.location.reload()
+        });
+    } else {
+        ioHelper.showMessage(languageHelper.getTranslation("logout"), languageHelper.getTranslation("no-server-or-encryption-hint"));
+    }
+}
+
 window.showAboutModal = function() {
     $("#about-modal h2").textContent = languageHelper.getTranslation("version") + " " + appVersion;
     $("#about-modal").activate();
@@ -548,16 +557,11 @@ window.removeAllData = async function() {
         await ioHelper.removeAllLocalData();
     }
 
-    logout();
+    window.location.reload();
 }
 
 window.removeClinicaldata = async function() {
     await clinicaldataHelper.removeClinicaldata();
-    logout();
-}
-
-window.logout = function() {
-    // Since the decryption and authentication keys are only stored as a temporary variable, reloading the app equals a logout
     window.location.reload();
 }
 

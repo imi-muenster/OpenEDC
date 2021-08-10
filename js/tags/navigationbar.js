@@ -29,21 +29,16 @@ class NavigationBar extends HTMLElement {
                     <div class="navbar-end">
                         <div class="navbar-item">
                             <div class="buttons">
-                                <button class="button is-hidden" id="logout-button" onclick="logout()" i18n="log-out"></button>
                                 <button class="button is-hidden" id="store-metadata-async-button" onclick="storeMetadataAsync()" i18n="save-forms"></button>
-                                <button class="button is-hidden" id="close-example-button" onclick="removeAllData()" i18n="close-example"></button>
+                                <button class="button is-small is-hidden mr-5" id="close-example-button" onclick="removeAllData()" i18n="close-example"></button>
                                 <button class="button" id="project-modal-button" onclick="showProjectModal()" i18n="project-options"></button>
-                                <button class="button is-link is-light mr-0" id="clinicaldata-toggle-button">
+                                <button class="button" id="clinicaldata-toggle-button" i18n="capture-data"></button>
+                                <button class="button" id="metadata-toggle-button" i18n="design-forms"></button>
+                                <button class="button is-link is-light" id="logout-button" onclick="showLogoutMessage()">
                                     <span class="icon">
-                                        <i class="fas fa-play"></i>
+                                        <i class="fas fa-user"></i>
                                     </span>
-                                    <span i18n="capture-data"></span>
-                                </button>
-                                <button class="button is-link is-light is-hidden mr-0" id="metadata-toggle-button">
-                                    <span class="icon">
-                                        <i class="fas fa-stop"></i>
-                                    </span>
-                                    <span i18n="design-forms"></span>
+                                    <span id="logout-button-name"></span>
                                 </button>
                             </div>
                         </div>
