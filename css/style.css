@@ -253,6 +253,12 @@ a.panel-block:hover {
     max-width: 400px;
 }
 
+.modal-content button.delete.is-fixed-relative {
+    position: fixed;
+    transform: translateX(-35px) translateY(-35px);
+    background-color: rgba(10,10,10,.5);
+}
+
 .modal-background {
     background-color: rgba(0, 0, 0, 0.5);
 }
