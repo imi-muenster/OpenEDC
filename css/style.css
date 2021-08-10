@@ -464,8 +464,12 @@ a.panel-block:hover {
         box-shadow: none;
     }
 
+    .modal-content {
+        max-height: calc(100vh - 120px);
+    }
+
     .modal-content.is-fullheight-mobile {
-        max-height: calc(100vh - 40px);
+        max-height: none;
     }
 
     .modal-content button.delete.is-top-left {

@@ -315,7 +315,7 @@
     "remove-data-question": "Remove data?",
     "logout": "Logout",
     "logout-question": "Do you want to log out?",
-    "no-server-or-encryption-hint": "You are currently using OpenEDC locally on your computer. All data is stored and processed exclusively on your computer. At no time will data be transferred to us or a third party.<br><br>In order to log out in local mode, you must set a password for data encryption in the project options.",
+    "no-server-or-encryption-hint": "You are currently using OpenEDC locally on your computer. All data is stored and processed exclusively on your computer. At no time will data be transferred to us or a third party.<br><br>To be able to log out in local mode and protect your data from unauthorized access, you can set a password for data encryption in the project options.",
 
     "metadata-edit-mode-question": "It seems that your OpenEDC Server is actively used. In order to edit forms at this point, you must switch into a special editing mode. Activating this mode can take some time depending on the number of subjects. We will let you know, if the editing mode was enabled. Alternatively, you can go into a view-only mode, where you can view but not edit forms.",
     "view-only-mode": "View-only mode",

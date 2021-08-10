@@ -4,6 +4,7 @@ class CodeListModal extends HTMLElement {
             <div class="modal" id="codelist-modal">
                 <div class="modal-background" onclick="hideCodeListModal()"></div>
                 <div class="modal-content is-medium">
+                    <button class="delete is-large is-top-left" onclick="hideCodeListModal()"></button>
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <h1 class="title" i18n="choices-for-element"></h1>
