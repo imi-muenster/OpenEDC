@@ -4,7 +4,7 @@ class ProjectModal extends HTMLElement {
         this.innerHTML = `
             <div class="modal" id="project-modal">
                 <div class="modal-background" onclick="hideProjectModal()"></div>
-                <div class="modal-content is-large">
+                <div class="modal-content is-large is-fullheight-mobile">
                     <button class="delete is-large is-top-left" onclick="hideProjectModal()"></button>
                     <div class="box">
                         <div class="tabs is-centered" id="project-tabs">
