@@ -445,7 +445,7 @@ function showItemAuditTrail(event) {
     const table = htmlElements.getTable({
         [languageHelper.getTranslation("timestamp")]: auditRecords.map(auditRecord => auditRecord.date.toLocaleString()),
         [languageHelper.getTranslation("user")]: auditRecords.map(auditRecord => auditRecord.userName),
-        [languageHelper.getTranslation("value")]: auditRecords.map(auditRecord => auditRecord.dataChanges[0].localizedValue || languageHelper.getTranslation("removed"))
+        [languageHelper.getTranslation("value")]: auditRecords.map(auditRecord => auditRecord.dataChanges[0].localizedValue)
     });
 
     ioHelper.showMessage(languageHelper.getTranslation("audit-trail-for-item"), auditRecords.length ? table.outerHTML : languageHelper.getTranslation("no-audit-trail-hint"), null, null, null, null, true);

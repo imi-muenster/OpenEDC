@@ -470,7 +470,9 @@ export function getAuditRecords(filter) {
     const dateTimeItemOIDs = metadataHelper.getItemOIDsWithDataType("datetime");
     const booleanItemOIDs = metadataHelper.getItemOIDsWithDataType("boolean");
     for (let auditRecord of auditRecords) {
-        if (auditRecord.dataChanges) auditRecord.dataChanges.forEach(dataItem =>  {
+        if (!auditRecord.dataChanges) continue;
+        for (let dataItem of auditRecord.dataChanges) {
+            if (!dataItem.value) continue;
             let localizedValue;
             const codeListItem = metadataHelper.getCodeListItem(metadataHelper.getCodeListOIDByItem(dataItem.itemOID), dataItem.value);
             if (codeListItem) localizedValue = codeListItem.getTranslatedDecode(languageHelper.getCurrentLocale(), true);
@@ -478,7 +480,7 @@ export function getAuditRecords(filter) {
             if (dateTimeItemOIDs.includes(dataItem.itemOID)) localizedValue = new Date(dataItem.value).toLocaleString();
             if (booleanItemOIDs.includes(dataItem.itemOID)) localizedValue = dataItem.value == "1" ? languageHelper.getTranslation("yes") : languageHelper.getTranslation("no");
             dataItem.localizedValue = localizedValue;
-        });
+        }
     }
 
     return auditRecords.sort((a, b) => a.date < b.date ? 1 : (a.date > b.date ? -1 : 0));
