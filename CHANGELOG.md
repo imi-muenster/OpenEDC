@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.7.1
+
+- A new user button shows the name of the current user and allows to log out
+- Minor usability enhancements for modals
+
 ## 0.7.0
 
 - This update largely improves the server synchronization mechanism
