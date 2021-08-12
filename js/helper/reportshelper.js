@@ -18,7 +18,6 @@ let reports = [];
 
 export const init = () => {
     // TODO: Load persisted reports
-    if (reports.length) reportsHelper.addReport(languageHelper.getTranslation("new-report"));
 }
 
 const storeReports = async () => {

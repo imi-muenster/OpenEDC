@@ -225,14 +225,14 @@ function adjustUIToUser() {
     if (ioHelper.hasServerURL()) {
         const user = ioHelper.getLoggedInUser();
         if (!user.rights.includes(admindataHelper.userRights.PROJECTOPTIONS)) {
-            $("#project-modal-button").disabled = true;
+            $("#project-modal-button").hide();
         }
         if (!user.rights.includes(admindataHelper.userRights.EDITMETADATA)) {
             if (getCurrentMode() == appModes.METADATA) metadataModule.hide();
-            $("#metadata-toggle-button").disabled = true;
+            $("#metadata-toggle-button").hide();
         }
         if (!user.rights.includes(admindataHelper.userRights.MANAGESUBJECTS)) {
-            $("#subject-info-button").disabled = true;
+            $("#subject-info-button").hide();
         }
         if (!user.rights.includes(admindataHelper.userRights.VALIDATEFORMS)) {
             $("#form-validate-level").hide();

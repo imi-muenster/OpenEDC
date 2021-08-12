@@ -39,6 +39,8 @@ let activeFilters = [];
 
 export function init() {
     reportsHelper.init();
+    if (!reportsHelper.getReports().length) reportsHelper.addReport(languageHelper.getTranslation("new-report"));
+
     setIOListeners();
 }
 
