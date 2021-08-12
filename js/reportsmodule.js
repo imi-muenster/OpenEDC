@@ -1,20 +1,9 @@
+import * as reportsHelper from "./helper/reportshelper.js";
+import * as languageHelper from "./helper/languagehelper.js";
+
 import { testData } from "./charts/testdata.js";
 import { CustomBarChart } from "./charts/custombarchart.js";
 import { CustomScatterChart } from "./charts/customscatterchart.js";
-
-class Report {
-    // id, name, users, list of widgets, ...
-    constructor() {
-
-    }
-}
-
-class Widget {
-    // id, properties, representation (bar, pie, scatter, numeric, table, ...), size, ...
-    constructor() {
-
-    }
-}
 
 class ChartData {
     constructor(name, values) {
@@ -40,18 +29,24 @@ class ScatterChartData extends ChartData {
     }
 }
 
+const $ = query => document.querySelector(query);
+const $$ = query => document.querySelectorAll(query);
+
+let currentReportId = null;
 let customCharts = [];
 let chartData = [];
 let activeFilters = [];
 
 export function init() {
-
+    reportsHelper.init();
+    setIOListeners();
 }
 
 export async function show() {
     await import("../lib/chart.js");
     await import("../lib/chart-datalabels.js");
 
+    loadReportList();
     initializeCharts();
 }
 
@@ -90,7 +85,7 @@ const initializeCharts = () => {
         }
 
         const widget = getWidget(entry.name);
-        document.querySelector("#reports-section #widgets").appendChild(widget);
+        $("#reports-section #widgets").appendChild(widget);
 
         const chart = new Chart(widget.querySelector("canvas"), customChart.config);
         customChart.chart = chart;
@@ -98,7 +93,7 @@ const initializeCharts = () => {
     }
 
     const placeholder = getChartPlaceholder();
-    document.querySelector("#widgets").appendChild(placeholder);
+    $("#widgets").appendChild(placeholder);
 }
 
 const getBarChartData = (name, property, labels, values) => {
@@ -159,8 +154,8 @@ const calculateChartData = () => {
         if (filteredInGeneral) filteredCount++;
     }
 
-    document.querySelector("#reports-section h1").textContent = (testData.length - filteredCount) + (activeFilters.length > 0 ? " von " + testData.length : "") + " Patienten";
-    document.querySelector("#reports-section h2").textContent = activeFilters.length + " aktive Filter";
+    $("#reports-section h1").textContent = (testData.length - filteredCount) + (activeFilters.length > 0 ? " von " + testData.length : "") + " Patienten";
+    $("#reports-section h2").textContent = activeFilters.length + " aktive Filter";
 }
 
 const getMonthsInteger = () => {
@@ -300,4 +295,28 @@ const getChartPlaceholder = () => {
     placeholder.appendChild(iconContainer);
 
     return placeholder;
+}
+
+const loadReportList = () => {
+    $$("#reports-list a").removeElements();
+    for (const report of reportsHelper.getReports()) {
+        const reportEntry = document.createElement("a");
+        reportEntry.textContent = report.name;
+        reportEntry.setAttribute("id", report.id);
+        reportEntry.onclick = () => loadReport(report.id);
+        $("#reports-list").appendChild(reportEntry);
+    }
+}
+
+const loadReport = id => {
+    $(`#reports-list a.is-active`)?.deactivate();
+    $(`#reports-list a[id="${id}"]`).activate();
+}
+
+const setIOListeners = () => {
+    $("#reports-section #add-report-button").addEventListener("click", async () => {
+        currentReportId = await reportsHelper.addReport(languageHelper.getTranslation("new-report"));
+        loadReportList();
+        loadReport(currentReportId);
+    });
 }

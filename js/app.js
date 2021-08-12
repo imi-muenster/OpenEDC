@@ -91,6 +91,8 @@ const startApp = async () => {
     await clinicaldataModule.init();
     clinicaldataModule.setLanguage(languageHelper.getCurrentLocale());
 
+    reportsModule.init();
+
     await ioHelper.loadSettings();
 
     // Last UI adjustments
