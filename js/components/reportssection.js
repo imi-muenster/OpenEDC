@@ -4,18 +4,24 @@ class ReportsSection extends HTMLElement {
             <section class="section is-hidden" id="reports-section">
                 <div class="columns is-desktop">
                     <div class="column is-one-fifth-desktop">
-                        <nav class="panel is-link">
-                            <p class="panel-heading has-text-centered" i18n="reports"></p>
-                            <div class="tree-panel-blocks" id="reports-panel-blocks"></div>
-                            <div class="panel-block has-light-border-top">
-                                <button class="button is-link is-light is-fullwidth" id="reports-add-button" onclick="addReport()" i18n="add"></button>
-                            </div>
-                        </nav>
+                        <aside class="menu">
+                            <p class="menu-label" i18n="reports"></p>
+                            <ul class="menu-list">
+                                <li><a class="is-active">Dashboard</a></li>
+                                <li><a>Customers</a></li>
+                            </ul>
+                        </aside>
+                        <div class="buttons mt-5">
+                            <button class="button is-link is-light is-small" i18n="add"></button>
+                            <button class="button is-small" i18n="edit"></button>
+                        </div>
                     </div>
                     <div class="column">
-                        <h1 class="title"></h1>
-                        <h2 class="subtitle"></h2>
-                        <div id="widgets"></div>
+                        <div class="container">
+                            <h1 class="title"></h1>
+                            <h2 class="subtitle"></h2>
+                            <div id="widgets"></div>
+                        </div>      
                     </div>
                 </div>
             </section>

@@ -459,6 +459,75 @@ a.panel-block:hover {
     margin-left: 15px;
 }
 
+#widgets {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    grid-auto-rows: 18rem;
+    grid-auto-flow: dense;
+    grid-gap: 1.5rem;
+    perspective: 1500px;
+}
+
+.widget {
+    border-radius: 6px;
+    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0 0 1px rgb(10 10 10 / 2%);
+    transition: transform .75s;
+    transform-style: preserve-3d;
+}
+
+.widget.is-medium {
+    grid-column-end: span 2;
+}
+
+.widget.is-large {
+    grid-column-end: span 2;
+    grid-row-end: span 2;
+}
+
+.widget.is-flipped {
+    transform: rotateY(180deg);
+}
+
+.chart-container, .chart-options {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    transform: rotateY(0deg);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.chart-options {
+    transform: rotateY(180deg);
+}
+
+.widget:not(.is-placeholder) .icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1.25rem 1.5rem 2.5rem 2.5rem;
+    opacity: 0;
+    transition: opacity .5s;
+}
+
+.widget.is-flipped .icon {
+    display: none;
+}
+
+.widget:not(.is-placeholder) .icon:hover {
+    opacity: 1;
+}
+
+.widget.is-placeholder {
+    border: 2px dashed lightgray;
+    color: lightgray;
+    transition: color .5s;
+}
+
+.widget.is-placeholder:hover {
+    color: gray;
+}
+
 @media only screen and (max-width: 768px) {
     #language-dropdown {
         box-shadow: none;
