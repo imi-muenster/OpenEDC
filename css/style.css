@@ -459,6 +459,11 @@ a.panel-block:hover {
     margin-left: 15px;
 }
 
+.menu-list a.is-active {
+    background-color: var(--link-light-active-color);
+    color: var(--link-active-color);
+}
+
 #widgets {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));

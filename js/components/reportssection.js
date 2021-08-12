@@ -4,20 +4,20 @@ class ReportsSection extends HTMLElement {
             <section class="section is-hidden" id="reports-section">
                 <div class="columns is-desktop">
                     <div class="column is-one-fifth-desktop">
-                        <aside class="menu">
+                        <aside class="menu mr-6">
                             <p class="menu-label" i18n="reports"></p>
-                            <ul class="menu-list">
-                                <li><a class="is-active">Dashboard</a></li>
-                                <li><a>Customers</a></li>
-                            </ul>
+                            <div class="menu-list">
+                                <a class="is-active">Dashboard</a>
+                                <a>Customers</a>
+                            </div>
                             <p class="menu-label" i18n="data-quality"></p>
-                            <ul class="menu-list">
-                                <li><a>Dashboard</a></li>
-                                <li><a>Customers</a></li>
-                            </ul>
+                            <div class="menu-list">
+                                <a>Dashboard</a>
+                                <a>Customers</a>
+                            </div>
                         </aside>
                         <div class="buttons mt-5">
-                            <button class="button is-link is-light" i18n="add"></button>
+                            <button class="button is-link is-light is-small" i18n="add"></button>
                         </div>
                     </div>
                     <div class="column">
