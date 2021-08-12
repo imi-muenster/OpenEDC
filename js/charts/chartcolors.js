@@ -1,4 +1,4 @@
-export const colorLight = "#eef3fc";
+export const colorLight = "#e3ecfa";
 export const colorMedium = "#5594fa";
 export const colorDark = "#3273dc";
 

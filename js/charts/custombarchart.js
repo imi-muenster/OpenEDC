@@ -18,7 +18,7 @@ export class CustomBarChart {
                     data: this.counts,
                     backgroundColor: chartColors.getColorArray(this.counts.length),
                     borderColor: chartColors.colorDark,
-                    borderWidth: 1,
+                    borderWidth: 2,
                     borderRadius: 4,
                     borderSkipped: false
                 }

@@ -16,9 +16,10 @@ export class CustomScatterChart {
                     data: this.values,
                     backgroundColor: chartColors.colorLight,
                     borderColor: chartColors.colorDark,
-                    borderWidth: 1,
+                    borderWidth: 2,
                     radius: 4,
-                    hoverRadius: 6
+                    hoverRadius: 6,
+                    hoverBorderWidth: 2
                 }
             ]
         };
