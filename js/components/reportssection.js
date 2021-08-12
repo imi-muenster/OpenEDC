@@ -10,10 +10,14 @@ class ReportsSection extends HTMLElement {
                                 <li><a class="is-active">Dashboard</a></li>
                                 <li><a>Customers</a></li>
                             </ul>
+                            <p class="menu-label" i18n="data-quality"></p>
+                            <ul class="menu-list">
+                                <li><a>Dashboard</a></li>
+                                <li><a>Customers</a></li>
+                            </ul>
                         </aside>
                         <div class="buttons mt-5">
-                            <button class="button is-link is-light is-small" i18n="add"></button>
-                            <button class="button is-small" i18n="edit"></button>
+                            <button class="button is-link is-light" i18n="add"></button>
                         </div>
                     </div>
                     <div class="column">

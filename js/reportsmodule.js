@@ -256,7 +256,7 @@ const getOptionsIcon = () => {
     const iconContainer = document.createElement("span");
     iconContainer.className = "icon has-text-link";
     const icon = document.createElement("i");
-    icon.className = "far fa-bars is-clickable";
+    icon.className = "far fa-ellipsis-h is-clickable";
     iconContainer.appendChild(icon);
 
     return iconContainer;

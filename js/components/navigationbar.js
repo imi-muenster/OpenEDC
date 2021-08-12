@@ -1,7 +1,7 @@
 class NavigationBar extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
-            <nav class="navbar is-fixed-top has-shadow is-hidden mx-2">
+            <nav class="navbar is-fixed-top has-shadow is-hidden">
                 <div class="navbar-brand">
                     <div class="navbar-item">
                         <h1 class="subtitle" id="study-title"></h1>

@@ -1,3 +1,6 @@
+/*!
+* Font Awesome Pro 5.15.3 by @fontawesome - https://fontawesome.com
+*/
 .fa,
 .fas,
 .far,
@@ -211,6 +214,9 @@ readers do not read off random characters that represent icons */
 
 .fa-dot-circle:before {
   content: "\f192"; }
+
+.fa-ellipsis-h:before {
+  content: "\f141"; }
 
 .fa-expand:before {
   content: "\f065"; }
