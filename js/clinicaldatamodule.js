@@ -59,12 +59,7 @@ export function createSiteFilterSelect() {
     ioHelper.safeRemoveElement($("#filter-site-select-outer"));
     $("#filter-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("filter-site-select", true, true, sites, currentSelection));
     $("#filter-site-select-inner").onmouseup = clickEvent => {
-        if (dataHasChanged()) {
-            skipDataHasChangedCheck = true;
-            deferredFunction = () => loadTree(currentElementID.studyEvent, null);
-            showCloseClinicaldataPrompt();
-            clickEvent.target.blur();
-        }
+        if (safeCloseClinicaldata(() => loadTree(currentElementID.studyEvent, null))) clickEvent.target.blur();
     };
     $("#filter-site-select-inner").oninput = inputEvent => {
         currentElementID.subject = null;
@@ -86,13 +81,7 @@ function createSortTypeSelect() {
 
 window.addSubjectManual = function() {
     // Check if the data has changed / new data has been entered and show a prompt first
-    // TODO: This pattern is used frequently and should be made more concise by means of a function
-    if (dataHasChanged()) {
-        skipDataHasChangedCheck = true;
-        deferredFunction = () => addSubjectManual();
-        showCloseClinicaldataPrompt();
-        return;
-    }
+    if (safeCloseClinicaldata(addSubjectManual)) return;
 
     const siteOID = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
     const subjectKey = $("#add-subject-input").value;
@@ -103,12 +92,7 @@ window.addSubjectManual = function() {
 
 window.addSubjectAuto = function() {
     // Check if the data has changed / new data has been entered and show a prompt first
-    if (dataHasChanged()) {
-        skipDataHasChangedCheck = true;
-        deferredFunction = () => addSubjectAuto();
-        showCloseClinicaldataPrompt();
-        return;
-    }
+    if (safeCloseClinicaldata(addSubjectAuto)) return;
 
     const siteOID = admindataHelper.getSiteOIDByName($("#filter-site-select-inner").value);
     const subjectKey = clinicaldataHelper.getAutoNumberedSubjectKey();
@@ -120,12 +104,7 @@ window.addSubjectBarcode = async function() {
     await import("./tags/barcodemodal.js");
 
     // Check if the data has changed / new data has been entered and show a prompt first
-    if (dataHasChanged()) {
-        skipDataHasChangedCheck = true;
-        deferredFunction = () => addSubjectBarcode();
-        showCloseClinicaldataPrompt();
-        return;
-    }
+    if (safeCloseClinicaldata(addSubjectBarcode)) return;
 
     // Deselect the currently selected subject
     if (currentElementID.subject) loadSubjectData();
@@ -184,12 +163,7 @@ export function loadSubjectKeys() {
 
 function subjectClicked(subjectKey) {
     // Check if the data has changed / new data has been entered and show a prompt first
-    if (dataHasChanged()) {
-        skipDataHasChangedCheck = true;
-        deferredFunction = () => subjectClicked(subjectKey);
-        showCloseClinicaldataPrompt();
-        return;
-    }
+    if (safeCloseClinicaldata(() => subjectClicked(subjectKey))) return;
 
     // Option to deselect a subject by clicking on the same subject again
     // If the currently logged in user has no metadata edit rights, then disable the form preview as well
@@ -239,12 +213,7 @@ export async function reloadTree() {
 // TODO: Loads entire tree if according elements are passed, implement this analogously for metadatamodule
 async function loadTree(studyEventOID, formOID) {
     // Check if the data has changed / new data has been entered and show a prompt first
-    if (dataHasChanged()) {
-        skipDataHasChangedCheck = true;
-        deferredFunction = () => loadTree(studyEventOID, formOID);
-        showCloseClinicaldataPrompt();
-        return;
-    }
+    if (safeCloseClinicaldata(() => loadTree(studyEventOID, formOID))) return;
 
     currentElementID.studyEvent = studyEventOID;
     currentElementID.form = formOID;
