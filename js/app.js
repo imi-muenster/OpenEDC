@@ -2,6 +2,7 @@ import * as metadataModule from "./metadatamodule.js";
 import * as metadataHelper from "./helper/metadatahelper.js";
 import * as clinicaldataModule from "./clinicaldatamodule.js";
 import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
+import * as reportsModule from "./reportsmodule.js";
 import * as admindataModule from "./admindatamodule.js";
 import * as admindataHelper from "./helper/admindatahelper.js";
 import * as odmValidation from "./helper/odmvalidation.js";
@@ -102,7 +103,7 @@ const startApp = async () => {
     setIOListeners();
 
     // If there is at least one study event, automatically open the clinicaldata module
-    metadataHelper.getStudyEvents().length ? clinicaldataModule.show() : metadataModule.show();
+    metadataHelper.getStudyEvents().length ? showClinicaldata() : showMetadata();
 
     // For performance purposes, add remaining modals to DOM after main app has been rendered
     addModalsToDOM();
@@ -571,6 +572,12 @@ window.removeClinicaldata = async function() {
 
 // IO or event listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
 export function setIOListeners() {
+    // Toggle buttons between metadata, clinical data, and reports module
+    $("#metadata-toggle-button").onclick = () => showMetadata();
+    $("#clinicaldata-toggle-button").onclick = () => showClinicaldata();
+    $("#reports-toggle-button").onclick = () => showReports();
+
+    // Further auxiliary input listeners
     $("body").onresize = ioHelper.setTreeMaxHeight;
     $(".navbar-burger").addEventListener("click", () => {
         $(".navbar-menu").classList.toggle("is-active");
@@ -583,6 +590,46 @@ export function setIOListeners() {
     });
     $("#language-navbar-item").addEventListener("mouseenter", () => $("#language-navbar-item").activate());
     $("#language-navbar-item").addEventListener("mouseleave", () => $("#language-navbar-item").deactivate());
+}
+
+function showMetadata() {
+    if (clinicaldataModule.safeCloseClinicaldata(showMetadata)) return;
+
+    $("#metadata-section").show();
+    $("#clinicaldata-section").hide();
+    $("#reports-section").hide();
+
+    $("#metadata-toggle-button").hide();
+    $("#clinicaldata-toggle-button").show();
+    $("#reports-toggle-button").show();
+
+    metadataModule.show();
+}
+
+function showClinicaldata() {
+    $("#metadata-section").hide();
+    $("#clinicaldata-section").show();
+    $("#reports-section").hide();
+
+    $("#metadata-toggle-button").show();
+    $("#clinicaldata-toggle-button").hide();
+    $("#reports-toggle-button").show();
+
+    clinicaldataModule.show();
+}
+
+function showReports() {
+    if (clinicaldataModule.safeCloseClinicaldata(showReports)) return;
+
+    $("#metadata-section").hide();
+    $("#clinicaldata-section").hide();
+    $("#reports-section").show();
+
+    $("#metadata-toggle-button").show();
+    $("#clinicaldata-toggle-button").show();
+    $("#reports-toggle-button").hide();
+
+    reportsModule.show();
 }
 
 function addModalsToDOM() {

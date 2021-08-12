@@ -38,29 +38,8 @@ export function show() {
     loadSubjectKeys();
     reloadTree();
 
-    $("#clinicaldata-section").show();
-    $("#clinicaldata-toggle-button").hide();
-    $("#metadata-toggle-button").show();
-
     languageHelper.createLanguageSelect();
     ioHelper.setTreeMaxHeight();
-}
-
-function hide() {
-    // Check if the data has changed / new data has been entered and show a prompt first
-    if (dataHasChanged()) {
-        skipDataHasChangedCheck = true;
-        deferredFunction = () => hide();
-        showCloseClinicaldataPrompt();
-        return;
-    }
-
-    $("#clinicaldata-section").hide();
-
-    metadataModule.show();
-    ioHelper.hideMenu();
-
-    adjustMobileUI(true);
 }
 
 export function setLanguage(newLocale) {
@@ -737,6 +716,15 @@ function hideSurveyView() {
     $("#clinicaldata-form-title").classList.remove("is-centered");
 }
 
+export function safeCloseClinicaldata(callback) {
+    if (dataHasChanged()) {
+        skipDataHasChangedCheck = true;
+        deferredFunction = () => callback();
+        showCloseClinicaldataPrompt();
+        return true;
+    }
+}
+
 function showCloseClinicaldataPrompt() {
     ioHelper.showMessage(
         languageHelper.getTranslation(surveyViewIsActive() ? "close-survey" : "close-form"),
@@ -994,7 +982,6 @@ function adjustMobileUI(forceHideBackButton) {
 }
 
 function setIOListeners() {
-    $("#metadata-toggle-button").onclick = () => hide();
     $("#add-subject-input").onkeydown = keyEvent => {
         if (["/", "#", "<", ">", "\\", "{", "}", "&", "?", "ä", "ö", "ü"].includes(keyEvent.key)) keyEvent.preventDefault();
         if (keyEvent.code == "Enter") addSubjectManual();

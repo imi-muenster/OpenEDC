@@ -43,19 +43,8 @@ export function show() {
     reloadTree();
     reloadDetailsPanel();
 
-    $("#metadata-section").show();
-    $("#metadata-toggle-button").hide();
-    $("#clinicaldata-toggle-button").show();
-
     languageHelper.createLanguageSelect(true);
     ioHelper.setTreeMaxHeight();
-}
-
-function hide() {
-    $("#metadata-section").hide();
-
-    clinicaldataModule.show();
-    ioHelper.hideMenu();
 }
 
 function setEditMode() {
@@ -753,7 +742,6 @@ function handleItemDataType(itemOID, dataType) {
 }
 
 function setIOListeners() {
-    $("#clinicaldata-toggle-button").onclick = () => hide();
     let inputElements = $$("#details-panel input, #details-panel textarea, #details-panel select");
     for (const inputElement of inputElements) {
         inputElement.oninput = () => highlightSaveButton();
