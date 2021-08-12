@@ -13,7 +13,9 @@ class ReportsSection extends HTMLElement {
                         </nav>
                     </div>
                     <div class="column">
-                        <p>Widgets</p>
+                        <h1 class="title"></h1>
+                        <h2 class="subtitle"></h2>
+                        <div id="widgets"></div>
                     </div>
                 </div>
             </section>

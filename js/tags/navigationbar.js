@@ -31,11 +31,11 @@ class NavigationBar extends HTMLElement {
                             <div class="buttons">
                                 <button class="button is-hidden" id="store-metadata-async-button" onclick="storeMetadataAsync()" i18n="save-forms"></button>
                                 <button class="button is-light is-hidden" id="close-example-button" onclick="removeAllData()" i18n="close-example"></button>
-                                <button class="button mr-4" id="project-modal-button" onclick="showProjectModal()" i18n="project-options"></button>
+                                <button class="button mr-5" id="project-modal-button" onclick="showProjectModal()" i18n="project-options"></button>
                                 <button class="button" id="reports-toggle-button" i18n="reports"></button>
                                 <button class="button" id="clinicaldata-toggle-button" i18n="capture-data"></button>
                                 <button class="button" id="metadata-toggle-button" i18n="design-forms"></button>
-                                <button class="button is-link is-light ml-2" id="logout-button" onclick="showLogoutMessage()">
+                                <button class="button is-link is-light ml-4" id="logout-button" onclick="showLogoutMessage()">
                                     <span class="icon">
                                         <i class="fas fa-user"></i>
                                     </span>
