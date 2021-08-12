@@ -601,10 +601,11 @@ function showMetadata() {
     $("#clinicaldata-section").hide();
     $("#reports-section").hide();
 
-    $("#metadata-toggle-button").hide();
-    $("#clinicaldata-toggle-button").show();
-    $("#reports-toggle-button").show();
+    $("#metadata-toggle-button").classList.add("is-link");
+    $("#clinicaldata-toggle-button").classList.remove("is-link");
+    $("#reports-toggle-button").classList.remove("is-link");
 
+    $("#metadata-toggle-button").blur();
     metadataModule.show();
 }
 
@@ -613,10 +614,11 @@ function showClinicaldata() {
     $("#clinicaldata-section").show();
     $("#reports-section").hide();
 
-    $("#metadata-toggle-button").show();
-    $("#clinicaldata-toggle-button").hide();
-    $("#reports-toggle-button").show();
+    $("#metadata-toggle-button").classList.remove("is-link");
+    $("#clinicaldata-toggle-button").classList.add("is-link");
+    $("#reports-toggle-button").classList.remove("is-link");
 
+    $("#clinicaldata-toggle-button").blur();
     clinicaldataModule.show();
 }
 
@@ -627,10 +629,11 @@ function showReports() {
     $("#clinicaldata-section").hide();
     $("#reports-section").show();
 
-    $("#metadata-toggle-button").show();
-    $("#clinicaldata-toggle-button").show();
-    $("#reports-toggle-button").hide();
+    $("#metadata-toggle-button").classList.remove("is-link");
+    $("#clinicaldata-toggle-button").classList.remove("is-link");
+    $("#reports-toggle-button").classList.add("is-link");
 
+    $("#reports-toggle-button").blur();
     reportsModule.show();
 }
 

@@ -19,7 +19,7 @@ export class CustomScatterChart {
                     borderWidth: 2,
                     radius: 4,
                     hoverRadius: 6,
-                    hoverBorderWidth: 2
+                    hoverBorderWidth: 3
                 }
             ]
         };
