@@ -249,11 +249,11 @@ function adjustUIToUser() {
         $("#logout-button-name").textContent = admindataHelper.getUserFullName(user.oid);
     } else {      
         const siteOID = admindataHelper.getCurrentUserSiteOID();
-        const userFullName = admindataHelper.getUserFullName(admindataHelper.getCurrentUserOID());
         if (siteOID) $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(siteOID);
-        $("#logout-button-name").textContent = userFullName;
-        userFullName == languageHelper.getTranslation("new") + " " + languageHelper.getTranslation("user") ? $("#edit-name-hint").show() : $("#edit-name-hint").hide();
+        $("#logout-button-name").textContent = admindataHelper.getUserFullName(admindataHelper.getCurrentUserOID());
     }
+
+    if (ioHelper.hasDecryptionKey()) $("#logout-button").show();
 }
 
 function showUninitializedHint() {
@@ -514,13 +514,9 @@ window.showRemoveDataModal = function(complete) {
 }
 
 window.showLogoutMessage = function() {
-    if (ioHelper.hasDecryptionKey()) {
-        ioHelper.showMessage(languageHelper.getTranslation("logout"), languageHelper.getTranslation("logout-question"), {
-            [languageHelper.getTranslation("logout")]: () => window.location.reload()
-        });
-    } else {
-        ioHelper.showMessage(languageHelper.getTranslation("logout"), languageHelper.getTranslation("no-server-or-encryption-hint"));
-    }
+    ioHelper.showMessage(languageHelper.getTranslation("logout"), languageHelper.getTranslation("logout-question"), {
+        [languageHelper.getTranslation("logout")]: () => window.location.reload()
+    });
 }
 
 window.showAboutModal = function() {

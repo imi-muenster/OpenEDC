@@ -34,10 +34,10 @@ class NavigationBar extends HTMLElement {
                                 <button class="button is-light is-hidden" id="close-example-button" onclick="removeAllData()" i18n="close-example"></button>
                                 <button class="button" id="reports-toggle-button" i18n="reports"></button>
                                 <button class="button" id="metadata-toggle-button" i18n="design-forms"></button>
-                                <button class="button" id="clinicaldata-toggle-button" i18n="capture-data"></button>
-                                <div class="dropdown is-right is-hoverable">
+                                <button class="button mr-0" id="clinicaldata-toggle-button" i18n="capture-data"></button>
+                                <div class="dropdown is-right is-hoverable is-hidden ml-5" id="logout-button">
                                     <div class="dropdown-trigger">
-                                        <button class="button is-link is-light" id="logout-button" onclick="showLogoutMessage()">
+                                        <button class="button is-link is-light" onclick="showLogoutMessage()">
                                             <span class="icon">
                                                 <i class="fas fa-user"></i>
                                             </span>
@@ -47,10 +47,6 @@ class NavigationBar extends HTMLElement {
                                     <div class="dropdown-menu is-hidden-mobile">
                                         <div class="dropdown-content">
                                             <a class="dropdown-item" onclick="showLogoutMessage()" i18n="logout"></a>
-                                            <div class="is-hidden" id="edit-name-hint">
-                                                <hr class="dropdown-divider">
-                                                <a class="dropdown-item is-italic" i18n="edit-name-hint"></a>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
