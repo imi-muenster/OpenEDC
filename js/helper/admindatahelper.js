@@ -19,6 +19,8 @@ class AdmindataFile {
     }
 }
 
+// TODO: Introduce User class continaing user name, first name, last name, site, and rights and refactor according parts in the code (admindatamodule.js and app.js)
+
 const $ = query => admindata.querySelector(query);
 const $$ = query => admindata.querySelectorAll(query);
 

@@ -54,6 +54,24 @@ html, body {
     font-weight: 500;
 }
 
+.navbar-item .dropdown-menu {
+    top: calc(100% - 4px);
+}
+
+.navbar-item .dropdown-content {
+    box-shadow: 0 8px 8px rgb(10 10 10 / 10%), 0 0 0 1px rgb(10 10 10 / 10%);
+}
+
+.navbar-item .dropdown-item {
+    padding-right: 1rem !important;
+    white-space: normal !important;
+}
+
+.dropdown-item.is-italic:hover {
+    background-color: white;
+    cursor: unset;
+}
+
 .navbar-burger {
     min-width: 3.25rem;
 }

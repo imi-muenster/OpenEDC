@@ -150,6 +150,7 @@
     "no-codelist-hint": "Der Datentyp der aktuellen Frage ist nicht <i>Wahlmöglichkeiten</i>. Wenn Sie voreingestellte Wahlmöglichkeiten definieren wollen, stellen Sie zuerst den entsprechenden Datentypen oben ein.",
 
     "reports": "Berichte",
+    "new-report": "Neuer Bericht",
     "data-quality": "Datenqualität",
     "edit": "Bearbeiten",
 
@@ -318,7 +319,8 @@
     "remove-data-question": "Daten löschen?",
     "logout": "Abmelden",
     "logout-question": "Möchten Sie sich abmelden?",
-    "no-server-or-encryption-hint": "Sie nutzen OpenEDC gerade lokal auf Ihrem Computer. Alle Daten werden ausschließlich auf Ihrem Computer gespeichert und verarbeitet. Zu keiner Zeit werden Daten an uns oder Dritte übertragen.<br><br>Um sich im lokalen Modus abmelden zu können und Ihre Daten vor unbefugtem Zugriff zu schützen, können Sie ein Passwort zur Datenverschlüsselung in den Projektoptionen festlegen.",
+    "edit-name-hint": "Hinweis: Sie können Ihren Namen in den Projektoptionen ändern.",
+    "no-server-or-encryption-hint": "Sie nutzen OpenEDC gerade lokal auf Ihrem Computer. Alle Daten werden ausschließlich auf Ihrem Computer gespeichert und verarbeitet. Zu keiner Zeit werden Daten an uns oder Dritte übertragen.<br><br>Um sich im lokalen Modus abmelden zu können und Ihre Daten vor unbefugtem Zugriff auf Ihren Computer zu schützen, können Sie ein Passwort zur Datenverschlüsselung in den Projektoptionen festlegen.",
 
     "metadata-edit-mode-question": "Es scheint, dass Ihr OpenEDC Server aktiv genutzt wird. Um an dieser Stelle Formulare bearbeiten zu können, müssen Sie in einen speziellen Bearbeitungsmodus wechseln. Das Aktivieren dieses Modus kann einige Zeit in Anspruch nehmen, abhängig von der Anzahl der Probanden. Wir informieren Sie, wenn der Bearbeitungsmodus aktiviert wurde. Alternativ können Sie auch in einen reinen Ansichtsmodus wechseln, in dem Sie Formulare zwar ansehen, aber nicht bearbeiten können.",
     "view-only-mode": "Ansichtsmodus",

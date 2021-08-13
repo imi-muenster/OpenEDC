@@ -222,6 +222,7 @@ function loginNotSuccessful(error) {
 }
 
 function adjustUIToUser() {
+    // TODO: Refactor with new User class from admindataHelper
     if (ioHelper.hasServerURL()) {
         const user = ioHelper.getLoggedInUser();
         if (!user.rights.includes(admindataHelper.userRights.PROJECTOPTIONS)) {
@@ -248,8 +249,10 @@ function adjustUIToUser() {
         $("#logout-button-name").textContent = admindataHelper.getUserFullName(user.oid);
     } else {      
         const siteOID = admindataHelper.getCurrentUserSiteOID();
+        const userFullName = admindataHelper.getUserFullName(admindataHelper.getCurrentUserOID());
         if (siteOID) $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(siteOID);
-        $("#logout-button-name").textContent = admindataHelper.getUserFullName(admindataHelper.getCurrentUserOID());
+        $("#logout-button-name").textContent = userFullName;
+        userFullName == languageHelper.getTranslation("new") + " " + languageHelper.getTranslation("user") ? $("#edit-name-hint").show() : $("#edit-name-hint").hide();
     }
 }
 

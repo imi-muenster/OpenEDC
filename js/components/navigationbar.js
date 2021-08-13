@@ -35,12 +35,25 @@ class NavigationBar extends HTMLElement {
                                 <button class="button" id="reports-toggle-button" i18n="reports"></button>
                                 <button class="button" id="metadata-toggle-button" i18n="design-forms"></button>
                                 <button class="button" id="clinicaldata-toggle-button" i18n="capture-data"></button>
-                                <button class="button is-link is-light" id="logout-button" onclick="showLogoutMessage()">
-                                    <span class="icon">
-                                        <i class="fas fa-user"></i>
-                                    </span>
-                                    <span id="logout-button-name"></span>
-                                </button>
+                                <div class="dropdown is-right is-hoverable">
+                                    <div class="dropdown-trigger">
+                                        <button class="button is-link is-light" id="logout-button" onclick="showLogoutMessage()">
+                                            <span class="icon">
+                                                <i class="fas fa-user"></i>
+                                            </span>
+                                            <span id="logout-button-name"></span>
+                                        </button>
+                                    </div>
+                                    <div class="dropdown-menu is-hidden-mobile">
+                                        <div class="dropdown-content">
+                                            <a class="dropdown-item" onclick="showLogoutMessage()" i18n="logout"></a>
+                                            <div class="is-hidden" id="edit-name-hint">
+                                                <hr class="dropdown-divider">
+                                                <a class="dropdown-item is-italic" i18n="edit-name-hint"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
