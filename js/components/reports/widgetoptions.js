@@ -38,7 +38,7 @@ class WidgetOptions extends HTMLElement {
         input.type = "text";
         input.placeholder = languageHelper.getTranslation("item");
         inputContainer.appendChild(input);
-        autocompleteHelper.enableAutocomplete(input, autocompleteHelper.modes.ITEMWITHCODELIST);
+        autocompleteHelper.enableAutocomplete(input, autocompleteHelper.modes.ITEM);
 
         this.appendChild(inputContainer);
     }
@@ -109,17 +109,21 @@ class WidgetOptions extends HTMLElement {
     }
 
     saveOptions() {
-        // Set name
-        this.component.widget.name = this.querySelector(".subtitle").textContent;
-
         // Set widget size
         const sizeOption = this.querySelector(".widget-size-options input:checked");
         const size = sizeOption ? sizeOption.value : null;
         if (size && this.component.widget.size != size) this.setWidgetComponentSize(size);
 
-        // Set widget properties
+        // Set widget name and properties
+        const name = this.querySelector(".subtitle").textContent;
         const properties = Array.from(this.querySelectorAll("input[type='text']")).filter(input => input.value).map(input => input.value);
+        if (name != this.component.widget.name) {
+            this.component.widget.name = name;
+        } else if (properties[0] != this.component.widget.properties[0]) {
+            this.component.widget.name = properties[0];
+        }
         if (properties && properties.toString() != this.component.widget.properties.toString()) this.component.widget.properties = properties;
+
 
         // Update widget component
         this.component.update();

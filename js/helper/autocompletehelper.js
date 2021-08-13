@@ -20,7 +20,8 @@ export const modes = {
     CONDITION: 1,
     METHOD: 2,
     MEASUREMENTUNIT: 3,
-    ITEMWITHCODELIST: 4
+    ITEMWITHCODELIST: 4,
+    ITEM: 5
 }
 
 const compounds = ["AND", "OR"];
@@ -114,16 +115,15 @@ const setCurrentModeAndEnabledParts = input => {
             // Keep all parts
             break;
         case modes.METHOD:
-            // TODO: In the future, an operator could also be suggested
             delete enabledParts.COMPARATOR;
             delete enabledParts.VALUE;
             break;
         case modes.MEASUREMENTUNIT:
             // Remove comparator and code list values
         case modes.ITEMWITHCODELIST:
+        case modes.ITEM:
             delete enabledParts.COMPARATOR;
             delete enabledParts.VALUE;
-            // TODO: delete enabledParts.OPERATOR;
     }
 }
 
@@ -199,6 +199,7 @@ const getItemElements = () => {
     switch (currentMode) {
         case modes.CONDITION:
         case modes.METHOD:
+        case modes.ITEM:
             items = metadataHelper.getItems();
             break;
         case modes.MEASUREMENTUNIT:
@@ -212,6 +213,7 @@ const getItemElements = () => {
         case modes.CONDITION:
         case modes.METHOD:
         case modes.ITEMWITHCODELIST:
+        case modes.ITEM:
             return items.map(item => new AutocompleteElement(
                 item.getOID(),
                 item.getTranslatedQuestion(languageHelper.getCurrentLocale())
