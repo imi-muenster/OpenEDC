@@ -55,17 +55,18 @@ class WidgetOptions extends HTMLElement {
     }
 
     saveOptions() {
-        console.log(this.component.widget);
         const sizeOption = this.querySelector(".widget-size-options input:checked");
         const size = sizeOption ? sizeOption.value : null;
         if (size && this.component.widget.size != size) this.setWidgetComponentSize(size);
+
+        this.component.classList.remove("is-flipped");
+        setTimeout(() => this.remove(), 500);
+        reportsHelper.storeReports();
     }
 
     setWidgetComponentSize(size) {
         this.component.widget.size = size;
-        for (const option of Object.values(reportsHelper.Widget.sizes)) {
-            this.component.classList.remove("is-" + option);
-        }
+        Object.values(reportsHelper.Widget.sizes).forEach(option => this.component.classList.remove("is-" + option));
         this.component.classList.add("is-" + size);
     }
 }

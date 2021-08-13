@@ -36,7 +36,7 @@ export const init = () => {
     // TODO: Load persisted reports
 }
 
-const storeReports = async () => {
+export const storeReports = async () => {
     // TODO: Persist reports
 }
 
