@@ -576,6 +576,10 @@ a.panel-block:hover {
     .sidebar:hover .sidebar-option span {
         opacity: 0;
     }
+
+    .widget.is-medium, .widget.is-large {
+        grid-column-end: unset;
+    }
 }
 
 @media only screen and (max-width: 640px) {

@@ -33,12 +33,6 @@ class ScatterChartWidgetData extends WidgetData {
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-const widgetSizeOptions = {
-    SMALL: "small",
-    MEDIUM: "medium",
-    LARGE: "large"
-};
-
 let dataset = {};
 let currentReportId = null;
 let customCharts = [];
@@ -226,7 +220,7 @@ const addWidgetToGrid = widgetData => {
         );
     }
 
-    const widgetElement = getWidgetElement(widgetData.name);
+    const widgetElement = getWidgetElement(widgetData);
     $("#reports-section .widget.is-placeholder").insertAdjacentElement("beforebegin", widgetElement);
 
     if (customChart) {
@@ -243,6 +237,7 @@ const addWidgetToGrid = widgetData => {
 const getWidgetElement = widget => {
     const widgetElement = document.createElement("div");
     widgetElement.className = "widget is-relative";
+    widgetElement.id = widget.id;
 
     const chartContainer = getChartContainer(widget.name);
     widgetElement.appendChild(chartContainer);
@@ -303,13 +298,15 @@ const getChartOptionsElement = widgetId => {
     chartOptions.appendChild(title);
 
     const sizeOptions = document.createElement("div");
-    for (const option of Object.values(widgetSizeOptions)) {
+    sizeOptions.className = "widget-size-options";
+    for (const option of Object.values(reportsHelper.Widget.sizes)) {
         const sizeOption = document.createElement("label");
         sizeOption.className = "radio";
         const radioInput = document.createElement("input");
         radioInput.type = "radio";
         radioInput.name = widget.id;
-        if ((widget.size && widget.size == option) || (!widget.size && option == widgetSizeOptions.SMALL)) radioInput.checked = true;
+        radioInput.value = option;
+        if (widget.size && widget.size == option) radioInput.checked = true;
         sizeOption.appendChild(radioInput);
         sizeOption.appendChild(document.createTextNode(" " + option));
         sizeOptions.appendChild(sizeOption);
@@ -321,6 +318,7 @@ const getChartOptionsElement = widgetId => {
     const saveButton = document.createElement("button");
     saveButton.className = "button is-link is-light is-small";
     saveButton.textContent = languageHelper.getTranslation("save");
+    saveButton.onclick = () => saveWidget(widgetId);
     buttons.appendChild(saveButton);
 
     const removeButton = document.createElement("button");
@@ -356,6 +354,22 @@ const getChartPlaceholder = () => {
 const addWidget = async () => {
     const widget = await reportsHelper.addWidget(currentReportId, languageHelper.getTranslation("new-chart"));
     addWidgetToGrid(new WidgetData(widget.id, widget.name));
+}
+
+// TODO: Rename chartOptions to widgetOptions
+const saveWidget = widgetId => {
+    const widget = reportsHelper.getWidget(currentReportId, widgetId);
+    if (!widget) return;
+
+    const widgetOptionsElement = $(`.widget[id="${widgetId}"] .chart-options`);
+    if (!widgetOptionsElement) return;
+
+    const sizeRadio = widgetOptionsElement.querySelector(".widget-size-options input:checked");
+    const size = sizeRadio ? sizeRadio.value : null;
+    if (size && widget.size != size) {
+        widget.size = size;
+        $(`.widget[id="${widgetId}"]`).classList.add("is-" + size);
+    }
 }
 
 const loadReportList = () => {

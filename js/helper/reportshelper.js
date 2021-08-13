@@ -1,4 +1,4 @@
-class Report {
+export class Report {
     // id, name, users, list of widgets, ...
     constructor(id, name) {
         this.id = id;
@@ -7,11 +7,26 @@ class Report {
     }
 }
 
-class Widget {
+export class Widget {
+    static sizes = {
+        SMALL: "small",
+        MEDIUM: "medium",
+        LARGE: "large"
+    };
+
     // id, properties, representation (bar, pie, scatter, numeric, table, ...), size, ...
     constructor(id, name) {
         this.id = id;
         this.name = name;
+        this.size = Widget.sizes.SMALL;
+    }
+
+    set size(value) {
+        if (Object.values(Widget.sizes).includes(value)) this._size = value;
+    }
+
+    get size() {
+        return this._size;
     }
 }
 
