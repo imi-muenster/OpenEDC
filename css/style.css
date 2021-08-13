@@ -496,7 +496,7 @@ a.panel-block:hover {
     transform: rotateY(180deg);
 }
 
-.chart-container, .chart-options {
+.widget-content, .widget-options {
     height: 100%;
     width: 100%;
     position: absolute;
@@ -505,7 +505,7 @@ a.panel-block:hover {
     -webkit-backface-visibility: hidden;
 }
 
-.chart-options {
+.widget-options {
     transform: rotateY(180deg);
 }
 
