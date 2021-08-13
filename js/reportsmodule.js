@@ -1,20 +1,22 @@
 import * as reportsHelper from "./helper/reportshelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 
-import { testData } from "./charts/testdata.js";
+// Import custom charts
 import { CustomBarChart } from "./charts/custombarchart.js";
 import { CustomScatterChart } from "./charts/customscatterchart.js";
 
+// TODO: Rename to WidgetData and BarChartWidgetData, ...
 class ChartData {
-    constructor(name, values) {
+    constructor(id, name, values) {
+        this.id = id;
         this.name = name;
         this.values = values;
     }
 }
 
 class BarChartData extends ChartData {
-    constructor(name, property, counts, labels, values) {
-        super(name, values);
+    constructor(id, name, property, counts, labels, values) {
+        super(id, name, values);
         this.property = property;
         this.counts = counts;
         this.labels = labels;
@@ -22,8 +24,8 @@ class BarChartData extends ChartData {
 }
 
 class ScatterChartData extends ChartData {
-    constructor(name, properties, values, sortedValues) {
-        super(name, values);
+    constructor(id, name, properties, values, sortedValues) {
+        super(id, name, values);
         this.properties = properties;
         this.sortedValues = sortedValues;
     }
@@ -32,36 +34,46 @@ class ScatterChartData extends ChartData {
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
+let dataset = {};
 let currentReportId = null;
 let customCharts = [];
 let chartData = [];
 let activeFilters = [];
 
-export function init() {
+export async function init() {
+    // Only load chart.js library if required
+    await import("../lib/chart.js");
+    await import("../lib/chart-datalabels.js");
+    
     reportsHelper.init();
     if (!reportsHelper.getReports().length) reportsHelper.addReport(languageHelper.getTranslation("new-report"));
 
     setIOListeners();
 }
 
-export async function show() {
-    await import("../lib/chart.js");
-    await import("../lib/chart-datalabels.js");
+export function show() {
+    if (!currentReportId) {
+        $("#reports-section h1").textContent = languageHelper.getTranslation("no-reported-selected-hint");
+        $("#reports-section h2").textContent = languageHelper.getTranslation("please-select-record-hint");
+    }
 
     loadReportList();
-    initializeCharts();
+    loadWidgets();
 }
 
-const initializeCharts = () => {
-    // Create bar charts
-    chartData.push(getBarChartData("Einschlussjahr", "createdYear"));
-    chartData.push(getBarChartData("Einschlussmonat", "createdMonth", getMonthsShort(), getMonthsInteger()));
-    chartData.push(getBarChartData("Klinik", "site"));
-    chartData.push(getBarChartData("Geschlecht", "gender"));
+const loadWidgets = () => {
+    if (!currentReportId) return;
+    $$("#widgets .widget").removeElements();
 
-    // Create scatter charts
-    chartData.push(getScatterChartData("Größe und Gewicht", ["weight", "height"]));
-    chartData.push(getScatterChartData("Alter", ["age"]));
+    // // Create bar charts
+    // chartData.push(getBarChartData("Einschlussjahr", "createdYear"));
+    // chartData.push(getBarChartData("Einschlussmonat", "createdMonth", getMonthsShort(), getMonthsInteger()));
+    // chartData.push(getBarChartData("Klinik", "site"));
+    // chartData.push(getBarChartData("Geschlecht", "gender"));
+
+    // // Create scatter charts
+    // chartData.push(getScatterChartData("Größe und Gewicht", ["weight", "height"]));
+    // chartData.push(getScatterChartData("Alter", ["age"]));
     
     // Fill value arrays
     calculateChartData();
@@ -76,10 +88,11 @@ const initializeCharts = () => {
     }
 }
 
-const getBarChartData = (name, property, labels, values) => {
+const getBarChartData = (id, name, property, labels, values) => {
     // If no labels are provided, the function gets all unique values from the data for the property
     const uniqueValues = !labels ? getUniqueValues(property) : null;
     return new BarChartData(
+        id,
         name,
         property,
         Array(uniqueValues ? uniqueValues.length : labels.length),
@@ -88,8 +101,8 @@ const getBarChartData = (name, property, labels, values) => {
     );
 }
 
-const getScatterChartData = (name, properties) => {
-    const values = testData.map(entry => {
+const getScatterChartData = (id, name, properties) => {
+    const values = dataset.map(entry => {
         return {
             x: entry[properties[0]],
             y: properties.length > 1 ? entry[properties[1]] : Math.random(),
@@ -98,6 +111,7 @@ const getScatterChartData = (name, properties) => {
         };
     });
     return new ScatterChartData(
+        id,
         name,
         properties,
         values,
@@ -106,23 +120,24 @@ const getScatterChartData = (name, properties) => {
 }
 
 const calculateChartData = () => {
+    if (!currentReportId) return;
     let filteredCount = 0;
 
     chartData.filter(entry => entry instanceof BarChartData).forEach(entry => entry.counts.fill(0));
     chartData.filter(entry => entry instanceof ScatterChartData).forEach(entry => entry.sortedValues.length = 0);
-    for (let i = 0; i < testData.length; i++) {
+    for (let i = 0; i < dataset.length; i++) {
         let filteredInGeneral = false;
         for (const entry of chartData) {
             let filteredForChart = false;
             for (const filter of activeFilters) {
-                if (testData[i][filter.property] != filter.value) {
+                if (dataset[i][filter.property] != filter.value) {
                     filteredInGeneral = true;
                     if (entry.property != filter.property) filteredForChart = true;
                 }
             }
             if (entry instanceof BarChartData){
                 if (filteredForChart) continue;
-                const value = testData[i][entry.property];
+                const value = dataset[i][entry.property];
                 const index = entry.values.indexOf(value);
                 entry.counts[index]++;
             } else if (entry instanceof ScatterChartData) {
@@ -134,7 +149,7 @@ const calculateChartData = () => {
         if (filteredInGeneral) filteredCount++;
     }
 
-    $("#reports-section h1").textContent = (testData.length - filteredCount) + (activeFilters.length > 0 ? " von " + testData.length : "") + " Patienten";
+    $("#reports-section h1").textContent = (dataset.length - filteredCount) + (activeFilters.length > 0 ? " von " + dataset.length : "") + " Patienten";
     $("#reports-section h2").textContent = activeFilters.length + " aktive Filter";
 }
 
@@ -149,7 +164,7 @@ const getMonthsShort = locale => {
 
 
 const getUniqueValues = property => {
-    return testData.reduce((values, entry) => {
+    return dataset.reduce((values, entry) => {
         if (!values.includes(entry[property])) values.push(entry[property]);
         return values;
     }, new Array());
@@ -215,7 +230,7 @@ const addWidgetToGrid = chartData => {
     } else {
         const chartOptions = getChartOptions();
         widget.appendChild(chartOptions);
-        setTimeout(() => widget.classList.add("is-flipped"), 500);
+        setTimeout(() => widget.classList.add("is-flipped"), 250);
     }
 }
 
@@ -307,11 +322,14 @@ const getChartPlaceholder = () => {
     iconContainer.appendChild(icon);
     placeholder.appendChild(iconContainer);
 
-    placeholder.onclick = () => {
-        addWidgetToGrid(new ChartData(languageHelper.getTranslation("new-chart")));
-    };
+    placeholder.onclick = () => addWidget();
 
     return placeholder;
+}
+
+const addWidget = () => {
+    const id = reportsHelper.addWidget(currentReportId);
+    addWidgetToGrid(new ChartData(id, languageHelper.getTranslation("new-chart")));
 }
 
 const loadReportList = () => {
@@ -328,6 +346,8 @@ const loadReportList = () => {
 const loadReport = id => {
     $(`#reports-list a.is-active`)?.deactivate();
     $(`#reports-list a[id="${id}"]`).activate();
+    currentReportId = id;
+    loadWidgets();
 }
 
 const setIOListeners = () => {
