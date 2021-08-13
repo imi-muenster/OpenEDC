@@ -12,9 +12,9 @@ class WidgetComponent extends HTMLElement {
         this.classList.add("is-" + this.widget.size);
         this.id = this.widget.id;
 
-        const widgetContent = document.createElement("widget-content");
-        widgetContent.setTitle(this.widget.name);
-        this.appendChild(widgetContent);
+        this.widgetContent = document.createElement("widget-content");
+        this.widgetContent.setTitle(this.widget.name);
+        this.appendChild(this.widgetContent);
         
         this.addOptionsIcon();
     }
@@ -35,6 +35,10 @@ class WidgetComponent extends HTMLElement {
         widgetOptions.setComponent(this);
         this.appendChild(widgetOptions);
         this.classList.add("is-flipped");
+    }
+
+    update() {
+        this.widgetContent.querySelector(".subtitle").textContent = this.widget.name;
     }
 }
 

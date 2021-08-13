@@ -14,7 +14,15 @@ export class Widget {
         LARGE: "large"
     };
 
-    // id, properties, representation (bar, pie, scatter, numeric, table, ...), size, ...
+    static types = {
+        BAR: "bar",
+        PIE: "pie",
+        DONUT: "donut",
+        SCATTER: "scatter",
+        NUMERIC: "numeric",
+        TABLE: "table"
+    }
+
     constructor(id, name) {
         this.id = id;
         this.name = name;
@@ -28,6 +36,14 @@ export class Widget {
 
     get size() {
         return this._size;
+    }
+
+    set type(value) {
+        if (Object.values(Widget.types).includes(value)) this._type = value;
+    }
+
+    get type() {
+        return this._type;
     }
 
     set properties(values) {

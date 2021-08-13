@@ -24,7 +24,8 @@ class WidgetOptions extends HTMLElement {
     addTitle() {
         const title = document.createElement("h2");
         title.className = "subtitle mb-1";
-        title.textContent = languageHelper.getTranslation("edit");
+        title.contentEditable = true;
+        title.textContent = this.component.widget.name;
         this.appendChild(title);
     }
 
@@ -58,7 +59,8 @@ class WidgetOptions extends HTMLElement {
         const input = document.createElement("input");
         input.className = "input is-small";
         input.type = "text";
-        input.placeholder = languageHelper.getTranslation("item");
+        input.disabled = true;
+        input.placeholder = languageHelper.getTranslation("options");
         inputContainer.appendChild(input);
         autocompleteHelper.enableAutocomplete(input, autocompleteHelper.modes.ITEMWITHCODELIST);
 
@@ -107,6 +109,9 @@ class WidgetOptions extends HTMLElement {
     }
 
     saveOptions() {
+        // Set name
+        this.component.widget.name = this.querySelector(".subtitle").textContent;
+
         // Set widget size
         const sizeOption = this.querySelector(".widget-size-options input:checked");
         const size = sizeOption ? sizeOption.value : null;
@@ -116,6 +121,10 @@ class WidgetOptions extends HTMLElement {
         const properties = Array.from(this.querySelectorAll("input[type='text']")).filter(input => input.value).map(input => input.value);
         if (properties && properties.toString() != this.component.widget.properties.toString()) this.component.widget.properties = properties;
 
+        // Update widget component
+        this.component.update();
+
+        // Flip component, remove the options panel, and store the updated widget and report
         this.component.classList.remove("is-flipped");
         setTimeout(() => this.remove(), 500);
         reportsHelper.storeReports();
