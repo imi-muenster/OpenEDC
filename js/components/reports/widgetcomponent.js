@@ -9,6 +9,7 @@ class WidgetComponent extends HTMLElement {
 
     render() {
         this.className = "widget is-relative";
+        this.classList.add("is-" + this.widget.size);
         this.id = this.widget.id;
 
         const widgetContent = document.createElement("widget-content");

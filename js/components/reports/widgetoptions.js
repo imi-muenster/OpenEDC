@@ -12,12 +12,44 @@ class WidgetOptions extends HTMLElement {
 
     render() {
         this.className = "widget-options is-flex is-flex-direction-column is-justify-content-space-between is-align-items-center p-5";
+        this.addTitle();
+        this.addItemInput();
+        this.addTypeSelect();
+        this.addDetailsInput();
+        this.addSizeOptions();
+        this.addButtons();
+    }
 
+    addTitle() {
         const title = document.createElement("h2");
-        title.className = "subtitle";
+        title.className = "subtitle mb-1";
         title.textContent = languageHelper.getTranslation("options");
         this.appendChild(title);
+    }
 
+    addItemInput() {
+        const input = document.createElement("input");
+        input.className = "input is-small";
+        input.placeholder = languageHelper.getTranslation("item");
+        this.appendChild(input);
+    }
+
+    addTypeSelect() {
+        const selectContainer = document.createElement("div");
+        selectContainer.className = "select is-fullwidth is-small";
+        const select = document.createElement("select");
+        selectContainer.appendChild(select);
+        this.appendChild(selectContainer);
+    }
+
+    addDetailsInput() {
+        const input = document.createElement("input");
+        input.className = "input is-small";
+        input.placeholder = languageHelper.getTranslation("item");
+        this.appendChild(input);
+    }
+
+    addSizeOptions() {
         const sizeOptions = document.createElement("div");
         sizeOptions.className = "widget-size-options";
         for (const option of Object.values(reportsHelper.Widget.sizes)) {
@@ -33,7 +65,9 @@ class WidgetOptions extends HTMLElement {
             sizeOptions.appendChild(sizeOption);
         }
         this.appendChild(sizeOptions);
+    }
 
+    addButtons() {
         const buttons = document.createElement("div");
         buttons.className = "buttons";
         const saveButton = document.createElement("button");
