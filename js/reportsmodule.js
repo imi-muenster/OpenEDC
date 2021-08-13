@@ -83,8 +83,9 @@ const loadWidgets = () => {
     $("#widgets").appendChild(placeholder);
 
     // Render charts
-    for (const entry of chartData) {
-        addWidgetToGrid(entry);
+    for (const widget of reportsHelper.getReport(currentReportId).widgets) {
+        const chartData = new ChartData(widget.id, widget.name);
+        addWidgetToGrid(chartData);
     }
 }
 
@@ -220,21 +221,21 @@ const addWidgetToGrid = chartData => {
         );
     }
 
-    const widget = getWidget(chartData.name);
-    $("#reports-section .widget.is-placeholder").insertAdjacentElement("beforebegin", widget);
+    const widgetElement = getWidgetElement(chartData.name);
+    $("#reports-section .widget.is-placeholder").insertAdjacentElement("beforebegin", widgetElement);
 
     if (customChart) {
-        const chart = new Chart(widget.querySelector("canvas"), customChart.config);
+        const chart = new Chart(widgetElement.querySelector("canvas"), customChart.config);
         customChart.chart = chart;
         customCharts.push(customChart);
     } else {
-        const chartOptions = getChartOptions();
-        widget.appendChild(chartOptions);
-        setTimeout(() => widget.classList.add("is-flipped"), 250);
+        const chartOptionsElement = getChartOptionsElement();
+        widgetElement.appendChild(chartOptionsElement);
+        setTimeout(() => widgetElement.classList.add("is-flipped"), 250);
     }
 }
 
-const getWidget = titleText => {
+const getWidgetElement = titleText => {
     const widget = document.createElement("div");
     widget.className = "widget is-relative";
 
@@ -244,12 +245,12 @@ const getWidget = titleText => {
     const optionsIcon = getOptionsIcon();
     optionsIcon.querySelector("i").onclick = () => {
         // Only create the options element when needed
-        const chartOptions = getChartOptions();
-        chartOptions.querySelectorAll("button").forEach(button => button.onclick = () => {
+        const chartOptionsElement = getChartOptionsElement();
+        chartOptionsElement.querySelectorAll("button").forEach(button => button.onclick = () => {
             widget.classList.remove("is-flipped");
-            setTimeout(() => chartOptions.remove(), 500);
+            setTimeout(() => chartOptionsElement.remove(), 500);
         });
-        widget.appendChild(chartOptions);
+        widget.appendChild(chartOptionsElement);
         widget.classList.add("is-flipped");
     };
     widget.appendChild(optionsIcon);
@@ -285,7 +286,7 @@ const getOptionsIcon = () => {
     return iconContainer;
 }
 
-const getChartOptions = () => {
+const getChartOptionsElement = () => {
     const chartOptions = document.createElement("div");
     chartOptions.className = "chart-options is-flex is-flex-direction-column is-justify-content-space-between is-align-items-center p-5";
 
@@ -327,9 +328,9 @@ const getChartPlaceholder = () => {
     return placeholder;
 }
 
-const addWidget = () => {
-    const id = reportsHelper.addWidget(currentReportId);
-    addWidgetToGrid(new ChartData(id, languageHelper.getTranslation("new-chart")));
+const addWidget = async () => {
+    const widget = await reportsHelper.addWidget(currentReportId, languageHelper.getTranslation("new-chart"));
+    addWidgetToGrid(new ChartData(widget.id, widget.name));
 }
 
 const loadReportList = () => {
@@ -350,10 +351,13 @@ const loadReport = id => {
     loadWidgets();
 }
 
+const addReport = async () => {
+    const report = await reportsHelper.addReport(languageHelper.getTranslation("new-report"));
+    currentReportId = report.id;
+    loadReportList();
+    loadReport(currentReportId);
+}
+
 const setIOListeners = () => {
-    $("#reports-section #add-report-button").addEventListener("click", async () => {
-        currentReportId = await reportsHelper.addReport(languageHelper.getTranslation("new-report"));
-        loadReportList();
-        loadReport(currentReportId);
-    });
+    $("#reports-section #add-report-button").addEventListener("click", () => addReport());
 }

@@ -9,8 +9,9 @@ class Report {
 
 class Widget {
     // id, properties, representation (bar, pie, scatter, numeric, table, ...), size, ...
-    constructor(id) {
+    constructor(id, name) {
         this.id = id;
+        this.name = name;
     }
 }
 
@@ -28,19 +29,25 @@ export const getReports = () => {
     return reports;
 }
 
-export const addReport = async name => {
-    const id = reports.reduce((highestId, report) => report.id >= highestId ? report.id : highestId, 0) + 1;
-    reports.push(new Report(id, name));
-    await storeReports();
-
-    return id;
+export const getReport = reportId => {
+    return reports.find(report => report.id == reportId);
 }
 
-export const addWidget = async reportId => {
-    const report = reports.find(report => report.id == reportId);
-    const id = report.widgets.reduce((highestId, widget) => widget.id >= highestId ? widget.id : highestId, 0) + 1;
-    report.widgets.push(new Widget(id));
+export const addReport = async name => {
+    const id = reports.reduce((highestId, report) => report.id >= highestId ? report.id : highestId, 0) + 1;
+    const report = new Report(id, name);
+    reports.push(report);
     await storeReports();
 
-    return id;
+    return report;
+}
+
+export const addWidget = async (reportId, name) => {
+    const report = getReport(reportId);
+    const id = report.widgets.reduce((highestId, widget) => widget.id >= highestId ? widget.id : highestId, 0) + 1;
+    const widget = new Widget(id, name);
+    report.widgets.push(widget);
+    await storeReports();
+
+    return widget;
 }
