@@ -34,6 +34,12 @@ class ScatterChartData extends ChartData {
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
+const widgetSizeOptions = {
+    SMALL: "small",
+    MEDIUM: "medium",
+    LARGE: "large"
+};
+
 let dataset = {};
 let currentReportId = null;
 let customCharts = [];
@@ -229,33 +235,33 @@ const addWidgetToGrid = chartData => {
         customChart.chart = chart;
         customCharts.push(customChart);
     } else {
-        const chartOptionsElement = getChartOptionsElement();
+        const chartOptionsElement = getChartOptionsElement(chartData.id);
         widgetElement.appendChild(chartOptionsElement);
         setTimeout(() => widgetElement.classList.add("is-flipped"), 250);
     }
 }
 
-const getWidgetElement = titleText => {
-    const widget = document.createElement("div");
-    widget.className = "widget is-relative";
+const getWidgetElement = widget => {
+    const widgetElement = document.createElement("div");
+    widgetElement.className = "widget is-relative";
 
-    const chartContainer = getChartContainer(titleText);
-    widget.appendChild(chartContainer);
+    const chartContainer = getChartContainer(widget.name);
+    widgetElement.appendChild(chartContainer);
     
     const optionsIcon = getOptionsIcon();
     optionsIcon.querySelector("i").onclick = () => {
         // Only create the options element when needed
-        const chartOptionsElement = getChartOptionsElement();
+        const chartOptionsElement = getChartOptionsElement(widget.id);
         chartOptionsElement.querySelectorAll("button").forEach(button => button.onclick = () => {
-            widget.classList.remove("is-flipped");
+            widgetElement.classList.remove("is-flipped");
             setTimeout(() => chartOptionsElement.remove(), 500);
         });
-        widget.appendChild(chartOptionsElement);
+        widgetElement.appendChild(chartOptionsElement);
         widget.classList.add("is-flipped");
     };
-    widget.appendChild(optionsIcon);
+    widgetElement.appendChild(optionsIcon);
 
-    return widget;
+    return widgetElement;
 }
 
 const getChartContainer = titleText => {
@@ -286,26 +292,46 @@ const getOptionsIcon = () => {
     return iconContainer;
 }
 
-const getChartOptionsElement = () => {
+const getChartOptionsElement = widgetId => {
+    const widget = reportsHelper.getWidget(currentReportId, widgetId);
+
     const chartOptions = document.createElement("div");
     chartOptions.className = "chart-options is-flex is-flex-direction-column is-justify-content-space-between is-align-items-center p-5";
 
     const title = document.createElement("h2");
     title.className = "subtitle";
-    title.textContent = "Optionen";
+    title.textContent = languageHelper.getTranslation("options");
     chartOptions.appendChild(title);
+
+    const sizeOptions = document.createElement("div");
+    for (const option of Object.values(widgetSizeOptions)) {
+        const sizeOption = document.createElement("label");
+        sizeOption.className = "radio";
+        const radioInput = document.createElement("input");
+        radioInput.type = "radio";
+        radioInput.name = widget.id;
+        if ((widget.size && widget.size == option) || (!widget.size && option == widgetSizeOptions.SMALL)) radioInput.checked = true;
+        sizeOption.appendChild(radioInput);
+        sizeOption.appendChild(document.createTextNode(" " + option));
+        sizeOptions.appendChild(sizeOption);
+    }
+    chartOptions.appendChild(sizeOptions);
 
     const buttons = document.createElement("div");
     buttons.className = "buttons";
-
     const saveButton = document.createElement("button");
     saveButton.className = "button is-link is-light is-small";
-    saveButton.textContent = "Speichern";
+    saveButton.textContent = languageHelper.getTranslation("save");
     buttons.appendChild(saveButton);
+
+    const removeButton = document.createElement("button");
+    removeButton.className = "button is-danger is-light is-small";
+    removeButton.textContent = languageHelper.getTranslation("remove");
+    buttons.appendChild(removeButton);
 
     const cancelButton = document.createElement("button");
     cancelButton.className = "button is-small";
-    cancelButton.textContent = "Abbrechen";
+    cancelButton.textContent = languageHelper.getTranslation("cancel");
     buttons.appendChild(cancelButton);
     chartOptions.appendChild(buttons);
 

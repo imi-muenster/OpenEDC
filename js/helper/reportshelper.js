@@ -42,6 +42,11 @@ export const addReport = async name => {
     return report;
 }
 
+export const getWidget = (reportId, widgetId) => {
+    const report = getReport(reportId);
+    return report.widgets.find(widget => widget.id == widgetId);
+}
+
 export const addWidget = async (reportId, name) => {
     const report = getReport(reportId);
     const id = report.widgets.reduce((highestId, widget) => widget.id >= highestId ? widget.id : highestId, 0) + 1;
