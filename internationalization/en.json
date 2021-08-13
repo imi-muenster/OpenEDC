@@ -155,6 +155,10 @@
     "new-chart": "New Chart",
     "data-quality": "Data Quality",
     "edit": "Edit",
+    "item": "Item",
+    "small": "Small",
+    "medium": "Medium",
+    "large": "Large",
 
     "general-options":"General Options",
     "users": "Users",

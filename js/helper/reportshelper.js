@@ -19,6 +19,7 @@ export class Widget {
         this.id = id;
         this.name = name;
         this.size = Widget.sizes.SMALL;
+        this.properties = [];
     }
 
     set size(value) {
@@ -27,6 +28,14 @@ export class Widget {
 
     get size() {
         return this._size;
+    }
+
+    set properties(values) {
+        if (values && values.length <= 2) this._properties = values;
+    }
+
+    get properties() {
+        return this._properties;
     }
 }
 

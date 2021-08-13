@@ -1,5 +1,6 @@
 import * as languageHelper from "../../helper/languagehelper.js";
 import * as reportsHelper from "../../helper/reportshelper.js";
+import * as autocompleteHelper from "../../helper/autocompletehelper.js";
 
 class WidgetOptions extends HTMLElement {
     setComponent(component) {
@@ -23,15 +24,22 @@ class WidgetOptions extends HTMLElement {
     addTitle() {
         const title = document.createElement("h2");
         title.className = "subtitle mb-1";
-        title.textContent = languageHelper.getTranslation("options");
+        title.textContent = languageHelper.getTranslation("edit");
         this.appendChild(title);
     }
 
     addItemInput() {
+        const inputContainer = document.createElement("div");
+        inputContainer.className = "control has-autocomplete-bottom is-fullwidth";
+
         const input = document.createElement("input");
         input.className = "input is-small";
+        input.type = "text";
         input.placeholder = languageHelper.getTranslation("item");
-        this.appendChild(input);
+        inputContainer.appendChild(input);
+        autocompleteHelper.enableAutocomplete(input, autocompleteHelper.modes.ITEMWITHCODELIST);
+
+        this.appendChild(inputContainer);
     }
 
     addTypeSelect() {
@@ -39,14 +47,22 @@ class WidgetOptions extends HTMLElement {
         selectContainer.className = "select is-fullwidth is-small";
         const select = document.createElement("select");
         selectContainer.appendChild(select);
+
         this.appendChild(selectContainer);
     }
 
     addDetailsInput() {
+        const inputContainer = document.createElement("div");
+        inputContainer.className = "control has-autocomplete-bottom is-fullwidth";
+
         const input = document.createElement("input");
         input.className = "input is-small";
+        input.type = "text";
         input.placeholder = languageHelper.getTranslation("item");
-        this.appendChild(input);
+        inputContainer.appendChild(input);
+        autocompleteHelper.enableAutocomplete(input, autocompleteHelper.modes.ITEMWITHCODELIST);
+
+        this.appendChild(inputContainer);
     }
 
     addSizeOptions() {
@@ -61,9 +77,10 @@ class WidgetOptions extends HTMLElement {
             radioInput.value = option;
             if (this.component.widget.size && this.component.widget.size == option) radioInput.checked = true;
             sizeOption.appendChild(radioInput);
-            sizeOption.appendChild(document.createTextNode(" " + option));
+            sizeOption.appendChild(document.createTextNode(" " + languageHelper.getTranslation(option)));
             sizeOptions.appendChild(sizeOption);
         }
+
         this.appendChild(sizeOptions);
     }
 
@@ -85,13 +102,19 @@ class WidgetOptions extends HTMLElement {
         cancelButton.className = "button is-small";
         cancelButton.textContent = languageHelper.getTranslation("cancel");
         buttons.appendChild(cancelButton);
+        
         this.appendChild(buttons);
     }
 
     saveOptions() {
+        // Set widget size
         const sizeOption = this.querySelector(".widget-size-options input:checked");
         const size = sizeOption ? sizeOption.value : null;
         if (size && this.component.widget.size != size) this.setWidgetComponentSize(size);
+
+        // Set widget properties
+        const properties = Array.from(this.querySelectorAll("input[type='text']")).filter(input => input.value).map(input => input.value);
+        if (properties && properties.toString() != this.component.widget.properties.toString()) this.component.widget.properties = properties;
 
         this.component.classList.remove("is-flipped");
         setTimeout(() => this.remove(), 500);

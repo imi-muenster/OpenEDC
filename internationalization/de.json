@@ -154,6 +154,10 @@
     "new-chart": "Neues Diagramm",
     "data-quality": "Datenqualität",
     "edit": "Bearbeiten",
+    "item": "Element",
+    "small": "Klein",
+    "medium": "Mittel",
+    "large": "Groß",
 
     "general-options":"Allgemeine Optionen",
     "users": "Benutzer",
