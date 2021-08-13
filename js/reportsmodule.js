@@ -66,36 +66,14 @@ const initializeCharts = () => {
     // Fill value arrays
     calculateChartData();
 
-    // Render charts
-    for (const entry of chartData) {
-        let customChart;
-        if (entry instanceof BarChartData) {
-            customChart = new CustomBarChart(
-                entry.property,
-                entry.counts,
-                entry.labels,
-                entry.values,
-                filterCallback
-            );
-        } else {
-            customChart = new CustomScatterChart(
-                entry.properties,
-                entry.sortedValues,
-                entry.labels,
-                hoverCallback
-            );
-        }
-
-        const widget = getWidget(entry.name);
-        $("#reports-section #widgets").appendChild(widget);
-
-        const chart = new Chart(widget.querySelector("canvas"), customChart.config);
-        customChart.chart = chart;
-        customCharts.push(customChart);
-    }
-
+    // Add placeholder
     const placeholder = getChartPlaceholder();
     $("#widgets").appendChild(placeholder);
+
+    // Render charts
+    for (const entry of chartData) {
+        addWidgetToGrid(entry);
+    }
 }
 
 const getBarChartData = (name, property, labels, values) => {
@@ -202,9 +180,42 @@ const hoverCallback = (chartId, index) => {
     for (const customChart of customCharts) {
         if (!(customChart instanceof CustomScatterChart) || customChart.chart.id == chartId) continue;
 
-        if (index) customChart.chart.setActiveElements([{ datasetIndex: 0, index: index }]);
+        if (index != null) customChart.chart.setActiveElements([{ datasetIndex: 0, index: index }]);
         else customChart.chart.setActiveElements([]);
         customChart.chart.update();
+    }
+}
+
+const addWidgetToGrid = chartData => {
+    let customChart;
+    if (chartData instanceof BarChartData) {
+        customChart = new CustomBarChart(
+            chartData.property,
+            chartData.counts,
+            chartData.labels,
+            chartData.values,
+            filterCallback
+        );
+    } else if (chartData instanceof ScatterChartData) {
+        customChart = new CustomScatterChart(
+            chartData.properties,
+            chartData.sortedValues,
+            chartData.labels,
+            hoverCallback
+        );
+    }
+
+    const widget = getWidget(chartData.name);
+    $("#reports-section .widget.is-placeholder").insertAdjacentElement("beforebegin", widget);
+
+    if (customChart) {
+        const chart = new Chart(widget.querySelector("canvas"), customChart.config);
+        customChart.chart = chart;
+        customCharts.push(customChart);
+    } else {
+        const chartOptions = getChartOptions();
+        widget.appendChild(chartOptions);
+        setTimeout(() => widget.classList.add("is-flipped"), 500);
     }
 }
 
@@ -295,6 +306,10 @@ const getChartPlaceholder = () => {
     icon.className = "fas fa-plus is-clickable";
     iconContainer.appendChild(icon);
     placeholder.appendChild(iconContainer);
+
+    placeholder.onclick = () => {
+        addWidgetToGrid(new ChartData(languageHelper.getTranslation("new-chart")));
+    };
 
     return placeholder;
 }

@@ -3,11 +3,9 @@ class ReportsSection extends HTMLElement {
         this.innerHTML = `
             <section class="section is-hidden" id="reports-section">
                 <div class="columns is-desktop">
-                    <div class="column is-offset-one-fifth">
-                        <div class="container">
-                            <h1 class="title"></h1>
-                            <h2 class="subtitle"></h2>
-                        </div>
+                    <div class="column is-offset-one-fifth-desktop">
+                        <h1 class="title"></h1>
+                        <h2 class="subtitle"></h2>
                     </div>
                 </div>
                 <div class="columns is-desktop">
@@ -27,9 +25,7 @@ class ReportsSection extends HTMLElement {
                         </div>
                     </div>
                     <div class="column">
-                        <div class="container">
-                            <div id="widgets"></div>
-                        </div>      
+                        <div id="widgets"></div>    
                     </div>
                 </div>
             </section>
