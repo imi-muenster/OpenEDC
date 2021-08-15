@@ -333,11 +333,12 @@ async function loadFormMetadata() {
 // Must be in place before clinical data is added to the form's input elements
 function addDynamicFormLogicPre() {
     // Add real-time logic to process items with conditions and methods
-    const itemOIDs = expressionHelper.getVariables(metadataHelper.getElementsWithExpression(currentElementID.studyEvent, currentElementID.form));
-    const itemData = clinicaldataHelper.getDataForItems(itemOIDs);
-    if (cachedFormData) cachedFormData.forEach(entry => {
-        if (itemOIDs.includes(entry.itemOID)) itemData[entry.itemOID] = entry.value;
-    });
+    const itemPaths = expressionHelper.getVariables(metadataHelper.getElementsWithExpression(currentElementID.studyEvent, currentElementID.form));
+    const itemData = clinicaldataHelper.getDataForItems(itemPaths);
+    // TODO:
+    // if (cachedFormData) cachedFormData.forEach(entry => {
+    //     if (itemOIDs.includes(entry.itemOID)) itemData[entry.itemOID] = entry.value;
+    // });
     expressionHelper.process(itemData);
 }
 

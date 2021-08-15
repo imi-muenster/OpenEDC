@@ -1,4 +1,5 @@
 import { Parser } from "../../lib/expr-eval.js";
+import { ODMPath } from "./metadatahelper.js";
 
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
@@ -17,7 +18,7 @@ function getParser() {
 export function parse(formalExpression) {
     try {
         // Expr-eval does not support dots in variables names which are therefore replaced with underscores
-        return getParser().parse(escapeOIDDots(normalizeTokens(formalExpression)));
+        return getParser().parse(escapePaths(normalizeTokens(formalExpression)));
     } catch (error) {
         // Error while parsing the formal expressions
     }
@@ -31,7 +32,12 @@ export function getVariables(elements) {
         const expression = parse(element.formalExpression);
         if (expression) {
             element.expression = expression;
-            element.expression.variables().forEach(variable => variables.add(unescapeOIDDots(variable)));
+            element.expression.variables().forEach(variable => {
+                const elementPath = ODMPath.parse(unescapePaths(variable));
+                const absolutePath = elementPath.getAbsolute(element.elementPath);
+                element.expression = element.expression.substitute(variable, escapePaths(absolutePath.toString()));
+                variables.add(absolutePath);
+            });
             expressionElements.push(element);
         }
     }
@@ -44,9 +50,9 @@ export function process(variables) {
     methodVariables = {};
     
     for (const [key, value] of Object.entries(variables)) {
-        conditionVariables[escapeOIDDots(key)] = value;
+        conditionVariables[escapePaths(key)] = value;
         // Only evaluate method expressions where all variables have a value != ""
-        if (value != "") methodVariables[escapeOIDDots(key)] = value;
+        if (value != "") methodVariables[escapePaths(key)] = value;
     }
 
     for (const expressionElement of expressionElements) {
@@ -66,22 +72,23 @@ function processCondition(condition) {
     if (condition.expression.evaluate(conditionVariables)) conditionalElement.show();
 
     // Add event listeners to respond to inputs to the determinant items
-    for (const inputOID of condition.expression.variables()) {
-        const inputElement = $(`#clinicaldata-content [item-oid="${unescapeOIDDots(inputOID)}"]`);
+    for (const variable of condition.expression.variables()) {
+        const itemPath = ODMPath.parse(unescapePaths(variable));
+        const inputElement = $(`#clinicaldata-content [item-oid="${itemPath.itemOID}"]`);
         if (!inputElement) continue;
         if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "select") {
-            inputElement.addEventListener("input", event => respondToInputChangeCondition(event.target, inputOID, condition, conditionalElement));
+            inputElement.addEventListener("input", event => respondToInputChangeCondition(event.target, itemPath, condition, conditionalElement));
         } else if (inputElement.getAttribute("type") == "radio") {
-            const radioItems = $$(`#clinicaldata-content [item-oid="${unescapeOIDDots(inputOID)}"]`);
+            const radioItems = $$(`#clinicaldata-content [item-oid="${itemPath.itemOID}"]`);
             for (const radioItem of radioItems) {
-                radioItem.addEventListener("input", event => respondToInputChangeCondition(event.target, inputOID, condition, conditionalElement));
+                radioItem.addEventListener("input", event => respondToInputChangeCondition(event.target, itemPath, condition, conditionalElement));
             }
         }
     }
 }
 
-function respondToInputChangeCondition(input, inputOID, condition, conditionalElement) {
-    conditionVariables[inputOID] = !input.value ? "" : input.value;
+function respondToInputChangeCondition(input, itemPath, condition, conditionalElement) {
+    conditionVariables[escapePaths(itemPath.toString())] = !input.value ? "" : input.value;
     showOrHideConditionalElement(conditionalElement, condition.expression.evaluate(conditionVariables));
 }
 
@@ -128,23 +135,24 @@ function processMethod(method) {
     computedElement.value = computeExpression(method);
 
     // Add event listeners to respond to inputs to the determinant items
-    for (const inputOID of method.expression.variables()) {
-        const inputElement = $(`#clinicaldata-content [item-oid="${unescapeOIDDots(inputOID)}"]`);
+    for (const variable of method.expression.variables()) {
+        const itemPath = ODMPath.parse(unescapePaths(variable));
+        const inputElement = $(`#clinicaldata-content [item-oid="${itemPath.itemOID}"]`);
         if (!inputElement) continue;
         if (inputElement.getAttribute("type") != "radio") {
-            inputElement.addEventListener("input", event => respondToInputChangeMethod(event.target, inputOID, method, computedElement));
+            inputElement.addEventListener("input", event => respondToInputChangeMethod(event.target, itemPath, method, computedElement));
         } else {
-            const radioItems = $$(`#clinicaldata-content [item-oid="${unescapeOIDDots(inputOID)}"]`);
+            const radioItems = $$(`#clinicaldata-content [item-oid="${itemPath.itemOID}"]`);
             for (const radioItem of radioItems) {
-                radioItem.addEventListener("input", event => respondToInputChangeMethod(event.target, inputOID, method, computedElement));
+                radioItem.addEventListener("input", event => respondToInputChangeMethod(event.target, itemPath, method, computedElement));
             }
         }
     }
 }
 
-function respondToInputChangeMethod(input, inputOID, method, computedElement) {
-    if (input.value) methodVariables[inputOID] = input.value.replace(",", ".");
-    else delete methodVariables[inputOID];
+function respondToInputChangeMethod(input, itemPath, method, computedElement) {
+    if (input.value) methodVariables[escapePaths(itemPath.toString())] = input.value.replace(",", ".");
+    else delete methodVariables[escapePaths(itemPath.toString())];
 
     computedElement.value = computeExpression(method);
     computedElement.dispatchEvent(new Event("input"));
@@ -172,10 +180,11 @@ function normalizeTokens(expression) {
     });
 }
 
-function escapeOIDDots(expression) {
-    return expression.replace(/([a-zA-Z][a-zA-Z0-9]*)\.([a-zA-Z0-9\.]+)/g, "$1__$2");
+// TODO: Could be moved to ODMPath / ExpressionPath and the ExpressionPath class could be moved to this file
+function escapePaths(expression) {
+    return expression.replace(/-/g, "____").replace(/([a-zA-Z][a-zA-Z0-9]*)\.([a-zA-Z0-9\.]+)/g, "$1__$2");
 }
 
-function unescapeOIDDots(expression) {
-    return expression.replace(/([a-zA-Z][a-zA-Z0-9]*)__([a-zA-Z0-9\.]+)/g, "$1.$2");
+function unescapePaths(expression) {
+    return expression.replace(/____/g, "-").replace(/([a-zA-Z][a-zA-Z0-9]*)__([a-zA-Z0-9\.]+)/g, "$1.$2");
 }

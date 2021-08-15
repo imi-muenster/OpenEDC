@@ -20,7 +20,7 @@ class MetadataFile {
 
 // TODO: Could be renamed to ExpressionPath since it is mainly used for expressions
 export class ODMPath {
-    static separator = "_";
+    static separator = "-";
 
     static parse(string) {
         const elements = string.split(ODMPath.separator);

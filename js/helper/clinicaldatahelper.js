@@ -379,11 +379,16 @@ function getFormItemDataList(formDataElements) {
     return formItemDataList;
 }
 
-export function getDataForItems(itemOIDs) {
+export function getDataForItems(itemPaths) {
     let data = {};
-    for (const itemOID of itemOIDs) {
-        const itemData = subject ? $$(`ItemData[ItemOID="${itemOID}"]`).getLastElement() : null;
-        data[itemOID] = itemData ? itemData.getAttribute("Value") : "";
+    for (const itemPath of itemPaths) {
+        const itemData = subject ? $$(`
+            StudyEventData[StudyEventOID="${itemPath.studyEventOID}"]
+            FormData[FormOID="${itemPath.formOID}"]
+            ItemGroupData[ItemGroupOID="${itemPath.itemGroupOID}"]
+            ItemData[ItemOID="${itemPath.itemOID}"]
+        `).getLastElement() : null;
+        data[itemPath.toString()] = itemData ? itemData.getAttribute("Value") : "";
     }
 
     return data;
