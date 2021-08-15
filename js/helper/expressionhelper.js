@@ -33,8 +33,7 @@ export function getVariables(elements) {
         if (expression) {
             element.expression = expression;
             element.expression.variables().forEach(variable => {
-                const elementPath = ODMPath.parse(unescapePaths(variable));
-                const absolutePath = elementPath.getAbsolute(element.elementPath);
+                const absolutePath = ODMPath.parse(unescapePaths(variable)).getAbsolute(element.elementPath);
                 element.expression = element.expression.substitute(variable, escapePaths(absolutePath.toString()));
                 variables.add(absolutePath);
             });
@@ -180,7 +179,6 @@ function normalizeTokens(expression) {
     });
 }
 
-// TODO: Could be moved to ODMPath / ExpressionPath and the ExpressionPath class could be moved to this file
 function escapePaths(expression) {
     return expression.replace(/-/g, "____").replace(/([a-zA-Z][a-zA-Z0-9]*)\.([a-zA-Z0-9\.]+)/g, "$1__$2");
 }

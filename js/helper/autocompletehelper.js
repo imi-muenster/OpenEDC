@@ -83,7 +83,8 @@ const inputEventListener = event => {
     list.className = "autocomplete-list";
 
     setElements();
-    const matchingElements = elements.filter(element => element.label.toLowerCase().includes(value.toLowerCase()));
+    const searchValue = removeParentheses(value.toLowerCase());
+    const matchingElements = elements.filter(element => element.label.toLowerCase().includes(searchValue));
     for (const element of matchingElements) {
         const option = document.createElement("div");
         option.className = "autocomplete-option";
@@ -283,3 +284,5 @@ const getEndOfExpressionElements = () => {
 const addQuotes = string => '"' + string + '"';
 
 const removeQuotes = string => string.replace(/['"]/g, "");
+
+const removeParentheses = string => string.replace(/[\(\)]/g, "");

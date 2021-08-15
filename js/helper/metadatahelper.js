@@ -18,7 +18,6 @@ class MetadataFile {
     }
 }
 
-// TODO: Could be renamed to ExpressionPath since it is mainly used for expressions
 export class ODMPath {
     static separator = "-";
 
@@ -35,12 +34,10 @@ export class ODMPath {
     }
 
     getRelative(contextPath) {
-        return new ODMPath(
-            this.studyEventOID == contextPath.studyEventOID ? null : this.studyEventOID,
-            this.formOID == contextPath.formOID ? null : this.formOID,
-            this.itemGroupOID == contextPath.itemGroupOID ? null : this.itemGroupOID,
-            this.itemOID
-        );
+        if (this.studyEventOID != contextPath.studyEventOID) return this;
+        else if (this.formOID != contextPath.formOID) return new ODMPath(null, this.formOID, this.itemGroupOID, this.itemOID);
+        else if (this.itemGroupOID != contextPath.itemGroupOID) return new ODMPath(null, null, this.itemGroupOID, this.itemOID);
+        else return new ODMPath(null, null, null, this.itemOID);
     }
 
     getAbsolute(contextPath) {
