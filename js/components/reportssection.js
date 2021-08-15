@@ -10,7 +10,7 @@ class ReportsSection extends HTMLElement {
                 </div>
                 <div class="columns is-desktop">
                     <div class="column is-one-fifth-desktop">
-                        <div class="card">
+                        <div class="card has-border-shadow">
                             <div class="card-content">
                                 <aside class="menu">
                                     <p class="menu-label" i18n="reports"></p>

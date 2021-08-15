@@ -44,10 +44,13 @@ html, body {
 #language-dropdown {
     border-radius: 6px;
     border-top: none;
-    box-shadow: 0 8px 8px rgba(10, 10, 10, .1), 0 0 0 1px rgba(10, 10, 10, .1);
     top: calc(100% - 4px);
     max-height: 500px;
     overflow-y: auto;
+}
+
+.has-border-shadow {
+    box-shadow: 0 8px 8px rgba(10, 10, 10, .1), 0 0 0 1px rgba(10, 10, 10, .1);
 }
 
 #mobile-back-button {
@@ -56,10 +59,6 @@ html, body {
 
 .navbar-item .dropdown-menu {
     top: calc(100% - 4px);
-}
-
-.navbar-item .dropdown-content {
-    box-shadow: 0 8px 8px rgb(10 10 10 / 10%), 0 0 0 1px rgb(10 10 10 / 10%);
 }
 
 .navbar-burger {
