@@ -18,6 +18,7 @@ class MetadataFile {
     }
 }
 
+// TODO: Could be renamed to ExpressionPath since it is mainly used for expressions
 export class ODMPath {
     static separator = "_";
 
@@ -329,29 +330,29 @@ export function getItemOIDsWithDataType(dataType) {
     return Array.from($$(`ItemDef[DataType="${dataType}"]`)).map(item => item.getOID());
 }
 
-export function getElementsWithExpression(formOID) {
+export function getElementsWithExpression(studyEventOID, formOID) {
     let elementsWithExpression = [];
     for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
         const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
         const conditionOID = itemGroupRef.getAttribute("CollectionExceptionConditionOID");
-        if (conditionOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, elementTypes.ITEMGROUP, itemGroupOID, conditionOID, expressionTypes.CONDITION);
+        if (conditionOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, elementTypes.ITEMGROUP, new ODMPath(studyEventOID, formOID, itemGroupOID), conditionOID, expressionTypes.CONDITION);
 
         for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[CollectionExceptionConditionOID], ItemGroupDef[OID="${itemGroupOID}"] ItemRef[MethodOID]`)) {
             const itemOID = itemRef.getAttribute("ItemOID");
             const conditionOID = itemRef.getAttribute("CollectionExceptionConditionOID");
             const methodOID = itemRef.getAttribute("MethodOID");
-            if (conditionOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, elementTypes.ITEM, itemOID, conditionOID, expressionTypes.CONDITION);
-            if (methodOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, elementTypes.ITEM, itemOID, methodOID, expressionTypes.METHOD);
+            if (conditionOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, elementTypes.ITEM, new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID), conditionOID, expressionTypes.CONDITION);
+            if (methodOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, elementTypes.ITEM, new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID), methodOID, expressionTypes.METHOD);
         }
     }
 
     return elementsWithExpression;
 }
 
-function addElementWithExpression(elementList, elementType, elementOID, expressionOID, expressionType) {
+function addElementWithExpression(elementList, elementType, elementPath, expressionOID, expressionType) {
     const expressionElement = expressionType == expressionTypes.CONDITION ? $(`ConditionDef[OID="${expressionOID}"]`) : $(`MethodDef[OID="${expressionOID}"]`);
     const formalExpression = expressionElement ? expressionElement.getFormalExpression() : null;
-    if (formalExpression) elementList.push({ elementType, elementOID, expressionType, formalExpression });
+    if (formalExpression) elementList.push({ elementType, elementPath, expressionType, formalExpression });
 
     return elementList;
 }

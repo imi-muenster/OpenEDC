@@ -58,8 +58,8 @@ export function process(variables) {
 function processCondition(condition) {
     // Select conditional item group or item and hide it
     let conditionalElement;
-    if (condition.elementType == "itemgroup") conditionalElement = $(`#clinicaldata-content [item-group-content-oid="${condition.elementOID}"]`);
-    else if (condition.elementType == "item") conditionalElement = $(`#clinicaldata-content [item-field-oid="${condition.elementOID}"]`);
+    if (condition.elementType == "itemgroup") conditionalElement = $(`#clinicaldata-content [item-group-content-oid="${condition.elementPath.itemGroupOID}"]`);
+    else if (condition.elementType == "item") conditionalElement = $(`#clinicaldata-content [item-field-oid="${condition.elementPath.itemOID}"]`);
     conditionalElement.hide();
 
     // If the expression evaluates to true, show condition element
@@ -121,7 +121,7 @@ function emptyConditionalElement(conditionalElement) {
 
 function processMethod(method) {
     // Select conditional item group or item and make it read-only
-    let computedElement = $(`#clinicaldata-content [item-oid="${method.elementOID}"]`);
+    let computedElement = $(`#clinicaldata-content [item-oid="${method.elementPath.itemOID}"]`);
     computedElement.readOnly = true;
 
     // If a value can already be calculated, assign it
