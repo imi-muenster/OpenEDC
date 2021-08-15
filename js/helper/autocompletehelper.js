@@ -164,6 +164,7 @@ const elementSelected = element => {
     closeLists();
     if ((currentTokenIndex == expressionParts.length - 1 && currentPart != Object.keys(enabledParts).length) || currentMode == modes.METHOD) {
         currentInput.value += " ";
+        currentInput.focus();
         currentInput.dispatchEvent(new CustomEvent("input", { detail: { skipRender: false } }));
     } else {
         currentInput.dispatchEvent(new CustomEvent("input", { detail: { skipRender: true } }));

@@ -96,7 +96,7 @@
                     <TranslatedText xml:lang="en">Well-Being</TranslatedText>
                 </Description>
                 <ItemGroupRef ItemGroupOID="IG.9" Mandatory="No"/>
-                <ItemGroupRef ItemGroupOID="IG.6" Mandatory="No"/>
+                <ItemGroupRef ItemGroupOID="WHO.Q" Mandatory="No"/>
                 <ItemGroupRef ItemGroupOID="IG.7" Mandatory="No"/>
             </FormDef>
             <FormDef OID="F.5" Name="Placeholder" Repeating="No">
@@ -164,7 +164,7 @@
                 </Description>
                 <ItemRef ItemOID="I.17" Mandatory="No"/>
             </ItemGroupDef>
-            <ItemGroupDef OID="IG.6" Name="WHO-5 ItemGroup" Repeating="No">
+            <ItemGroupDef OID="WHO.Q" Name="WHO-5 ItemGroup" Repeating="No">
                 <Description>
                     <TranslatedText xml:lang="en">Over the last two weeks ...</TranslatedText>
                     <TranslatedText xml:lang="de">In den letzten zwei Wochen ...</TranslatedText>
@@ -621,7 +621,7 @@
                 <Description>
                     <TranslatedText xml:lang="de">M.1</TranslatedText>
                 </Description>
-                <FormalExpression Context="OpenEDC">(WHO.1 + WHO.2 + WHO.3 + WHO.4 + WHO.5) * 4</FormalExpression>
+                <FormalExpression Context="OpenEDC">(WHO.Q-WHO.1 + WHO.Q-WHO.2 + WHO.Q-WHO.3 + WHO.Q-WHO.4 + WHO.Q-WHO.5) * 4</FormalExpression>
             </MethodDef>
         </MetaDataVersion>
     </Study>
