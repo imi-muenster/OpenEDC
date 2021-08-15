@@ -22,7 +22,7 @@ export class ODMPath {
     static separator = "-";
 
     static parse(string) {
-        const elements = string.split(ODMPath.separator);
+        const elements = string ? string.split(ODMPath.separator) : [];
         return new ODMPath(...Array(4 - elements.length), ...elements);
     }
 

@@ -17,7 +17,8 @@ const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
 // Holds the OID of the currently selected SE, F, IG, I, and CL, as well as the CodedValue of the CLI
-export let currentElementID = {
+// TODO: ODMPath should be used instead
+let currentElementID = {
     studyEvent: null,
     form: null,
     itemGroup: null,
@@ -767,6 +768,8 @@ function setIOListeners() {
     autocompleteHelper.enableAutocomplete($("#collection-condition"), autocompleteHelper.modes.CONDITION);
     autocompleteHelper.enableAutocomplete($("#measurement-unit"), autocompleteHelper.modes.MEASUREMENTUNIT);
     autocompleteHelper.enableAutocomplete($("#item-method"), autocompleteHelper.modes.METHOD);
+    $("#collection-condition").addEventListener("focus", () => $("#collection-condition").setAttribute("context-path", new metadataHelper.ODMPath(currentElementID.studyEvent, currentElementID.form, currentElementID.itemGroup, currentElementID.item).toString()));
+    $("#item-method").addEventListener("focus", () => $("#item-method").setAttribute("context-path", new metadataHelper.ODMPath(currentElementID.studyEvent, currentElementID.form, currentElementID.itemGroup, currentElementID.item).toString()));
 }
 
 // TODO: The next five functions should use reloadAndStoreMetadata()

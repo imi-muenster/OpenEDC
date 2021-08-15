@@ -1,4 +1,3 @@
-import * as metadataModule from "../metadatamodule.js";
 import * as metadataHelper from "./metadatahelper.js";
 import * as languageHelper from "./languagehelper.js";
 
@@ -147,7 +146,7 @@ const elementSelected = element => {
     let newValue;
     switch (currentPart) {
         case enabledParts.ITEM:
-            const contextPath = new metadataHelper.ODMPath(metadataModule.currentElementID.studyEvent, metadataModule.currentElementID.form, metadataModule.currentElementID.itemGroup, metadataModule.currentElementID.itemOID);
+            const contextPath = metadataHelper.ODMPath.parse(currentInput.getAttribute("context-path"));
             newValue = metadataHelper.ODMPath.parse(element.value).getRelative(contextPath).toString();
             break;
         case enabledParts.VALUE:
