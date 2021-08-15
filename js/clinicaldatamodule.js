@@ -335,10 +335,11 @@ function addDynamicFormLogicPre() {
     // Add real-time logic to process items with conditions and methods
     const itemPaths = expressionHelper.getVariables(metadataHelper.getElementsWithExpression(currentElementID.studyEvent, currentElementID.form));
     const itemData = clinicaldataHelper.getDataForItems(itemPaths);
-    // TODO:
-    // if (cachedFormData) cachedFormData.forEach(entry => {
-    //     if (itemOIDs.includes(entry.itemOID)) itemData[entry.itemOID] = entry.value;
-    // });
+    if (cachedFormData) cachedFormData.forEach(entry => {
+        const cachedFormDataPath = new metadataHelper.ODMPath(currentElementID.studyEvent, currentElementID.form, entry.itemGroupOID, entry.itemOID);
+        const itemPath = itemPaths.find(itemPath => itemPath.toString() == cachedFormDataPath.toString());
+        if (itemPath) itemData[itemPath.toString()] = entry.value;
+    });
     expressionHelper.process(itemData);
 }
 
