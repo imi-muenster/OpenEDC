@@ -22,7 +22,8 @@ export class ODMPath {
     static separator = "_";
 
     static parse(string) {
-        return new ODMPath(...string.split(ODMPath.separator));
+        const elements = string.split(ODMPath.separator);
+        return new ODMPath(...Array(4 - elements.length), ...elements);
     }
 
     constructor(studyEventOID, formOID, itemGroupOID, itemOID) {

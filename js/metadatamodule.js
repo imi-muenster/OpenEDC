@@ -1,4 +1,3 @@
-import * as clinicaldataModule from "./clinicaldatamodule.js";
 import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
 import * as metadataHelper from "./helper/metadatahelper.js";
 import * as admindataHelper from "./helper/admindatahelper.js";
@@ -18,7 +17,7 @@ const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
 // Holds the OID of the currently selected SE, F, IG, I, and CL, as well as the CodedValue of the CLI
-let currentElementID = {
+export let currentElementID = {
     studyEvent: null,
     form: null,
     itemGroup: null,

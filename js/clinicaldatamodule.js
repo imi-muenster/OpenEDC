@@ -1,4 +1,3 @@
-import * as metadataModule from "./metadatamodule.js";
 import * as metadataHelper from "./helper/metadatahelper.js";
 import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
 import * as admindataHelper from "./helper/admindatahelper.js";

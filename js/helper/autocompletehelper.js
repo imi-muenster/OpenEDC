@@ -1,3 +1,4 @@
+import * as metadataModule from "../metadatamodule.js";
 import * as metadataHelper from "./metadatahelper.js";
 import * as languageHelper from "./languagehelper.js";
 
@@ -142,7 +143,18 @@ const setCurrentPartAndInput = input => {
 
 const elementSelected = element => {
     // If a value is selected, add quotes
-    const newValue = currentPart == availableParts.VALUE ? addQuotes(element.value) : element.value;
+    let newValue;
+    switch (currentPart) {
+        case enabledParts.ITEM:
+            const contextPath = new metadataHelper.ODMPath(metadataModule.currentElementID.studyEvent, metadataModule.currentElementID.form, metadataModule.currentElementID.itemGroup, metadataModule.currentElementID.itemOID);
+            newValue = metadataHelper.ODMPath.parse(element.value).getRelative(contextPath).toString();
+            break;
+        case enabledParts.VALUE:
+            newValue = addQuotes(element.value);
+            break;
+        default:
+            newValue = element.value;
+    }
 
     let expressionParts = currentInput.value.split(" ");
     expressionParts[currentTokenIndex] = newValue;
@@ -233,7 +245,8 @@ const getComparatorElements = () => {
 }
 
 const getValueElements = () => {
-    const itemOID = currentInput.value.split(" ")[currentTokenIndex - currentPart + 1];
+    const itemPath = currentInput.value.split(" ")[currentTokenIndex - currentPart + 1];
+    const itemOID = metadataHelper.ODMPath.parse(itemPath).itemOID;
     const item = metadataHelper.getElementDefByOID(itemOID);
     if (item && item.getDataType() == "boolean") {
         return [
