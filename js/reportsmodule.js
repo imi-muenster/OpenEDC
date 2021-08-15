@@ -60,6 +60,7 @@ export function show() {
 
     loadReportList();
     loadWidgets();
+    languageHelper.createLanguageSelect();
 }
 
 const loadWidgets = () => {

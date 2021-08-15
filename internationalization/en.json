@@ -31,11 +31,12 @@
     "tr": "Turkish",
     "none": "Default",
 
+    "project-options": "Project Options",
     "about": "About",
     "close-example": "Close Example",
-    "project-options": "Project Options",
-    "capture-data": "Capture Data",
-    "design-forms": "Design Forms",
+    "report-view": "Report View",
+    "form-design": "Form Design",
+    "data-collection": "Data Collection",
 
     "foundational": "Foundational",
     "extended": "Extended",
@@ -151,6 +152,8 @@
     "no-codelist-hint": "The data type of the current item is not <i>Choices</i>. If you want to add predefined choices, first set the according data type at the top.",
 
     "reports": "Reports",
+    "no-reported-selected-hint": "No reported selected",
+    "please-select-record-hint": "Please select a record first",
     "new-report": "New Report",
     "new-chart": "New Chart",
     "data-quality": "Data Quality",

@@ -30,11 +30,12 @@
     "sv": "Schwedisch",
     "tr": "Türkisch",
 
+    "project-options": "Projektoptionen",
     "about": "Impressum",
     "close-example": "Beispiel schließen",
-    "project-options": "Projektoptionen",
-    "capture-data": "Datenerfassung",
-    "design-forms": "Formularentwurf",
+    "report-view": "Berichtsansicht",
+    "form-design": "Formularentwurf",
+    "data-collection": "Datenerfassung",
 
     "foundational": "Grundlegend",
     "extended": "Erweitert",
@@ -150,6 +151,8 @@
     "no-codelist-hint": "Der Datentyp der aktuellen Frage ist nicht <i>Wahlmöglichkeiten</i>. Wenn Sie voreingestellte Wahlmöglichkeiten definieren wollen, stellen Sie zuerst den entsprechenden Datentypen oben ein.",
 
     "reports": "Berichte",
+    "no-reported-selected-hint": "Kein Bericht ausgewählt",
+    "please-select-record-hint": "Bitte wählen Sie einen Bericht",
     "new-report": "Neuer Bericht",
     "new-chart": "Neues Diagramm",
     "data-quality": "Datenqualität",

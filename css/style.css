@@ -535,6 +535,11 @@ a.panel-block:hover {
     color: gray;
 }
 
+[contenteditable] {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
 @media only screen and (max-width: 768px) {
     #language-dropdown {
         box-shadow: none;
