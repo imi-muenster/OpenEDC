@@ -194,19 +194,20 @@ const setElements = () => {
     }
 }
 
+// TODO: Optimize performance for large projects with > 1000 item paths
 const getItemElements = () => {
     let items;
     switch (currentMode) {
         case modes.CONDITION:
         case modes.METHOD:
         case modes.ITEM:
-            items = metadataHelper.getItems();
+            items = metadataHelper.getItemPaths();
             break;
         case modes.MEASUREMENTUNIT:
             items = metadataHelper.getMeasurementUnits();
             break;
         case modes.ITEMWITHCODELIST:
-            items = metadataHelper.getItemsWithCodeList();
+            items = metadataHelper.getItemPaths({ withCodeList: true });
     }
 
     switch (currentMode) {
@@ -215,15 +216,14 @@ const getItemElements = () => {
         case modes.ITEMWITHCODELIST:
         case modes.ITEM:
             return items.map(item => new AutocompleteElement(
-                item.getOID(),
-                item.getTranslatedQuestion(languageHelper.getCurrentLocale())
+                item.toString(),
+                metadataHelper.getElementDefByOID(item.itemOID).getTranslatedQuestion(languageHelper.getCurrentLocale())
             ));
         case modes.MEASUREMENTUNIT:
             return items.map(item => new AutocompleteElement(
                 item.getTranslatedSymbol(languageHelper.getCurrentLocale())
             )).filter(element => element.value);
     }
-
 }
 
 const getComparatorElements = () => {

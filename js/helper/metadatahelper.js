@@ -18,6 +18,44 @@ class MetadataFile {
     }
 }
 
+export class ODMPath {
+    static separator = "_";
+
+    static parse(string) {
+        return new ODMPath(...string.split(ODMPath.separator));
+    }
+
+    constructor(studyEventOID, formOID, itemGroupOID, itemOID) {
+        this.studyEventOID = studyEventOID;
+        this.formOID = formOID;
+        this.itemGroupOID = itemGroupOID;
+        this.itemOID = itemOID;
+    }
+
+    getRelative(contextPath) {
+        return new ODMPath(
+            this.studyEventOID == contextPath.studyEventOID ? null : this.studyEventOID,
+            this.formOID == contextPath.formOID ? null : this.formOID,
+            this.itemGroupOID == contextPath.itemGroupOID ? null : this.itemGroupOID,
+            this.itemOID
+        );
+    }
+
+    getAbsolute(contextPath) {
+        return new ODMPath(
+            this.studyEventOID ? this.studyEventOID : contextPath.studyEventOID,
+            this.formOID ? this.formOID : contextPath.formOID,
+            this.itemGroupOID ? this.itemGroupOID : contextPath.itemGroupOID,
+            this.itemOID
+        );
+    }
+
+    toString() {
+        const separator = ODMPath.separator;
+        return (this.studyEventOID ? this.studyEventOID + separator : "") + (this.formOID ? this.formOID + separator : "") + (this.itemGroupOID ? this.itemGroupOID + separator : "") + this.itemOID;
+    }
+}
+
 const $ = query => metadata.querySelector(query);
 const $$ = query => metadata.querySelectorAll(query);
 
@@ -398,13 +436,24 @@ export function getItems() {
     return Array.from($$("ItemDef"));
 }
 
-export function getItemsWithCodeList() {
-    const itemDefs = [];
-    for (const itemDef of $$("ItemDef")) {
-        if (itemDef.querySelector("CodeListRef")) itemDefs.push(itemDef);
+export function getItemPaths(options) {
+    const itemPaths = [];
+    for (const studyEventRef of $$(`Protocol StudyEventRef`)) {
+        const studyEventOID = studyEventRef.getAttribute("StudyEventOID");
+        for (const formRef of $$(`StudyEventDef[OID="${studyEventOID}"] FormRef`)) {
+            const formOID = formRef.getAttribute("FormOID");
+            for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
+                const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
+                for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
+                    const itemOID = itemRef.getAttribute("ItemOID");
+                    if (!options) itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID));
+                    else if (options.withCodeList && itemHasCodeList(itemOID)) itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID));
+                }
+            }
+        }
     }
 
-    return itemDefs;
+    return itemPaths;
 }
 
 export function getElementRefs(elementOID, elementType) {
