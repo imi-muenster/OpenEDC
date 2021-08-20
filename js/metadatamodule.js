@@ -768,6 +768,8 @@ function setIOListeners() {
     autocompleteHelper.enableAutocomplete($("#collection-condition"), autocompleteHelper.modes.CONDITION);
     autocompleteHelper.enableAutocomplete($("#measurement-unit"), autocompleteHelper.modes.MEASUREMENTUNIT);
     autocompleteHelper.enableAutocomplete($("#item-method"), autocompleteHelper.modes.METHOD);
+
+    // TODO: Not very nice approach -- identify different way to pass contextPath to autocompleteHelper
     $("#collection-condition").addEventListener("focus", () => $("#collection-condition").setAttribute("context-path", new metadataHelper.ODMPath(currentElementID.studyEvent, currentElementID.form, currentElementID.itemGroup, currentElementID.item).toString()));
     $("#item-method").addEventListener("focus", () => $("#item-method").setAttribute("context-path", new metadataHelper.ODMPath(currentElementID.studyEvent, currentElementID.form, currentElementID.itemGroup, currentElementID.item).toString()));
 }

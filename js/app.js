@@ -8,6 +8,7 @@ import * as admindataHelper from "./helper/admindatahelper.js";
 import * as odmValidation from "./helper/odmvalidation.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
+import * as pluginRegistrar from "../plugins/registrar.js";
 
 const appVersion = "0.7.1";
 
@@ -116,9 +117,10 @@ const startApp = async () => {
     // Only required because of a bug in Safari (selects without a value show a value if the textContent of their option elements is changed -- which happens during localize())
     if (getCurrentMode() == appModes.METADATA) metadataModule.reloadDetailsPanel();
 
-    // After all, check app version or whether app is currently offline and subscribe to server updates
+    // After all, check app version or whether app is currently offline, subscribe to server updates, and enable plugins
     checkAppVersion();
     subscribeToServerUpdates();
+    pluginRegistrar.enablePlugins();
 }
 
 const setTitles = () => {
