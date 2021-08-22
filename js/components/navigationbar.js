@@ -36,16 +36,31 @@ class NavigationBar extends HTMLElement {
                                     <div class="dropdown-trigger">
                                         <button class="button is-link is-light">
                                             <span class="icon">
-                                                <i class="fas fa-play"></i>
+                                                <i></i>
                                             </span>
                                             <span id="current-app-mode"></span>
                                         </button>
                                     </div>
                                     <div class="dropdown-menu is-hidden-mobile">
                                         <div class="dropdown-content has-border-shadow">
-                                            <a class="dropdown-item" id="clinicaldata-mode-button" i18n="data-collection"></a>
-                                            <a class="dropdown-item" id="metadata-mode-button" i18n="form-design"></a>
-                                            <a class="dropdown-item" id="reports-mode-button" i18n="report-view"></a>
+                                            <a class="dropdown-item" id="clinicaldata-mode-button">
+                                                <span class="icon">
+                                                    <i class="fas fa-pencil"></i>
+                                                </span>
+                                                <span i18n="data-collection"></span>
+                                            </a>
+                                            <a class="dropdown-item" id="metadata-mode-button">
+                                                <span class="icon">
+                                                    <i class="fas fa-drafting-compass"></i>
+                                                </span>
+                                                <span i18n="form-design"></span>
+                                            </a>
+                                            <a class="dropdown-item" id="reports-mode-button">
+                                                <span class="icon">
+                                                    <i class="fas fa-chart-pie"></i>
+                                                </span>
+                                                <span i18n="report-view"></span>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
