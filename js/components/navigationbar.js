@@ -35,13 +35,12 @@ class NavigationBar extends HTMLElement {
                                 <div class="dropdown is-right" id="app-mode-button">
                                     <div class="dropdown-trigger">
                                         <button class="button is-link is-light">
-                                            <span class="icon">
-                                                <i></i>
+                                            <span class="icon"><i></i>
                                             </span>
                                             <span id="current-app-mode"></span>
                                         </button>
                                     </div>
-                                    <div class="dropdown-menu is-hidden-mobile">
+                                    <div class="dropdown-menu">
                                         <div class="dropdown-content has-border-shadow">
                                             <a class="dropdown-item" id="clinicaldata-mode-button">
                                                 <span class="icon">

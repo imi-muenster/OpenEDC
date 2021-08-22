@@ -545,6 +545,13 @@ a.panel-block:hover {
         box-shadow: none;
     }
 
+    #app-mode-button .dropdown-menu {
+        top: auto;
+        left: 0;
+        bottom: 100%;
+        padding-bottom: 4px;
+    }
+
     .modal-content {
         max-height: calc(100vh - 120px);
     }

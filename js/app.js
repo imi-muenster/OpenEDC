@@ -14,7 +14,8 @@ const appVersion = "0.7.1";
 
 const appModes = {
     METADATA: 1,
-    CLINICALDATA: 2
+    CLINICALDATA: 2,
+    REPORTS: 3
 };
 
 const appStates = {
@@ -610,8 +611,8 @@ function showMetadata() {
     $("#current-app-mode").textContent = languageHelper.getTranslation("form-design");
     $("#current-app-mode").setAttribute("i18n", "form-design");
     $("#app-mode-button .icon i").className = "fas fa-drafting-compass";
-    $("#app-mode-button").deactivate();
-
+    
+    ioHelper.hideMenu();
     metadataModule.show();
 }
 
@@ -626,8 +627,8 @@ function showClinicaldata() {
     $("#current-app-mode").textContent = languageHelper.getTranslation("data-collection");
     $("#current-app-mode").setAttribute("i18n", "data-collection");
     $("#app-mode-button .icon i").className = "fas fa-pencil";
-    $("#app-mode-button").deactivate();
-
+    
+    ioHelper.hideMenu();
     clinicaldataModule.show();
 }
 
@@ -644,8 +645,8 @@ function showReports() {
     $("#current-app-mode").textContent = languageHelper.getTranslation("report-view");
     $("#current-app-mode").setAttribute("i18n", "report-view");
     $("#app-mode-button .icon i").className = "fas fa-chart-pie";
-    $("#app-mode-button").deactivate();
-
+    
+    ioHelper.hideMenu();
     reportsModule.show();
 }
 
@@ -758,7 +759,9 @@ async function subscribeToServerUpdates() {
 }
 
 function getCurrentMode() {
-    return $("#metadata-section").isVisible() ? appModes.METADATA : appModes.CLINICALDATA;
+    if ($("#metadata-section").isVisible()) return appModes.METADATA;
+    else if ($("#clinicaldata-section").isVisible()) return appModes.CLINICALDATA;
+    else if ($("#reports-section").isVisible()) return appModes.REPORTS;
 }
 
 function getCurrentState() {

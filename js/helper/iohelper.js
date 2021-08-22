@@ -533,6 +533,7 @@ export function hideMenu() {
     $(".navbar-menu").deactivate();
     $(".navbar-burger").deactivate();
     $("#language-navbar-item").deactivate();
+    $("#app-mode-button").deactivate();
     $("#language-dropdown").classList.add("is-hidden-touch");
 }
 
