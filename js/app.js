@@ -580,6 +580,10 @@ export function setIOListeners() {
     $("#metadata-mode-button").onclick = () => showMetadata();
     $("#clinicaldata-mode-button").onclick = () => showClinicaldata();
     $("#reports-mode-button").onclick = () => showReports();
+    $("#app-mode-button .dropdown-trigger").addEventListener("click", () => {
+        $("#app-mode-button").classList.toggle("is-active");
+        $("#app-mode-button").classList.toggle("is-hidden-touch");
+    });
     $("#app-mode-button").addEventListener("mouseenter", () => $("#app-mode-button").activate());
     $("#app-mode-button").addEventListener("mouseleave", () => $("#app-mode-button").deactivate());
 
