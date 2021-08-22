@@ -232,7 +232,7 @@ function adjustUIToUser() {
         }
         if (!user.rights.includes(admindataHelper.userRights.EDITMETADATA)) {
             if (getCurrentMode() == appModes.METADATA) metadataModule.hide();
-            $("#metadata-toggle-button").hide();
+            $("#metadata-mode-button").hide();
         }
         if (!user.rights.includes(admindataHelper.userRights.MANAGESUBJECTS)) {
             $("#subject-info-button").hide();
@@ -576,9 +576,11 @@ window.removeClinicaldata = async function() {
 // IO or event listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
 export function setIOListeners() {
     // Toggle buttons between metadata, clinical data, and reports module
-    $("#metadata-toggle-button").onclick = () => showMetadata();
-    $("#clinicaldata-toggle-button").onclick = () => showClinicaldata();
-    $("#reports-toggle-button").onclick = () => showReports();
+    $("#metadata-mode-button").onclick = () => showMetadata();
+    $("#clinicaldata-mode-button").onclick = () => showClinicaldata();
+    $("#reports-mode-button").onclick = () => showReports();
+    $("#app-mode-button").addEventListener("mouseenter", () => $("#app-mode-button").activate());
+    $("#app-mode-button").addEventListener("mouseleave", () => $("#app-mode-button").deactivate());
 
     // Further auxiliary input listeners
     $("body").onresize = ioHelper.setTreeMaxHeight;
@@ -599,27 +601,33 @@ function showMetadata() {
     if (clinicaldataModule.safeCloseClinicaldata(showMetadata)) return;
 
     $("#metadata-section").show();
+    $("#metadata-mode-button").hide();
     $("#clinicaldata-section").hide();
+    $("#clinicaldata-mode-button").show();
     $("#reports-section").hide();
+    $("#reports-mode-button").show();
 
-    $("#metadata-toggle-button").classList.add("is-link", "is-light");
-    $("#clinicaldata-toggle-button").classList.remove("is-link", "is-light");
-    $("#reports-toggle-button").classList.remove("is-link", "is-light");
+    $("#current-app-mode").textContent = languageHelper.getTranslation("form-design");
+    $("#current-app-mode").setAttribute("i18n", "form-design");
+    $("#app-mode-button .icon i").className = "fas fa-drafting-compass";
+    $("#app-mode-button").deactivate();
 
-    $("#metadata-toggle-button").blur();
     metadataModule.show();
 }
 
 function showClinicaldata() {
     $("#metadata-section").hide();
+    $("#metadata-mode-button").show();
     $("#clinicaldata-section").show();
+    $("#clinicaldata-mode-button").hide();
     $("#reports-section").hide();
+    $("#reports-mode-button").show();
 
-    $("#metadata-toggle-button").classList.remove("is-link", "is-light");
-    $("#clinicaldata-toggle-button").classList.add("is-link", "is-light");
-    $("#reports-toggle-button").classList.remove("is-link", "is-light");
+    $("#current-app-mode").textContent = languageHelper.getTranslation("data-collection");
+    $("#current-app-mode").setAttribute("i18n", "data-collection");
+    $("#app-mode-button .icon i").className = "fas fa-pencil";
+    $("#app-mode-button").deactivate();
 
-    $("#clinicaldata-toggle-button").blur();
     clinicaldataModule.show();
 }
 
@@ -627,14 +635,17 @@ function showReports() {
     if (clinicaldataModule.safeCloseClinicaldata(showReports)) return;
 
     $("#metadata-section").hide();
+    $("#metadata-mode-button").show();
     $("#clinicaldata-section").hide();
+    $("#clinicaldata-mode-button").show();
     $("#reports-section").show();
+    $("#reports-mode-button").hide();
 
-    $("#metadata-toggle-button").classList.remove("is-link", "is-light");
-    $("#clinicaldata-toggle-button").classList.remove("is-link", "is-light");
-    $("#reports-toggle-button").classList.add("is-link", "is-light");
+    $("#current-app-mode").textContent = languageHelper.getTranslation("report-view");
+    $("#current-app-mode").setAttribute("i18n", "report-view");
+    $("#app-mode-button .icon i").className = "fas fa-chart-pie";
+    $("#app-mode-button").deactivate();
 
-    $("#reports-toggle-button").blur();
     reportsModule.show();
 }
 

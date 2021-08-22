@@ -194,6 +194,9 @@ readers do not read off random characters that represent icons */
 .fa-bars:before {
   content: "\f0c9"; }
 
+.fa-chart-pie:before {
+  content: "\f200"; }
+
 .fa-check:before {
   content: "\f00c"; }
 
@@ -215,14 +218,14 @@ readers do not read off random characters that represent icons */
 .fa-dot-circle:before {
   content: "\f192"; }
 
+.fa-drafting-compass:before {
+  content: "\f568"; }
+
 .fa-ellipsis-h:before {
   content: "\f141"; }
 
 .fa-expand:before {
   content: "\f065"; }
-
-.fa-history:before {
-  content: "\f1da"; }
 
 .fa-lock:before {
   content: "\f023"; }
@@ -230,8 +233,8 @@ readers do not read off random characters that represent icons */
 .fa-map-marker-alt:before {
   content: "\f3c5"; }
 
-.fa-play:before {
-  content: "\f04b"; }
+.fa-pencil:before {
+  content: "\f040"; }
 
 .fa-plus:before {
   content: "\f067"; }
@@ -247,9 +250,6 @@ readers do not read off random characters that represent icons */
 
 .fa-sort-alpha-down:before {
   content: "\f15d"; }
-
-.fa-stop:before {
-  content: "\f04d"; }
 
 .fa-text:before {
   content: "\f893"; }
