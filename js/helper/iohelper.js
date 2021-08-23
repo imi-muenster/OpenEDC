@@ -63,13 +63,13 @@ let user = null;
 let decryptionKey = null;
 let serverURL = null;
 
-// Keeps app options that are equal for all users of the app
 export const subjectKeyModes = {
     MANUAL: "subject-key-mode-manual",
     AUTO: "subject-key-mode-auto",
     BARCODE: "subject-key-mode-barcode"
 }
 
+// Keeps app options that are equal for all users of the app
 let settings = {
     surveyCode: null,
     textAsTextarea: false,
@@ -267,46 +267,13 @@ export function getLoggedInUser() {
     return user;
 }
 
-// TODO: Setting and getting project settings should be more generic
-export function setSurveyCode(surveyCode) {
-    if (surveyCode.length == 0 || (parseInt(surveyCode) == surveyCode && surveyCode.length == 4)) {
-        settings.surveyCode = surveyCode;
-        storeSettings();
-        return Promise.resolve();
-    } else {
-        return Promise.reject();
-    }
-}
-
-export function getSurveyCode() {
-    return settings.surveyCode;
-}
-
-export function setTextAsTextarea(enable) {
-    settings.textAsTextarea = enable;
+export function setSetting(key, value) {
+    settings[key] = value;
     storeSettings();
 }
 
-export function isTextAsTextarea() {
-    return settings.textAsTextarea;
-}
-
-export function setAutoSurveyView(enable) {
-    settings.autoSurveyView = enable;
-    storeSettings();
-}
-
-export function isAutoSurveyView() {
-    return settings.autoSurveyView;
-}
-
-export function setSubjectKeyMode(subjectKeyMode) {
-    settings.subjectKeyMode = subjectKeyMode;
-    storeSettings();
-}
-
-export function getSubjectKeyMode() {
-    return settings.subjectKeyMode;
+export function getSetting(key) {
+    return settings[key];
 }
 
 export async function getServerStatus(url, storeServerURL) {

@@ -329,12 +329,12 @@ window.showProjectModal = function() {
     }
 
     // TODO: Use optional chaining instead
-    const subjectKeyModeRadio = $(`#${ioHelper.getSubjectKeyMode()}`);
+    const subjectKeyModeRadio = $(`#${ioHelper.getSetting("subjectKeyMode")}`);
     if (subjectKeyModeRadio) subjectKeyModeRadio.checked = true;
 
-    $("#survey-code-input").value = ioHelper.getSurveyCode();
-    $("#text-as-textarea-checkbox").checked = ioHelper.isTextAsTextarea();
-    $("#auto-survey-view-checkbox").checked = ioHelper.isAutoSurveyView();
+    $("#survey-code-input").value = ioHelper.getSetting("surveyCode");
+    $("#text-as-textarea-checkbox").checked = ioHelper.getSetting("textAsTextarea");
+    $("#auto-survey-view-checkbox").checked = ioHelper.getSetting("autoSurveyView");
     $("#study-name-input").value = metadataHelper.getStudyName();
     $("#study-description-textarea").value = metadataHelper.getStudyDescription();
     $("#protocol-name-input").value = metadataHelper.getProtocolName();
@@ -453,23 +453,27 @@ window.encryptData = function(event) {
 }
 
 window.setSurveyCode = function() {
-    ioHelper.setSurveyCode($("#survey-code-input").value)
-        .then(() => hideProjectModal())
-        .catch(() => ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("survey-code-error")));
+    const surveyCode = $("#survey-code-input").value;
+    if (surveyCode.length == 0 || (parseInt(surveyCode) == surveyCode && surveyCode.length == 4)) {
+        ioHelper.setSetting("surveyCode", surveyCode);
+        hideProjectModal();
+    } else {
+        ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("survey-code-error"));
+    }
 }
 
 window.miscOptionClicked = function(event) {
     switch (event.target.id) {
         case "text-as-textarea-checkbox":
-            ioHelper.setTextAsTextarea(event.target.checked);
+            ioHelper.setSetting("textAsTextarea", event.target.checked);
             return;
         case "auto-survey-view-checkbox":
-            ioHelper.setAutoSurveyView(event.target.checked);
+            ioHelper.setSetting("autoSurveyView", event.target.checked);
     }
 }
 
 window.subjectKeyModeClicked = function(event) {
-    ioHelper.setSubjectKeyMode(event.target.id);
+    ioHelper.setSetting("subjectKeyMode", event.target.id);
     showSubjectKeyModeElement();
 }
 
@@ -477,7 +481,7 @@ function showSubjectKeyModeElement() {
     $$(".subject-key-mode-element").forEach(button => button.hide());
 
     // TODO: Use optional chaining instead
-    const subjectKeyModeElement = $(`#${ioHelper.getSubjectKeyMode()}-element`);
+    const subjectKeyModeElement = $(`#${ioHelper.getSetting("subjectKeyMode")}-element`);
     if (subjectKeyModeElement) subjectKeyModeElement.parentNode.show();
 }
 

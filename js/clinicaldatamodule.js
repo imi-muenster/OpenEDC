@@ -245,7 +245,7 @@ async function loadFormsByStudyEvent() {
     }
 
     // Automatically start the survey view when activated in project options and the current device is a smartphone or tablet
-    if (ioHelper.isAutoSurveyView() && ioHelper.isMobile() && currentElementID.subject && formDefs.length && !currentElementID.form) {
+    if (ioHelper.getSetting("autoSurveyView") && ioHelper.isMobile() && currentElementID.subject && formDefs.length && !currentElementID.form) {
         currentElementID.form = formDefs[0].getOID();
         showSurveyView();
         adjustMobileUI();
@@ -313,7 +313,7 @@ async function loadFormMetadata() {
     $("#clinicaldata-form-title .subtitle").textContent = formDef.getTranslatedDescription(languageHelper.getCurrentLocale(), true);
 
     // Add the empty form
-    let form = await metadataHelper.getFormAsHTML(currentElementID.form, ioHelper.isTextAsTextarea());
+    let form = await metadataHelper.getFormAsHTML(currentElementID.form, ioHelper.getSetting("textAsTextarea"));
     ioHelper.safeRemoveElement($("#odm-html-content"));
     $("#clinicaldata-content").appendChild(form);
 
@@ -647,8 +647,8 @@ window.cancelFormOrSurveyEntry = function(closeSurvey) {
         return;
     } else if (surveyViewIsActive()) {
         hideSurveyView();
-        if (ioHelper.getSurveyCode()) showSurveyCodeModal();
-        if (ioHelper.isAutoSurveyView() && ioHelper.isMobile()) currentElementID.studyEvent = null;
+        if (ioHelper.getSetting("surveyCode")) showSurveyCodeModal();
+        if (ioHelper.getSetting("autoSurveyView") && ioHelper.isMobile()) currentElementID.studyEvent = null;
         skipDataHasChangedCheck = true;
     }
 
@@ -758,7 +758,7 @@ function surveyCodeButtonPressed(value) {
 
     $("#wrong-survey-code-hint").hide();
     if (surveyCode.length == 4) {
-        if (surveyCode == ioHelper.getSurveyCode()) {
+        if (surveyCode == ioHelper.getSetting("surveyCode")) {
             $("#survey-code-modal").deactivate();
         } else {
             $("#wrong-survey-code-hint").show();

@@ -254,7 +254,7 @@ function sortSubjects(subjects, sortOrder) {
             subjects.sort((a, b) => a.createdDate > b.createdDate ? 1 : (a.createdDate < b.createdDate ? -1 : 0));
             break;
         case sortOrderTypes.ALPHANUMERICALLY:
-            if (ioHelper.getSubjectKeyMode() == ioHelper.subjectKeyModes.AUTO) subjects.sort((a, b) => a.keyInt > b.keyInt ? 1 : (a.keyInt < b.keyInt ? -1 : 0));
+            if (ioHelper.getSetting("subjectKeyMode") == ioHelper.subjectKeyModes.AUTO) subjects.sort((a, b) => a.keyInt > b.keyInt ? 1 : (a.keyInt < b.keyInt ? -1 : 0));
             else subjects.sort((a, b) => a.key > b.key ? 1 : (a.key < b.key ? -1 : 0));
     }
 
