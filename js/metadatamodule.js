@@ -1004,7 +1004,7 @@ window.elementDrop = async function(event) {
 }
 
 window.showRemoveModal = async function() {
-    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(currentPath.last, getCurrentElementType(), currentPath.itemOID, currentPath.value);
+    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementType(), currentPath);
     if (subjectKeys.length) {
         ioHelper.showMessage(languageHelper.getTranslation("cannot-be-removed"), languageHelper.getTranslation("cannot-be-removed-text") + subjectKeys.join(", ") + "</strong>");
     } else {
