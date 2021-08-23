@@ -107,7 +107,7 @@ const startApp = async () => {
     setIOListeners();
 
     // If there is at least one study event, automatically open the clinicaldata module
-    metadataHelper.getStudyEvents().length ? showClinicaldata() : showMetadata();
+    enableMode(metadataHelper.getStudyEvents().length ? appModes.CLINICALDATA : appModes.METADATA);
 
     // For performance purposes, add remaining modals to DOM after main app has been rendered
     addModalsToDOM();
@@ -577,9 +577,9 @@ window.removeClinicaldata = async function() {
 // IO or event listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
 export function setIOListeners() {
     // Toggle buttons between metadata, clinical data, and reports module
-    $("#metadata-mode-button").onclick = () => showMetadata();
-    $("#clinicaldata-mode-button").onclick = () => showClinicaldata();
-    $("#reports-mode-button").onclick = () => showReports();
+    $("#metadata-mode-button").onclick = () => enableMode(appModes.METADATA);
+    $("#clinicaldata-mode-button").onclick = () => enableMode(appModes.CLINICALDATA);
+    $("#reports-mode-button").onclick = () => enableMode(appModes.REPORTS);
     $("#app-mode-button .dropdown-trigger").addEventListener("click", () => $("#app-mode-button").classList.toggle("is-active"));
     $("#app-mode-button").addEventListener("mouseenter", () => $("#app-mode-button").activate());
     $("#app-mode-button").addEventListener("mouseleave", () => $("#app-mode-button").deactivate());
@@ -599,56 +599,43 @@ export function setIOListeners() {
     $("#language-navbar-item").addEventListener("mouseleave", () => $("#language-navbar-item").deactivate());
 }
 
-function showMetadata() {
-    if (clinicaldataModule.safeCloseClinicaldata(showMetadata)) return;
-
-    $("#metadata-section").show();
-    $("#metadata-mode-button").hide();
-    $("#clinicaldata-section").hide();
-    $("#clinicaldata-mode-button").show();
-    $("#reports-section").hide();
-    $("#reports-mode-button").show();
-
-    $("#current-app-mode").textContent = languageHelper.getTranslation("form-design");
-    $("#current-app-mode").setAttribute("i18n", "form-design");
-    $("#app-mode-button .icon i").className = "fas fa-drafting-compass";
-    
-    ioHelper.hideMenu();
-    metadataModule.show();
-}
-
-function showClinicaldata() {
-    $("#metadata-section").hide();
-    $("#metadata-mode-button").show();
-    $("#clinicaldata-section").show();
-    $("#clinicaldata-mode-button").hide();
-    $("#reports-section").hide();
-    $("#reports-mode-button").show();
-
-    $("#current-app-mode").textContent = languageHelper.getTranslation("data-collection");
-    $("#current-app-mode").setAttribute("i18n", "data-collection");
-    $("#app-mode-button .icon i").className = "fas fa-stethoscope";
-    
-    ioHelper.hideMenu();
-    clinicaldataModule.show();
-}
-
-function showReports() {
-    if (clinicaldataModule.safeCloseClinicaldata(showReports)) return;
+function enableMode(mode) {
+    if (clinicaldataModule.safeCloseClinicaldata(() => enableMode(mode))) return;
 
     $("#metadata-section").hide();
-    $("#metadata-mode-button").show();
     $("#clinicaldata-section").hide();
+    $("#reports-section").hide();
+    $("#metadata-mode-button").show();
     $("#clinicaldata-mode-button").show();
-    $("#reports-section").show();
-    $("#reports-mode-button").hide();
+    $("#reports-mode-button").show();
 
-    $("#current-app-mode").textContent = languageHelper.getTranslation("report-view");
-    $("#current-app-mode").setAttribute("i18n", "report-view");
-    $("#app-mode-button .icon i").className = "fas fa-chart-pie";
-    
+    switch (mode) {
+        case appModes.METADATA:
+            $("#current-app-mode").textContent = languageHelper.getTranslation("form-design");
+            $("#current-app-mode").setAttribute("i18n", "form-design");
+            $("#app-mode-button .icon i").className = "fas fa-drafting-compass";
+            $("#metadata-section").show();
+            $("#metadata-mode-button").hide();
+            metadataModule.show();
+            break;
+        case appModes.CLINICALDATA:
+            $("#current-app-mode").textContent = languageHelper.getTranslation("data-collection");
+            $("#current-app-mode").setAttribute("i18n", "data-collection");
+            $("#app-mode-button .icon i").className = "fas fa-stethoscope";
+            $("#clinicaldata-section").show();
+            $("#clinicaldata-mode-button").hide();
+            clinicaldataModule.show();
+            break;
+        case appModes.REPORTS:
+            $("#current-app-mode").textContent = languageHelper.getTranslation("report-view");
+            $("#current-app-mode").setAttribute("i18n", "report-view");
+            $("#app-mode-button .icon i").className = "fas fa-chart-pie";
+            $("#reports-section").show();
+            $("#reports-mode-button").hide();
+            reportsModule.show();
+    }
+
     ioHelper.hideMenu();
-    reportsModule.show();
 }
 
 function addModalsToDOM() {
