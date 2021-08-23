@@ -31,7 +31,6 @@ let currentElementID = {
 let viewOnlyMode = false;
 let asyncEditMode = false;
 let elementTypeOnDrag = null;
-let locale = null;
 
 export function init() {
     createDatatypeMandatorySelect();
@@ -63,10 +62,6 @@ function setEditMode() {
     } else {
         viewOnlyMode = false;
     }
-}
-
-export function setLanguage(newLocale) {
-    locale = newLocale;
 }
 
 function createPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, codedValue) {
@@ -134,7 +129,7 @@ export function loadStudyEvents(hideTree) {
 
     let studyEventDefs = metadataHelper.getStudyEvents();
     for (let studyEventDef of studyEventDefs) {
-        let translatedDescription = studyEventDef.getTranslatedDescription(locale);
+        let translatedDescription = studyEventDef.getTranslatedDescription(languageHelper.getCurrentLocale());
         let panelBlock = createPanelBlock(studyEventDef.getOID(), metadataHelper.elementTypes.STUDYEVENT, translatedDescription, studyEventDef.getName());
         panelBlock.onclick = studyEventClicked;
         $("#study-event-panel-blocks").appendChild(panelBlock);
@@ -159,7 +154,7 @@ function loadFormsByStudyEvent(hideTree) {
 
     let formDefs = metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent);
     for (let formDef of formDefs) {
-        let translatedDescription = formDef.getTranslatedDescription(locale);
+        let translatedDescription = formDef.getTranslatedDescription(languageHelper.getCurrentLocale());
         let panelBlock = createPanelBlock(formDef.getOID(), metadataHelper.elementTypes.FORM, translatedDescription, formDef.getName());
         panelBlock.onclick = formClicked;
         $("#form-panel-blocks").appendChild(panelBlock);
@@ -184,7 +179,7 @@ function loadItemGroupsByForm(hideTree) {
 
     let itemGroupDefs = metadataHelper.getItemGroupsByForm(currentElementID.form);
     for (let itemGroupDef of itemGroupDefs) {
-        let translatedDescription = itemGroupDef.getTranslatedDescription(locale);
+        let translatedDescription = itemGroupDef.getTranslatedDescription(languageHelper.getCurrentLocale());
         let panelBlock = createPanelBlock(itemGroupDef.getOID(), metadataHelper.elementTypes.ITEMGROUP, translatedDescription, itemGroupDef.getName());
         panelBlock.onclick = itemGroupClicked;
         $("#item-group-panel-blocks").appendChild(panelBlock);
@@ -209,7 +204,7 @@ function loadItemsByItemGroup(hideTree) {
 
     let itemDefs = metadataHelper.getItemsByItemGroup(currentElementID.itemGroup);
     for (let itemDef of itemDefs) {
-        let translatedQuestion = itemDef.getTranslatedQuestion(locale);
+        let translatedQuestion = itemDef.getTranslatedQuestion(languageHelper.getCurrentLocale());
         const dataType = itemDef.querySelector("CodeListRef") ? metadataHelper.elementTypes.CODELIST : itemDef.getDataType();
         let panelBlock = createPanelBlock(itemDef.getOID(), metadataHelper.elementTypes.ITEM, translatedQuestion, itemDef.getName(), languageHelper.getTranslation(dataType));
         panelBlock.onclick = itemClicked;
@@ -235,7 +230,7 @@ function loadCodeListItemsByItem(hideTree) {
 
     let codeListItems = metadataHelper.getCodeListItemsByItem(currentElementID.item);
     for (let codeListItem of codeListItems) {
-        let translatedDecode = codeListItem.getTranslatedDecode(locale);
+        let translatedDecode = codeListItem.getTranslatedDecode(languageHelper.getCurrentLocale());
         let panelBlock = createPanelBlock(codeListItem.parentNode.getOID(), metadataHelper.elementTypes.CODELISTITEM, translatedDecode, codeListItem.getCodedValue(), null, codeListItem.getCodedValue());
         panelBlock.onclick = codeListItemClicked;
         $("#code-list-item-panel-blocks").appendChild(panelBlock);
@@ -326,7 +321,7 @@ function fillDetailsPanelFoundational() {
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
             $("#id-input").value = getCurrentElementOID();
-            $("#translation-textarea").value = element.getTranslatedDescription(locale);
+            $("#translation-textarea").value = element.getTranslatedDescription(languageHelper.getCurrentLocale());
             break;
         case metadataHelper.elementTypes.ITEM:
             $("#datatype-select-inner").disabled = false;
@@ -334,7 +329,7 @@ function fillDetailsPanelFoundational() {
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-question");
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             $("#id-input").value = getCurrentElementOID();
-            $("#translation-textarea").value = element.getTranslatedQuestion(locale);
+            $("#translation-textarea").value = element.getTranslatedQuestion(languageHelper.getCurrentLocale());
             $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(getCurrentElementOID()) ? metadataHelper.elementTypes.CODELIST + "-" + element.getDataType() : element.getDataType();
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
@@ -343,7 +338,7 @@ function fillDetailsPanelFoundational() {
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-choice");
             element = metadataHelper.getCodeListItem(currentElementID.codeList, currentElementID.codeListItem);
             $("#id-input").value = element.getCodedValue();
-            $("#translation-textarea").value = element.getTranslatedDecode(locale);
+            $("#translation-textarea").value = element.getTranslatedDecode(languageHelper.getCurrentLocale());
     }
 }
 
@@ -363,7 +358,7 @@ function fillDetailsPanelExtended() {
             $("#collection-condition").value = condition ? condition.getFormalExpression() : null;
             $("#collection-condition").disabled = false;
             const measurementUnit = metadataHelper.getItemMeasurementUnit(getCurrentElementOID());
-            $("#measurement-unit").value = measurementUnit ? measurementUnit.getTranslatedSymbol(locale) : null;
+            $("#measurement-unit").value = measurementUnit ? measurementUnit.getTranslatedSymbol(languageHelper.getCurrentLocale()) : null;
             $("#measurement-unit").disabled = false;
             const method = metadataHelper.getItemMethod(getCurrentElementOID(), getCurrentElementParentOID());
             $("#item-method").value = method ? method.getFormalExpression() : null;
@@ -382,11 +377,11 @@ function fillDetailsPanelDuplicate() {
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
         case metadataHelper.elementTypes.ITEM:
-            translatedTexts = references.map(reference => reference.parentNode.getTranslatedDescription(locale, true));
+            translatedTexts = references.map(reference => reference.parentNode.getTranslatedDescription(languageHelper.getCurrentLocale(), true));
             if (!viewOnlyMode) [$("#reference-button"), $("#shallow-copy-button"), $("#deep-copy-button")].enableElements();
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
-            translatedTexts = references.map(reference => reference.parentNode.getTranslatedQuestion(locale, true));
+            translatedTexts = references.map(reference => reference.parentNode.getTranslatedQuestion(languageHelper.getCurrentLocale(), true));
     }
 
     if (translatedTexts.length > 1) {
@@ -476,20 +471,20 @@ async function saveDetailsFoundational() {
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
             await setElementOIDAndName(newID);
-            metadataHelper.setElementDescription(getCurrentElementOID(), newTranslatedText, locale);
+            metadataHelper.setElementDescription(getCurrentElementOID(), newTranslatedText);
             break;
         case metadataHelper.elementTypes.ITEM:
             await setElementOIDAndName(newID);
-            metadataHelper.setItemQuestion(getCurrentElementOID(), newTranslatedText, locale);
+            metadataHelper.setItemQuestion(getCurrentElementOID(), newTranslatedText);
             metadataHelper.setElementMandatory(getCurrentElementOID(), getCurrentElementType(), $("#mandatory-select-inner").value, getCurrentElementParentOID());
             handleItemDataType(getCurrentElementOID(), $("#datatype-select-inner").value);
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             await setCodeListItemCodedValue(newID);
-            metadataHelper.setCodeListItemDecodedText(currentElementID.codeList, currentElementID.codeListItem, newTranslatedText, locale);
+            metadataHelper.setCodeListItemDecodedText(currentElementID.codeList, currentElementID.codeListItem, newTranslatedText);
     }
 
-    if (!languageHelper.getPresentLanguages().includes(locale)) {
+    if (!languageHelper.getPresentLanguages().includes(languageHelper.getCurrentLocale())) {
         languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
         languageHelper.createLanguageSelect(true);
     }
@@ -627,7 +622,7 @@ function saveMethodForElements(formalExpression, currentMethod, elementRefs, cha
 function saveMeasurementUnitPreCheck() {
     const symbol = $("#measurement-unit").value;
     const currentMeasurementUnit = metadataHelper.getItemMeasurementUnit(getCurrentElementOID());
-    if (symbol && currentMeasurementUnit && symbol == currentMeasurementUnit.getTranslatedSymbol(locale)) return;
+    if (symbol && currentMeasurementUnit && symbol == currentMeasurementUnit.getTranslatedSymbol(languageHelper.getCurrentLocale())) return;
 
     const currentItemDef = metadataHelper.getElementDefByOID(getCurrentElementOID());
     if (currentMeasurementUnit) {
@@ -649,7 +644,7 @@ function saveMeasurementUnitPreCheck() {
 }
 
 function saveMeasurementUnitForElements(symbol, currentMeasurementUnit, itemDefs, changeAll, promptInitiated) {
-    const identicalMeasurementUnit = metadataHelper.getMeasurementUnits().find(measurementUnit => measurementUnit.getTranslatedSymbol(locale) == symbol);
+    const identicalMeasurementUnit = metadataHelper.getMeasurementUnits().find(measurementUnit => measurementUnit.getTranslatedSymbol(languageHelper.getCurrentLocale()) == symbol);
 
     let measurementUnitOID;
     if (symbol && currentMeasurementUnit && changeAll && !identicalMeasurementUnit) {
@@ -1062,13 +1057,13 @@ window.showCodeListModal = function() {
 
     // Add the item question and use the name as fallback
     const itemDef = metadataHelper.getElementDefByOID(currentElementID.item);
-    $("#codelist-modal h2").textContent = itemDef.getTranslatedQuestion(locale, true);
+    $("#codelist-modal h2").textContent = itemDef.getTranslatedQuestion(languageHelper.getCurrentLocale(), true);
 
     // Render the notification when the codelist is used for more than one item
     const codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
     const codeListReferences = metadataHelper.getElementRefs(codeListOID, metadataHelper.elementTypes.CODELISTITEM);
     if (codeListReferences.length > 1) {
-        const translatedQuestions = codeListReferences.map(reference => reference.parentNode.getTranslatedQuestion(locale, true));
+        const translatedQuestions = codeListReferences.map(reference => reference.parentNode.getTranslatedQuestion(languageHelper.getCurrentLocale(), true));
         $("#codelist-modal #codelist-references-list").innerHTML = translatedQuestions.join("<br>");
         $("#codelist-modal .notification").show();
         $("#codelist-modal #codelist-reference-field").hide();
@@ -1080,7 +1075,7 @@ window.showCodeListModal = function() {
 
     // Generate the string containing all coded values and translated decodes
     const codeListItemsString = metadataHelper.getCodeListItemsByItem(currentElementID.item).reduce((string, item) => {
-        return string += `${item.getCodedValue()}, ${item.getTranslatedDecode(locale) || ""}\n`;
+        return string += `${item.getCodedValue()}, ${item.getTranslatedDecode(languageHelper.getCurrentLocale()) || ""}\n`;
     }, "");
 
     $("#codelist-modal #textitems-textarea").value = codeListItemsString;
@@ -1107,7 +1102,7 @@ window.saveCodeListModal = function() {
         if (currentItem) metadataHelper.insertCodeListItem(currentItem, codeListOID);
         else metadataHelper.addCodeListItem(codeListOID, codedValue);
 
-        metadataHelper.setCodeListItemDecodedText(codeListOID, codedValue, translatedDecode, locale);
+        metadataHelper.setCodeListItemDecodedText(codeListOID, codedValue, translatedDecode);
     }
 
     hideCodeListModal();
@@ -1203,7 +1198,7 @@ window.storeMetadataAsync = function() {
 
 function showFirstEventEditedHelp() {
     const element = metadataHelper.getElementDefByOID(getCurrentElementOID());
-    if (!element.getTranslatedDescription(locale) && $("#translation-textarea").value && metadataHelper.getStudyEvents().length == 1 && !ioHelper.isMobile()) {
+    if (!element.getTranslatedDescription(languageHelper.getCurrentLocale()) && $("#translation-textarea").value && metadataHelper.getStudyEvents().length == 1 && !ioHelper.isMobile()) {
         // Show the first event edited help message
         ioHelper.showToast(languageHelper.getTranslation("first-event-edited-hint"), 20000);
     }

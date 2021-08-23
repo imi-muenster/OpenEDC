@@ -18,7 +18,6 @@ let currentElementID = {
 }
 
 // Further auxiliary variables
-let locale = null;
 let skipMandatoryCheck = false;
 let skipDataHasChangedCheck = false;
 let cachedFormData = null;
@@ -27,6 +26,7 @@ let deferredFunction = null;
 let surveyCode = null;
 
 export async function init() {
+    createSiteFilterSelect();
     createSortTypeSelect();
     
     await clinicaldataHelper.loadSubjects();
@@ -39,13 +39,6 @@ export function show() {
 
     languageHelper.createLanguageSelect();
     ioHelper.setTreeMaxHeight();
-}
-
-export function setLanguage(newLocale) {
-    locale = newLocale;
-
-    // Reload the site filter select (special case since the first entry -- All Sites -- should be i18n while the others should not)
-    createSiteFilterSelect();
 }
 
 export function createSiteFilterSelect() {
@@ -205,6 +198,9 @@ export async function reloadTree() {
         currentElementID.studyEvent = metadataHelper.getStudyEvents()[0].getOID();
     } else $("#clinicaldata-study-events-column").show();
 
+    // Reload the site filter select (special case since the first entry -- All Sites -- should be i18n while the others should not)
+    createSiteFilterSelect();
+
     skipDataHasChangedCheck = true;
     await loadTree(currentElementID.studyEvent, currentElementID.form);
 }
@@ -222,7 +218,7 @@ async function loadTree(studyEventOID, formOID) {
 
     for (let studyEventDef of metadataHelper.getStudyEvents()) {
         const studyEventOID = studyEventDef.getOID();
-        const translatedDescription = studyEventDef.getTranslatedDescription(locale);
+        const translatedDescription = studyEventDef.getTranslatedDescription(languageHelper.getCurrentLocale());
         const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
         let panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedDescription, studyEventDef.getName(), null, dataStatus);
         panelBlock.onclick = () => loadTree(studyEventOID, null);
@@ -241,7 +237,7 @@ async function loadFormsByStudyEvent() {
     const formDefs = metadataHelper.getFormsByStudyEvent(currentElementID.studyEvent);
     for (let formDef of formDefs) {
         const formOID = formDef.getOID();
-        const translatedDescription = formDef.getTranslatedDescription(locale);
+        const translatedDescription = formDef.getTranslatedDescription(languageHelper.getCurrentLocale());
         const dataStatus = currentElementID.subject ? clinicaldataHelper.getDataStatusForForm(currentElementID.studyEvent, formOID) : clinicaldataHelper.dataStatusTypes.EMPTY;
         let panelBlock = htmlElements.getClinicaldataPanelBlock(formOID, translatedDescription, formDef.getName(), null, dataStatus);
         panelBlock.onclick = () => loadTree(currentElementID.studyEvent, formOID);
@@ -314,7 +310,7 @@ async function loadFormMetadata() {
 
     // Add the form title and use the name as fallback
     const formDef = metadataHelper.getElementDefByOID(currentElementID.form);
-    $("#clinicaldata-form-title .subtitle").textContent = formDef.getTranslatedDescription(locale, true);
+    $("#clinicaldata-form-title .subtitle").textContent = formDef.getTranslatedDescription(languageHelper.getCurrentLocale(), true);
 
     // Add the empty form
     let form = await metadataHelper.getFormAsHTML(currentElementID.form, ioHelper.isTextAsTextarea());

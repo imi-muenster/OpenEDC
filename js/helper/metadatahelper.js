@@ -509,9 +509,8 @@ export function setElementName(elementOID, name) {
     $(`[OID="${elementOID}"]`).setAttribute("Name", name);
 }
 
-// TODO: Refactor -- passing the local as parameter is not required anymore since the metadatahelper has access to the language helper
-export function setElementDescription(elementOID, description, locale) {
-    let translatedText = $(`[OID="${elementOID}"] Description TranslatedText[*|lang="${locale}"]`);
+export function setElementDescription(elementOID, description) {
+    let translatedText = $(`[OID="${elementOID}"] Description TranslatedText[*|lang="${languageHelper.getCurrentLocale()}"]`);
     if (translatedText && description) {
         translatedText.textContent = description;
     } else if (translatedText && !description) {
@@ -520,12 +519,12 @@ export function setElementDescription(elementOID, description, locale) {
     } else if (!translatedText && description) {
         let elementDescription = $(`[OID="${elementOID}"] Description`);
         if (!elementDescription) $(`[OID="${elementOID}"]`).insertAdjacentElement("afterbegin", metadataTemplates.getDescription());
-        $(`[OID="${elementOID}"] Description`).appendChild(metadataTemplates.getTranslatedText(description, locale));
+        $(`[OID="${elementOID}"] Description`).appendChild(metadataTemplates.getTranslatedText(description, languageHelper.getCurrentLocale()));
     }
 }
 
-export function setItemQuestion(itemOID, question, locale) {
-    let translatedText = $(`ItemDef[OID="${itemOID}"] Question TranslatedText[*|lang="${locale}"]`);
+export function setItemQuestion(itemOID, question) {
+    let translatedText = $(`ItemDef[OID="${itemOID}"] Question TranslatedText[*|lang="${languageHelper.getCurrentLocale()}"]`);
     if (translatedText && question) {
         translatedText.textContent = question;
     } else if (translatedText && !question) {
@@ -536,7 +535,7 @@ export function setItemQuestion(itemOID, question, locale) {
         if (!itemQuestion) {
             $(`[OID="${itemOID}"]`).insertAdjacentElement("afterbegin", metadataTemplates.getQuestion());
         }
-        $(`ItemDef[OID="${itemOID}"] Question`).appendChild(metadataTemplates.getTranslatedText(question, locale));
+        $(`ItemDef[OID="${itemOID}"] Question`).appendChild(metadataTemplates.getTranslatedText(question, languageHelper.getCurrentLocale()));
     }
 }
 
@@ -594,8 +593,8 @@ export function setCodeListItemCodedValue(codeListOID, codedValue, newCodedValue
     return Promise.resolve();
 }
 
-export function setCodeListItemDecodedText(codeListOID, codedValue, decodedText, locale) {
-    let translatedText = $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"] Decode TranslatedText[*|lang="${locale}"]`);
+export function setCodeListItemDecodedText(codeListOID, codedValue, decodedText) {
+    let translatedText = $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"] Decode TranslatedText[*|lang="${languageHelper.getCurrentLocale()}"]`);
     if (translatedText && decodedText) {
         translatedText.textContent = decodedText;
     } else if (translatedText && !decodedText) {
@@ -608,7 +607,7 @@ export function setCodeListItemDecodedText(codeListOID, codedValue, decodedText,
         if (!codeListItemDecode) {
             $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"]`).insertAdjacentElement("afterbegin", metadataTemplates.getDecode());
         }
-        $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"] Decode`).appendChild(metadataTemplates.getTranslatedText(decodedText, locale));
+        $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"] Decode`).appendChild(metadataTemplates.getTranslatedText(decodedText, languageHelper.getCurrentLocale()));
     }
 }
 

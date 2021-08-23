@@ -65,10 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-document.addEventListener("LanguageChanged", languageEvent => {
-    metadataModule.setLanguage(languageEvent.detail);
-    clinicaldataModule.setLanguage(languageEvent.detail);
-    
+document.addEventListener("LanguageChanged", () => {
     reloadApp({ cacheFormData: true });
     ioHelper.hideMenu();
 });
@@ -86,13 +83,8 @@ const startApp = async () => {
     languageHelper.setInitialLocale();
     
     metadataModule.init();
-    metadataModule.setLanguage(languageHelper.getCurrentLocale());
-
     await admindataModule.init();
-
     await clinicaldataModule.init();
-    clinicaldataModule.setLanguage(languageHelper.getCurrentLocale());
-
     reportsModule.init();
 
     await ioHelper.loadSettings();
