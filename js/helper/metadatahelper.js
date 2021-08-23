@@ -26,11 +26,12 @@ export class ODMPath {
         return new ODMPath(...Array(4 - elements.length), ...elements);
     }
 
-    constructor(studyEventOID, formOID, itemGroupOID, itemOID) {
+    constructor(studyEventOID, formOID, itemGroupOID, itemOID, value) {
         this.studyEventOID = studyEventOID;
         this.formOID = formOID;
         this.itemGroupOID = itemGroupOID;
         this.itemOID = itemOID;
+        this.value = value;
     }
 
     getRelative(contextPath) {
