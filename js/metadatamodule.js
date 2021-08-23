@@ -1120,7 +1120,7 @@ window.hideCodeListModal = function() {
 }
 
 window.referenceCodeList = function() {
-    const externalItemOID = $("#codelist-modal #codelist-reference-input").value;
+    const externalItemOID = metadataHelper.ODMPath.parse($("#codelist-modal #codelist-reference-input").value).itemOID;
     if (!externalItemOID) return;
 
     if (externalItemOID == currentElementID.item) {
