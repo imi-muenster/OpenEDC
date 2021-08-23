@@ -233,9 +233,6 @@ readers do not read off random characters that represent icons */
 .fa-map-marker-alt:before {
   content: "\f3c5"; }
 
-.fa-pencil:before {
-  content: "\f040"; }
-
 .fa-plus:before {
   content: "\f067"; }
 
@@ -250,6 +247,9 @@ readers do not read off random characters that represent icons */
 
 .fa-sort-alpha-down:before {
   content: "\f15d"; }
+
+.fa-stethoscope:before {
+  content: "\f0f1"; }
 
 .fa-text:before {
   content: "\f893"; }

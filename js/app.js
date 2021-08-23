@@ -580,10 +580,7 @@ export function setIOListeners() {
     $("#metadata-mode-button").onclick = () => showMetadata();
     $("#clinicaldata-mode-button").onclick = () => showClinicaldata();
     $("#reports-mode-button").onclick = () => showReports();
-    $("#app-mode-button .dropdown-trigger").addEventListener("click", () => {
-        $("#app-mode-button").classList.toggle("is-active");
-        $("#app-mode-button").classList.toggle("is-hidden-touch");
-    });
+    $("#app-mode-button .dropdown-trigger").addEventListener("click", () => $("#app-mode-button").classList.toggle("is-active"));
     $("#app-mode-button").addEventListener("mouseenter", () => $("#app-mode-button").activate());
     $("#app-mode-button").addEventListener("mouseleave", () => $("#app-mode-button").deactivate());
 
@@ -630,7 +627,7 @@ function showClinicaldata() {
 
     $("#current-app-mode").textContent = languageHelper.getTranslation("data-collection");
     $("#current-app-mode").setAttribute("i18n", "data-collection");
-    $("#app-mode-button .icon i").className = "fas fa-pencil";
+    $("#app-mode-button .icon i").className = "fas fa-stethoscope";
     
     ioHelper.hideMenu();
     clinicaldataModule.show();

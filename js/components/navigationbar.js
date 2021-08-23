@@ -44,7 +44,7 @@ class NavigationBar extends HTMLElement {
                                         <div class="dropdown-content has-border-shadow">
                                             <a class="dropdown-item" id="clinicaldata-mode-button">
                                                 <span class="icon">
-                                                    <i class="fas fa-pencil"></i>
+                                                    <i class="fas fa-stethoscope"></i>
                                                 </span>
                                                 <span i18n="data-collection"></span>
                                             </a>

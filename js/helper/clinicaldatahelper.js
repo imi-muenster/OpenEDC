@@ -178,7 +178,7 @@ export async function loadSubjects() {
     console.log("Load subjects ...");
 
     subjects = [];
-    const fileNames = await ioHelper.getSubjectFileNames()
+    const fileNames = await ioHelper.getSubjectFileNames();
     for (const fileName of fileNames) {
         subjects.push(Subject.parse(fileName));
     }
