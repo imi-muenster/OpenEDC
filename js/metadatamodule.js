@@ -304,7 +304,7 @@ function fillDetailsPanelFoundational() {
     $("#translation-textarea").disabled = false;
 
     let element = metadataHelper.getElementDefByOID(getCurrentElementOID());
-    const elementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), getCurrentElementType(), getCurrentElementParentOID());
+    const elementRef = metadataHelper.getElementRefByOID(getCurrentElementType(), currentPath);
     switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.STUDYEVENT:
         case metadataHelper.elementTypes.FORM:
@@ -335,7 +335,7 @@ function fillDetailsPanelExtended() {
     fillElementAliases();
     [$("#alias-inputs .alias-context"), $("#alias-inputs .alias-name"), $("#add-alias-button")].enableElements();
 
-    const condition = metadataHelper.getElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID());
+    const condition = metadataHelper.getElementCondition(getCurrentElementType(), currentPath);
     switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.ITEMGROUP:
             $("#collection-condition").value = condition ? condition.getFormalExpression() : null;
@@ -349,7 +349,7 @@ function fillDetailsPanelExtended() {
             const measurementUnit = metadataHelper.getItemMeasurementUnit(getCurrentElementOID());
             $("#measurement-unit").value = measurementUnit ? measurementUnit.getTranslatedSymbol(languageHelper.getCurrentLocale()) : null;
             $("#measurement-unit").disabled = false;
-            const method = metadataHelper.getItemMethod(getCurrentElementOID(), getCurrentElementParentOID());
+            const method = metadataHelper.getItemMethod(currentPath);
             $("#item-method").value = method ? method.getFormalExpression() : null;
             $("#item-method").disabled = false;
     }
@@ -466,7 +466,7 @@ async function saveDetailsFoundational() {
         case metadataHelper.elementTypes.ITEM:
             await setElementOIDAndName(newID);
             metadataHelper.setItemQuestion(getCurrentElementOID(), newTranslatedText);
-            metadataHelper.setElementMandatory(getCurrentElementOID(), getCurrentElementType(), $("#mandatory-select-inner").value, getCurrentElementParentOID());
+            metadataHelper.setElementMandatory(getCurrentElementType(), currentPath, $("#mandatory-select-inner").value);
             handleItemDataType(getCurrentElementOID(), $("#datatype-select-inner").value);
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
@@ -529,11 +529,11 @@ function saveDetailsExtended() {
 
 function saveConditionPreCheck() {
     const formalExpression = $("#collection-condition").value.trim();
-    const currentCondition = metadataHelper.getElementCondition(getCurrentElementType(), getCurrentElementOID(), getCurrentElementParentOID());
+    const currentCondition = metadataHelper.getElementCondition(getCurrentElementType(), currentPath);
     if (formalExpression && currentCondition && formalExpression == currentCondition.getFormalExpression()) return;
     if (formalExpressionContainsError(formalExpression)) return true;
 
-    const currentElementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), getCurrentElementType(), getCurrentElementParentOID());
+    const currentElementRef = metadataHelper.getElementRefByOID(getCurrentElementType(), currentPath);
     if (currentCondition) {
         const elementsHavingCondition = metadataHelper.getElementRefsHavingCondition(currentCondition.getOID());
         if (elementsHavingCondition.length > 1) {
@@ -570,11 +570,11 @@ function saveConditionForElements(formalExpression, currentCondition, elementRef
 
 function saveMethodPreCheck() {
     const formalExpression = $("#item-method").value.trim();
-    const currentMethod = metadataHelper.getItemMethod(getCurrentElementOID(), getCurrentElementParentOID());
+    const currentMethod = metadataHelper.getItemMethod(currentPath);
     if (formalExpression && currentMethod && formalExpression == currentMethod.getFormalExpression()) return;
     if (formalExpressionContainsError(formalExpression)) return true;
 
-    const currentElementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), getCurrentElementType(), getCurrentElementParentOID());
+    const currentElementRef = metadataHelper.getElementRefByOID(getCurrentElementType(), currentPath);
     if (currentMethod) {
         const elementsHavingMethod = metadataHelper.getElementRefsHavingMethod(currentMethod.getOID());
         if (elementsHavingMethod.length > 1) {
@@ -848,7 +848,7 @@ function removeElement() {
 window.duplicateReference = function() {
     if (getCurrentElementType() == metadataHelper.elementTypes.CODELISTITEM) return;
 
-    const elementRef = metadataHelper.getElementRefByOID(getCurrentElementOID(), getCurrentElementType(), getCurrentElementParentOID());
+    const elementRef = metadataHelper.getElementRefByOID(getCurrentElementType(), currentPath);
     elementRef.parentNode.insertBefore(elementRef.cloneNode(), elementRef.nextSibling);
 
     reloadAndStoreMetadata();
@@ -923,10 +923,6 @@ function getCurrentElementType() {
     else if (currentPath.itemGroupOID) return metadataHelper.elementTypes.ITEMGROUP;
     else if (currentPath.formOID) return metadataHelper.elementTypes.FORM;
     else if (currentPath.studyEventOID) return metadataHelper.elementTypes.STUDYEVENT;
-}
-
-function getCurrentElementParentOID() {
-    return getParentOID(getCurrentElementType());
 }
 
 function getParentOID(elementType) {

@@ -287,16 +287,16 @@ export function getCodeListItem(codeListOID, codedValue) {
     return $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"]`);
 }
 
-export function getElementRefByOID(elementOID, elementType, parentElementOID) {
+export function getElementRefByOID(elementType, odmPath) {
     switch (elementType) {
         case elementTypes.STUDYEVENT:
-            return $(`StudyEventRef[StudyEventOID="${elementOID}"]`);
+            return $(`StudyEventRef[StudyEventOID="${odmPath.studyEventOID}"]`);
         case elementTypes.FORM:
-            return $(`StudyEventDef[OID="${parentElementOID}"] FormRef[FormOID="${elementOID}"]`);
+            return $(`StudyEventDef[OID="${odmPath.studyEventOID}"] FormRef[FormOID="${odmPath.formOID}"]`);
         case elementTypes.ITEMGROUP:
-            return $(`FormDef[OID="${parentElementOID}"] ItemGroupRef[ItemGroupOID="${elementOID}"]`);
+            return $(`FormDef[OID="${odmPath.formOID}"] ItemGroupRef[ItemGroupOID="${odmPath.itemGroupOID}"]`);
         case elementTypes.ITEM:
-            return $(`ItemGroupDef[OID="${parentElementOID}"] ItemRef[ItemOID="${elementOID}"]`);
+            return $(`ItemGroupDef[OID="${odmPath.itemGroupOID}"] ItemRef[ItemOID="${odmPath.itemOID}"]`);
     }
 }
 
@@ -399,14 +399,14 @@ export function getMeasurementUnits() {
     return Array.from($$("BasicDefinitions MeasurementUnit"));
 }
 
-export function getElementCondition(elementType, elementOID, parentElementOID) {
+export function getElementCondition(elementType, odmPath) {
     let conditionRef;
     switch (elementType) {
         case elementTypes.ITEMGROUP:
-            conditionRef = $(`FormDef[OID="${parentElementOID}"] ItemGroupRef[ItemGroupOID="${elementOID}"][CollectionExceptionConditionOID]`);
+            conditionRef = $(`FormDef[OID="${odmPath.formOID}"] ItemGroupRef[ItemGroupOID="${odmPath.itemGroupOID}"][CollectionExceptionConditionOID]`);
             break;
         case elementTypes.ITEM:
-            conditionRef = $(`ItemGroupDef[OID="${parentElementOID}"] ItemRef[ItemOID="${elementOID}"][CollectionExceptionConditionOID]`);
+            conditionRef = $(`ItemGroupDef[OID="${odmPath.itemGroupOID}"] ItemRef[ItemOID="${odmPath.itemOID}"][CollectionExceptionConditionOID]`);
     }
 
     if (conditionRef) {
@@ -415,8 +415,8 @@ export function getElementCondition(elementType, elementOID, parentElementOID) {
     }
 }
 
-export function getItemMethod(itemOID, itemGroupOID) {
-    let methodRef = $(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[ItemOID="${itemOID}"][MethodOID]`);
+export function getItemMethod(odmPath) {
+    let methodRef = $(`ItemGroupDef[OID="${odmPath.itemGroupOID}"] ItemRef[ItemOID="${odmPath.itemOID}"][MethodOID]`);
     if (methodRef) {
         let oid = methodRef.getAttribute("MethodOID");
         return $(`MethodDef[OID="${oid}"]`);
@@ -567,19 +567,19 @@ export function setItemDataType(itemOID, dataType) {
     $(`[OID="${itemOID}"]`).setAttribute("DataType", dataType);
 }
 
-export function setElementMandatory(elementOID, elementType, mandatory, parentElementOID) {
+export function setElementMandatory(elementType, odmPath, mandatory) {
     switch (elementType) {
         case elementTypes.STUDYEVENT:
-            $(`StudyEventRef[StudyEventOID="${elementOID}"]`).setAttribute("Mandatory", mandatory);
+            $(`StudyEventRef[StudyEventOID="${odmPath.studyEventOID}"]`).setAttribute("Mandatory", mandatory);
             break;
         case elementTypes.FORM:
-            $(`StudyEventDef[OID="${parentElementOID}"] FormRef[FormOID="${elementOID}"]`).setAttribute("Mandatory", mandatory);
+            $(`StudyEventDef[OID="${odmPath.studyEventOID}"] FormRef[FormOID="${odmPath.formOID}"]`).setAttribute("Mandatory", mandatory);
             break;
         case elementTypes.ITEMGROUP:
-            $(`FormDef[OID="${parentElementOID}"] ItemGroupRef[ItemGroupOID="${elementOID}"]`).setAttribute("Mandatory", mandatory);
+            $(`FormDef[OID="${odmPath.formOID}"] ItemGroupRef[ItemGroupOID="${odmPath.itemGroupOID}"]`).setAttribute("Mandatory", mandatory);
             break;
         case elementTypes.ITEM:
-            $(`ItemGroupDef[OID="${parentElementOID}"] ItemRef[ItemOID="${elementOID}"]`).setAttribute("Mandatory", mandatory);
+            $(`ItemGroupDef[OID="${odmPath.itemGroupOID}"] ItemRef[ItemOID="${odmPath.itemOID}"]`).setAttribute("Mandatory", mandatory);
     }
 }
 
