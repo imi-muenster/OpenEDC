@@ -23,7 +23,6 @@ let currentElementID = {
     form: null,
     itemGroup: null,
     item: null,
-    codeList: null,
     codeListItem: null
 }
 
@@ -118,10 +117,7 @@ function hideCodeListItems(hideTree) {
     $$("#code-list-item-panel-blocks a").removeElements();
     $("#code-list-items-add-button").disabled = true;
     $("#code-list-items-opt-button").disabled = true;
-    if (hideTree) {
-        currentElementID.codeList = null;
-        currentElementID.codeListItem = null;
-    }
+    if (hideTree) currentElementID.codeListItem = null;
 }
 
 export function loadStudyEvents(hideTree) {
@@ -235,7 +231,7 @@ function loadCodeListItemsByItem(hideTree) {
         panelBlock.onclick = codeListItemClicked;
         $("#code-list-item-panel-blocks").appendChild(panelBlock);
     }
-    if (currentElementID.codeList && currentElementID.codeListItem) $(`[oid="${currentElementID.codeList}"][coded-value="${currentElementID.codeListItem}"]`).activate();
+    if (currentElementID.codeListItem) $(`[oid="${metadataHelper.getCodeListOIDByItem(currentElementID.item)}"][coded-value="${currentElementID.codeListItem}"]`).activate();
 
     if (viewOnlyMode) {
         $("#code-list-items-add-button").disabled = true;
@@ -250,7 +246,6 @@ function codeListItemClicked(event) {
     ioHelper.removeIsActiveFromElement($("#code-list-item-panel-blocks a.is-active"));
     event.target.activate();
 
-    currentElementID.codeList = event.target.getOID();
     currentElementID.codeListItem = event.target.getAttribute("coded-value");
     reloadDetailsPanel();
 }
@@ -290,7 +285,10 @@ function resetDetailsPanel() {
 function adjustDetailsPanelSidebar() {
     highlightRemoveButton();
 
-    const references = metadataHelper.getElementRefs(getCurrentElementOID(), getCurrentElementType());
+    let references = [];
+    if (getCurrentElementType() != metadataHelper.elementTypes.CODELISTITEM) references = metadataHelper.getElementRefs(getCurrentElementOID(), getCurrentElementType());
+    else references = metadataHelper.getElementRefs(metadataHelper.getCodeListOIDByItem(currentElementID.item), getCurrentElementType());
+
     if (references.length > 1) {
         $("#duplicate-option").classList.add("has-text-danger");
         $("#duplicate-option i").className = "fas fa-clone";
@@ -336,7 +334,7 @@ function fillDetailsPanelFoundational() {
             $("#mandatory-select-inner").disabled = true;
             $("#element-oid-label").textContent = languageHelper.getTranslation("coded-value");
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-choice");
-            element = metadataHelper.getCodeListItem(currentElementID.codeList, currentElementID.codeListItem);
+            element = metadataHelper.getCodeListItem(metadataHelper.getCodeListOIDByItem(currentElementID.item), currentElementID.codeListItem);
             $("#id-input").value = element.getCodedValue();
             $("#translation-textarea").value = element.getTranslatedDecode(languageHelper.getCurrentLocale());
     }
@@ -367,8 +365,7 @@ function fillDetailsPanelExtended() {
 }
 
 function fillDetailsPanelDuplicate() {
-    const references = metadataHelper.getElementRefs(getCurrentElementOID(), getCurrentElementType());
-
+    let references = [];
     let translatedTexts = [];
     switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.STUDYEVENT:
@@ -377,10 +374,12 @@ function fillDetailsPanelDuplicate() {
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
         case metadataHelper.elementTypes.ITEM:
+            references = metadataHelper.getElementRefs(getCurrentElementOID(), getCurrentElementType());
             translatedTexts = references.map(reference => reference.parentNode.getTranslatedDescription(languageHelper.getCurrentLocale(), true));
             if (!viewOnlyMode) [$("#reference-button"), $("#shallow-copy-button"), $("#deep-copy-button")].enableElements();
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
+            references = metadataHelper.getElementRefs(metadataHelper.getCodeListOIDByItem(currentElementID.item), getCurrentElementType());
             translatedTexts = references.map(reference => reference.parentNode.getTranslatedQuestion(languageHelper.getCurrentLocale(), true));
     }
 
@@ -481,7 +480,7 @@ async function saveDetailsFoundational() {
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             await setCodeListItemCodedValue(newID);
-            metadataHelper.setCodeListItemDecodedText(currentElementID.codeList, currentElementID.codeListItem, newTranslatedText);
+            metadataHelper.setCodeListItemDecodedText(metadataHelper.getCodeListOIDByItem(currentElementID.item), currentElementID.codeListItem, newTranslatedText);
     }
 
     if (!languageHelper.getPresentLanguages().includes(languageHelper.getCurrentLocale())) {
@@ -513,7 +512,7 @@ async function setCodeListItemCodedValue(codedValue) {
 
     const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID(), getCurrentElementType(), currentElementID.item, currentElementID.codeListItem);
     if (subjectKeys.length == 0) {
-        await metadataHelper.setCodeListItemCodedValue(getCurrentElementOID(), currentElementID.codeListItem, codedValue)
+        await metadataHelper.setCodeListItemCodedValue(metadataHelper.getCodeListOIDByItem(currentElementID.item), currentElementID.codeListItem, codedValue)
             .then(() => currentElementID.codeListItem = codedValue)
             .catch(() => ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("coded-value-not-changed-error-used")))
     } else {
@@ -817,7 +816,6 @@ window.addCodeListItem = function(event) {
     let codeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
     if (codeListOID) {
         currentElementID.codeListItem = metadataHelper.addCodeListItem(codeListOID);
-        currentElementID.codeList = codeListOID;
         loadCodeListItemsByItem();
         reloadDetailsPanel();
         ioHelper.scrollParentToChild($(`[coded-value="${currentElementID.codeListItem}"]`));
@@ -849,8 +847,7 @@ function removeElement() {
             hideCodeListItems(true);
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
-            metadataHelper.deleteCodeListItem(currentElementID.codeList, currentElementID.codeListItem);
-            currentElementID.codeList = null;
+            metadataHelper.deleteCodeListItem(metadataHelper.getCodeListOIDByItem(currentElementID.item), currentElementID.codeListItem);
             currentElementID.codeListItem = null;
     }
 
@@ -881,12 +878,6 @@ window.copyElement = function(deepCopy) {
             break;
         case metadataHelper.elementTypes.ITEM:
             metadataHelper.copyItem(currentElementID.item, deepCopy, currentElementID.itemGroup);
-            break;
-        case metadataHelper.elementTypes.CODELISTITEM:
-            const newItemOID = metadataHelper.createItem(currentElementID.itemGroup);
-            const newCodeListOID = metadataHelper.copyCodeList(currentElementID.codeList);
-            metadataHelper.setItemDataType(newItemOID, metadataHelper.getElementDefByOID(currentElementID.item).getDataType());
-            metadataHelper.addCodeListRef(newItemOID, newCodeListOID);
     }
 
     reloadAndStoreMetadata();
@@ -929,7 +920,7 @@ function dragEnter(event) {
 }
 
 function getCurrentElementOID() {
-    if (currentElementID.codeListItem) return currentElementID.codeList;
+    if (currentElementID.codeListItem) return currentElementID.codeListItem;
     else if (currentElementID.item) return currentElementID.item;
     else if (currentElementID.itemGroup) return currentElementID.itemGroup;
     else if (currentElementID.form) return currentElementID.form;
@@ -1132,7 +1123,7 @@ window.referenceCodeList = function() {
     const currentCodeListOID = metadataHelper.getCodeListOIDByItem(currentElementID.item);
     metadataHelper.removeCodeListRef(currentElementID.item, currentCodeListOID);
     metadataHelper.addCodeListRef(currentElementID.item, externalCodeListOID);
-    if (getCurrentElementType() == metadataHelper.elementTypes.CODELISTITEM) currentElementID.codeList = externalCodeListOID;
+    currentElementID.codeListItem = null;
 
     hideCodeListModal();
     reloadAndStoreMetadata();
@@ -1143,7 +1134,7 @@ window.unreferenceCodeList = function() {
     const newCodeListOID = metadataHelper.copyCodeList(currentCodeListOID);
     metadataHelper.removeCodeListRef(currentElementID.item, currentCodeListOID);
     metadataHelper.addCodeListRef(currentElementID.item, newCodeListOID);
-    if (getCurrentElementType() == metadataHelper.elementTypes.CODELISTITEM) currentElementID.codeList = newCodeListOID;
+    currentElementID.codeListItem = null;
 
     showCodeListModal();
     reloadAndStoreMetadata();
