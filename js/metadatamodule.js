@@ -277,7 +277,7 @@ function adjustDetailsPanelSidebar() {
     highlightRemoveButton();
 
     let references = [];
-    if (getCurrentElementType() != metadataHelper.elementTypes.CODELISTITEM) references = metadataHelper.getElementRefs(getCurrentElementOID(), getCurrentElementType());
+    if (getCurrentElementType() != metadataHelper.elementTypes.CODELISTITEM) references = metadataHelper.getElementRefs(currentPath.last, getCurrentElementType());
     else references = metadataHelper.getElementRefs(metadataHelper.getCodeListOIDByItem(currentPath.itemOID), getCurrentElementType());
 
     if (references.length > 1) {
@@ -303,13 +303,13 @@ function fillDetailsPanelFoundational() {
     $("#id-input").disabled = false;
     $("#translation-textarea").disabled = false;
 
-    let element = metadataHelper.getElementDefByOID(getCurrentElementOID());
+    let element = metadataHelper.getElementDefByOID(currentPath.last);
     const elementRef = metadataHelper.getElementRefByOID(getCurrentElementType(), currentPath);
     switch (getCurrentElementType()) {
         case metadataHelper.elementTypes.STUDYEVENT:
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
-            $("#id-input").value = getCurrentElementOID();
+            $("#id-input").value = currentPath.last;
             $("#translation-textarea").value = element.getTranslatedDescription(languageHelper.getCurrentLocale());
             break;
         case metadataHelper.elementTypes.ITEM:
@@ -317,9 +317,9 @@ function fillDetailsPanelFoundational() {
             $("#mandatory-select-inner").disabled = false;
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-question");
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
-            $("#id-input").value = getCurrentElementOID();
+            $("#id-input").value = currentPath.last;
             $("#translation-textarea").value = element.getTranslatedQuestion(languageHelper.getCurrentLocale());
-            $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(getCurrentElementOID()) ? metadataHelper.elementTypes.CODELIST + "-" + element.getDataType() : element.getDataType();
+            $("#datatype-select-inner").value = metadataHelper.itemHasCodeList(currentPath.last) ? metadataHelper.elementTypes.CODELIST + "-" + element.getDataType() : element.getDataType();
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             $("#mandatory-select-inner").disabled = true;
@@ -346,7 +346,7 @@ function fillDetailsPanelExtended() {
             [$("#range-check-inputs .range-check-comparator-inner"), $("#range-check-inputs .range-check-value"), $("#add-range-check-button")].enableElements();
             $("#collection-condition").value = condition ? condition.getFormalExpression() : null;
             $("#collection-condition").disabled = false;
-            const measurementUnit = metadataHelper.getItemMeasurementUnit(getCurrentElementOID());
+            const measurementUnit = metadataHelper.getItemMeasurementUnit(currentPath.last);
             $("#measurement-unit").value = measurementUnit ? measurementUnit.getTranslatedSymbol(languageHelper.getCurrentLocale()) : null;
             $("#measurement-unit").disabled = false;
             const method = metadataHelper.getItemMethod(currentPath);
@@ -365,7 +365,7 @@ function fillDetailsPanelDuplicate() {
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
         case metadataHelper.elementTypes.ITEM:
-            references = metadataHelper.getElementRefs(getCurrentElementOID(), getCurrentElementType());
+            references = metadataHelper.getElementRefs(currentPath.last, getCurrentElementType());
             translatedTexts = references.map(reference => reference.parentNode.getTranslatedDescription(languageHelper.getCurrentLocale(), true));
             if (!viewOnlyMode) [$("#reference-button"), $("#shallow-copy-button"), $("#deep-copy-button")].enableElements();
             break;
@@ -407,7 +407,7 @@ function fillItemRangeChecks() {
 }
 
 function fillElementAliases() {
-    const aliases = metadataHelper.getAliasesByElement(getCurrentElementOID(), currentPath.value);
+    const aliases = metadataHelper.getAliasesByElement(currentPath.last, currentPath.value);
     if (aliases.length) $$("#alias-inputs .alias-input").removeElements();
 
     for (const alias of aliases) {
@@ -461,13 +461,13 @@ async function saveDetailsFoundational() {
         case metadataHelper.elementTypes.FORM:
         case metadataHelper.elementTypes.ITEMGROUP:
             await setElementOIDAndName(newID);
-            metadataHelper.setElementDescription(getCurrentElementOID(), newTranslatedText);
+            metadataHelper.setElementDescription(currentPath.last, newTranslatedText);
             break;
         case metadataHelper.elementTypes.ITEM:
             await setElementOIDAndName(newID);
-            metadataHelper.setItemQuestion(getCurrentElementOID(), newTranslatedText);
+            metadataHelper.setItemQuestion(currentPath.last, newTranslatedText);
             metadataHelper.setElementMandatory(getCurrentElementType(), currentPath, $("#mandatory-select-inner").value);
-            handleItemDataType(getCurrentElementOID(), $("#datatype-select-inner").value);
+            handleItemDataType(currentPath.last, $("#datatype-select-inner").value);
             break;
         case metadataHelper.elementTypes.CODELISTITEM:
             await setCodeListItemCodedValue(newID);
@@ -483,14 +483,14 @@ async function saveDetailsFoundational() {
 }
 
 async function setElementOIDAndName(oid) {
-    if (getCurrentElementOID() == oid) return;
+    if (currentPath.last == oid) return;
 
-    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID(), getCurrentElementType());
+    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(currentPath.last, getCurrentElementType());
     if (subjectKeys.length == 0) {
-        await metadataHelper.setElementOID(getCurrentElementOID(), getCurrentElementType(), oid)
+        await metadataHelper.setElementOID(currentPath.last, getCurrentElementType(), oid)
             .then(() => {
                 setCurrentElementOID(oid);
-                metadataHelper.setElementName(getCurrentElementOID(), oid);
+                metadataHelper.setElementName(currentPath.last, oid);
             })
             .catch(() => ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("id-not-changed-error-used")))
     } else {
@@ -501,7 +501,7 @@ async function setElementOIDAndName(oid) {
 async function setCodeListItemCodedValue(codedValue) {
     if (currentPath.value == codedValue) return;
 
-    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID(), getCurrentElementType(), currentPath.itemOID, currentPath.value);
+    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(currentPath.last, getCurrentElementType(), currentPath.itemOID, currentPath.value);
     if (subjectKeys.length == 0) {
         await metadataHelper.setCodeListItemCodedValue(metadataHelper.getCodeListOIDByItem(currentPath.itemOID), currentPath.value, codedValue)
             .then(() => currentPath.value = codedValue)
@@ -611,10 +611,10 @@ function saveMethodForElements(formalExpression, currentMethod, elementRefs, cha
 
 function saveMeasurementUnitPreCheck() {
     const symbol = $("#measurement-unit").value;
-    const currentMeasurementUnit = metadataHelper.getItemMeasurementUnit(getCurrentElementOID());
+    const currentMeasurementUnit = metadataHelper.getItemMeasurementUnit(currentPath.last);
     if (symbol && currentMeasurementUnit && symbol == currentMeasurementUnit.getTranslatedSymbol(languageHelper.getCurrentLocale())) return;
 
-    const currentItemDef = metadataHelper.getElementDefByOID(getCurrentElementOID());
+    const currentItemDef = metadataHelper.getElementDefByOID(currentPath.last);
     if (currentMeasurementUnit) {
         const elementsHavingMeasurementUnit = metadataHelper.getItemDefsHavingMeasurementUnit(currentMeasurementUnit.getOID());
         if (elementsHavingMeasurementUnit.length > 1) {
@@ -661,12 +661,12 @@ function saveRangeChecks() {
 }
 
 function saveAliases() {
-    metadataHelper.deleteAliasesOfElement(getCurrentElementOID(), currentPath.value);
+    metadataHelper.deleteAliasesOfElement(currentPath.last, currentPath.value);
     for (let aliasInput of $$(".alias-input")) {
         let context = aliasInput.querySelector(".alias-context").value;
         let name = aliasInput.querySelector(".alias-name").value;
         if (context && name) {
-            metadataHelper.setElementAlias(getCurrentElementOID(), currentPath.value, context, name);
+            metadataHelper.setElementAlias(currentPath.last, currentPath.value, context, name);
         }
     }
 }
@@ -909,14 +909,6 @@ function dragEnter(event) {
     }
 }
 
-function getCurrentElementOID() {
-    if (currentPath.value) return currentPath.value;
-    else if (currentPath.itemOID) return currentPath.itemOID;
-    else if (currentPath.itemGroupOID) return currentPath.itemGroupOID;
-    else if (currentPath.formOID) return currentPath.formOID;
-    else if (currentPath.studyEventOID) return currentPath.studyEventOID;
-}
-
 function getCurrentElementType() {
     if (currentPath.value) return metadataHelper.elementTypes.CODELISTITEM;
     else if (currentPath.itemOID) return metadataHelper.elementTypes.ITEM;
@@ -1012,7 +1004,7 @@ window.elementDrop = async function(event) {
 }
 
 window.showRemoveModal = async function() {
-    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(getCurrentElementOID(), getCurrentElementType(), currentPath.itemOID, currentPath.value);
+    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(currentPath.last, getCurrentElementType(), currentPath.itemOID, currentPath.value);
     if (subjectKeys.length) {
         ioHelper.showMessage(languageHelper.getTranslation("cannot-be-removed"), languageHelper.getTranslation("cannot-be-removed-text") + subjectKeys.join(", ") + "</strong>");
     } else {
@@ -1174,7 +1166,7 @@ window.storeMetadataAsync = function() {
 }
 
 function showFirstEventEditedHelp() {
-    const element = metadataHelper.getElementDefByOID(getCurrentElementOID());
+    const element = metadataHelper.getElementDefByOID(currentPath.last);
     if (!element.getTranslatedDescription(languageHelper.getCurrentLocale()) && $("#translation-textarea").value && metadataHelper.getStudyEvents().length == 1 && !ioHelper.isMobile()) {
         // Show the first event edited help message
         ioHelper.showToast(languageHelper.getTranslation("first-event-edited-hint"), 20000);

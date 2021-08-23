@@ -27,11 +27,56 @@ export class ODMPath {
     }
 
     constructor(studyEventOID, formOID, itemGroupOID, itemOID, value) {
+        this.path = new Map();
         this.studyEventOID = studyEventOID;
         this.formOID = formOID;
         this.itemGroupOID = itemGroupOID;
         this.itemOID = itemOID;
         this.value = value;
+    }
+
+    get studyEventOID() {
+        return this.path.get("studyEventOID");
+    }
+
+    set studyEventOID(oid) {
+        this.path.set("studyEventOID", oid);
+    }
+
+    get formOID() {
+        return this.path.get("formOID");
+    }
+
+    set formOID(oid) {
+        this.path.set("formOID", oid);
+    }
+
+    get itemGroupOID() {
+        return this.path.get("itemGroupOID");
+    }
+
+    set itemGroupOID(oid) {
+        this.path.set("itemGroupOID", oid);
+    }
+
+    get itemOID() {
+        return this.path.get("itemOID");
+    }
+
+    set itemOID(oid) {
+        this.path.set("itemOID", oid);
+    }
+
+    get value() {
+        return this.path.get("value");
+    }
+
+    set value(oid) {
+        this.path.set("value", oid);
+    }
+
+    get last() {
+        return Array.from(this.path.values()).reverse().find(entry => entry);
     }
 
     getRelative(contextPath) {
