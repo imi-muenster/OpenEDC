@@ -5,7 +5,9 @@ class ProjectModal extends HTMLElement {
             <div class="modal" id="project-modal">
                 <div class="modal-background" onclick="hideProjectModal()"></div>
                 <div class="modal-content is-large">
-                    <button class="delete is-large is-top-left" onclick="hideProjectModal()"></button>
+                    <div class="is-pulled-right">
+                        <button class="delete is-close-button is-large" onclick="hideProjectModal()"></button>
+                    </div>
                     <div class="box">
                         <div class="tabs is-centered" id="project-tabs">
                             <ul>

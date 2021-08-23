@@ -99,7 +99,9 @@ class AboutModal extends HTMLElement {
             <div class="modal" id="about-modal">
                 <div class="modal-background" onclick="hideAboutModal()"></div>
                 <div class="modal-content is-medium">
-                    <button class="delete is-large is-top-left" onclick="hideAboutModal()"></button>
+                <div class="is-pulled-right">
+                    <button class="delete is-close-button is-large" onclick="hideAboutModal()"></button>
+                </div>
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <div class="openedc-title">
@@ -145,7 +147,9 @@ class SubjectModal extends HTMLElement {
             <div class="modal" id="subject-modal">
                 <div class="modal-background" onclick="hideSubjectInfo()"></div>
                 <div class="modal-content is-large">
-                    <button class="delete is-large is-top-left" onclick="hideSubjectInfo()"></button>
+                    <div class="is-pulled-right">
+                        <button class="delete is-close-button is-large" onclick="hideSubjectInfo()"></button>
+                    </div>
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <h1 class="title" i18n="options-and-audit-trail"></h1>

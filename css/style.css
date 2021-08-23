@@ -260,9 +260,9 @@ a.panel-block:hover {
     max-width: 400px;
 }
 
-.modal-content button.delete.is-top-left {
+.modal-content .is-close-button {
     position: fixed;
-    transform: translateX(calc(100%/-2)) translateY(calc(100%/-2));
+    transform: translateX(-150%) translateY(-50%);
     background-color: rgba(10,10,10,.8);
     z-index: 5;
 }
@@ -558,10 +558,6 @@ a.panel-block:hover {
 
     .modal-content.is-fullheight-mobile {
         max-height: none;
-    }
-
-    .modal-content button.delete.is-top-left {
-        transform: translateX(calc(100%/2)) translateY(calc(100%/-2));
     }
 
     .width-is-three-quarters, .width-is-two-thirds {
