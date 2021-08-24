@@ -21,9 +21,14 @@ class MetadataFile {
 export class ODMPath {
     static separator = "-";
 
-    static parse(string) {
+    static parseRelative(string) {
         const elements = string ? string.split(ODMPath.separator) : [];
         return new ODMPath(...Array(Math.max(0, 4 - elements.length)), ...elements);
+    }
+
+    static parseAbsolute(string) {
+        const elements = string ? string.split(ODMPath.separator) : [];
+        return new ODMPath(...elements);
     }
 
     constructor(studyEventOID, formOID, itemGroupOID, itemOID, value) {
@@ -85,14 +90,14 @@ export class ODMPath {
         }
     }
 
-    getRelative(contextPath) {
+    getItemRelative(contextPath) {
         if (this.studyEventOID != contextPath.studyEventOID) return this;
         else if (this.formOID != contextPath.formOID) return new ODMPath(null, this.formOID, this.itemGroupOID, this.itemOID);
         else if (this.itemGroupOID != contextPath.itemGroupOID) return new ODMPath(null, null, this.itemGroupOID, this.itemOID);
         else return new ODMPath(null, null, null, this.itemOID);
     }
 
-    getAbsolute(contextPath) {
+    getItemAbsolute(contextPath) {
         return new ODMPath(
             this.studyEventOID ? this.studyEventOID : contextPath.studyEventOID,
             this.formOID ? this.formOID : contextPath.formOID,

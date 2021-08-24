@@ -33,7 +33,7 @@ export function getVariables(elements) {
         if (expression) {
             element.expression = expression;
             element.expression.variables().forEach(variable => {
-                const absolutePath = ODMPath.parse(unescapePaths(variable)).getAbsolute(element.elementPath);
+                const absolutePath = ODMPath.parseRelative(unescapePaths(variable)).getItemAbsolute(element.elementPath);
                 element.expression = element.expression.substitute(variable, escapePaths(absolutePath.toString()));
                 variables.add(absolutePath);
             });
@@ -72,7 +72,7 @@ function processCondition(condition) {
 
     // Add event listeners to respond to inputs to the determinant items
     for (const variable of condition.expression.variables()) {
-        const itemPath = ODMPath.parse(unescapePaths(variable));
+        const itemPath = ODMPath.parseAbsolute(unescapePaths(variable));
         const inputElement = $(`#clinicaldata-content [item-oid="${itemPath.itemOID}"]`);
         if (!inputElement) continue;
         if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "select") {
@@ -135,7 +135,7 @@ function processMethod(method) {
 
     // Add event listeners to respond to inputs to the determinant items
     for (const variable of method.expression.variables()) {
-        const itemPath = ODMPath.parse(unescapePaths(variable));
+        const itemPath = ODMPath.parseAbsolute(unescapePaths(variable));
         const inputElement = $(`#clinicaldata-content [item-oid="${itemPath.itemOID}"]`);
         if (!inputElement) continue;
         if (inputElement.getAttribute("type") != "radio") {

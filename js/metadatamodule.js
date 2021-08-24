@@ -916,7 +916,7 @@ function getCurrentElementType() {
 window.elementDrop = async function(event) {
     if (viewOnlyMode) return;
 
-    const sourcePath = metadataHelper.ODMPath.parse(event.dataTransfer.getData("sourcePath"));
+    const sourcePath = metadataHelper.ODMPath.parseAbsolute(event.dataTransfer.getData("sourcePath"));
     if (sourceParentOID != targetParentOID) {
         // Extra if-statement for performance reasons (do not load all subjects when sourceParentOID and targetParentOID are equal)
         const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID, elementTypeOnDrag, sourceParentOID, sourceCodedValue);
@@ -1042,7 +1042,7 @@ window.hideCodeListModal = function() {
 }
 
 window.referenceCodeList = function() {
-    const externalItemOID = metadataHelper.ODMPath.parse($("#codelist-modal #codelist-reference-input").value).itemOID;
+    const externalItemOID = metadataHelper.ODMPath.parseAbsolute($("#codelist-modal #codelist-reference-input").value).itemOID;
     if (!externalItemOID) return;
 
     if (externalItemOID == currentPath.itemOID) {

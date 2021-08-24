@@ -146,8 +146,8 @@ const elementSelected = element => {
     let newValue;
     switch (currentPart) {
         case enabledParts.ITEM:
-            const contextPath = metadataHelper.ODMPath.parse(currentInput.getAttribute("context-path"));
-            newValue = metadataHelper.ODMPath.parse(element.value).getRelative(contextPath).toString();
+            const contextPath = metadataHelper.ODMPath.parseAbsolute(currentInput.getAttribute("context-path"));
+            newValue = metadataHelper.ODMPath.parseAbsolute(element.value).getItemRelative(contextPath).toString();
             break;
         case enabledParts.VALUE:
             newValue = addQuotes(element.value);
@@ -247,7 +247,7 @@ const getComparatorElements = () => {
 
 const getValueElements = () => {
     const itemPath = currentInput.value.split(" ")[currentTokenIndex - currentPart + 1];
-    const itemOID = metadataHelper.ODMPath.parse(itemPath).itemOID;
+    const itemOID = metadataHelper.ODMPath.parseRelative(itemPath).itemOID;
     const item = metadataHelper.getElementDefByOID(itemOID);
     if (item && item.getDataType() == "boolean") {
         return [
