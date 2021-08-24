@@ -89,13 +89,8 @@ export class ODMPath {
     }
 
     get last() {
-        return Array.from(this.path.values()).reverse().find(entry => entry);
-    }
-
-    set last(newValue) {
-        for (const [key, value] of Array.from(this.path.entries()).reverse()) {
-            if (value) return this.path.set(key, newValue);
-        }
+        const lastEntry = Array.from(this.path.entries()).reverse().find(entry => entry[1]);
+        return { element: lastEntry[0], value: lastEntry[1] }
     }
 
     getItemRelative(contextPath) {
