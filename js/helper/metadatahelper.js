@@ -80,12 +80,12 @@ export class ODMPath {
         this.path.set(ODMPath.elements.ITEM, oid);
     }
 
-    get value() {
+    get codeListItem() {
         return this.path.get(ODMPath.elements.CODELISTITEM);
     }
 
-    set value(newValue) {
-        this.path.set(ODMPath.elements.CODELISTITEM, newValue);
+    set codeListItem(value) {
+        this.path.set(ODMPath.elements.CODELISTITEM, value);
     }
 
     get last() {

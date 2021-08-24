@@ -592,7 +592,7 @@ export async function getSubjectsHavingDataForElement(elementType , odmPath) {
                 if (subjectData.querySelector(`ItemData[ItemOID="${odmPath.itemOID}"]`)) subjectKeys.push(subject.key);
                 break;
             case metadataHelper.ODMPath.elements.CODELISTITEM:
-                if (subjectData.querySelector(`ItemData[ItemOID="${odmPath.itemOID}"][Value="${odmPath.value}"]`)) subjectKeys.push(subject.key);
+                if (subjectData.querySelector(`ItemData[ItemOID="${odmPath.itemOID}"][Value="${odmPath.codeListItem}"]`)) subjectKeys.push(subject.key);
         }
     }
 

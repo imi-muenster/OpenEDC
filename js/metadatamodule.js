@@ -108,7 +108,7 @@ function hideCodeListItems(hideTree) {
     $$("#code-list-item-panel-blocks a").removeElements();
     $("#code-list-items-add-button").disabled = true;
     $("#code-list-items-opt-button").disabled = true;
-    if (hideTree) currentPath.value = null;
+    if (hideTree) currentPath.codeListItem = null;
 }
 
 export function loadStudyEvents(hideTree) {
@@ -222,7 +222,7 @@ function loadCodeListItemsByItem(hideTree) {
         panelBlock.onclick = codeListItemClicked;
         $("#code-list-item-panel-blocks").appendChild(panelBlock);
     }
-    if (currentPath.value) $(`[oid="${metadataHelper.getCodeListOIDByItem(currentPath.itemOID)}"][coded-value="${currentPath.value}"]`).activate();
+    if (currentPath.codeListItem) $(`[oid="${metadataHelper.getCodeListOIDByItem(currentPath.itemOID)}"][coded-value="${currentPath.codeListItem}"]`).activate();
 
     if (viewOnlyMode) {
         $("#code-list-items-add-button").disabled = true;
@@ -237,7 +237,7 @@ function codeListItemClicked(event) {
     ioHelper.removeIsActiveFromElement($("#code-list-item-panel-blocks a.is-active"));
     event.target.activate();
 
-    currentPath.value = event.target.getAttribute("coded-value");
+    currentPath.codeListItem = event.target.getAttribute("coded-value");
     reloadDetailsPanel();
 }
 
@@ -325,7 +325,7 @@ function fillDetailsPanelFoundational() {
             $("#mandatory-select-inner").disabled = true;
             $("#element-oid-label").textContent = languageHelper.getTranslation("coded-value");
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-choice");
-            element = metadataHelper.getCodeListItem(metadataHelper.getCodeListOIDByItem(currentPath.itemOID), currentPath.value);
+            element = metadataHelper.getCodeListItem(metadataHelper.getCodeListOIDByItem(currentPath.itemOID), currentPath.codeListItem);
             $("#id-input").value = element.getCodedValue();
             $("#translation-textarea").value = element.getTranslatedDecode(languageHelper.getCurrentLocale());
     }
@@ -407,7 +407,7 @@ function fillItemRangeChecks() {
 }
 
 function fillElementAliases() {
-    const aliases = metadataHelper.getAliasesByElement(currentPath.last, currentPath.value);
+    const aliases = metadataHelper.getAliasesByElement(currentPath.last, currentPath.codeListItem);
     if (aliases.length) $$("#alias-inputs .alias-input").removeElements();
 
     for (const alias of aliases) {
@@ -471,7 +471,7 @@ async function saveDetailsFoundational() {
             break;
         case metadataHelper.ODMPath.elements.CODELISTITEM:
             await setCodeListItemCodedValue(newID);
-            metadataHelper.setCodeListItemDecodedText(metadataHelper.getCodeListOIDByItem(currentPath.itemOID), currentPath.value, newTranslatedText);
+            metadataHelper.setCodeListItemDecodedText(metadataHelper.getCodeListOIDByItem(currentPath.itemOID), currentPath.codeListItem, newTranslatedText);
     }
 
     if (!languageHelper.getPresentLanguages().includes(languageHelper.getCurrentLocale())) {
@@ -499,12 +499,12 @@ async function setElementOIDAndName(oid) {
 }
 
 async function setCodeListItemCodedValue(codedValue) {
-    if (currentPath.value == codedValue) return;
+    if (currentPath.codeListItem == codedValue) return;
 
-    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(currentPath.last, getCurrentElementType(), currentPath.itemOID, currentPath.value);
+    const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(currentPath.last, getCurrentElementType(), currentPath.itemOID, currentPath.codeListItem);
     if (subjectKeys.length == 0) {
-        await metadataHelper.setCodeListItemCodedValue(metadataHelper.getCodeListOIDByItem(currentPath.itemOID), currentPath.value, codedValue)
-            .then(() => currentPath.value = codedValue)
+        await metadataHelper.setCodeListItemCodedValue(metadataHelper.getCodeListOIDByItem(currentPath.itemOID), currentPath.codeListItem, codedValue)
+            .then(() => currentPath.codeListItem = codedValue)
             .catch(() => ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("coded-value-not-changed-error-used")))
     } else {
         ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("coded-value-not-changed-error-data"));
@@ -661,12 +661,12 @@ function saveRangeChecks() {
 }
 
 function saveAliases() {
-    metadataHelper.deleteAliasesOfElement(currentPath.last, currentPath.value);
+    metadataHelper.deleteAliasesOfElement(currentPath.last, currentPath.codeListItem);
     for (let aliasInput of $$(".alias-input")) {
         let context = aliasInput.querySelector(".alias-context").value;
         let name = aliasInput.querySelector(".alias-name").value;
         if (context && name) {
-            metadataHelper.setElementAlias(currentPath.last, currentPath.value, context, name);
+            metadataHelper.setElementAlias(currentPath.last, currentPath.codeListItem, context, name);
         }
     }
 }
@@ -805,10 +805,10 @@ window.addItem = function(event) {
 window.addCodeListItem = function(event) {
     let codeListOID = metadataHelper.getCodeListOIDByItem(currentPath.itemOID);
     if (codeListOID) {
-        currentPath.value = metadataHelper.addCodeListItem(codeListOID);
+        currentPath.codeListItem = metadataHelper.addCodeListItem(codeListOID);
         loadCodeListItemsByItem();
         reloadDetailsPanel();
-        ioHelper.scrollParentToChild($(`[coded-value="${currentPath.value}"]`));
+        ioHelper.scrollParentToChild($(`[coded-value="${currentPath.codeListItem}"]`));
     }
     if (!asyncEditMode) metadataHelper.storeMetadata();
     event.target.blur();
@@ -837,8 +837,8 @@ function removeElement() {
             hideCodeListItems(true);
             break;
         case metadataHelper.ODMPath.elements.CODELISTITEM:
-            metadataHelper.deleteCodeListItem(metadataHelper.getCodeListOIDByItem(currentPath.itemOID), currentPath.value);
-            currentPath.value = null;
+            metadataHelper.deleteCodeListItem(metadataHelper.getCodeListOIDByItem(currentPath.itemOID), currentPath.codeListItem);
+            currentPath.codeListItem = null;
     }
 
     reloadAndStoreMetadata();
@@ -906,7 +906,7 @@ function dragEnter(event) {
 }
 
 function getCurrentElementType() {
-    if (currentPath.value) return metadataHelper.ODMPath.elements.CODELISTITEM;
+    if (currentPath.codeListItem) return metadataHelper.ODMPath.elements.CODELISTITEM;
     else if (currentPath.itemOID) return metadataHelper.ODMPath.elements.ITEM;
     else if (currentPath.itemGroupOID) return metadataHelper.ODMPath.elements.ITEMGROUP;
     else if (currentPath.formOID) return metadataHelper.ODMPath.elements.FORM;
@@ -1059,7 +1059,7 @@ window.referenceCodeList = function() {
     const currentCodeListOID = metadataHelper.getCodeListOIDByItem(currentPath.itemOID);
     metadataHelper.removeCodeListRef(currentPath.itemOID, currentCodeListOID);
     metadataHelper.addCodeListRef(currentPath.itemOID, externalCodeListOID);
-    currentPath.value = null;
+    currentPath.codeListItem = null;
 
     hideCodeListModal();
     reloadAndStoreMetadata();
@@ -1070,7 +1070,7 @@ window.unreferenceCodeList = function() {
     const newCodeListOID = metadataHelper.copyCodeList(currentCodeListOID);
     metadataHelper.removeCodeListRef(currentPath.itemOID, currentCodeListOID);
     metadataHelper.addCodeListRef(currentPath.itemOID, newCodeListOID);
-    currentPath.value = null;
+    currentPath.codeListItem = null;
 
     showCodeListModal();
     reloadAndStoreMetadata();
