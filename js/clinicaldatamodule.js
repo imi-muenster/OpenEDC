@@ -428,7 +428,7 @@ function loadFormClinicaldata() {
 
         let inputElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [item-oid="${formItemData.itemOID}"]`);
         if (!inputElement) {
-            metadataNotFoundErrors.push({type: metadataHelper.elementTypes.ITEM, oid: formItemData.itemOID});
+            metadataNotFoundErrors.push({type: metadataHelper.ODMPath.elements.ITEM, oid: formItemData.itemOID});
             continue;
         }
 
@@ -446,7 +446,7 @@ function loadFormClinicaldata() {
             case "radio":
                 inputElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [item-oid="${formItemData.itemOID}"][value="${formItemData.value}"]`);
                 if (!inputElement) {
-                    metadataNotFoundErrors.push({type: metadataHelper.elementTypes.CODELISTITEM, oid: formItemData.itemOID, value: formItemData.value});
+                    metadataNotFoundErrors.push({type: metadataHelper.ODMPath.elements.VALUE, oid: formItemData.itemOID, value: formItemData.value});
                     continue;
                 }
                 inputElement.checked = true;
@@ -472,7 +472,7 @@ function showErrors(metadataNotFoundErrors, hiddenFieldWithValueErrors) {
         errorMessage += "<p>" + languageHelper.getTranslation("metadata-not-found-error") + "</p><br>";
         for (let error of metadataNotFoundErrors) {
             errorMessage += "<p>";
-            if (error.type == metadataHelper.elementTypes.ITEM) errorMessage += languageHelper.getTranslation("unique-id") + ": " + error.oid;
+            if (error.type == metadataHelper.ODMPath.elements.ITEM) errorMessage += languageHelper.getTranslation("unique-id") + ": " + error.oid;
             else errorMessage += languageHelper.getTranslation("choices-unique-id") + ": " + error.oid + ", " + languageHelper.getTranslation("coded-value") + ": " + error.value;
             errorMessage += "</p>"
         }

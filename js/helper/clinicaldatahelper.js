@@ -579,19 +579,19 @@ export async function getSubjectsHavingDataForElement(elementType , odmPath) {
     for (const subject of subjects) {
         const subjectData = await loadStoredSubjectData(subject.fileName);
         switch (elementType) {
-            case metadataHelper.elementTypes.STUDYEVENT:
+            case metadataHelper.ODMPath.elements.STUDYEVENT:
                 if (subjectData.querySelector(`StudyEventData[StudyEventOID="${odmPath.studyEventOID}"]`)) subjectKeys.push(subject.key);
                 break;
-            case metadataHelper.elementTypes.FORM:
+            case metadataHelper.ODMPath.elements.FORM:
                 if (subjectData.querySelector(`FormData[FormOID="${odmPath.formOID}"]`)) subjectKeys.push(subject.key);
                 break;
-            case metadataHelper.elementTypes.ITEMGROUP:
+            case metadataHelper.ODMPath.elements.ITEMGROUP:
                 if (subjectData.querySelector(`ItemGroupData[ItemGroupOID="${odmPath.itemGroupOID}"]`)) subjectKeys.push(subject.key);
                 break;
-            case metadataHelper.elementTypes.ITEM:
+            case metadataHelper.ODMPath.elements.ITEM:
                 if (subjectData.querySelector(`ItemData[ItemOID="${odmPath.itemOID}"]`)) subjectKeys.push(subject.key);
                 break;
-            case metadataHelper.elementTypes.CODELISTITEM:
+            case metadataHelper.ODMPath.elements.VALUE:
                 if (subjectData.querySelector(`ItemData[ItemOID="${odmPath.itemOID}"][Value="${odmPath.value}"]`)) subjectKeys.push(subject.key);
         }
     }
