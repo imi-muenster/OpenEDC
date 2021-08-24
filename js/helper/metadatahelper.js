@@ -23,7 +23,7 @@ export class ODMPath {
 
     static parse(string) {
         const elements = string ? string.split(ODMPath.separator) : [];
-        return new ODMPath(...Array(4 - elements.length), ...elements);
+        return new ODMPath(...Array(Math.max(0, 4 - elements.length)), ...elements);
     }
 
     constructor(studyEventOID, formOID, itemGroupOID, itemOID, value) {
@@ -71,12 +71,18 @@ export class ODMPath {
         return this.path.get("value");
     }
 
-    set value(oid) {
-        this.path.set("value", oid);
+    set value(newValue) {
+        this.path.set("value", newValue);
     }
 
     get last() {
         return Array.from(this.path.values()).reverse().find(entry => entry);
+    }
+
+    set last(newValue) {
+        for (const [key, value] of Array.from(this.path.entries()).reverse()) {
+            if (value) return this.path.set(key, newValue);
+        }
     }
 
     getRelative(contextPath) {
@@ -96,8 +102,7 @@ export class ODMPath {
     }
 
     toString() {
-        const separator = ODMPath.separator;
-        return (this.studyEventOID ? this.studyEventOID + separator : "") + (this.formOID ? this.formOID + separator : "") + (this.itemGroupOID ? this.itemGroupOID + separator : "") + this.itemOID;
+        return Array.from(this.path.values()).filter(value => value).join(ODMPath.separator);
     }
 }
 
