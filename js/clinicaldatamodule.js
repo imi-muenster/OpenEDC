@@ -446,7 +446,7 @@ function loadFormClinicaldata() {
             case "radio":
                 inputElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [item-oid="${formItemData.itemOID}"][value="${formItemData.value}"]`);
                 if (!inputElement) {
-                    metadataNotFoundErrors.push({type: metadataHelper.ODMPath.elements.VALUE, oid: formItemData.itemOID, value: formItemData.value});
+                    metadataNotFoundErrors.push({type: metadataHelper.ODMPath.elements.CODELISTITEM, oid: formItemData.itemOID, value: formItemData.value});
                     continue;
                 }
                 inputElement.checked = true;

@@ -591,7 +591,7 @@ export async function getSubjectsHavingDataForElement(elementType , odmPath) {
             case metadataHelper.ODMPath.elements.ITEM:
                 if (subjectData.querySelector(`ItemData[ItemOID="${odmPath.itemOID}"]`)) subjectKeys.push(subject.key);
                 break;
-            case metadataHelper.ODMPath.elements.VALUE:
+            case metadataHelper.ODMPath.elements.CODELISTITEM:
                 if (subjectData.querySelector(`ItemData[ItemOID="${odmPath.itemOID}"][Value="${odmPath.value}"]`)) subjectKeys.push(subject.key);
         }
     }

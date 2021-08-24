@@ -26,7 +26,7 @@ export class ODMPath {
         FORM: "form",
         ITEMGROUP: "itemgroup",
         ITEM: "item",
-        VALUE: "value"
+        CODELISTITEM: "codelistitem"
     }
 
     static parseRelative(string) {
@@ -81,11 +81,11 @@ export class ODMPath {
     }
 
     get value() {
-        return this.path.get(ODMPath.elements.VALUE);
+        return this.path.get(ODMPath.elements.CODELISTITEM);
     }
 
     set value(newValue) {
-        this.path.set(ODMPath.elements.VALUE, newValue);
+        this.path.set(ODMPath.elements.CODELISTITEM, newValue);
     }
 
     get last() {
@@ -520,7 +520,7 @@ export function getElementRefs(elementOID, elementType) {
             return Array.from($$(`ItemGroupRef[ItemGroupOID="${elementOID}"]`));
         case ODMPath.elements.ITEM:
             return Array.from($$(`ItemRef[ItemOID="${elementOID}"]`));
-        case ODMPath.elements.VALUE:
+        case ODMPath.elements.CODELISTITEM:
             return Array.from($$(`CodeListRef[CodeListOID="${elementOID}"]`));
     }
 }
@@ -1083,7 +1083,7 @@ export function getHierarchyLevelOfElementType(elementType) {
             return 2;
         case ODMPath.elements.ITEM:
             return 3;
-        case ODMPath.elements.VALUE:
+        case ODMPath.elements.CODELISTITEM:
             return 4;
     }
 }
