@@ -90,7 +90,7 @@ export class ODMPath {
 
     get last() {
         const lastEntry = Array.from(this.path.entries()).reverse().find(entry => entry[1]);
-        return { element: lastEntry[0], value: lastEntry[1] }
+        return { element: lastEntry ? lastEntry[0] : null, value: lastEntry ? lastEntry[1] : null };
     }
 
     getItemRelative(contextPath) {
