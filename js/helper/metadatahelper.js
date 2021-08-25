@@ -39,13 +39,13 @@ export class ODMPath {
         return new ODMPath(...elements);
     }
 
-    constructor(studyEventOID, formOID, itemGroupOID, itemOID, value) {
+    constructor(studyEventOID, formOID, itemGroupOID, itemOID, codeListItem) {
         this.path = new Map();
         this.studyEventOID = studyEventOID;
         this.formOID = formOID;
         this.itemGroupOID = itemGroupOID;
         this.itemOID = itemOID;
-        this.value = value;
+        this.codeListItem = codeListItem;
     }
 
     get studyEventOID() {
@@ -93,6 +93,12 @@ export class ODMPath {
         return { element: lastEntry ? lastEntry[0] : null, value: lastEntry ? lastEntry[1] : null };
     }
 
+    get previous() {
+        const entries = Array.from(this.path.entries()).filter(entry => entry[1]);
+        const previous = entries.length > 1 ? entries[entries.length - 2] : null;
+        return { element: previous ? previous[0] : null, value: previous ? previous[1] : null };
+    }
+
     getItemRelative(contextPath) {
         if (this.studyEventOID != contextPath.studyEventOID) return this;
         else if (this.formOID != contextPath.formOID) return new ODMPath(null, this.formOID, this.itemGroupOID, this.itemOID);
@@ -107,6 +113,10 @@ export class ODMPath {
             this.itemGroupOID ? this.itemGroupOID : contextPath.itemGroupOID,
             this.itemOID
         );
+    }
+
+    clone(until) {
+        return new ODMPath(...Array.from(this.path.values()).slice(0, until ? Array.from(this.path.keys()).indexOf(until) + 1 : this.path.size));
     }
 
     toString() {
