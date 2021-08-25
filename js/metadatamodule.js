@@ -122,7 +122,7 @@ export function loadStudyEvents(hideTree) {
         panelBlock.onclick = studyEventClicked;
         $("#study-event-panel-blocks").appendChild(panelBlock);
     }
-    if (currentPath.studyEventOID) $(`[oid="${currentPath.studyEventOID}"]`).activate();
+    if (currentPath.studyEventOID) $(`#study-event-panel-blocks [oid="${currentPath.studyEventOID}"]`).activate();
 
     if (viewOnlyMode) $("#study-events-add-button").disabled = true;
     else $("#study-events-add-button").disabled = false;
@@ -147,7 +147,7 @@ function loadFormsByStudyEvent(hideTree) {
         panelBlock.onclick = formClicked;
         $("#form-panel-blocks").appendChild(panelBlock);
     }
-    if (currentPath.formOID) $(`[oid="${currentPath.formOID}"]`).activate();
+    if (currentPath.formOID) $(`#form-panel-blocks [oid="${currentPath.formOID}"]`).activate();
 
     if (viewOnlyMode) $("#forms-add-button").disabled = true;
     else $("#forms-add-button").disabled = false;
@@ -172,7 +172,7 @@ function loadItemGroupsByForm(hideTree) {
         panelBlock.onclick = itemGroupClicked;
         $("#item-group-panel-blocks").appendChild(panelBlock);
     }
-    if (currentPath.itemGroupOID) $(`[oid="${currentPath.itemGroupOID}"]`).activate();
+    if (currentPath.itemGroupOID) $(`#item-group-panel-blocks [oid="${currentPath.itemGroupOID}"]`).activate();
 
     if (viewOnlyMode) $("#item-groups-add-button").disabled = true;
     else $("#item-groups-add-button").disabled = false;
@@ -198,7 +198,7 @@ function loadItemsByItemGroup(hideTree) {
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
     }
-    if (currentPath.itemOID) $(`[oid="${currentPath.itemOID}"]`).activate();
+    if (currentPath.itemOID) $(`#item-panel-blocks [oid="${currentPath.itemOID}"]`).activate();
 
     if (viewOnlyMode) $("#items-add-button").disabled = true;
     else $("#items-add-button").disabled = false;
@@ -223,7 +223,7 @@ function loadCodeListItemsByItem(hideTree) {
         panelBlock.onclick = codeListItemClicked;
         $("#code-list-item-panel-blocks").appendChild(panelBlock);
     }
-    if (currentPath.codeListItem) $(`[oid="${metadataWrapper.getCodeListOIDByItem(currentPath.itemOID)}"][coded-value="${currentPath.codeListItem}"]`).activate();
+    if (currentPath.codeListItem) $(`#code-list-item-panel-blocks [oid="${currentPath.codeListItem}"]`).activate();
 
     if (viewOnlyMode) {
         $("#code-list-items-add-button").disabled = true;
@@ -238,7 +238,7 @@ function codeListItemClicked(event) {
     ioHelper.removeIsActiveFromElement($("#code-list-item-panel-blocks a.is-active"));
     event.target.activate();
 
-    currentPath.codeListItem = event.target.getAttribute("coded-value");
+    currentPath.codeListItem = event.target.getOID();
     reloadDetailsPanel();
 }
 
@@ -765,7 +765,7 @@ window.addStudyEvent = function(event) {
     loadStudyEvents();
     loadFormsByStudyEvent(true);
     reloadDetailsPanel();
-    ioHelper.scrollParentToChild($(`[OID="${currentPath.studyEventOID}"]`));
+    ioHelper.scrollParentToChild($(`#study-event-panel-blocks [oid="${currentPath.studyEventOID}"]`));
     if (!asyncEditMode) metadataWrapper.storeMetadata();
     event.target.blur();
 
@@ -778,7 +778,7 @@ window.addForm = function(event) {
     loadFormsByStudyEvent();
     loadItemGroupsByForm(true);
     reloadDetailsPanel();
-    ioHelper.scrollParentToChild($(`[OID="${currentPath.formOID}"]`));
+    ioHelper.scrollParentToChild($(`#form-panel-blocks [oid="${currentPath.formOID}"]`));
     if (!asyncEditMode) metadataWrapper.storeMetadata();
     event.target.blur();
 }
@@ -788,7 +788,7 @@ window.addItemGroup = function(event) {
     loadItemGroupsByForm();
     loadItemsByItemGroup(true);
     reloadDetailsPanel();
-    ioHelper.scrollParentToChild($(`[OID="${currentPath.itemGroupOID}"]`));
+    ioHelper.scrollParentToChild($(`#item-group-panel-blocks [oid="${currentPath.itemGroupOID}"]`));
     if (!asyncEditMode) metadataWrapper.storeMetadata();
     event.target.blur();
 }
@@ -798,7 +798,7 @@ window.addItem = function(event) {
     loadItemsByItemGroup();
     loadCodeListItemsByItem(true);
     reloadDetailsPanel();
-    ioHelper.scrollParentToChild($(`[OID="${currentPath.itemOID}"]`));
+    ioHelper.scrollParentToChild($(`#item-panel-blocks [oid="${currentPath.itemOID}"]`));
     if (!asyncEditMode) metadataWrapper.storeMetadata();
     event.target.blur();
 }
@@ -809,7 +809,7 @@ window.addCodeListItem = function(event) {
         currentPath.codeListItem = metadataWrapper.addCodeListItem(codeListOID);
         loadCodeListItemsByItem();
         reloadDetailsPanel();
-        ioHelper.scrollParentToChild($(`[coded-value="${currentPath.codeListItem}"]`));
+        ioHelper.scrollParentToChild($(`#code-list-item-panel-blocks [oid="${currentPath.codeListItem}"]`));
     }
     if (!asyncEditMode) metadataWrapper.storeMetadata();
     event.target.blur();
