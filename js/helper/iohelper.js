@@ -57,7 +57,7 @@ export const fileNames = {
     clinicaldata: "clinicaldata",
     settings: "settings",
     localkey: "localkey"
-}
+};
 
 let user = null;
 let decryptionKey = null;
@@ -96,7 +96,7 @@ export async function getXMLData(fileName) {
         if (!xmlResponse.ok) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
         xmlString = await xmlResponse.text();
     } else {
-        xmlString = await indexedDBHelper.get(fileName);
+        xmlString = await indexedDBHelper.get("xml", fileName);
         if (!xmlString) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
     }
 
@@ -131,7 +131,7 @@ export async function storeXMLData(fileName, xmlDocument) {
             body: xmlString
         });
     } else {
-        await indexedDBHelper.put(fileName, xmlString);
+        await indexedDBHelper.put("xml", fileName, xmlString);
     }
 }
 
@@ -142,13 +142,13 @@ export async function removeXMLData(fileName) {
             headers: getHeaders(true)
         });
     } else {
-        await indexedDBHelper.remove(fileName);
+        await indexedDBHelper.remove("xml", fileName);
     }
 }
 
 // For performance reasons of IndexedDB, only used for local storage
 export async function storeXMLDataBulk(fileNameList, dataList) {
-    await indexedDBHelper.putBulk(fileNameList, dataList);
+    await indexedDBHelper.putBulk("xml", fileNameList, dataList);
 }
 
 function getURLForFileName(fileName) {
@@ -170,7 +170,7 @@ export async function getODMFileName(fileName) {
         const lastUpdate = await getLastServerUpdate();
         odmFileName = fileName + fileNameSeparator + lastUpdate[fileName];
     } else {
-        for (const localFileName of await indexedDBHelper.getKeys()) {
+        for (const localFileName of await indexedDBHelper.getKeys("xml")) {
             if (localFileName.includes(fileName)) odmFileName = localFileName;
         }
     }
@@ -186,7 +186,7 @@ export async function getSubjectFileNames() {
         const response = await fetch(serverURL + "/api/clinicaldata", { headers: getHeaders(true) });
         subjectFileNames = await response.json();
     } else {
-        for (const fileName of await indexedDBHelper.getKeys()) {
+        for (const fileName of await indexedDBHelper.getKeys("xml")) {
             if (fileName.split(fileNameSeparator).length > 2) subjectFileNames.push(fileName);
         }
     }
@@ -199,27 +199,27 @@ export async function encryptXMLData(password) {
     // Generate new cryptoHelper.AES encryption/decryption key
     const decryptionKey = await cryptoHelper.AES.generateKey();
 
-    for (const fileName of await indexedDBHelper.getKeys()) {
+    for (const fileName of await indexedDBHelper.getKeys("xml")) {
         if (fileName == fileNames.settings) continue;
 
         // Encrypt all locally stored xml files
-        let xmlString = await indexedDBHelper.get(fileName);
+        let xmlString = await indexedDBHelper.get("xml", fileName);
         const xmlDocument = new DOMParser().parseFromString(xmlString, "text/xml");
         if (!xmlDocument.querySelector("parsererror")) {
             xmlString = new XMLSerializer().serializeToString(xmlDocument);
             xmlString = await cryptoHelper.AES.encrypt.withKey(xmlString, decryptionKey);
-            await indexedDBHelper.put(fileName, xmlString);
+            await indexedDBHelper.put("xml", fileName, xmlString);
         }
     }
 
     // Store encrypted decryption key
     const encryptedDecryptionKey = await cryptoHelper.AES.encrypt.withPassword(decryptionKey, password);
-    await indexedDBHelper.put(fileNames.localkey, encryptedDecryptionKey)
+    await indexedDBHelper.put("json", fileNames.localkey, encryptedDecryptionKey)
 }
 
 // Only for local encryption
 export async function setDecryptionKey(password) {
-    const encryptedDecryptionKey = await indexedDBHelper.get(fileNames.localkey);
+    const encryptedDecryptionKey = await indexedDBHelper.get("json", fileNames.localkey);
 
     try {
         decryptionKey = await cryptoHelper.AES.decrypt.withPassword(encryptedDecryptionKey, password);
@@ -230,7 +230,8 @@ export async function setDecryptionKey(password) {
 }
 
 export async function removeAllLocalData() {
-    await indexedDBHelper.clear();
+    await indexedDBHelper.clear("xml");
+    await indexedDBHelper.clear("json");
 }
 
 export async function loadSettings() {
@@ -238,7 +239,7 @@ export async function loadSettings() {
         const settingsResponse = await fetch(serverURL + "/api/" + fileNames.settings, { headers: getHeaders(true) });
         if (settingsResponse.ok && settingsResponse.status != 204) settings = await settingsResponse.json();
     } else {
-        const settingsString = await indexedDBHelper.get(fileNames.settings);
+        const settingsString = await indexedDBHelper.get("json", fileNames.settings);
         if (settingsString) settings = JSON.parse(settingsString);
     }
 }
@@ -251,7 +252,7 @@ async function storeSettings() {
             body: JSON.stringify(settings)
         });
     } else {
-        await indexedDBHelper.put(fileNames.settings, JSON.stringify(settings));
+        await indexedDBHelper.put("json", fileNames.settings, JSON.stringify(settings));
     }
 }
 

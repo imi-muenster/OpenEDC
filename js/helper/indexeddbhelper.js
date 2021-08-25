@@ -6,29 +6,32 @@ export const init = async () => {
     await new Promise(resolve => setTimeout(() => resolve(), 100));
 
     const request = indexedDB.open("OpenEDC");
-    request.onupgradeneeded = () => request.result.createObjectStore("OpenEDC");
+    request.onupgradeneeded = () => {
+        request.result.createObjectStore("xml");
+        request.result.createObjectStore("json");
+    };
 
     db = await promisifyRequest(request);
 }
 
 export const promisifyRequest = request => new Promise(resolve => request.onsuccess = () => resolve(request.result));
 
-export const getObjectStore = writeable => db.transaction("OpenEDC", writeable ? "readwrite" : "readonly").objectStore("OpenEDC");
+export const getObjectStore = (storeName, writeable) => db.transaction(storeName, writeable ? "readwrite" : "readonly").objectStore(storeName);
 
-export const get = key => promisifyRequest(getObjectStore().get(key));
+export const get = (storeName, key) => promisifyRequest(getObjectStore(storeName).get(key));
 
-export const getKeys = () => promisifyRequest(getObjectStore().getAllKeys());
+export const getKeys = storeName => promisifyRequest(getObjectStore(storeName).getAllKeys());
 
-export const put = (key, value) => promisifyRequest(getObjectStore(true).put(value, key));
+export const put = (storeName, key, value) => promisifyRequest(getObjectStore(storeName, true).put(value, key));
 
-export const putBulk = (keys, values) => {
-    const objectStore = getObjectStore(true);
+export const putBulk = (storeName, keys, values) => {
+    const objectStore = getObjectStore(storeName, true);
     for (let i = 0; i < keys.length - 1; i++) {
         objectStore.put(values[i], keys[i]);
     }
     return promisifyRequest(objectStore.put(values[keys.length-1], keys[keys.length-1]));
 }
 
-export const remove = key => promisifyRequest(getObjectStore(true).delete(key));
+export const remove = (storeName, key) => promisifyRequest(getObjectStore(storeName, true).delete(key));
 
-export const clear = () => promisifyRequest(getObjectStore(true).clear());
+export const clear = storeName => promisifyRequest(getObjectStore(storeName, true).clear());
