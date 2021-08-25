@@ -1,8 +1,8 @@
 import * as clinicaldataTemplates from "../odmtemplates/clinicaldatatemplates.js";
-import * as metadataHelper from "./metadatahelper.js";
-import * as admindataHelper from "./admindatahelper.js";
-import * as languageHelper from "./languagehelper.js";
-import * as ioHelper from "./iohelper.js";
+import * as metadataWrapper from "./metadatawrapper.js";
+import * as admindataWrapper from "./admindatawrapper.js";
+import * as languageHelper from "../helper/languagehelper.js";
+import * as ioHelper from "../helper/iohelper.js";
 
 class ClinicaldataFile {
     constructor(modifiedDate) {
@@ -65,7 +65,7 @@ export class FormItemData {
     }
 
     get translatedQuestion() {
-        return metadataHelper.getElementDefByOID(this.itemOID).getTranslatedQuestion(languageHelper.getCurrentLocale(), true);
+        return metadataWrapper.getElementDefByOID(this.itemOID).getTranslatedQuestion(languageHelper.getCurrentLocale(), true);
     }
 }
 
@@ -82,19 +82,19 @@ export class AuditRecord {
     }
 
     get studyEventDescription() {
-        return this.studyEventOID ? metadataHelper.getElementDefByOID(this.studyEventOID).getTranslatedDescription(languageHelper.getCurrentLocale(), true) : null
+        return this.studyEventOID ? metadataWrapper.getElementDefByOID(this.studyEventOID).getTranslatedDescription(languageHelper.getCurrentLocale(), true) : null
     }
 
     get formDescription() {
-        return this.formOID ? metadataHelper.getElementDefByOID(this.formOID).getTranslatedDescription(languageHelper.getCurrentLocale(), true) : null;
+        return this.formOID ? metadataWrapper.getElementDefByOID(this.formOID).getTranslatedDescription(languageHelper.getCurrentLocale(), true) : null;
     }
 
     get userName() {
-        return admindataHelper.getUserFullName(this.userOID);
+        return admindataWrapper.getUserFullName(this.userOID);
     }
 
     get siteName() {
-        return admindataHelper.getSiteNameByOID(this.locationOID)
+        return admindataWrapper.getSiteNameByOID(this.locationOID)
     }
 }
 
@@ -209,7 +209,7 @@ export async function loadSubjects() {
             subjects[i+1].uniqueKey = subjects[i+1].key + ioHelper.fileNameSeparator + i;
             
             // Show a warning that data conflicts exist when the user has manage subjects right and the warning has not shown before
-            if (!subject && ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.MANAGESUBJECTS) && !document.querySelector(".panel-icon.has-text-danger")) {
+            if (!subject && ioHelper.getLoggedInUser().rights.includes(admindataWrapper.userRights.MANAGESUBJECTS) && !document.querySelector(".panel-icon.has-text-danger")) {
                 ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("data-conflicts-present-error"));
             }
         }
@@ -224,7 +224,7 @@ export async function addSubject(subjectKey, siteOID) {
     // TODO: When connected to a server, the server should be consulted to verify that a subject key is available
     const existingSubject = subjects.find(subject => subject.uniqueKey == subjectKey.toLowerCase());
     if (existingSubject) {
-        if (admindataHelper.getCurrentUserSiteOID() == existingSubject.siteOID || !admindataHelper.getCurrentUserSiteOID()) return Promise.reject(errors.SUBJECTKEYEXISTENT);
+        if (admindataWrapper.getCurrentUserSiteOID() == existingSubject.siteOID || !admindataWrapper.getCurrentUserSiteOID()) return Promise.reject(errors.SUBJECTKEYEXISTENT);
         else return Promise.reject(errors.SUBJECTKEYEXISTENTOTHERSITE);
     }
     
@@ -232,7 +232,7 @@ export async function addSubject(subjectKey, siteOID) {
     if (siteOID) subjectData.insertAdjacentElement("afterbegin", clinicaldataTemplates.getSiteRef(siteOID));
 
     const creationDate = new Date();
-    subjectData.appendChild(clinicaldataTemplates.getAuditRecord(admindataHelper.getCurrentUserOID(), siteOID, creationDate.toISOString()));
+    subjectData.appendChild(clinicaldataTemplates.getAuditRecord(admindataWrapper.getCurrentUserOID(), siteOID, creationDate.toISOString()));
 
     subject = new Subject(subjectKey, siteOID, creationDate, null, dataStatusTypes.EMPTY);
     subjects.push(subject);
@@ -319,20 +319,20 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
     if (currentDataStatus == dataStatus && formDataDifference.length == 0) return;
 
     // Do not store data if connected to server and user has no rights to store data
-    if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.ADDSUBJECTDATA)) return;
+    if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataWrapper.userRights.ADDSUBJECTDATA)) return;
 
     // Do not store data if the current data status is set to validated and the user has no permission for invalidation
-    if (currentDataStatus == dataStatusTypes.VALIDATED && ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.VALIDATEFORMS)) return;
+    if (currentDataStatus == dataStatusTypes.VALIDATED && ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataWrapper.userRights.VALIDATEFORMS)) return;
 
     // Do not store data if the form status is set to (in-)validated without permission
     if (currentDataStatus != dataStatus && (currentDataStatus == dataStatusTypes.VALIDATED || dataStatus == dataStatusTypes.VALIDATED)) {
-        if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataHelper.userRights.VALIDATEFORMS)) return;
+        if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataWrapper.userRights.VALIDATEFORMS)) return;
     }
 
     // Create a new FormData element and store the data
     let formData = clinicaldataTemplates.getFormData(formOID);
-    formData.appendChild(clinicaldataTemplates.getAuditRecord(admindataHelper.getCurrentUserOID(), subject.siteOID, new Date().toISOString()));
-    formData.appendChild(clinicaldataTemplates.getFlag(dataStatus, metadataHelper.dataStatusCodeListOID));
+    formData.appendChild(clinicaldataTemplates.getAuditRecord(admindataWrapper.getCurrentUserOID(), subject.siteOID, new Date().toISOString()));
+    formData.appendChild(clinicaldataTemplates.getFlag(dataStatus, metadataWrapper.dataStatusCodeListOID));
 
     let itemGroupData = null;
     for (let formItemData of formDataDifference) {
@@ -471,15 +471,15 @@ export function getAuditRecords(filter) {
     }
 
     // Localize item values
-    const dateItemOIDs = metadataHelper.getItemOIDsWithDataType("date");
-    const dateTimeItemOIDs = metadataHelper.getItemOIDsWithDataType("datetime");
-    const booleanItemOIDs = metadataHelper.getItemOIDsWithDataType("boolean");
+    const dateItemOIDs = metadataWrapper.getItemOIDsWithDataType("date");
+    const dateTimeItemOIDs = metadataWrapper.getItemOIDsWithDataType("datetime");
+    const booleanItemOIDs = metadataWrapper.getItemOIDsWithDataType("boolean");
     for (let auditRecord of auditRecords) {
         if (!auditRecord.dataChanges) continue;
         for (let dataItem of auditRecord.dataChanges) {
             if (!dataItem.value) continue;
             let localizedValue;
-            const codeListItem = metadataHelper.getCodeListItem(metadataHelper.getCodeListOIDByItem(dataItem.itemOID), dataItem.value);
+            const codeListItem = metadataWrapper.getCodeListItem(metadataWrapper.getCodeListOIDByItem(dataItem.itemOID), dataItem.value);
             if (codeListItem) localizedValue = codeListItem.getTranslatedDecode(languageHelper.getCurrentLocale(), true);
             if (dateItemOIDs.includes(dataItem.itemOID)) localizedValue = new Date(dataItem.value).toLocaleDateString();
             if (dateTimeItemOIDs.includes(dataItem.itemOID)) localizedValue = new Date(dataItem.value).toLocaleString();
@@ -541,7 +541,7 @@ export function getAutoNumberedSubjectKey() {
 }
 
 export function getDataStatus() {
-    const dataStates = metadataHelper.getStudyEventOIDs().map(studyEventOID => getDataStatusForStudyEvent(studyEventOID));
+    const dataStates = metadataWrapper.getStudyEventOIDs().map(studyEventOID => getDataStatusForStudyEvent(studyEventOID));
 
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED)) return dataStatusTypes.VALIDATED;
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
@@ -551,7 +551,7 @@ export function getDataStatus() {
 }
 
 export function getDataStatusForStudyEvent(studyEventOID) {
-    const dataStates = metadataHelper.getFormOIDsByStudyEvent(studyEventOID).map(formOID => getDataStatusForForm(studyEventOID, formOID));
+    const dataStates = metadataWrapper.getFormOIDsByStudyEvent(studyEventOID).map(formOID => getDataStatusForForm(studyEventOID, formOID));
 
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED)) return dataStatusTypes.VALIDATED;
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
@@ -579,19 +579,19 @@ export async function getSubjectsHavingDataForElement(elementType , odmPath) {
     for (const subject of subjects) {
         const subjectData = await loadStoredSubjectData(subject.fileName);
         switch (elementType) {
-            case metadataHelper.ODMPath.elements.STUDYEVENT:
+            case metadataWrapper.ODMPath.elements.STUDYEVENT:
                 if (subjectData.querySelector(`StudyEventData[StudyEventOID="${odmPath.studyEventOID}"]`)) subjectKeys.push(subject.key);
                 break;
-            case metadataHelper.ODMPath.elements.FORM:
+            case metadataWrapper.ODMPath.elements.FORM:
                 if (subjectData.querySelector(`FormData[FormOID="${odmPath.formOID}"]`)) subjectKeys.push(subject.key);
                 break;
-            case metadataHelper.ODMPath.elements.ITEMGROUP:
+            case metadataWrapper.ODMPath.elements.ITEMGROUP:
                 if (subjectData.querySelector(`ItemGroupData[ItemGroupOID="${odmPath.itemGroupOID}"]`)) subjectKeys.push(subject.key);
                 break;
-            case metadataHelper.ODMPath.elements.ITEM:
+            case metadataWrapper.ODMPath.elements.ITEM:
                 if (subjectData.querySelector(`ItemData[ItemOID="${odmPath.itemOID}"]`)) subjectKeys.push(subject.key);
                 break;
-            case metadataHelper.ODMPath.elements.CODELISTITEM:
+            case metadataWrapper.ODMPath.elements.CODELISTITEM:
                 if (subjectData.querySelector(`ItemData[ItemOID="${odmPath.itemOID}"][Value="${odmPath.codeListItem}"]`)) subjectKeys.push(subject.key);
         }
     }

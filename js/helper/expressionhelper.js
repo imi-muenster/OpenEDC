@@ -1,5 +1,5 @@
 import { Parser } from "../../lib/expr-eval.js";
-import { ODMPath } from "./metadatahelper.js";
+import { ODMPath } from "../odmwrapper/metadatawrapper.js";
 
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);

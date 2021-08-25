@@ -1,5 +1,5 @@
 import * as clinicaldataModule from "./clinicaldatamodule.js";
-import * as admindataHelper from "./helper/admindatahelper.js";
+import * as admindataWrapper from "./odmwrapper/admindatawrapper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as htmlElements from "./helper/htmlelements.js";
@@ -8,7 +8,7 @@ const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
 export async function init() {
-    await admindataHelper.loadStoredAdmindata().catch(() => admindataHelper.loadEmptyProject());
+    await admindataWrapper.loadStoredAdmindata().catch(() => admindataWrapper.loadEmptyProject());
 }
 
 export async function loadUsers() {
@@ -20,7 +20,7 @@ export async function loadUsers() {
     [$("#user-first-name-input"), $("#user-last-name-input"), $("#user-username-input"), $("#user-password-input")].emptyInputs();
     [$("#user-site-select-inner"), $("#user-first-name-input"), $("#user-last-name-input"), $("#user-username-input"), $("#user-password-input"), $("#user-save-button"), $("#user-remove-button")].disableElements();
 
-    const users = admindataHelper.getUsers();
+    const users = admindataWrapper.getUsers();
     if (users.length) $("#no-users-hint").hide();
     else $("#no-users-hint").show();
 
@@ -28,18 +28,18 @@ export async function loadUsers() {
         const userOID = user.getOID();
         const panelBlock = document.createElement("a");
         panelBlock.className = "panel-block has-no-border-left";
-        panelBlock.textContent = admindataHelper.getUserFullName(userOID);
+        panelBlock.textContent = admindataWrapper.getUserFullName(userOID);
         panelBlock.setAttribute("oid", userOID);
         panelBlock.onclick = () => loadUser(userOID);
         $("#add-user-button").insertAdjacentElement("beforebegin", panelBlock);
     }
 
-    for (let userRight of Object.values(admindataHelper.userRights)) {
+    for (let userRight of Object.values(admindataWrapper.userRights)) {
         const translatedRight = languageHelper.getTranslation(userRight);
         $("#user-rights").insertAdjacentHTML("beforeend", `<label class="checkbox"><input type="checkbox" name="${userRight}" disabled> ${translatedRight}</label>`);
     }
 
-    const localUserOID = admindataHelper.getCurrentUserOID();
+    const localUserOID = admindataWrapper.getCurrentUserOID();
     $(`#users-options [oid="${localUserOID}"]`).textContent += " (" + languageHelper.getTranslation("you") + ")";
 
     if (ioHelper.hasServerURL()) {
@@ -49,7 +49,7 @@ export async function loadUsers() {
 }
 
 function loadUser(userOID) {
-    const user = admindataHelper.getUser(userOID);
+    const user = admindataWrapper.getUser(userOID);
     if (!user) return;
 
     ioHelper.removeIsActiveFromElement($("#users-options .panel a.is-active"));
@@ -57,18 +57,18 @@ function loadUser(userOID) {
 
     // Create site select
     let sites = [languageHelper.getTranslation("no-site")];
-    admindataHelper.getSites().forEach(site => sites.push(site.getName()));
+    admindataWrapper.getSites().forEach(site => sites.push(site.getName()));
     ioHelper.safeRemoveElement($("#user-site-select-outer"));
     let currentSiteName = null;
     const locationRef = user.querySelector("LocationRef");
-    if (locationRef) currentSiteName = admindataHelper.getSiteNameByOID(locationRef.getAttribute("LocationOID"));
+    if (locationRef) currentSiteName = admindataWrapper.getSiteNameByOID(locationRef.getAttribute("LocationOID"));
     $("#user-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("user-site-select", true, true, sites, currentSiteName));
 
     // Fill other inputs and adjust enable status
     $("#user-first-name-input").value = user.querySelector("FirstName").textContent;
     $("#user-last-name-input").value = user.querySelector("LastName").textContent;
     [$("#user-first-name-input"), $("#user-last-name-input"), $("#user-save-button")].enableElements();
-    if (admindataHelper.getUsers().length > 1) $("#user-remove-button").disabled = false;
+    if (admindataWrapper.getUsers().length > 1) $("#user-remove-button").disabled = false;
 
     if (ioHelper.hasServerURL()) {
         [$("#user-username-input"), $("#user-password-input")].emptyInputs();
@@ -96,7 +96,7 @@ function loadUser(userOID) {
 }
 
 window.addUser = function() {
-    const userOID = admindataHelper.addUser();
+    const userOID = admindataWrapper.addUser();
 
     loadUsers();
     loadUser(userOID);
@@ -108,8 +108,8 @@ window.saveUser = function() {
 
     const firstName = $("#user-first-name-input").value;
     const lastName = $("#user-last-name-input").value
-    const locationOID = admindataHelper.getSiteOIDByName($("#user-site-select-inner").value);
-    admindataHelper.setUserInfo(userOID, firstName, lastName, locationOID);
+    const locationOID = admindataWrapper.getSiteOIDByName($("#user-site-select-inner").value);
+    admindataWrapper.setUserInfo(userOID, firstName, lastName, locationOID);
     
     if (ioHelper.hasServerURL()) {
         const username = $("#user-username-input").value;
@@ -119,7 +119,7 @@ window.saveUser = function() {
         ioHelper.setUserOnServer(userOID, credentials, rights, locationOID).catch(error => console.log(error));
     }
 
-    if (userOID == admindataHelper.getCurrentUserOID()) document.dispatchEvent(new CustomEvent("CurrentUserEdited"));
+    if (userOID == admindataWrapper.getCurrentUserOID()) document.dispatchEvent(new CustomEvent("CurrentUserEdited"));
     
     loadUsers();
 }
@@ -131,12 +131,12 @@ window.removeUser = function() {
     if (ioHelper.hasServerURL()) {
         ioHelper.deleteUserOnServer(userOID)
             .then(() => {
-                admindataHelper.removeUser(userOID);
+                admindataWrapper.removeUser(userOID);
                 loadUsers();
             })
             .catch(() => ioHelper.showMessage(languageHelper.getTranslation("user-not-removed"), languageHelper.getTranslation("user-not-removed-hint")));
     } else {
-        admindataHelper.removeUser(userOID);
+        admindataWrapper.removeUser(userOID);
         loadUsers();
     }
 }
@@ -146,7 +146,7 @@ export function loadSites() {
     $("#site-name-input").value = "";
     [$("#site-name-input"), $("#site-save-button"), $("#site-remove-button")].disableElements();
 
-    const sites = admindataHelper.getSites();
+    const sites = admindataWrapper.getSites();
     if (sites.length) $("#no-sites-hint").hide();
     else $("#no-sites-hint").show();
 
@@ -162,7 +162,7 @@ export function loadSites() {
 }
 
 function loadSite(siteOID) {
-    const site = admindataHelper.getSite(siteOID);
+    const site = admindataWrapper.getSite(siteOID);
     if (!site) return;
 
     ioHelper.removeIsActiveFromElement($("#sites-options .panel a.is-active"));
@@ -173,7 +173,7 @@ function loadSite(siteOID) {
 }
 
 window.addSite = function() {
-    const siteOID = admindataHelper.addSite();
+    const siteOID = admindataWrapper.addSite();
 
     loadSites();
     loadSite(siteOID);
@@ -185,7 +185,7 @@ window.saveSite = function() {
     const siteOID = $("#sites-options .panel a.is-active").getOID();
     if (!siteOID) return;
 
-    admindataHelper.setSiteName(siteOID, $("#site-name-input").value);
+    admindataWrapper.setSiteName(siteOID, $("#site-name-input").value);
     loadSites();
 
     clinicaldataModule.createSiteFilterSelect();
@@ -195,7 +195,7 @@ window.removeSite = function() {
     const siteOID = $("#sites-options .panel a.is-active").getOID();
     if (!siteOID) return;
 
-    admindataHelper.removeSite(siteOID)
+    admindataWrapper.removeSite(siteOID)
         .then(() => {
             loadSites();
             clinicaldataModule.createSiteFilterSelect();
@@ -203,10 +203,10 @@ window.removeSite = function() {
         })
         .catch(error => {
             switch (error) {
-                case admindataHelper.errors.SITEHASSUBJECTS:
+                case admindataWrapper.errors.SITEHASSUBJECTS:
                     ioHelper.showMessage(languageHelper.getTranslation("site-not-removed"), languageHelper.getTranslation("site-not-removed-hint-subject"));
                     break;
-                case admindataHelper.errors.SITEHASUSERS:
+                case admindataWrapper.errors.SITEHASUSERS:
                     ioHelper.showMessage(languageHelper.getTranslation("site-not-removed"), languageHelper.getTranslation("site-not-removed-hint-user"));
             }
         });

@@ -1,4 +1,4 @@
-import * as metadataHelper from "./metadatahelper.js";
+import * as metadataWrapper from "../odmwrapper/metadatawrapper.js";
 import * as languageHelper from "./languagehelper.js";
 
 class AutocompleteElement {
@@ -146,8 +146,8 @@ const elementSelected = element => {
     let newValue;
     switch (currentPart) {
         case enabledParts.ITEM:
-            const contextPath = metadataHelper.ODMPath.parseAbsolute(currentInput.getAttribute("context-path"));
-            newValue = metadataHelper.ODMPath.parseAbsolute(element.value).getItemRelative(contextPath).toString();
+            const contextPath = metadataWrapper.ODMPath.parseAbsolute(currentInput.getAttribute("context-path"));
+            newValue = metadataWrapper.ODMPath.parseAbsolute(element.value).getItemRelative(contextPath).toString();
             break;
         case enabledParts.VALUE:
             newValue = addQuotes(element.value);
@@ -214,13 +214,13 @@ const getItemElements = () => {
         case modes.CONDITION:
         case modes.METHOD:
         case modes.ITEM:
-            items = metadataHelper.getItemPaths();
+            items = metadataWrapper.getItemPaths();
             break;
         case modes.MEASUREMENTUNIT:
-            items = metadataHelper.getMeasurementUnits();
+            items = metadataWrapper.getMeasurementUnits();
             break;
         case modes.ITEMWITHCODELIST:
-            items = metadataHelper.getItemPaths({ withCodeList: true });
+            items = metadataWrapper.getItemPaths({ withCodeList: true });
     }
 
     switch (currentMode) {
@@ -230,7 +230,7 @@ const getItemElements = () => {
         case modes.ITEM:
             return items.map(item => new AutocompleteElement(
                 item.toString(),
-                metadataHelper.getElementDefByOID(item.itemOID).getTranslatedQuestion(languageHelper.getCurrentLocale())
+                metadataWrapper.getElementDefByOID(item.itemOID).getTranslatedQuestion(languageHelper.getCurrentLocale())
             ));
         case modes.MEASUREMENTUNIT:
             return items.map(item => new AutocompleteElement(
@@ -247,8 +247,8 @@ const getComparatorElements = () => {
 
 const getValueElements = () => {
     const itemPath = currentInput.value.split(" ")[currentTokenIndex - currentPart + 1];
-    const itemOID = metadataHelper.ODMPath.parseRelative(itemPath).itemOID;
-    const item = metadataHelper.getElementDefByOID(itemOID);
+    const itemOID = metadataWrapper.ODMPath.parseRelative(itemPath).itemOID;
+    const item = metadataWrapper.getElementDefByOID(itemOID);
     if (item && item.getDataType() == "boolean") {
         return [
             new AutocompleteElement(
@@ -261,7 +261,7 @@ const getValueElements = () => {
             )
         ];
     } else {
-        const codeListItems = metadataHelper.getCodeListItemsByItem(itemOID);
+        const codeListItems = metadataWrapper.getCodeListItemsByItem(itemOID);
         return codeListItems.map(codeListItem => new AutocompleteElement(
             codeListItem.getCodedValue(),
             codeListItem.getTranslatedDecode(languageHelper.getCurrentLocale())

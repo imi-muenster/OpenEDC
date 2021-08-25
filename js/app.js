@@ -1,10 +1,10 @@
 import * as metadataModule from "./metadatamodule.js";
-import * as metadataHelper from "./helper/metadatahelper.js";
+import * as metadataWrapper from "./odmwrapper/metadatawrapper.js";
 import * as clinicaldataModule from "./clinicaldatamodule.js";
-import * as clinicaldataHelper from "./helper/clinicaldatahelper.js";
+import * as clinicaldataWrapper from "./odmwrapper/clinicaldatawrapper.js";
 import * as reportsModule from "./reportsmodule.js";
 import * as admindataModule from "./admindatamodule.js";
-import * as admindataHelper from "./helper/admindatahelper.js";
+import * as admindataWrapper from "./odmwrapper/admindatawrapper.js";
 import * as odmValidation from "./helper/odmvalidation.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
     // Initialize the application
-    await metadataHelper.loadStoredMetadata()
+    await metadataWrapper.loadStoredMetadata()
         .then(() => {
             startApp();
         })
@@ -79,7 +79,7 @@ document.addEventListener("CurrentUserEdited", () => {
 });
 
 const startApp = async () => {
-    languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
+    languageHelper.populatePresentLanguages(metadataWrapper.getMetadata());
     languageHelper.setInitialLocale();
     
     metadataModule.init();
@@ -99,7 +99,7 @@ const startApp = async () => {
     setIOListeners();
 
     // If there is at least one study event, automatically open the clinicaldata module
-    enableMode(metadataHelper.getStudyEvents().length ? appModes.CLINICALDATA : appModes.METADATA);
+    enableMode(metadataWrapper.getStudyEvents().length ? appModes.CLINICALDATA : appModes.METADATA);
 
     // For performance purposes, add remaining modals to DOM after main app has been rendered
     addModalsToDOM();
@@ -117,8 +117,8 @@ const startApp = async () => {
 }
 
 const setTitles = () => {
-    $("#study-title").textContent = metadataHelper.getStudyName();
-    $("head title").textContent = "OpenEDC – " + metadataHelper.getStudyName();
+    $("#study-title").textContent = metadataWrapper.getStudyName();
+    $("head title").textContent = "OpenEDC – " + metadataWrapper.getStudyName();
 }
 
 function showStartModal() {
@@ -155,7 +155,7 @@ function showDecryptionKeyModal() {
 }
 
 function showCloseExampleButton() {
-    if (metadataHelper.getStudyName() == languageHelper.getTranslation("exemplary-project")) $("#close-example-button").show(); 
+    if (metadataWrapper.getStudyName() == languageHelper.getTranslation("exemplary-project")) $("#close-example-button").show(); 
 }
 
 function showLoginModal() {
@@ -197,7 +197,7 @@ function showLoginModal() {
 async function loginSuccessful() {
     $("login-modal").remove();
 
-    await metadataHelper.loadStoredMetadata();
+    await metadataWrapper.loadStoredMetadata();
     await startApp();
 }
 
@@ -217,35 +217,35 @@ function loginNotSuccessful(error) {
 }
 
 function adjustUIToUser() {
-    // TODO: Refactor with new User class from admindataHelper
+    // TODO: Refactor with new User class from admindataWrapper
     if (ioHelper.hasServerURL()) {
         const user = ioHelper.getLoggedInUser();
-        if (!user.rights.includes(admindataHelper.userRights.PROJECTOPTIONS)) {
+        if (!user.rights.includes(admindataWrapper.userRights.PROJECTOPTIONS)) {
             $("#project-modal-button").hide();
         }
-        if (!user.rights.includes(admindataHelper.userRights.EDITMETADATA)) {
+        if (!user.rights.includes(admindataWrapper.userRights.EDITMETADATA)) {
             if (getCurrentMode() == appModes.METADATA) metadataModule.hide();
             $("#metadata-mode-button").hide();
         }
-        if (!user.rights.includes(admindataHelper.userRights.MANAGESUBJECTS)) {
+        if (!user.rights.includes(admindataWrapper.userRights.MANAGESUBJECTS)) {
             $("#subject-info-button").hide();
         }
-        if (!user.rights.includes(admindataHelper.userRights.VALIDATEFORMS)) {
+        if (!user.rights.includes(admindataWrapper.userRights.VALIDATEFORMS)) {
             $("#form-validate-level").hide();
         }
-        if (!user.rights.includes(admindataHelper.userRights.ADDSUBJECTDATA)) {
+        if (!user.rights.includes(admindataWrapper.userRights.ADDSUBJECTDATA)) {
             $("#add-subject-input").disabled = true;
             $$(".subject-key-mode-element .button").forEach(button => button.disabled = true);
         }
         if (user.site) {
-            $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(user.site);
+            $("#filter-site-select-inner").value = admindataWrapper.getSiteNameByOID(user.site);
             $("#filter-site-select-inner").disabled = true;
         }
-        $("#logout-button-name").textContent = admindataHelper.getUserFullName(user.oid);
+        $("#logout-button-name").textContent = admindataWrapper.getUserFullName(user.oid);
     } else {      
-        const siteOID = admindataHelper.getCurrentUserSiteOID();
-        if (siteOID) $("#filter-site-select-inner").value = admindataHelper.getSiteNameByOID(siteOID);
-        $("#logout-button-name").textContent = admindataHelper.getUserFullName(admindataHelper.getCurrentUserOID());
+        const siteOID = admindataWrapper.getCurrentUserSiteOID();
+        if (siteOID) $("#filter-site-select-inner").value = admindataWrapper.getSiteNameByOID(siteOID);
+        $("#logout-button-name").textContent = admindataWrapper.getUserFullName(admindataWrapper.getCurrentUserOID());
     }
 
     if (ioHelper.hasDecryptionKey()) $("#logout-button").show();
@@ -261,7 +261,7 @@ window.showForgotPasswordModal = function() {
 }
 
 window.newProject = function() {
-    metadataHelper.loadEmptyProject();
+    metadataWrapper.loadEmptyProject();
     startApp();
 
     // Show the new project help message
@@ -276,9 +276,9 @@ window.openODM = async function() {
     const content = await ioHelper.getFileContent(file.files[0]);
     const odmXMLString = validateODM(content);
     if (odmXMLString) {
-        metadataHelper.importMetadata(odmXMLString);
-        admindataHelper.importAdmindata(odmXMLString);
-        await clinicaldataHelper.importClinicaldata(odmXMLString);
+        metadataWrapper.importMetadata(odmXMLString);
+        admindataWrapper.importAdmindata(odmXMLString);
+        await clinicaldataWrapper.importClinicaldata(odmXMLString);
         startApp();
     }
 
@@ -310,7 +310,7 @@ window.importODM = async function() {
 }
 
 window.loadExample = async function() {
-    await metadataHelper.loadExample();
+    await metadataWrapper.loadExample();
     startApp();
 
     // Show the exemplary project help message
@@ -335,9 +335,9 @@ window.showProjectModal = function() {
     $("#survey-code-input").value = ioHelper.getSetting("surveyCode");
     $("#text-as-textarea-checkbox").checked = ioHelper.getSetting("textAsTextarea");
     $("#auto-survey-view-checkbox").checked = ioHelper.getSetting("autoSurveyView");
-    $("#study-name-input").value = metadataHelper.getStudyName();
-    $("#study-description-textarea").value = metadataHelper.getStudyDescription();
-    $("#protocol-name-input").value = metadataHelper.getProtocolName();
+    $("#study-name-input").value = metadataWrapper.getStudyName();
+    $("#study-description-textarea").value = metadataWrapper.getStudyDescription();
+    $("#protocol-name-input").value = metadataWrapper.getProtocolName();
     admindataModule.loadUsers();
     admindataModule.loadSites();
 
@@ -423,7 +423,7 @@ window.initializeServer = function(event) {
     // Initialize the server, i.e., set the owner of the server with the entered data and transfer all data
     // The user account will be linked to the default/first user, which, in the most cases, is the only user since adding users is prohibited without a server connection
     const serverURL = $("#server-url-input").value;
-    const userOID = admindataHelper.getCurrentUserOID();
+    const userOID = admindataWrapper.getCurrentUserOID();
     event.target.showLoading();
     ioHelper.initializeServer(serverURL, userOID, credentials)
         .then(serverURL => window.location.replace(serverURL))
@@ -436,7 +436,7 @@ window.encryptData = function(event) {
         return;
     }
 
-    const username = admindataHelper.getCurrentUserOID();
+    const username = admindataWrapper.getCurrentUserOID();
     const password = $("#encryption-password-input").value;
     const confirmPassword = $("#confirm-encryption-password-input").value;
     const credentials = new ioHelper.Credentials(username, password, confirmPassword);
@@ -486,10 +486,10 @@ function showSubjectKeyModeElement() {
 }
 
 window.saveStudyNameDescription = function() {
-    metadataHelper.setStudyName($("#study-name-input").value);
-    metadataHelper.setStudyDescription($("#study-description-textarea").value);
-    metadataHelper.setProtocolName($("#protocol-name-input").value);
-    metadataHelper.storeMetadata();
+    metadataWrapper.setStudyName($("#study-name-input").value);
+    metadataWrapper.setStudyDescription($("#study-description-textarea").value);
+    metadataWrapper.setProtocolName($("#protocol-name-input").value);
+    metadataWrapper.storeMetadata();
     hideProjectModal();
     setTitles();
 }
@@ -530,34 +530,34 @@ window.hideAboutModal = function() {
 }
 
 window.exportODM = async function() {
-    let odm = metadataHelper.prepareDownload(clinicaldataHelper.dataStatusTypes);
+    let odm = metadataWrapper.prepareDownload(clinicaldataWrapper.dataStatusTypes);
 
-    let admindata = admindataHelper.getAdmindata(metadataHelper.getStudyOID());
+    let admindata = admindataWrapper.getAdmindata(metadataWrapper.getStudyOID());
     if (admindata) odm.querySelector("ODM").appendChild(admindata);
 
-    let clinicaldata = await clinicaldataHelper.getClinicalData(metadataHelper.getStudyOID(), metadataHelper.getMetaDataVersionOID());
+    let clinicaldata = await clinicaldataWrapper.getClinicalData(metadataWrapper.getStudyOID(), metadataWrapper.getMetaDataVersionOID());
     if (clinicaldata) odm.querySelector("ODM").appendChild(clinicaldata);
 
-    ioHelper.download(metadataHelper.getStudyName(), "xml", new XMLSerializer().serializeToString(odm));
+    ioHelper.download(metadataWrapper.getStudyName(), "xml", new XMLSerializer().serializeToString(odm));
 }
 
 window.exportODMMetadata = function() {
-    const odm = metadataHelper.prepareDownload();
-    ioHelper.download(metadataHelper.getStudyName()+"_metadata", "xml", new XMLSerializer().serializeToString(odm));
+    const odm = metadataWrapper.prepareDownload();
+    ioHelper.download(metadataWrapper.getStudyName()+"_metadata", "xml", new XMLSerializer().serializeToString(odm));
 }
 
 window.exportCSV = async function() {
-    const csvHeaders = metadataHelper.getCSVHeaders();
-    const csvData = await clinicaldataHelper.getCSVData(csvHeaders);
+    const csvHeaders = metadataWrapper.getCSVHeaders();
+    const csvData = await clinicaldataWrapper.getCSVData(csvHeaders);
     const csvString = ioHelper.getCSVString(csvHeaders, csvData);
 
-    ioHelper.download(metadataHelper.getStudyName()+"_clinicaldata", "csv", csvString);
+    ioHelper.download(metadataWrapper.getStudyName()+"_clinicaldata", "csv", csvString);
 }
 
 window.removeAllData = async function() {
     if (ioHelper.hasServerURL()) {
-        await clinicaldataHelper.removeClinicaldata();
-        await metadataHelper.loadEmptyProject();
+        await clinicaldataWrapper.removeClinicaldata();
+        await metadataWrapper.loadEmptyProject();
     } else {
         await ioHelper.removeAllLocalData();
     }
@@ -566,7 +566,7 @@ window.removeAllData = async function() {
 }
 
 window.removeClinicaldata = async function() {
-    await clinicaldataHelper.removeClinicaldata();
+    await clinicaldataWrapper.removeClinicaldata();
     window.location.reload();
 }
 
@@ -669,8 +669,8 @@ async function handleURLSearchParameters() {
                     {
                         [languageHelper.getTranslation("append-forms")]: () => mergeMetadataModels(models),
                         [languageHelper.getTranslation("remove-current-data")]: () => {
-                            metadataHelper.removeMetadata();
-                            clinicaldataHelper.removeClinicaldata();
+                            metadataWrapper.removeMetadata();
+                            clinicaldataWrapper.removeClinicaldata();
                             mergeMetadataModels(models);
                     }
                 });
@@ -682,7 +682,7 @@ async function handleURLSearchParameters() {
 function mergeMetadataModels(models) {
     models.forEach(async model => {
         const odmXMLString = validateODM(model);
-        if (odmXMLString) await metadataHelper.mergeMetadata(odmXMLString);
+        if (odmXMLString) await metadataWrapper.mergeMetadata(odmXMLString);
     });
 
     if (getCurrentState() == appStates.UNLOCKED) {
@@ -693,7 +693,7 @@ function mergeMetadataModels(models) {
 }
 
 async function reloadApp(options) {
-    if (options && options.reloadMetadata) await metadataHelper.loadStoredMetadata();
+    if (options && options.reloadMetadata) await metadataWrapper.loadStoredMetadata();
 
     if (getCurrentMode() == appModes.METADATA) {
         metadataModule.reloadTree();
@@ -705,7 +705,7 @@ async function reloadApp(options) {
 }
 
 function reloadLanguageSelect() {
-    languageHelper.populatePresentLanguages(metadataHelper.getMetadata());
+    languageHelper.populatePresentLanguages(metadataWrapper.getMetadata());
     languageHelper.createLanguageSelect(getCurrentMode() == appModes.METADATA);
 }
 
@@ -719,7 +719,7 @@ async function subscribeToServerUpdates() {
         const lastUpdate = await ioHelper.getLastServerUpdate();
 
         // Test whether the metadata was updated
-        if (metadataHelper.getLastUpdate() != lastUpdate.metadata && lastHintShowed.metadata != lastUpdate.metadata) {
+        if (metadataWrapper.getLastUpdate() != lastUpdate.metadata && lastHintShowed.metadata != lastUpdate.metadata) {
             ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("metadata-reload-question"),
                 {
                     [languageHelper.getTranslation("reload")]: () => reloadApp({ reloadMetadata: true })
@@ -729,8 +729,8 @@ async function subscribeToServerUpdates() {
         };
 
         // Test whether the clinicaldata was updated
-        if (clinicaldataHelper.getLastUpdate() != lastUpdate.clinicaldata) {
-            await clinicaldataHelper.loadSubjects();
+        if (clinicaldataWrapper.getLastUpdate() != lastUpdate.clinicaldata) {
+            await clinicaldataWrapper.loadSubjects();
             clinicaldataModule.loadSubjectKeys();
         };
 

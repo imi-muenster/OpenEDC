@@ -1,7 +1,7 @@
 import * as metadataTemplates from "../odmtemplates/metadatatemplates.js";
-import * as odmToHTML from "./odmtohtml.js";
-import * as languageHelper from "./languagehelper.js";
-import * as ioHelper from "./iohelper.js";
+import * as odmToHTML from "../helper/odmtohtml.js";
+import * as languageHelper from "../helper/languagehelper.js";
+import * as ioHelper from "../helper/iohelper.js";
 
 class MetadataFile {
     constructor(modifiedDate) {
