@@ -13,13 +13,12 @@ const rangeCheckComparatorsDisplay = ["--", "<", "<=", ">", ">=", "=", "!="];
 const dataTypes = ["integer", "float", "boolean", "text", "string", "date", "time", "datetime", "codelist-text", "codelist-integer", "codelist-float", "double"];
 const mandatory = ["No", "Yes"];
 
-export function getMetadataPanelBlock(elementOID, elementType, titleText, fallbackText, subtitleText, codedValue, draggable) {
+export function getMetadataPanelBlock(elementOID, elementType, titleText, fallbackText, subtitleText, draggable) {
     let panelBlock = document.createElement("a");
     panelBlock.className = "panel-block";
     panelBlock.setAttribute("oid", elementOID);
     panelBlock.setAttribute("element-type", elementType);
     panelBlock.setAttribute("draggable", draggable);
-    if (codedValue) panelBlock.setAttribute("coded-value", codedValue);
 
     let title = document.createElement("div");
     title.className = "panel-block-title";

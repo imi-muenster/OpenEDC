@@ -99,6 +99,11 @@ export class ODMPath {
         return { element: previous ? previous[0] : null, value: previous ? previous[1] : null };
     }
 
+    set(element, value) {
+        this.path.set(element, value);
+        return this;
+    }
+
     getItemRelative(contextPath) {
         if (this.studyEventOID != contextPath.studyEventOID) return this;
         else if (this.formOID != contextPath.formOID) return new ODMPath(null, this.formOID, this.itemGroupOID, this.itemOID);
@@ -341,21 +346,22 @@ export function getCodeListOIDByItem(itemOID) {
     return codeListRef ? codeListRef.getAttribute("CodeListOID") : null;
 }
 
+// TODO: Could be refactored to only take path as input parameter
 export function getCodeListItem(codeListOID, codedValue) {
     if (!codeListOID || !codedValue) return;
     return $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${codedValue}"]`);
 }
 
-export function getElementRefByOID(elementType, odmPath) {
+export function getElementRefByOID(elementType, path) {
     switch (elementType) {
         case ODMPath.elements.STUDYEVENT:
-            return $(`StudyEventRef[StudyEventOID="${odmPath.studyEventOID}"]`);
+            return $(`StudyEventRef[StudyEventOID="${path.studyEventOID}"]`);
         case ODMPath.elements.FORM:
-            return $(`StudyEventDef[OID="${odmPath.studyEventOID}"] FormRef[FormOID="${odmPath.formOID}"]`);
+            return $(`StudyEventDef[OID="${path.studyEventOID}"] FormRef[FormOID="${path.formOID}"]`);
         case ODMPath.elements.ITEMGROUP:
-            return $(`FormDef[OID="${odmPath.formOID}"] ItemGroupRef[ItemGroupOID="${odmPath.itemGroupOID}"]`);
+            return $(`FormDef[OID="${path.formOID}"] ItemGroupRef[ItemGroupOID="${path.itemGroupOID}"]`);
         case ODMPath.elements.ITEM:
-            return $(`ItemGroupDef[OID="${odmPath.itemGroupOID}"] ItemRef[ItemOID="${odmPath.itemOID}"]`);
+            return $(`ItemGroupDef[OID="${path.itemGroupOID}"] ItemRef[ItemOID="${path.itemOID}"]`);
     }
 }
 
@@ -459,14 +465,14 @@ export function getMeasurementUnits() {
     return Array.from($$("BasicDefinitions MeasurementUnit"));
 }
 
-export function getElementCondition(elementType, odmPath) {
+export function getElementCondition(elementType, path) {
     let conditionRef;
     switch (elementType) {
         case ODMPath.elements.ITEMGROUP:
-            conditionRef = $(`FormDef[OID="${odmPath.formOID}"] ItemGroupRef[ItemGroupOID="${odmPath.itemGroupOID}"][CollectionExceptionConditionOID]`);
+            conditionRef = $(`FormDef[OID="${path.formOID}"] ItemGroupRef[ItemGroupOID="${path.itemGroupOID}"][CollectionExceptionConditionOID]`);
             break;
         case ODMPath.elements.ITEM:
-            conditionRef = $(`ItemGroupDef[OID="${odmPath.itemGroupOID}"] ItemRef[ItemOID="${odmPath.itemOID}"][CollectionExceptionConditionOID]`);
+            conditionRef = $(`ItemGroupDef[OID="${path.itemGroupOID}"] ItemRef[ItemOID="${path.itemOID}"][CollectionExceptionConditionOID]`);
     }
 
     if (conditionRef) {
@@ -475,8 +481,8 @@ export function getElementCondition(elementType, odmPath) {
     }
 }
 
-export function getItemMethod(odmPath) {
-    let methodRef = $(`ItemGroupDef[OID="${odmPath.itemGroupOID}"] ItemRef[ItemOID="${odmPath.itemOID}"][MethodOID]`);
+export function getItemMethod(path) {
+    let methodRef = $(`ItemGroupDef[OID="${path.itemGroupOID}"] ItemRef[ItemOID="${path.itemOID}"][MethodOID]`);
     if (methodRef) {
         let oid = methodRef.getAttribute("MethodOID");
         return $(`MethodDef[OID="${oid}"]`);
@@ -623,19 +629,19 @@ export function setItemDataType(itemOID, dataType) {
     $(`[OID="${itemOID}"]`).setAttribute("DataType", dataType);
 }
 
-export function setElementMandatory(elementType, odmPath, mandatory) {
+export function setElementMandatory(elementType, path, mandatory) {
     switch (elementType) {
         case ODMPath.elements.STUDYEVENT:
-            $(`StudyEventRef[StudyEventOID="${odmPath.studyEventOID}"]`).setAttribute("Mandatory", mandatory);
+            $(`StudyEventRef[StudyEventOID="${path.studyEventOID}"]`).setAttribute("Mandatory", mandatory);
             break;
         case ODMPath.elements.FORM:
-            $(`StudyEventDef[OID="${odmPath.studyEventOID}"] FormRef[FormOID="${odmPath.formOID}"]`).setAttribute("Mandatory", mandatory);
+            $(`StudyEventDef[OID="${path.studyEventOID}"] FormRef[FormOID="${path.formOID}"]`).setAttribute("Mandatory", mandatory);
             break;
         case ODMPath.elements.ITEMGROUP:
-            $(`FormDef[OID="${odmPath.formOID}"] ItemGroupRef[ItemGroupOID="${odmPath.itemGroupOID}"]`).setAttribute("Mandatory", mandatory);
+            $(`FormDef[OID="${path.formOID}"] ItemGroupRef[ItemGroupOID="${path.itemGroupOID}"]`).setAttribute("Mandatory", mandatory);
             break;
         case ODMPath.elements.ITEM:
-            $(`ItemGroupDef[OID="${odmPath.itemGroupOID}"] ItemRef[ItemOID="${odmPath.itemOID}"]`).setAttribute("Mandatory", mandatory);
+            $(`ItemGroupDef[OID="${path.itemGroupOID}"] ItemRef[ItemOID="${path.itemOID}"]`).setAttribute("Mandatory", mandatory);
     }
 }
 

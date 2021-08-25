@@ -54,9 +54,9 @@ function setEditMode() {
     }
 }
 
-function createPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, codedValue) {
+function createPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText) {
     const draggable = viewOnlyMode ? false : true;
-    let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, codedValue, draggable);
+    let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, draggable);
 
     panelBlock.ondragstart = dragStart;
     panelBlock.ondragenter = dragEnter;
@@ -218,7 +218,7 @@ function loadCodeListItemsByItem(hideTree) {
     let codeListItems = metadataHelper.getCodeListItemsByItem(currentPath.itemOID);
     for (let codeListItem of codeListItems) {
         let translatedDecode = codeListItem.getTranslatedDecode(languageHelper.getCurrentLocale());
-        let panelBlock = createPanelBlock(codeListItem.parentNode.getOID(), metadataHelper.ODMPath.elements.CODELISTITEM, translatedDecode, codeListItem.getCodedValue(), null, codeListItem.getCodedValue());
+        let panelBlock = createPanelBlock(codeListItem.getCodedValue(), metadataHelper.ODMPath.elements.CODELISTITEM, translatedDecode, codeListItem.getCodedValue(), null);
         panelBlock.onclick = codeListItemClicked;
         $("#code-list-item-panel-blocks").appendChild(panelBlock);
     }
@@ -489,7 +489,7 @@ async function setElementOIDAndName(oid) {
     if (subjectKeys.length == 0) {
         await metadataHelper.setElementOID(currentPath.last.value, currentPath.last.element, oid)
             .then(() => {
-                currentPath.path.set(currentPath.last.element, oid);
+                currentPath.set(currentPath.last.element, oid);
                 metadataHelper.setElementName(currentPath.last.value, oid);
             })
             .catch(() => ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("id-not-changed-error-used")))
@@ -876,7 +876,8 @@ window.copyElement = function(deepCopy) {
 
 function dragStart(event) {
     elementTypeOnDrag = event.target.getAttribute("element-type");
-    event.dataTransfer.setData("sourcePath", currentPath.toString());
+    const elementPath = currentPath.clone(elementTypeOnDrag).set(elementTypeOnDrag, event.target.getOID());
+    event.dataTransfer.setData("sourcePath", elementPath.toString());
 }
 
 window.allowDrop = function(event) {
@@ -909,9 +910,10 @@ window.elementDrop = async function(event) {
     if (viewOnlyMode) return;
 
     const sourcePath = metadataHelper.ODMPath.parseAbsolute(event.dataTransfer.getData("sourcePath"));
-    if (sourceParentOID != targetParentOID) {
+    const targetPath = currentPath.clone(elementTypeOnDrag).set(elementTypeOnDrag, event.target.getOID());
+    if (sourcePath.previous.value != targetPath.previous.value) {
         // Extra if-statement for performance reasons (do not load all subjects when sourceParentOID and targetParentOID are equal)
-        const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(sourceElementOID, elementTypeOnDrag, sourceParentOID, sourceCodedValue);
+        const subjectKeys = await clinicaldataHelper.getSubjectsHavingDataForElement(elementTypeOnDrag, sourcePath);
         if (subjectKeys.length) {
             ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("element-not-moved-error"));
             return;
@@ -921,16 +923,18 @@ window.elementDrop = async function(event) {
     let sourceElementRef = null;
     let targetElementRef = null;
     if (elementTypeOnDrag == metadataHelper.ODMPath.elements.CODELISTITEM) {
-        sourceElementRef = metadataHelper.getCodeListItem(sourceElementOID, sourceCodedValue);
+        const codeListOID = metadataHelper.getCodeListOIDByItem(sourcePath.itemOID);
+        sourceElementRef = metadataHelper.getCodeListItem(codeListOID, sourcePath.codeListItem);
     } else {
         sourceElementRef = metadataHelper.getElementRefByOID(elementTypeOnDrag, sourcePath);
     }
 
-    if (targetElementOID) {
+    if (targetPath.toString()) {
         if (elementTypeOnDrag == metadataHelper.ODMPath.elements.CODELISTITEM) {
-            targetElementRef = metadataHelper.getCodeListItem(targetElementOID, targetCodedValue);
+            const codeListOID = metadataHelper.getCodeListOIDByItem(targetPath.itemOID);
+            targetElementRef = metadataHelper.getCodeListItem(codeListOID, targetPath.codeListItem);
         } else {
-            targetElementRef = metadataHelper.getElementRefByOID(elementTypeOnDrag, currentPath);
+            targetElementRef = metadataHelper.getElementRefByOID(elementTypeOnDrag, targetPath);
         }
 
         // Needed because of event.offsetY inconsistencies accross browsers
