@@ -407,7 +407,7 @@ function fillItemRangeChecks() {
 }
 
 function fillElementAliases() {
-    const aliases = metadataHelper.getAliasesByElement(currentPath.last.value, currentPath.codeListItem);
+    const aliases = metadataHelper.getElementAliases(currentPath);
     if (aliases.length) $$("#alias-inputs .alias-input").removeElements();
 
     for (const alias of aliases) {
@@ -661,12 +661,12 @@ function saveRangeChecks() {
 }
 
 function saveAliases() {
-    metadataHelper.deleteAliasesOfElement(currentPath.last.value, currentPath.codeListItem);
+    metadataHelper.deleteElementAliases(currentPath);
     for (let aliasInput of $$(".alias-input")) {
         let context = aliasInput.querySelector(".alias-context").value;
         let name = aliasInput.querySelector(".alias-name").value;
         if (context && name) {
-            metadataHelper.setElementAlias(currentPath.last.value, currentPath.codeListItem, context, name);
+            metadataHelper.setElementAlias(currentPath, context, name);
         }
     }
 }

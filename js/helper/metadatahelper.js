@@ -353,11 +353,12 @@ export function getElementDefByOID(elementOID) {
     return $(`[OID="${elementOID}"]`);
 }
 
-export function getAliasesByElement(elementOID, codeListItemCodedValue) {
-    if (!codeListItemCodedValue) {
-        return $$(`[OID="${elementOID}"] Alias`);
+export function getElementAliases(path) {
+    if (path.last.element != ODMPath.elements.CODELISTITEM) {
+        return $$(`[OID="${path.last.value}"] Alias`);
     } else {
-        return $$(`[OID="${elementOID}"] CodeListItem[CodedValue="${codeListItemCodedValue}"] Alias`);
+        const codeListOID = getCodeListOIDByItem(path.itemOID);
+        return $$(`[OID="${codeListOID}"] CodeListItem[CodedValue="${path.codeListItem}"] Alias`);
     }
 }
 
@@ -657,11 +658,12 @@ export function setCodeListItemDecodedText(codeListOID, codedValue, decodedText)
     }
 }
 
-export function setElementAlias(elementOID, codeListItemCodedValue, context, name) {
-    if (!codeListItemCodedValue) {
-        $(`[OID="${elementOID}"]`).appendChild(metadataTemplates.getAlias(context, name));
+export function setElementAlias(path, context, name) {
+    if (path.last.element != ODMPath.elements.CODELISTITEM) {
+        $(`[OID="${path.last.value}"]`).appendChild(metadataTemplates.getAlias(context, name));
     } else {
-        $(`[OID="${elementOID}"] CodeListItem[CodedValue="${codeListItemCodedValue}"]`).appendChild(metadataTemplates.getAlias(context, name));
+        const codeListOID = getCodeListOIDByItem(path.itemOID);
+        $(`[OID="${codeListOID}"] CodeListItem[CodedValue="${path.codeListItem}"]`).appendChild(metadataTemplates.getAlias(context, name));
     } 
 }
 
@@ -954,9 +956,13 @@ export function safeDeleteMeasurementUnit(measurementUnitOID) {
     if (!$(`MeasurementUnitRef[MeasurementUnitOID="${measurementUnitOID}"]`)) ioHelper.safeRemoveElement($(`MeasurementUnit[OID="${measurementUnitOID}"]`));
 }
 
-export function deleteAliasesOfElement(elementOID, codeListItemCodedValue) {
-    if (!codeListItemCodedValue) $$(`[OID="${elementOID}"] Alias`).removeElements();
-    else $$(`[OID="${elementOID}"] CodeListItem[CodedValue="${codeListItemCodedValue}"] Alias`).removeElements();
+export function deleteElementAliases(path) {
+    if (path.last.element != ODMPath.elements.CODELISTITEM) {
+        $$(`[OID="${path.last.value}"] Alias`).removeElements();
+    } else {
+        const codeListOID = getCodeListOIDByItem(path.itemOID);
+        $$(`[OID="${codeListOID}"] CodeListItem[CodedValue="${path.codeListItem}"] Alias`).removeElements();
+    }
 }
 
 export function deleteRangeChecksOfItem(itemOID) {
