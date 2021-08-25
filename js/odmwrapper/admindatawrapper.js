@@ -15,7 +15,7 @@ class AdmindataFile {
     }
 
     get fileName() {
-        return ioHelper.fileNames.admindata + ioHelper.fileNameSeparator + this.modifiedDate.getTime();
+        return ioHelper.odmFileNames.admindata + ioHelper.fileNameSeparator + this.modifiedDate.getTime();
     }
 }
 
@@ -61,7 +61,7 @@ export function getAdmindata(studyOID) {
 }
 
 export async function loadStoredAdmindata() {
-    admindataFile = AdmindataFile.parse(await ioHelper.getODMFileName(ioHelper.fileNames.admindata));
+    admindataFile = AdmindataFile.parse(await ioHelper.getODMFileName(ioHelper.odmFileNames.admindata));
     const xmlData = await ioHelper.getXMLData(admindataFile.fileName);
     admindata = xmlData.documentElement;
 }

@@ -49,25 +49,23 @@ export const interactionTypes = {
     DANGER: 4
 }
 
-const $ = query => document.querySelector(query);
-
-export const fileNames = {
+export const odmFileNames = {
     metadata: "metadata",
     admindata: "admindata",
-    clinicaldata: "clinicaldata",
-    settings: "settings",
-    localkey: "localkey"
+    clinicaldata: "clinicaldata"
 };
-
-let user = null;
-let decryptionKey = null;
-let serverURL = null;
 
 export const subjectKeyModes = {
     MANUAL: "subject-key-mode-manual",
     AUTO: "subject-key-mode-auto",
     BARCODE: "subject-key-mode-barcode"
 }
+
+const $ = query => document.querySelector(query);
+
+let user = null;
+let decryptionKey = null;
+let serverURL = null;
 
 // Keeps app options that are equal for all users of the app
 let settings = {
@@ -110,11 +108,8 @@ export async function getXMLData(fileName) {
 
     const xmlDocument = new DOMParser().parseFromString(xmlString, "text/xml");
     if (xmlDocument.querySelector("parsererror")) {
-        if (!decryptionKey) {
-            throw new LoadXMLException(loadXMLExceptionCodes.DATAENCRYPTED);
-        } else {
-            throw new LoadXMLException(loadXMLExceptionCodes.NOTDECRYPTABLE);
-        }
+        if (decryptionKey) throw new LoadXMLException(loadXMLExceptionCodes.NOTDECRYPTABLE);
+        else throw new LoadXMLException(loadXMLExceptionCodes.DATAENCRYPTED);
     } else {
         return xmlDocument;
     }
@@ -155,7 +150,7 @@ function getURLForFileName(fileName) {
     let url = serverURL + "/api/";
 
     const type = Object.values(fileNames).find(entry => fileName.includes(entry));
-    return url + (type ? type : fileNames.clinicaldata) + "/" + fileName;
+    return url + (type ? type : odmFileNames.clinicaldata) + "/" + fileName;
 }
 
 export async function getLastServerUpdate() {
@@ -187,7 +182,7 @@ export async function getSubjectFileNames() {
         subjectFileNames = await response.json();
     } else {
         for (const fileName of await indexedDBHelper.getKeys("xml")) {
-            if (fileName.split(fileNameSeparator).length > 2) subjectFileNames.push(fileName);
+            if (!fileName.includes(odmFileNames.metadata) && !fileName.includes(odmFileNames.admindata)) subjectFileNames.push(fileName);
         }
     }
 
@@ -199,10 +194,8 @@ export async function encryptXMLData(password) {
     // Generate new cryptoHelper.AES encryption/decryption key
     const decryptionKey = await cryptoHelper.AES.generateKey();
 
+    // Encrypt all locally stored xml files
     for (const fileName of await indexedDBHelper.getKeys("xml")) {
-        if (fileName == fileNames.settings) continue;
-
-        // Encrypt all locally stored xml files
         let xmlString = await indexedDBHelper.get("xml", fileName);
         const xmlDocument = new DOMParser().parseFromString(xmlString, "text/xml");
         if (!xmlDocument.querySelector("parsererror")) {
@@ -214,12 +207,12 @@ export async function encryptXMLData(password) {
 
     // Store encrypted decryption key
     const encryptedDecryptionKey = await cryptoHelper.AES.encrypt.withPassword(decryptionKey, password);
-    await indexedDBHelper.put("json", fileNames.localkey, encryptedDecryptionKey)
+    await indexedDBHelper.put("json", "localKey", encryptedDecryptionKey)
 }
 
 // Only for local encryption
 export async function setDecryptionKey(password) {
-    const encryptedDecryptionKey = await indexedDBHelper.get("json", fileNames.localkey);
+    const encryptedDecryptionKey = await indexedDBHelper.get("json", "localKey");
 
     try {
         decryptionKey = await cryptoHelper.AES.decrypt.withPassword(encryptedDecryptionKey, password);
@@ -236,23 +229,23 @@ export async function removeAllLocalData() {
 
 export async function loadSettings() {
     if (serverURL) {
-        const settingsResponse = await fetch(serverURL + "/api/" + fileNames.settings, { headers: getHeaders(true) });
+        const settingsResponse = await fetch(serverURL + "/api/settings", { headers: getHeaders(true) });
         if (settingsResponse.ok && settingsResponse.status != 204) settings = await settingsResponse.json();
     } else {
-        const settingsString = await indexedDBHelper.get("json", fileNames.settings);
+        const settingsString = await indexedDBHelper.get("json", "settings");
         if (settingsString) settings = JSON.parse(settingsString);
     }
 }
 
 async function storeSettings() {
     if (serverURL) {
-        await fetch(serverURL + "/api/" + fileNames.settings, {
+        await fetch(serverURL + "/api/settings", {
             method: "PUT",
             headers: getHeaders(true),
             body: JSON.stringify(settings)
         });
     } else {
-        await indexedDBHelper.put("json", fileNames.settings, JSON.stringify(settings));
+        await indexedDBHelper.put("json", "settings", JSON.stringify(settings));
     }
 }
 
@@ -312,7 +305,7 @@ export async function initializeServer(url, userOID, credentials) {
     user = await userResponse.json();
 
     // Send all existing metadata encrypted to the server
-    const metadataFileName = await getODMFileName(fileNames.metadata);
+    const metadataFileName = await getODMFileName(odmFileNames.metadata);
     const metadataXMLData = await getXMLData(metadataFileName);
     let metadataString = new XMLSerializer().serializeToString(metadataXMLData);
     metadataString = await cryptoHelper.AES.encrypt.withKey(metadataString, decryptionKey);
@@ -324,7 +317,7 @@ export async function initializeServer(url, userOID, credentials) {
     if (!metadataResponse.ok) return Promise.reject(await metadataResponse.text());
 
     // Send all existing admindata encrypted to the server
-    const admindataFileName = await getODMFileName(fileNames.admindata);
+    const admindataFileName = await getODMFileName(odmFileNames.admindata);
     const admindataXMLData = await getXMLData(admindataFileName);
     let admindataString = new XMLSerializer().serializeToString(admindataXMLData.documentElement);
     admindataString = await cryptoHelper.AES.encrypt.withKey(admindataString, decryptionKey);

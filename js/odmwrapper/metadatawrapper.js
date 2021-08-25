@@ -15,7 +15,7 @@ class MetadataFile {
     }
 
     get fileName() {
-        return ioHelper.fileNames.metadata + ioHelper.fileNameSeparator + this.modifiedDate.getTime();
+        return ioHelper.odmFileNames.metadata + ioHelper.fileNameSeparator + this.modifiedDate.getTime();
     }
 }
 
@@ -63,7 +63,7 @@ export async function loadExample() {
 }
 
 export async function loadStoredMetadata() {
-    metadataFile = MetadataFile.parse(await ioHelper.getODMFileName(ioHelper.fileNames.metadata));
+    metadataFile = MetadataFile.parse(await ioHelper.getODMFileName(ioHelper.odmFileNames.metadata));
     metadata = await ioHelper.getXMLData(metadataFile.fileName);
 }
 
