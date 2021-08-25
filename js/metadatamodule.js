@@ -929,7 +929,7 @@ window.elementDrop = async function(event) {
         sourceElementRef = metadataHelper.getElementRefByOID(elementTypeOnDrag, sourcePath);
     }
 
-    if (targetPath.toString()) {
+    if (targetPath.last.element == elementTypeOnDrag) {
         if (elementTypeOnDrag == metadataHelper.ODMPath.elements.CODELISTITEM) {
             const codeListOID = metadataHelper.getCodeListOIDByItem(targetPath.itemOID);
             targetElementRef = metadataHelper.getCodeListItem(codeListOID, targetPath.codeListItem);
@@ -947,10 +947,10 @@ window.elementDrop = async function(event) {
     } else {
         // Allows the movement of an element into an empty parent element by dropping it on the add button
         if (elementTypeOnDrag == metadataHelper.ODMPath.elements.STUDYEVENT) metadataHelper.insertStudyEventRef(sourceElementRef);
-        else if (elementTypeOnDrag == metadataHelper.ODMPath.elements.FORM) metadataHelper.insertFormRef(sourceElementRef, targetParentOID);
-        else if (elementTypeOnDrag == metadataHelper.ODMPath.elements.ITEMGROUP) metadataHelper.insertItemGroupRef(sourceElementRef, targetParentOID);
-        else if (elementTypeOnDrag == metadataHelper.ODMPath.elements.ITEM) metadataHelper.insertFormRef(sourceElementRef, targetParentOID);
-        else if (elementTypeOnDrag == metadataHelper.ODMPath.elements.CODELISTITEM) metadataHelper.insertCodeListItem(sourceElementRef, metadataHelper.getCodeListOIDByItem(targetParentOID));
+        else if (elementTypeOnDrag == metadataHelper.ODMPath.elements.FORM) metadataHelper.insertFormRef(sourceElementRef, targetPath.studyEventOID);
+        else if (elementTypeOnDrag == metadataHelper.ODMPath.elements.ITEMGROUP) metadataHelper.insertItemGroupRef(sourceElementRef, targetPath.formOID);
+        else if (elementTypeOnDrag == metadataHelper.ODMPath.elements.ITEM) metadataHelper.insertFormRef(sourceElementRef, targetPath.itemGroupOID);
+        else if (elementTypeOnDrag == metadataHelper.ODMPath.elements.CODELISTITEM) metadataHelper.insertCodeListItem(sourceElementRef, metadataHelper.getCodeListOIDByItem(targetPath.itemOID));
     }
 
     elementTypeOnDrag = null;
