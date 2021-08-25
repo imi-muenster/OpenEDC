@@ -1,3 +1,4 @@
+import ODMPath from "./odmwrapper/odmpath.js";
 import * as clinicaldataWrapper from "./odmwrapper/clinicaldatawrapper.js";
 import * as metadataWrapper from "./odmwrapper/metadatawrapper.js";
 import * as admindataWrapper from "./odmwrapper/admindatawrapper.js";
@@ -16,7 +17,7 @@ const detailsPanelViews = {
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-let currentPath = new metadataWrapper.ODMPath();
+let currentPath = new ODMPath();
 
 let viewOnlyMode = false;
 let asyncEditMode = false;
@@ -117,7 +118,7 @@ export function loadStudyEvents(hideTree) {
     let studyEventDefs = metadataWrapper.getStudyEvents();
     for (let studyEventDef of studyEventDefs) {
         let translatedDescription = studyEventDef.getTranslatedDescription(languageHelper.getCurrentLocale());
-        let panelBlock = createPanelBlock(studyEventDef.getOID(), metadataWrapper.ODMPath.elements.STUDYEVENT, translatedDescription, studyEventDef.getName());
+        let panelBlock = createPanelBlock(studyEventDef.getOID(), ODMPath.elements.STUDYEVENT, translatedDescription, studyEventDef.getName());
         panelBlock.onclick = studyEventClicked;
         $("#study-event-panel-blocks").appendChild(panelBlock);
     }
@@ -142,7 +143,7 @@ function loadFormsByStudyEvent(hideTree) {
     let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
     for (let formDef of formDefs) {
         let translatedDescription = formDef.getTranslatedDescription(languageHelper.getCurrentLocale());
-        let panelBlock = createPanelBlock(formDef.getOID(), metadataWrapper.ODMPath.elements.FORM, translatedDescription, formDef.getName());
+        let panelBlock = createPanelBlock(formDef.getOID(), ODMPath.elements.FORM, translatedDescription, formDef.getName());
         panelBlock.onclick = formClicked;
         $("#form-panel-blocks").appendChild(panelBlock);
     }
@@ -167,7 +168,7 @@ function loadItemGroupsByForm(hideTree) {
     let itemGroupDefs = metadataWrapper.getItemGroupsByForm(currentPath.formOID);
     for (let itemGroupDef of itemGroupDefs) {
         let translatedDescription = itemGroupDef.getTranslatedDescription(languageHelper.getCurrentLocale());
-        let panelBlock = createPanelBlock(itemGroupDef.getOID(), metadataWrapper.ODMPath.elements.ITEMGROUP, translatedDescription, itemGroupDef.getName());
+        let panelBlock = createPanelBlock(itemGroupDef.getOID(), ODMPath.elements.ITEMGROUP, translatedDescription, itemGroupDef.getName());
         panelBlock.onclick = itemGroupClicked;
         $("#item-group-panel-blocks").appendChild(panelBlock);
     }
@@ -193,7 +194,7 @@ function loadItemsByItemGroup(hideTree) {
     for (let itemDef of itemDefs) {
         let translatedQuestion = itemDef.getTranslatedQuestion(languageHelper.getCurrentLocale());
         const dataType = itemDef.querySelector("CodeListRef") ? "codelist" : itemDef.getDataType();
-        let panelBlock = createPanelBlock(itemDef.getOID(), metadataWrapper.ODMPath.elements.ITEM, translatedQuestion, itemDef.getName(), languageHelper.getTranslation(dataType));
+        let panelBlock = createPanelBlock(itemDef.getOID(), ODMPath.elements.ITEM, translatedQuestion, itemDef.getName(), languageHelper.getTranslation(dataType));
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
     }
@@ -218,7 +219,7 @@ function loadCodeListItemsByItem(hideTree) {
     let codeListItems = metadataWrapper.getCodeListItemsByItem(currentPath.itemOID);
     for (let codeListItem of codeListItems) {
         let translatedDecode = codeListItem.getTranslatedDecode(languageHelper.getCurrentLocale());
-        let panelBlock = createPanelBlock(codeListItem.getCodedValue(), metadataWrapper.ODMPath.elements.CODELISTITEM, translatedDecode, codeListItem.getCodedValue(), null);
+        let panelBlock = createPanelBlock(codeListItem.getCodedValue(), ODMPath.elements.CODELISTITEM, translatedDecode, codeListItem.getCodedValue(), null);
         panelBlock.onclick = codeListItemClicked;
         $("#code-list-item-panel-blocks").appendChild(panelBlock);
     }
@@ -277,7 +278,7 @@ function adjustDetailsPanelSidebar() {
     highlightRemoveButton();
 
     let references = [];
-    if (currentPath.last.element != metadataWrapper.ODMPath.elements.CODELISTITEM) references = metadataWrapper.getElementRefs(currentPath.last.value, currentPath.last.element);
+    if (currentPath.last.element != ODMPath.elements.CODELISTITEM) references = metadataWrapper.getElementRefs(currentPath.last.value, currentPath.last.element);
     else references = metadataWrapper.getElementRefs(metadataWrapper.getCodeListOIDByItem(currentPath.itemOID), currentPath.last.element);
 
     if (references.length > 1) {
@@ -306,13 +307,13 @@ function fillDetailsPanelFoundational() {
     let element = metadataWrapper.getElementDefByOID(currentPath.last.value);
     const elementRef = metadataWrapper.getElementRefByOID(currentPath.last.element, currentPath);
     switch (currentPath.last.element) {
-        case metadataWrapper.ODMPath.elements.STUDYEVENT:
-        case metadataWrapper.ODMPath.elements.FORM:
-        case metadataWrapper.ODMPath.elements.ITEMGROUP:
+        case ODMPath.elements.STUDYEVENT:
+        case ODMPath.elements.FORM:
+        case ODMPath.elements.ITEMGROUP:
             $("#id-input").value = currentPath.last.value;
             $("#translation-textarea").value = element.getTranslatedDescription(languageHelper.getCurrentLocale());
             break;
-        case metadataWrapper.ODMPath.elements.ITEM:
+        case ODMPath.elements.ITEM:
             $("#datatype-select-inner").disabled = false;
             $("#mandatory-select-inner").disabled = false;
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-question");
@@ -321,7 +322,7 @@ function fillDetailsPanelFoundational() {
             $("#translation-textarea").value = element.getTranslatedQuestion(languageHelper.getCurrentLocale());
             $("#datatype-select-inner").value = metadataWrapper.itemHasCodeList(currentPath.last.value) ? "codelist-" + element.getDataType() : element.getDataType();
             break;
-        case metadataWrapper.ODMPath.elements.CODELISTITEM:
+        case ODMPath.elements.CODELISTITEM:
             $("#mandatory-select-inner").disabled = true;
             $("#element-oid-label").textContent = languageHelper.getTranslation("coded-value");
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-choice");
@@ -337,11 +338,11 @@ function fillDetailsPanelExtended() {
 
     const condition = metadataWrapper.getElementCondition(currentPath.last.element, currentPath);
     switch (currentPath.last.element) {
-        case metadataWrapper.ODMPath.elements.ITEMGROUP:
+        case ODMPath.elements.ITEMGROUP:
             $("#collection-condition").value = condition ? condition.getFormalExpression() : null;
             $("#collection-condition").disabled = false;
             break;
-        case metadataWrapper.ODMPath.elements.ITEM:
+        case ODMPath.elements.ITEM:
             fillItemRangeChecks();
             [$("#range-check-inputs .range-check-comparator-inner"), $("#range-check-inputs .range-check-value"), $("#add-range-check-button")].enableElements();
             $("#collection-condition").value = condition ? condition.getFormalExpression() : null;
@@ -359,17 +360,17 @@ function fillDetailsPanelDuplicate() {
     let references = [];
     let translatedTexts = [];
     switch (currentPath.last.element) {
-        case metadataWrapper.ODMPath.elements.STUDYEVENT:
+        case ODMPath.elements.STUDYEVENT:
             if (!viewOnlyMode) [$("#shallow-copy-button"), $("#deep-copy-button")].enableElements();
             break;
-        case metadataWrapper.ODMPath.elements.FORM:
-        case metadataWrapper.ODMPath.elements.ITEMGROUP:
-        case metadataWrapper.ODMPath.elements.ITEM:
+        case ODMPath.elements.FORM:
+        case ODMPath.elements.ITEMGROUP:
+        case ODMPath.elements.ITEM:
             references = metadataWrapper.getElementRefs(currentPath.last.value, currentPath.last.element);
             translatedTexts = references.map(reference => reference.parentNode.getTranslatedDescription(languageHelper.getCurrentLocale(), true));
             if (!viewOnlyMode) [$("#reference-button"), $("#shallow-copy-button"), $("#deep-copy-button")].enableElements();
             break;
-        case metadataWrapper.ODMPath.elements.CODELISTITEM:
+        case ODMPath.elements.CODELISTITEM:
             references = metadataWrapper.getElementRefs(metadataWrapper.getCodeListOIDByItem(currentPath.itemOID), currentPath.last.element);
             translatedTexts = references.map(reference => reference.parentNode.getTranslatedQuestion(languageHelper.getCurrentLocale(), true));
     }
@@ -456,20 +457,20 @@ async function saveDetailsFoundational() {
     const newTranslatedText = $("#translation-textarea").value;
     
     switch (currentPath.last.element) {
-        case metadataWrapper.ODMPath.elements.STUDYEVENT:
+        case ODMPath.elements.STUDYEVENT:
             showFirstEventEditedHelp();
-        case metadataWrapper.ODMPath.elements.FORM:
-        case metadataWrapper.ODMPath.elements.ITEMGROUP:
+        case ODMPath.elements.FORM:
+        case ODMPath.elements.ITEMGROUP:
             await setElementOIDAndName(newID);
             metadataWrapper.setElementDescription(currentPath.last.value, newTranslatedText);
             break;
-        case metadataWrapper.ODMPath.elements.ITEM:
+        case ODMPath.elements.ITEM:
             await setElementOIDAndName(newID);
             metadataWrapper.setItemQuestion(currentPath.last.value, newTranslatedText);
             metadataWrapper.setElementMandatory(currentPath.last.element, currentPath, $("#mandatory-select-inner").value);
             handleItemDataType(currentPath.last.value, $("#datatype-select-inner").value);
             break;
-        case metadataWrapper.ODMPath.elements.CODELISTITEM:
+        case ODMPath.elements.CODELISTITEM:
             await setCodeListItemCodedValue(newID);
             metadataWrapper.setCodeListItemDecodedText(metadataWrapper.getCodeListOIDByItem(currentPath.itemOID), currentPath.codeListItem, newTranslatedText);
     }
@@ -513,10 +514,10 @@ async function setCodeListItemCodedValue(codedValue) {
 
 function saveDetailsExtended() {
     switch (currentPath.last.element) {
-        case metadataWrapper.ODMPath.elements.ITEMGROUP:
+        case ODMPath.elements.ITEMGROUP:
             if (saveConditionPreCheck()) return;
             break;
-        case metadataWrapper.ODMPath.elements.ITEM:
+        case ODMPath.elements.ITEM:
             if (saveConditionPreCheck()) return;
             if (saveMethodPreCheck()) return;
             if (saveMeasurementUnitPreCheck()) return;
@@ -816,27 +817,27 @@ window.addCodeListItem = function(event) {
 
 function removeElement() {
     switch (currentPath.last.element) {
-        case metadataWrapper.ODMPath.elements.STUDYEVENT:
+        case ODMPath.elements.STUDYEVENT:
             metadataWrapper.removeStudyEventRef(currentPath.studyEventOID);
             currentPath.studyEventOID = null;
             hideForms(true);
             break;
-        case metadataWrapper.ODMPath.elements.FORM:
+        case ODMPath.elements.FORM:
             metadataWrapper.removeFormRef(currentPath.studyEventOID, currentPath.formOID);
             currentPath.formOID = null;
             hideItemGroups(true);
             break;
-        case metadataWrapper.ODMPath.elements.ITEMGROUP:
+        case ODMPath.elements.ITEMGROUP:
             metadataWrapper.removeItemGroupRef(currentPath.formOID, currentPath.itemGroupOID);
             currentPath.itemGroupOID = null;
             hideItems(true);
             break;
-        case metadataWrapper.ODMPath.elements.ITEM:
+        case ODMPath.elements.ITEM:
             metadataWrapper.removeItemRef(currentPath.itemGroupOID, currentPath.itemOID);
             currentPath.itemOID = null;
             hideCodeListItems(true);
             break;
-        case metadataWrapper.ODMPath.elements.CODELISTITEM:
+        case ODMPath.elements.CODELISTITEM:
             metadataWrapper.deleteCodeListItem(metadataWrapper.getCodeListOIDByItem(currentPath.itemOID), currentPath.codeListItem);
             currentPath.codeListItem = null;
     }
@@ -846,7 +847,7 @@ function removeElement() {
 }
 
 window.duplicateReference = function() {
-    if (currentPath.last.element == metadataWrapper.ODMPath.elements.CODELISTITEM) return;
+    if (currentPath.last.element == ODMPath.elements.CODELISTITEM) return;
 
     const elementRef = metadataWrapper.getElementRefByOID(currentPath.last.element, currentPath);
     elementRef.parentNode.insertBefore(elementRef.cloneNode(), elementRef.nextSibling);
@@ -857,16 +858,16 @@ window.duplicateReference = function() {
 
 window.copyElement = function(deepCopy) {
     switch (currentPath.last.element) {
-        case metadataWrapper.ODMPath.elements.STUDYEVENT:
+        case ODMPath.elements.STUDYEVENT:
             metadataWrapper.copyStudyEvent(currentPath.studyEventOID, deepCopy);
             break;
-        case metadataWrapper.ODMPath.elements.FORM:
+        case ODMPath.elements.FORM:
             metadataWrapper.copyForm(currentPath.formOID, deepCopy, currentPath.studyEventOID);
             break;
-        case metadataWrapper.ODMPath.elements.ITEMGROUP:
+        case ODMPath.elements.ITEMGROUP:
             metadataWrapper.copyItemGroup(currentPath.itemGroupOID, deepCopy, currentPath.formOID);
             break;
-        case metadataWrapper.ODMPath.elements.ITEM:
+        case ODMPath.elements.ITEM:
             metadataWrapper.copyItem(currentPath.itemOID, deepCopy, currentPath.itemGroupOID);
     }
 
@@ -890,16 +891,16 @@ function dragEnter(event) {
     if (event.clientX+75 < event.target.getBoundingClientRect().right) {
         if (metadataWrapper.getHierarchyLevelOfElementType(elementTypeOnDrag) > metadataWrapper.getHierarchyLevelOfElementType(event.target.getAttribute("element-type"))) {
             switch (event.target.getAttribute("element-type")) {
-                case metadataWrapper.ODMPath.elements.STUDYEVENT:
+                case ODMPath.elements.STUDYEVENT:
                     studyEventClicked(event);
                     break;
-                case metadataWrapper.ODMPath.elements.FORM:
+                case ODMPath.elements.FORM:
                     formClicked(event);
                     break;
-                case metadataWrapper.ODMPath.elements.ITEMGROUP:
+                case ODMPath.elements.ITEMGROUP:
                     itemGroupClicked(event);
                     break;
-                case metadataWrapper.ODMPath.elements.ITEM:
+                case ODMPath.elements.ITEM:
                     itemClicked(event);
             }
         }
@@ -909,7 +910,7 @@ function dragEnter(event) {
 window.elementDrop = async function(event) {
     if (viewOnlyMode) return;
 
-    const sourcePath = metadataWrapper.ODMPath.parseAbsolute(event.dataTransfer.getData("sourcePath"));
+    const sourcePath = ODMPath.parseAbsolute(event.dataTransfer.getData("sourcePath"));
     const targetPath = currentPath.clone(elementTypeOnDrag).set(elementTypeOnDrag, event.target.getOID());
     if (sourcePath.previous.value != targetPath.previous.value) {
         // Extra if-statement for performance reasons (do not load all subjects when sourceParentOID and targetParentOID are equal)
@@ -922,7 +923,7 @@ window.elementDrop = async function(event) {
 
     let sourceElementRef = null;
     let targetElementRef = null;
-    if (elementTypeOnDrag == metadataWrapper.ODMPath.elements.CODELISTITEM) {
+    if (elementTypeOnDrag == ODMPath.elements.CODELISTITEM) {
         const codeListOID = metadataWrapper.getCodeListOIDByItem(sourcePath.itemOID);
         sourceElementRef = metadataWrapper.getCodeListItem(codeListOID, sourcePath.codeListItem);
     } else {
@@ -930,7 +931,7 @@ window.elementDrop = async function(event) {
     }
 
     if (targetPath.last.element == elementTypeOnDrag) {
-        if (elementTypeOnDrag == metadataWrapper.ODMPath.elements.CODELISTITEM) {
+        if (elementTypeOnDrag == ODMPath.elements.CODELISTITEM) {
             const codeListOID = metadataWrapper.getCodeListOIDByItem(targetPath.itemOID);
             targetElementRef = metadataWrapper.getCodeListItem(codeListOID, targetPath.codeListItem);
         } else {
@@ -946,11 +947,11 @@ window.elementDrop = async function(event) {
         }
     } else {
         // Allows the movement of an element into an empty parent element by dropping it on the add button
-        if (elementTypeOnDrag == metadataWrapper.ODMPath.elements.STUDYEVENT) metadataWrapper.insertStudyEventRef(sourceElementRef);
-        else if (elementTypeOnDrag == metadataWrapper.ODMPath.elements.FORM) metadataWrapper.insertFormRef(sourceElementRef, targetPath.studyEventOID);
-        else if (elementTypeOnDrag == metadataWrapper.ODMPath.elements.ITEMGROUP) metadataWrapper.insertItemGroupRef(sourceElementRef, targetPath.formOID);
-        else if (elementTypeOnDrag == metadataWrapper.ODMPath.elements.ITEM) metadataWrapper.insertFormRef(sourceElementRef, targetPath.itemGroupOID);
-        else if (elementTypeOnDrag == metadataWrapper.ODMPath.elements.CODELISTITEM) metadataWrapper.insertCodeListItem(sourceElementRef, metadataWrapper.getCodeListOIDByItem(targetPath.itemOID));
+        if (elementTypeOnDrag == ODMPath.elements.STUDYEVENT) metadataWrapper.insertStudyEventRef(sourceElementRef);
+        else if (elementTypeOnDrag == ODMPath.elements.FORM) metadataWrapper.insertFormRef(sourceElementRef, targetPath.studyEventOID);
+        else if (elementTypeOnDrag == ODMPath.elements.ITEMGROUP) metadataWrapper.insertItemGroupRef(sourceElementRef, targetPath.formOID);
+        else if (elementTypeOnDrag == ODMPath.elements.ITEM) metadataWrapper.insertFormRef(sourceElementRef, targetPath.itemGroupOID);
+        else if (elementTypeOnDrag == ODMPath.elements.CODELISTITEM) metadataWrapper.insertCodeListItem(sourceElementRef, metadataWrapper.getCodeListOIDByItem(targetPath.itemOID));
     }
 
     elementTypeOnDrag = null;
@@ -984,7 +985,7 @@ window.showCodeListModal = function() {
 
     // Render the notification when the codelist is used for more than one item
     const codeListOID = metadataWrapper.getCodeListOIDByItem(currentPath.itemOID);
-    const codeListReferences = metadataWrapper.getElementRefs(codeListOID, metadataWrapper.ODMPath.elements.CODELISTITEM);
+    const codeListReferences = metadataWrapper.getElementRefs(codeListOID, ODMPath.elements.CODELISTITEM);
     if (codeListReferences.length > 1) {
         const translatedQuestions = codeListReferences.map(reference => reference.parentNode.getTranslatedQuestion(languageHelper.getCurrentLocale(), true));
         $("#codelist-modal #codelist-references-list").innerHTML = translatedQuestions.join("<br>");
@@ -1038,7 +1039,7 @@ window.hideCodeListModal = function() {
 }
 
 window.referenceCodeList = function() {
-    const externalItemOID = metadataWrapper.ODMPath.parseAbsolute($("#codelist-modal #codelist-reference-input").value).itemOID;
+    const externalItemOID = ODMPath.parseAbsolute($("#codelist-modal #codelist-reference-input").value).itemOID;
     if (!externalItemOID) return;
 
     if (externalItemOID == currentPath.itemOID) {

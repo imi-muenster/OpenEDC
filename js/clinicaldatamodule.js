@@ -1,3 +1,4 @@
+import ODMPath from "./odmwrapper/odmpath.js";
 import * as metadataWrapper from "./odmwrapper/metadatawrapper.js";
 import * as clinicaldataWrapper from "./odmwrapper/clinicaldatawrapper.js";
 import * as admindataWrapper from "./odmwrapper/admindatawrapper.js";
@@ -10,7 +11,7 @@ import * as languageHelper from "./helper/languagehelper.js";
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-let currentPath = new metadataWrapper.ODMPath();
+let currentPath = new ODMPath();
 let currentSubjectKey = null;
 
 let skipMandatoryCheck = false;
@@ -327,7 +328,7 @@ function addDynamicFormLogicPre() {
     const itemPaths = expressionHelper.getVariables(metadataWrapper.getElementsWithExpression(currentPath.studyEventOID, currentPath.formOID));
     const itemData = clinicaldataWrapper.getDataForItems(itemPaths);
     if (cachedFormData) cachedFormData.forEach(entry => {
-        const cachedFormDataPath = new metadataWrapper.ODMPath(currentPath.studyEventOID, currentPath.formOID, entry.itemGroupOID, entry.itemOID);
+        const cachedFormDataPath = new ODMPath(currentPath.studyEventOID, currentPath.formOID, entry.itemGroupOID, entry.itemOID);
         const itemPath = itemPaths.find(itemPath => itemPath.toString() == cachedFormDataPath.toString());
         if (itemPath) itemData[itemPath.toString()] = entry.value;
     });
@@ -428,7 +429,7 @@ function loadFormClinicaldata() {
 
         let inputElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [item-oid="${formItemData.itemOID}"]`);
         if (!inputElement) {
-            metadataNotFoundErrors.push({type: metadataWrapper.ODMPath.elements.ITEM, oid: formItemData.itemOID});
+            metadataNotFoundErrors.push({type: ODMPath.elements.ITEM, oid: formItemData.itemOID});
             continue;
         }
 
@@ -446,7 +447,7 @@ function loadFormClinicaldata() {
             case "radio":
                 inputElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [item-oid="${formItemData.itemOID}"][value="${formItemData.value}"]`);
                 if (!inputElement) {
-                    metadataNotFoundErrors.push({type: metadataWrapper.ODMPath.elements.CODELISTITEM, oid: formItemData.itemOID, value: formItemData.value});
+                    metadataNotFoundErrors.push({type: ODMPath.elements.CODELISTITEM, oid: formItemData.itemOID, value: formItemData.value});
                     continue;
                 }
                 inputElement.checked = true;
@@ -472,7 +473,7 @@ function showErrors(metadataNotFoundErrors, hiddenFieldWithValueErrors) {
         errorMessage += "<p>" + languageHelper.getTranslation("metadata-not-found-error") + "</p><br>";
         for (let error of metadataNotFoundErrors) {
             errorMessage += "<p>";
-            if (error.type == metadataWrapper.ODMPath.elements.ITEM) errorMessage += languageHelper.getTranslation("unique-id") + ": " + error.oid;
+            if (error.type == ODMPath.elements.ITEM) errorMessage += languageHelper.getTranslation("unique-id") + ": " + error.oid;
             else errorMessage += languageHelper.getTranslation("choices-unique-id") + ": " + error.oid + ", " + languageHelper.getTranslation("coded-value") + ": " + error.value;
             errorMessage += "</p>"
         }

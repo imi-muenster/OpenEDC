@@ -1,3 +1,4 @@
+import ODMPath from "../odmwrapper/odmpath.js";
 import * as metadataWrapper from "../odmwrapper/metadatawrapper.js";
 import * as languageHelper from "./languagehelper.js";
 
@@ -146,8 +147,8 @@ const elementSelected = element => {
     let newValue;
     switch (currentPart) {
         case enabledParts.ITEM:
-            const contextPath = metadataWrapper.ODMPath.parseAbsolute(currentInput.getAttribute("context-path"));
-            newValue = metadataWrapper.ODMPath.parseAbsolute(element.value).getItemRelative(contextPath).toString();
+            const contextPath = ODMPath.parseAbsolute(currentInput.getAttribute("context-path"));
+            newValue = ODMPath.parseAbsolute(element.value).getItemRelative(contextPath).toString();
             break;
         case enabledParts.VALUE:
             newValue = addQuotes(element.value);
@@ -247,7 +248,7 @@ const getComparatorElements = () => {
 
 const getValueElements = () => {
     const itemPath = currentInput.value.split(" ")[currentTokenIndex - currentPart + 1];
-    const itemOID = metadataWrapper.ODMPath.parseRelative(itemPath).itemOID;
+    const itemOID = ODMPath.parseRelative(itemPath).itemOID;
     const item = metadataWrapper.getElementDefByOID(itemOID);
     if (item && item.getDataType() == "boolean") {
         return [

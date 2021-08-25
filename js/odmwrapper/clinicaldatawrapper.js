@@ -1,3 +1,4 @@
+import ODMPath from "./odmpath.js";
 import * as clinicaldataTemplates from "../odmtemplates/clinicaldatatemplates.js";
 import * as metadataWrapper from "./metadatawrapper.js";
 import * as admindataWrapper from "./admindatawrapper.js";
@@ -579,19 +580,19 @@ export async function getSubjectsHavingDataForElement(elementType , odmPath) {
     for (const subject of subjects) {
         const subjectData = await loadStoredSubjectData(subject.fileName);
         switch (elementType) {
-            case metadataWrapper.ODMPath.elements.STUDYEVENT:
+            case ODMPath.elements.STUDYEVENT:
                 if (subjectData.querySelector(`StudyEventData[StudyEventOID="${odmPath.studyEventOID}"]`)) subjectKeys.push(subject.key);
                 break;
-            case metadataWrapper.ODMPath.elements.FORM:
+            case ODMPath.elements.FORM:
                 if (subjectData.querySelector(`FormData[FormOID="${odmPath.formOID}"]`)) subjectKeys.push(subject.key);
                 break;
-            case metadataWrapper.ODMPath.elements.ITEMGROUP:
+            case ODMPath.elements.ITEMGROUP:
                 if (subjectData.querySelector(`ItemGroupData[ItemGroupOID="${odmPath.itemGroupOID}"]`)) subjectKeys.push(subject.key);
                 break;
-            case metadataWrapper.ODMPath.elements.ITEM:
+            case ODMPath.elements.ITEM:
                 if (subjectData.querySelector(`ItemData[ItemOID="${odmPath.itemOID}"]`)) subjectKeys.push(subject.key);
                 break;
-            case metadataWrapper.ODMPath.elements.CODELISTITEM:
+            case ODMPath.elements.CODELISTITEM:
                 if (subjectData.querySelector(`ItemData[ItemOID="${odmPath.itemOID}"][Value="${odmPath.codeListItem}"]`)) subjectKeys.push(subject.key);
         }
     }
