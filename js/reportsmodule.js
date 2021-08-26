@@ -39,6 +39,8 @@ let widgetComponents = [];
 let activeFilters = [];
 
 export async function init() {
+    // TODO: Do not init within startApp() but only when needed
+
     // Only load chart.js library if required
     await import("./components/reports/widgetcomponent.js");
     await import("./components/reports/widgetcontent.js");
@@ -46,7 +48,7 @@ export async function init() {
     await import("../lib/chart.js");
     await import("../lib/chart-datalabels.js");
     
-    reportsHelper.init();
+    await reportsHelper.init();
     if (!reportsHelper.getReports().length) reportsHelper.addReport(languageHelper.getTranslation("new-report"));
 
     setIOListeners();

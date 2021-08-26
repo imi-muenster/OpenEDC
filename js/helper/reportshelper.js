@@ -1,3 +1,5 @@
+import * as ioHelper from "./iohelper.js";
+
 export class Report {
     // id, name, users, list of widgets, ...
     constructor(id, name) {
@@ -55,14 +57,14 @@ export class Widget {
     }
 }
 
-let reports = [];
+let reports = null;
 
-export const init = () => {
-    // TODO: Load persisted reports
+export const init = async () => {
+    reports = await ioHelper.getJSON("reports") || [];
 }
 
 export const storeReports = async () => {
-    // TODO: Persist reports
+    await ioHelper.setJSON("reports", reports);
 }
 
 export const getReports = () => {
