@@ -92,17 +92,9 @@ export async function init() {
 }
 
 export async function getODM(fileName) {
-    let xmlString = null;
-
-    if (serverURL) {
-        const xmlResponse = await fetch(getURLForFileName(fileName), { headers: getHeaders(true) });
-        if (!xmlResponse.ok) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
-        xmlString = await xmlResponse.text();
-    } else {
-        xmlString = await indexedDBHelper.get(fileName, fileTypes.XML);
-        if (!xmlString) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND);
-    }
-
+    let xmlString = await getData(fileName, fileTypes.XML);
+    if (!xmlString) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND)
+    
     if (decryptionKey) {
         try {
             xmlString = await cryptoHelper.AES.decrypt.withKey(xmlString, decryptionKey);
@@ -124,26 +116,11 @@ export async function storeODM(fileName, xmlDocument) {
     let xmlString = new XMLSerializer().serializeToString(xmlDocument);
     if (decryptionKey) xmlString = await cryptoHelper.AES.encrypt.withKey(xmlString, decryptionKey);
 
-    if (serverURL) {
-        await fetch(getURLForFileName(fileName), {
-            method: "PUT",
-            headers: getHeaders(true),
-            body: xmlString
-        });
-    } else {
-        await indexedDBHelper.put(fileName, xmlString, fileTypes.XML);
-    }
+    await setData(fileName, xmlString, fileTypes.XML);
 }
 
 export async function removeODM(fileName) {
-    if (serverURL) {
-        await fetch(getURLForFileName(fileName), {
-            method: "DELETE",
-            headers: getHeaders(true)
-        });
-    } else {
-        await indexedDBHelper.remove(fileName, fileTypes.XML);
-    }
+    await removeData(fileName, fileTypes.XML);
 }
 
 // For performance reasons of IndexedDB, only used for local storage
@@ -151,11 +128,48 @@ export async function storeODMBulk(fileNameList, dataList) {
     await indexedDBHelper.putBulk(fileNameList, dataList, fileTypes.XML);
 }
 
-function getURLForFileName(fileName) {
-    let url = serverURL + "/api/";
+async function getData(fileName, fileType) {
+    if (serverURL) {
+        const response = await fetch(getURLForFileName(fileName, fileType), { headers: getHeaders(true) });
+        if (!response.ok) return;
+        return await response.text();
+    } else {
+        return await indexedDBHelper.get(fileName, fileType);
+    }
+}
 
-    const type = Object.values(fileNames).find(entry => fileName.includes(entry));
-    return url + (type ? type : odmFileNames.clinicaldata) + "/" + fileName;
+async function setData(fileName, content, fileType) {
+    if (serverURL) {
+        await fetch(getURLForFileName(fileName, fileType), {
+            method: "PUT",
+            headers: getHeaders(true),
+            body: content
+        });
+    } else {
+        await indexedDBHelper.put(fileName, content, fileType);
+    }
+}
+
+async function removeData(fileName, fileType) {
+    if (serverURL) {
+        await fetch(getURLForFileName(fileName, fileType), {
+            method: "DELETE",
+            headers: getHeaders(true)
+        });
+    } else {
+        await indexedDBHelper.remove(fileName, fileType);
+    }
+}
+
+function getURLForFileName(fileName, fileType) {
+    let url = serverURL + "/api/";
+    switch (fileType) {
+        case fileTypes.XML:
+            const odmType = Object.values(odmFileNames).find(entry => fileName.includes(entry));
+            return url + (odmType ? odmType : odmFileNames.clinicaldata) + "/" + fileName;
+        case fileTypes.JSON:
+            return url + "/" + fileTypes.JSON + "/" + fileName;
+    }
 }
 
 export async function getLastServerUpdate() {
