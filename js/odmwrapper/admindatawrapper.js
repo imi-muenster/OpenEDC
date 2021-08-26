@@ -70,7 +70,7 @@ export async function storeAdmindata() {
     const previousFileName = admindataFile ? admindataFile.fileName : null;
 
     admindataFile = new AdmindataFile();
-    await ioHelper.storeODM(admindataFile.fileName, admindata);
+    await ioHelper.setODM(admindataFile.fileName, admindata);
 
     if (previousFileName && previousFileName != admindataFile.fileName) ioHelper.removeODM(previousFileName);
 }

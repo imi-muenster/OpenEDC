@@ -71,7 +71,7 @@ export async function storeMetadata() {
     const previousFileName = metadataFile ? metadataFile.fileName : null;
 
     metadataFile = new MetadataFile();
-    await ioHelper.storeODM(metadataFile.fileName, metadata);
+    await ioHelper.setODM(metadataFile.fileName, metadata);
 
     if (previousFileName && previousFileName != metadataFile.fileName) ioHelper.removeODM(previousFileName);
 }

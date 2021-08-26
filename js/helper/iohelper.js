@@ -71,14 +71,7 @@ const $ = query => document.querySelector(query);
 let user = null;
 let decryptionKey = null;
 let serverURL = null;
-
-// Keeps app options that are equal for all users of the app
-let settings = {
-    surveyCode: null,
-    textAsTextarea: false,
-    autoSurveyView: false,
-    subjectKeyMode: subjectKeyModes.MANUAL
-};
+let settings = null;
 
 export const fileNameSeparator = "__";
 
@@ -112,7 +105,7 @@ export async function getODM(fileName) {
     }
 }
 
-export async function storeODM(fileName, xmlDocument) {
+export async function setODM(fileName, xmlDocument) {
     let xmlString = new XMLSerializer().serializeToString(xmlDocument);
     if (decryptionKey) xmlString = await cryptoHelper.AES.encrypt.withKey(xmlString, decryptionKey);
 
@@ -124,8 +117,27 @@ export async function removeODM(fileName) {
 }
 
 // For performance reasons of IndexedDB, only used for local storage
-export async function storeODMBulk(fileNameList, dataList) {
+export async function setODMBulk(fileNameList, dataList) {
     await indexedDBHelper.putBulk(fileNameList, dataList, fileTypes.XML);
+}
+
+export async function getJSON(fileName) {
+    const data = await getData(fileName, fileTypes.JSON);
+
+    try {
+        return JSON.parse(data);
+    } catch (error) {
+        return data;
+    }
+}
+
+export async function setJSON(fileName, object) {
+    const jsonString = JSON.stringify(object);
+    await setData(fileName, jsonString, fileTypes.JSON);
+}
+
+export async function removeJSON(fileName) {
+    await removeData(fileName, fileTypes.JSON);
 }
 
 async function getData(fileName, fileType) {
@@ -247,25 +259,18 @@ export async function removeAllLocalData() {
 }
 
 export async function loadSettings() {
-    if (serverURL) {
-        const settingsResponse = await fetch(serverURL + "/api/settings", { headers: getHeaders(true) });
-        if (settingsResponse.ok && settingsResponse.status != 204) settings = await settingsResponse.json();
-    } else {
-        const settingsString = await indexedDBHelper.get("settings", fileTypes.JSON);
-        if (settingsString) settings = JSON.parse(settingsString);
-    }
+    const defaultSettings = {
+        surveyCode: null,
+        textAsTextarea: false,
+        autoSurveyView: false,
+        subjectKeyMode: subjectKeyModes.MANUAL
+    };
+
+    settings = await getJSON("settings") || defaultSettings;
 }
 
 async function storeSettings() {
-    if (serverURL) {
-        await fetch(serverURL + "/api/settings", {
-            method: "PUT",
-            headers: getHeaders(true),
-            body: JSON.stringify(settings)
-        });
-    } else {
-        await indexedDBHelper.put("settings", JSON.stringify(settings), fileTypes.JSON);
-    }
+    await setJSON("settings", settings);
 }
 
 export function hasDecryptionKey() {
