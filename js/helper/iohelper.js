@@ -324,7 +324,8 @@ export async function initializeServer(url, userOID, credentials) {
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
     user = await userResponse.json();
 
-    // Send all existing metadata encrypted to the server
+    // TODO: Reduce code by reusing methods from above?
+    // Send all existing metadata encrypted to the server (i.e., setODM and setJSON)
     const metadataFileName = await getODMFileName(odmFileNames.metadata);
     const metadataXMLData = await getODM(metadataFileName);
     let metadataString = new XMLSerializer().serializeToString(metadataXMLData);
@@ -359,8 +360,20 @@ export async function initializeServer(url, userOID, credentials) {
             headers: getHeaders(true),
             body: subjectDataString
         });
-        if (!clinicaldataResponse.ok) return Promise.reject(await admindataResponse.text());
+        if (!clinicaldataResponse.ok) return Promise.reject(await clinicaldataResponse.text());
     }
+
+    // Send all JSONs to the server
+    for (const jsonFileName of await indexedDBHelper.getKeys(fileTypes.JSON)) {
+        const json = await getJSON(jsonFileName);
+        const jsonResponse = await fetch(url + "/api/json/" + jsonFileName, {
+            method: "PUT",
+            headers: getHeaders(true),
+            body: JSON.stringify(json)
+        });
+        if (!jsonResponse.ok) return Promise.reject(await jsonResponse.text());
+    }
+
     await removeAllLocalData();
     
     return Promise.resolve(url);
