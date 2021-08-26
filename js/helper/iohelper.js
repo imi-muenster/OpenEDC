@@ -258,21 +258,6 @@ export async function removeAllLocalData() {
     await indexedDBHelper.clear(fileTypes.JSON);
 }
 
-export async function loadSettings() {
-    const defaultSettings = {
-        surveyCode: null,
-        textAsTextarea: false,
-        autoSurveyView: false,
-        subjectKeyMode: subjectKeyModes.MANUAL
-    };
-
-    settings = await getJSON("settings") || defaultSettings;
-}
-
-async function storeSettings() {
-    await setJSON("settings", settings);
-}
-
 export function hasDecryptionKey() {
     return decryptionKey ? true : false;
 }
@@ -285,13 +270,24 @@ export function getLoggedInUser() {
     return user;
 }
 
-export function setSetting(key, value) {
-    settings[key] = value;
-    storeSettings();
+export async function loadSettings() {
+    const defaultSettings = {
+        surveyCode: null,
+        textAsTextarea: false,
+        autoSurveyView: false,
+        subjectKeyMode: subjectKeyModes.MANUAL
+    };
+
+    settings = await getJSON("settings") || defaultSettings;
 }
 
 export function getSetting(key) {
     return settings[key];
+}
+
+export function setSetting(key, value) {
+    settings[key] = value;
+    await setJSON("settings", settings);
 }
 
 export async function getServerStatus(url, storeServerURL) {
