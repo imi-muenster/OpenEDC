@@ -79,6 +79,7 @@ document.addEventListener("CurrentUserEdited", () => {
 });
 
 const startApp = async () => {
+    await ioHelper.loadSettings();
     languageHelper.populatePresentLanguages(metadataWrapper.getMetadata());
     languageHelper.setInitialLocale();
     
@@ -86,8 +87,6 @@ const startApp = async () => {
     await admindataModule.init();
     await clinicaldataModule.init();
     reportsModule.init();
-
-    await ioHelper.loadSettings();
 
     // Last UI adjustments
     setTitles();

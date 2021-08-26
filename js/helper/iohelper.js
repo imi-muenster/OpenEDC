@@ -180,7 +180,7 @@ function getURLForFileName(fileName, fileType) {
             const odmType = Object.values(odmFileNames).find(entry => fileName.includes(entry));
             return url + (odmType ? odmType : odmFileNames.clinicaldata) + "/" + fileName;
         case fileTypes.JSON:
-            return url + "/" + fileTypes.JSON + "/" + fileName;
+            return url + fileTypes.JSON + "/" + fileName;
     }
 }
 
@@ -285,7 +285,7 @@ export function getSetting(key) {
     return settings[key];
 }
 
-export function setSetting(key, value) {
+export async function setSetting(key, value) {
     settings[key] = value;
     await setJSON("settings", settings);
 }

@@ -1112,7 +1112,6 @@ window.storeMetadataAsync = function() {
             [languageHelper.getTranslation("save")]: async () => {
                 await metadataWrapper.storeMetadata();
                 asyncEditMode = false;
-                hide();
                 $("#store-metadata-async-button").hide();
                 ioHelper.showToast(languageHelper.getTranslation("forms-saved-hint"), 5000);
             }
