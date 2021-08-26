@@ -64,16 +64,16 @@ export async function loadExample() {
 
 export async function loadStoredMetadata() {
     metadataFile = MetadataFile.parse(await ioHelper.getODMFileName(ioHelper.odmFileNames.metadata));
-    metadata = await ioHelper.getXMLData(metadataFile.fileName);
+    metadata = await ioHelper.getODM(metadataFile.fileName);
 }
 
 export async function storeMetadata() {
     const previousFileName = metadataFile ? metadataFile.fileName : null;
 
     metadataFile = new MetadataFile();
-    await ioHelper.storeXMLData(metadataFile.fileName, metadata);
+    await ioHelper.storeODM(metadataFile.fileName, metadata);
 
-    if (previousFileName && previousFileName != metadataFile.fileName) ioHelper.removeXMLData(previousFileName);
+    if (previousFileName && previousFileName != metadataFile.fileName) ioHelper.removeODM(previousFileName);
 }
 
 export function getSerializedMetadata() {

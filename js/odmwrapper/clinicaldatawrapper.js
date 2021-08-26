@@ -148,11 +148,11 @@ export async function importClinicaldata(odmXMLString) {
         subjectDataList.push(xmlSerializer.serializeToString(subjectData));
     }
 
-    if (subjectDataList.length) await ioHelper.storeXMLDataBulk(subjectFileNameList, subjectDataList);
+    if (subjectDataList.length) await ioHelper.storeODMBulk(subjectFileNameList, subjectDataList);
 }
 
 async function loadStoredSubjectData(fileName) {
-    const xmlData = await ioHelper.getXMLData(fileName);
+    const xmlData = await ioHelper.getODM(fileName);
     return xmlData.documentElement;
 }
 
@@ -286,11 +286,11 @@ export async function storeSubject() {
     subject.status = getDataStatus();
     subject.modifiedDate = modifiedDate;
     clinicaldataFile = new ClinicaldataFile(modifiedDate);
-    await ioHelper.storeXMLData(subject.fileName, subjectData);
+    await ioHelper.storeODM(subject.fileName, subjectData);
 
     // This mechanism helps to prevent possible data loss when multiple users edit the same subject data at the same time (especially important for the offline mode)
     // If the previousFileName cannot be removed, the system keeps multiple current versions of the subject data and the user is notified that conflicting data exists
-    if (previousFileName != subject.fileName) ioHelper.removeXMLData(previousFileName);
+    if (previousFileName != subject.fileName) ioHelper.removeODM(previousFileName);
 }
 
 export function clearSubject() {
@@ -299,14 +299,14 @@ export function clearSubject() {
 }
 
 export async function removeSubject() {
-    await ioHelper.removeXMLData(subject.fileName);
+    await ioHelper.removeODM(subject.fileName);
     clearSubject();
     await loadSubjects();
 }
 
 export async function removeClinicaldata() {
     for (let subject of subjects) {
-        await ioHelper.removeXMLData(subject.fileName);
+        await ioHelper.removeODM(subject.fileName);
     }
 }
 
@@ -524,7 +524,7 @@ export async function setSubjectInfo(subjectKey, siteOID) {
     }
     
     await storeSubject();
-    await ioHelper.removeXMLData(previousFileName);
+    await ioHelper.removeODM(previousFileName);
     await loadSubjects();
 
     return Promise.resolve();

@@ -62,7 +62,7 @@ export function getAdmindata(studyOID) {
 
 export async function loadStoredAdmindata() {
     admindataFile = AdmindataFile.parse(await ioHelper.getODMFileName(ioHelper.odmFileNames.admindata));
-    const xmlData = await ioHelper.getXMLData(admindataFile.fileName);
+    const xmlData = await ioHelper.getODM(admindataFile.fileName);
     admindata = xmlData.documentElement;
 }
 
@@ -70,9 +70,9 @@ export async function storeAdmindata() {
     const previousFileName = admindataFile ? admindataFile.fileName : null;
 
     admindataFile = new AdmindataFile();
-    await ioHelper.storeXMLData(admindataFile.fileName, admindata);
+    await ioHelper.storeODM(admindataFile.fileName, admindata);
 
-    if (previousFileName && previousFileName != admindataFile.fileName) ioHelper.removeXMLData(previousFileName);
+    if (previousFileName && previousFileName != admindataFile.fileName) ioHelper.removeODM(previousFileName);
 }
 
 export function getLastUpdate() {

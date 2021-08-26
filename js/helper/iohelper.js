@@ -86,7 +86,7 @@ export async function init() {
     return await getServerStatus(devServer ? devServer : getBaseURL(), true).catch(() => console.log("No OpenEDC Server found. It seems that this is a standalone OpenEDC App."));
 }
 
-export async function getXMLData(fileName) {
+export async function getODM(fileName) {
     let xmlString = null;
 
     if (serverURL) {
@@ -115,7 +115,7 @@ export async function getXMLData(fileName) {
     }
 }
 
-export async function storeXMLData(fileName, xmlDocument) {
+export async function storeODM(fileName, xmlDocument) {
     let xmlString = new XMLSerializer().serializeToString(xmlDocument);
     if (decryptionKey) xmlString = await cryptoHelper.AES.encrypt.withKey(xmlString, decryptionKey);
 
@@ -130,7 +130,7 @@ export async function storeXMLData(fileName, xmlDocument) {
     }
 }
 
-export async function removeXMLData(fileName) {
+export async function removeODM(fileName) {
     if (serverURL) {
         await fetch(getURLForFileName(fileName), {
             method: "DELETE",
@@ -142,7 +142,7 @@ export async function removeXMLData(fileName) {
 }
 
 // For performance reasons of IndexedDB, only used for local storage
-export async function storeXMLDataBulk(fileNameList, dataList) {
+export async function storeODMBulk(fileNameList, dataList) {
     await indexedDBHelper.putBulk("xml", fileNameList, dataList);
 }
 
@@ -306,7 +306,7 @@ export async function initializeServer(url, userOID, credentials) {
 
     // Send all existing metadata encrypted to the server
     const metadataFileName = await getODMFileName(odmFileNames.metadata);
-    const metadataXMLData = await getXMLData(metadataFileName);
+    const metadataXMLData = await getODM(metadataFileName);
     let metadataString = new XMLSerializer().serializeToString(metadataXMLData);
     metadataString = await cryptoHelper.AES.encrypt.withKey(metadataString, decryptionKey);
     const metadataResponse = await fetch(url + "/api/metadata/" + metadataFileName, {
@@ -318,7 +318,7 @@ export async function initializeServer(url, userOID, credentials) {
 
     // Send all existing admindata encrypted to the server
     const admindataFileName = await getODMFileName(odmFileNames.admindata);
-    const admindataXMLData = await getXMLData(admindataFileName);
+    const admindataXMLData = await getODM(admindataFileName);
     let admindataString = new XMLSerializer().serializeToString(admindataXMLData.documentElement);
     admindataString = await cryptoHelper.AES.encrypt.withKey(admindataString, decryptionKey);
     const admindataResponse = await fetch(url + "/api/admindata/" + admindataFileName, {
@@ -331,7 +331,7 @@ export async function initializeServer(url, userOID, credentials) {
     // Send all existing clinicaldata encrypted to the server
     const subjectFileNames = await getSubjectFileNames();
     for (const subjectFileName of subjectFileNames) {
-        const subjectDataXMLData = await getXMLData(subjectFileName);
+        const subjectDataXMLData = await getODM(subjectFileName);
         let subjectDataString = new XMLSerializer().serializeToString(subjectDataXMLData.documentElement);
         subjectDataString = await cryptoHelper.AES.encrypt.withKey(subjectDataString, decryptionKey);
         const clinicaldataResponse = await fetch(url + "/api/clinicaldata/" + subjectFileName, {
