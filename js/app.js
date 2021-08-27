@@ -327,7 +327,6 @@ window.showProjectModal = function() {
         $("#project-modal #server-connected-hint").show();
     }
 
-    // TODO: Use optional chaining instead
     const subjectKeyModeRadio = $(`#${ioHelper.getSetting("subjectKeyMode")}`);
     if (subjectKeyModeRadio) subjectKeyModeRadio.checked = true;
 
@@ -346,7 +345,7 @@ window.showProjectModal = function() {
 }
 
 window.hideProjectModal = function() {
-    ioHelper.removeIsActiveFromElement($("#project-tabs ul li.is-active"));
+    $("#project-tabs ul li.is-active")?.deactivate();
     $("#general-options-tab").activate();
     $("#general-options").show();
     $("#users-options").hide();
@@ -356,7 +355,7 @@ window.hideProjectModal = function() {
 }
 
 window.projectTabClicked = function(event) {
-    ioHelper.removeIsActiveFromElement($("#project-tabs ul li.is-active"));
+    $("#project-tabs ul li.is-active")?.deactivate();
     event.target.parentNode.activate();
 
     switch (event.target.parentNode.id) {
@@ -478,10 +477,7 @@ window.subjectKeyModeClicked = function(event) {
 
 function showSubjectKeyModeElement() {
     $$(".subject-key-mode-element").forEach(button => button.hide());
-
-    // TODO: Use optional chaining instead
-    const subjectKeyModeElement = $(`#${ioHelper.getSetting("subjectKeyMode")}-element`);
-    if (subjectKeyModeElement) subjectKeyModeElement.parentNode.show();
+    $(`#${ioHelper.getSetting("subjectKeyMode")}-element`)?.parentNode.show();
 }
 
 window.saveStudyNameDescription = function() {

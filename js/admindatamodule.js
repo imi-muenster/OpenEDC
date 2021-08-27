@@ -14,7 +14,7 @@ export async function init() {
 export async function loadUsers() {
     $$("#users-options .panel a").removeElements();
     $$("#user-rights .checkbox").removeElements();
-    ioHelper.safeRemoveElement($("#user-site-select-outer"));
+    $("#user-site-select-outer")?.remove();
 
     $("#user-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("user-site-select", true, true, [], null));
     [$("#user-first-name-input"), $("#user-last-name-input"), $("#user-username-input"), $("#user-password-input")].emptyInputs();
@@ -52,13 +52,13 @@ function loadUser(userOID) {
     const user = admindataWrapper.getUser(userOID);
     if (!user) return;
 
-    ioHelper.removeIsActiveFromElement($("#users-options .panel a.is-active"));
+    $("#users-options .panel a.is-active")?.deactivate();
     $(`#users-options .panel a[oid="${userOID}"]`).activate();
 
     // Create site select
     let sites = [languageHelper.getTranslation("no-site")];
     admindataWrapper.getSites().forEach(site => sites.push(site.getName()));
-    ioHelper.safeRemoveElement($("#user-site-select-outer"));
+    $("#user-site-select-outer")?.remove();
     let currentSiteName = null;
     const locationRef = user.querySelector("LocationRef");
     if (locationRef) currentSiteName = admindataWrapper.getSiteNameByOID(locationRef.getAttribute("LocationOID"));
@@ -165,7 +165,7 @@ function loadSite(siteOID) {
     const site = admindataWrapper.getSite(siteOID);
     if (!site) return;
 
-    ioHelper.removeIsActiveFromElement($("#sites-options .panel a.is-active"));
+    $("#sites-options .panel a.is-active")?.deactivate();
     $(`#sites-options .panel a[oid="${siteOID}"]`).activate();
 
     $("#site-name-input").value = site.getName();

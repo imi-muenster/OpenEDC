@@ -43,12 +43,6 @@ export const loginStatus = {
     USERHASINITIALPASSWORD: 2
 }
 
-export const interactionTypes = {
-    DEFAULT: 1,
-    WARNING: 3,
-    DANGER: 4
-}
-
 export const odmFileNames = {
     metadata: "metadata",
     admindata: "admindata",
@@ -59,6 +53,12 @@ export const subjectKeyModes = {
     MANUAL: "subject-key-mode-manual",
     AUTO: "subject-key-mode-auto",
     BARCODE: "subject-key-mode-barcode"
+}
+
+export const interactionTypes = {
+    DEFAULT: "is-success",
+    WARNING: "is-warning",
+    DANGER: "is-danger"
 }
 
 const fileTypes = {
@@ -324,8 +324,8 @@ export async function initializeServer(url, userOID, credentials) {
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
     user = await userResponse.json();
 
-    // TODO: Reduce code by reusing methods from above?
-    // Send all existing metadata encrypted to the server (i.e., setODM and setJSON)
+    // TODO: Reduce code by reusing methods from above? (i.e., setODM and setJSON)
+    // Send all existing metadata encrypted to the server
     const metadataFileName = await getODMFileName(odmFileNames.metadata);
     const metadataXMLData = await getODM(metadataFileName);
     let metadataString = new XMLSerializer().serializeToString(metadataXMLData);
@@ -513,16 +513,6 @@ export async function getAppVersion() {
     return versionObject.version; 
 }
 
-// TODO: Should be removed and then replaced in the future by element?.remove();
-export function safeRemoveElement(element) {
-    if (element) element.remove();
-}
-
-// TODO: Should be removed and then replaced in the future by element?.deactivate();
-export function removeIsActiveFromElement(element) {
-    if (element) element.deactivate();
-}
-
 export function hideMenu() {
     $(".navbar-menu").deactivate();
     $(".navbar-burger").deactivate();
@@ -536,7 +526,7 @@ export function showMessage(heading, message, callbacks, callbackType, closeText
     messageModal.setHeading(heading);
     messageModal.setMessage(message);
     messageModal.setCallbacks(callbacks);
-    messageModal.setCallbackType(callbackType == interactionTypes.DANGER ? "is-danger" : "is-link");
+    messageModal.setCallbackType(callbackType ?? interactionTypes.DEFAULT);
     messageModal.setCloseText(closeText ? closeText : (callbacks ? languageHelper.getTranslation("close") : languageHelper.getTranslation("okay")));
     messageModal.setCloseCallback(closeCallback);
     messageModal.setSize(isExtended ? "is-medium" : "is-small");
@@ -547,7 +537,7 @@ export function showMessage(heading, message, callbacks, callbackType, closeText
 export function showToast(message, duration, toastType) {
     const toast = document.createElement("div");
     toast.className = "notification is-toast";
-    toast.classList.add(toastType == interactionTypes.WARNING ? "is-warning" : "is-success");
+    toast.classList.add(toastType ?? interactionTypes.DEFAULT);
     toast.innerHTML = message;
 
     const closeButton = document.createElement("button");

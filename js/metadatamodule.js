@@ -129,7 +129,7 @@ export function loadStudyEvents(hideTree) {
 }
 
 function studyEventClicked(event) {
-    ioHelper.removeIsActiveFromElement($("#study-event-panel-blocks a.is-active"));
+    $("#study-event-panel-blocks a.is-active")?.deactivate();
     event.target.activate();
     
     currentPath.studyEventOID = event.target.getOID();
@@ -154,7 +154,7 @@ function loadFormsByStudyEvent(hideTree) {
 }
 
 function formClicked(event) {
-    ioHelper.removeIsActiveFromElement($("#form-panel-blocks a.is-active"));
+    $("#form-panel-blocks a.is-active")?.deactivate();
     event.target.activate();
 
     currentPath.formOID = event.target.getOID();
@@ -179,7 +179,7 @@ function loadItemGroupsByForm(hideTree) {
 }
 
 function itemGroupClicked(event) {
-    ioHelper.removeIsActiveFromElement($("#item-group-panel-blocks a.is-active"));
+    $("#item-group-panel-blocks a.is-active")?.deactivate();
     event.target.activate();
 
     currentPath.itemGroupOID = event.target.getOID();
@@ -205,7 +205,7 @@ function loadItemsByItemGroup(hideTree) {
 }
 
 function itemClicked(event) {
-    ioHelper.removeIsActiveFromElement($("#item-panel-blocks a.is-active"));
+    $("#item-panel-blocks a.is-active")?.deactivate();
     event.target.activate();
 
     currentPath.itemOID = event.target.getOID();
@@ -235,7 +235,7 @@ function loadCodeListItemsByItem(hideTree) {
 }
 
 function codeListItemClicked(event) {
-    ioHelper.removeIsActiveFromElement($("#code-list-item-panel-blocks a.is-active"));
+    $("#code-list-item-panel-blocks a.is-active")?.deactivate();
     event.target.activate();
 
     currentPath.codeListItem = event.target.getOID();
@@ -683,7 +683,7 @@ window.sidebarOptionClicked = async function(event) {
     // Save the element if it has been updated and another sidebar option is selected
     if ($("#save-button").isHighlighted() && event.target.id != $(".sidebar-option.is-active").id) await saveElement();
 
-    ioHelper.removeIsActiveFromElement($("#details-panel .sidebar-option.is-active"));
+    $("#details-panel .sidebar-option.is-active")?.deactivate();
     event.target.activate();
 
     switch (event.target.id) {

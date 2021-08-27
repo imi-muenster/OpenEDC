@@ -44,7 +44,7 @@ export function createSiteFilterSelect() {
     let currentSelection = null;
     if ($("#filter-site-select-inner")) currentSelection = $("#filter-site-select-inner").value;
 
-    ioHelper.safeRemoveElement($("#filter-site-select-outer"));
+    $("#filter-site-select-outer")?.remove();
     $("#filter-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("filter-site-select", true, true, sites, currentSelection));
     $("#filter-site-select-inner").onmouseup = clickEvent => {
         if (safeCloseClinicaldata(() => loadTree(currentPath.studyEventOID, null))) clickEvent.target.blur();
@@ -59,7 +59,7 @@ export function createSiteFilterSelect() {
 
 function createSortTypeSelect() {
     const translatedSortTypes = Object.values(clinicaldataWrapper.sortOrderTypes).map(sortType => languageHelper.getTranslation(sortType));
-    ioHelper.safeRemoveElement($("#sort-subject-select-outer"));
+    $("#sort-subject-select-outer")?.remove();
     $("#sort-subject-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("sort-subject-select", true, true, Object.values(clinicaldataWrapper.sortOrderTypes), null, translatedSortTypes, true));
     $("#sort-subject-select-inner").oninput = inputEvent => {
         loadSubjectKeys();
@@ -178,7 +178,7 @@ async function loadSubjectData(subjectKey) {
             ioHelper.showMessage(languageHelper.getTranslation("subject-not-loaded-title"), languageHelper.getTranslation("subject-not-loaded-error"));
         });
 
-    ioHelper.removeIsActiveFromElement($("#subject-panel-blocks a.is-active"));
+    $("#subject-panel-blocks a.is-active")?.deactivate();
     if (currentSubjectKey) $(`#subject-panel-blocks [oid="${currentSubjectKey}"]`).activate();
     if (currentSubjectKey) ioHelper.scrollParentToChild($(`#subject-panel-blocks [oid="${currentSubjectKey}"]`));
     $("#subject-info-button").disabled = currentSubjectKey ? false : true;
@@ -227,7 +227,7 @@ async function loadTree(studyEventOID, formOID) {
 }
 
 async function loadFormsByStudyEvent() {
-    ioHelper.removeIsActiveFromElement($("#clinicaldata-study-event-panel-blocks a.is-active"));
+    $("#clinicaldata-study-event-panel-blocks a.is-active")?.deactivate();
     $(`#clinicaldata-study-event-panel-blocks [oid="${currentPath.studyEventOID}"]`).activate();
 
     const formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
@@ -250,7 +250,7 @@ async function loadFormsByStudyEvent() {
     if (currentPath.formOID) {
         await loadFormData();
     } else {
-        ioHelper.safeRemoveElement($("#odm-html-content"));
+        $("#odm-html-content")?.remove();
         $("#clinicaldata-form-data").hide();
     }
 }
@@ -262,7 +262,7 @@ async function loadFormData() {
         return;
     }
 
-    ioHelper.removeIsActiveFromElement($("#clinicaldata-form-panel-blocks a.is-active"));
+    $("#clinicaldata-form-panel-blocks a.is-active")?.deactivate();
     $(`#clinicaldata-form-panel-blocks [oid="${currentPath.formOID}"]`).activate();
 
     resetFormUIElements();
@@ -310,7 +310,7 @@ async function loadFormMetadata() {
 
     // Add the empty form
     let form = await metadataWrapper.getFormAsHTML(currentPath.formOID, ioHelper.getSetting("textAsTextarea"));
-    ioHelper.safeRemoveElement($("#odm-html-content"));
+    $("#odm-html-content")?.remove();
     $("#clinicaldata-content").appendChild(form);
 
     // Adjust the form navigation buttons
@@ -828,7 +828,7 @@ window.showSubjectInfo = function() {
     // Fill inputs to change subject key and site
     let sites = [languageHelper.getTranslation("no-site")];
     admindataWrapper.getSites().forEach(site => sites.push(site.getName()));
-    ioHelper.safeRemoveElement($("#subject-site-select-outer"));
+    $("#subject-site-select-outer")?.remove();
     const currentSiteName = admindataWrapper.getSiteNameByOID(clinicaldataWrapper.getSubject().siteOID);
     $("#subject-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("subject-site-select", true, true, sites, currentSiteName));
     $("#subject-modal strong").textContent = clinicaldataWrapper.getSubject().key;
