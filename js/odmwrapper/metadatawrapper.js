@@ -68,7 +68,7 @@ export async function loadStoredMetadata() {
 }
 
 export async function storeMetadata() {
-    const previousFileName = metadataFile ? metadataFile.fileName : null;
+    const previousFileName = metadataFile?.fileName;
 
     metadataFile = new MetadataFile();
     await ioHelper.setODM(metadataFile.fileName, metadata);
@@ -233,7 +233,7 @@ export function getCodeListItemsByItem(itemOID) {
 
 export function getCodeListOIDByItem(itemOID) {
     const codeListRef = $(`[OID="${itemOID}"] CodeListRef`);
-    return codeListRef ? codeListRef.getAttribute("CodeListOID") : null;
+    return codeListRef?.getAttribute("CodeListOID");
 }
 
 // TODO: Could be refactored to only take path as input parameter
@@ -305,7 +305,7 @@ export function getElementsWithExpression(studyEventOID, formOID) {
 
 function addElementWithExpression(elementList, elementType, elementPath, expressionOID, expressionType) {
     const expressionElement = expressionType == expressionTypes.CONDITION ? $(`ConditionDef[OID="${expressionOID}"]`) : $(`MethodDef[OID="${expressionOID}"]`);
-    const formalExpression = expressionElement ? expressionElement.getFormalExpression() : null;
+    const formalExpression = expressionElement?.getFormalExpression();
     if (formalExpression) elementList.push({ elementType, elementPath, expressionType, formalExpression });
 
     return elementList;

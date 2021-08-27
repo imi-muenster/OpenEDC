@@ -70,13 +70,13 @@ export default class ODMPath {
 
     get last() {
         const lastEntry = Array.from(this.path.entries()).reverse().find(entry => entry[1]);
-        return { element: lastEntry ? lastEntry[0] : null, value: lastEntry ? lastEntry[1] : null };
+        return { element: lastEntry?.[0], value: lastEntry?.[1] };
     }
 
     get previous() {
         const entries = Array.from(this.path.entries()).filter(entry => entry[1]);
         const previous = entries.length > 1 ? entries[entries.length - 2] : null;
-        return { element: previous ? previous[0] : null, value: previous ? previous[1] : null };
+        return { element: previous?.[0], value: previous?.[1] };
     }
 
     set(element, value) {

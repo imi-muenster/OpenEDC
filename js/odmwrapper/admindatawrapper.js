@@ -67,7 +67,7 @@ export async function loadStoredAdmindata() {
 }
 
 export async function storeAdmindata() {
-    const previousFileName = admindataFile ? admindataFile.fileName : null;
+    const previousFileName = admindataFile?.fileName;
 
     admindataFile = new AdmindataFile();
     await ioHelper.setODM(admindataFile.fileName, admindata);
@@ -102,7 +102,7 @@ export function getCurrentUserOID() {
 
 export function getCurrentUserSiteOID() {
     const user = getUser(getCurrentUserOID());
-    return user.querySelector("LocationRef") ? user.querySelector("LocationRef").getAttribute("LocationOID") : null;
+    return user.querySelector("LocationRef")?.getAttribute("LocationOID");
 }
 
 export function addUser() {
@@ -150,12 +150,12 @@ export function getSite(siteOID) {
 
 export function getSiteOIDByName(siteName) {
     const site = $(`Location[Name="${siteName}"][LocationType="Site"]`);
-    return site ? site.getOID() : null;
+    return site?.getOID();
 }
 
 export function getSiteNameByOID(siteOID) {
     const site = getSite(siteOID);
-    return site ? site.getName() : null;
+    return site?.getName();
 }
 
 export function getSites() {

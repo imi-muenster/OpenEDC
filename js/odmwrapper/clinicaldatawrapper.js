@@ -141,7 +141,7 @@ export async function importClinicaldata(odmXMLString) {
 
     const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
     for (subjectData of odm.querySelectorAll("ClinicalData SubjectData")) {
-        const siteOID = $("SiteRef") ? $("SiteRef").getAttribute("LocationOID") : null;
+        const siteOID = $("SiteRef")?.getAttribute("LocationOID");
         const creationDate = $("AuditRecord DateTimeStamp") ? new Date($("AuditRecord DateTimeStamp").textContent) : new Date();
         const subject = new Subject(subjectData.getAttribute("SubjectKey"), siteOID, creationDate, null, getDataStatus());
         subjectFileNameList.push(subject.fileName);
@@ -452,7 +452,7 @@ export function getAuditRecords(filter) {
             // Add form edited audit record
             const locationOID = auditRecord.querySelector("LocationRef").getAttribute("LocationOID");
             const flag = formData.querySelector("Flag");
-            const flagValue = flag ? flag.querySelector("FlagValue") : null;
+            const flagValue = flag?.querySelector("FlagValue");
             const dataStatus = flagValue ? parseInt(flagValue.textContent) : null;
             const dataStatusName = Object.keys(dataStatusTypes).find(key => dataStatusTypes[key] == dataStatus);
             auditRecords.push(

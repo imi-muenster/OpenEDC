@@ -169,7 +169,7 @@ async function loadSubjectData(subjectKey) {
 
     await clinicaldataWrapper.loadSubject(subjectKey)
         .then(subject => {
-            currentSubjectKey = subject ? subject.uniqueKey : null;
+            currentSubjectKey = subject?.uniqueKey;
             cachedFormData = null;
         })
         .catch(() => {

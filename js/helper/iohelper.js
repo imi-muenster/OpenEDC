@@ -56,7 +56,8 @@ export const subjectKeyModes = {
 }
 
 export const interactionTypes = {
-    DEFAULT: "is-success",
+    PRIMARY: "is-link",
+    SUCCESS: "is-success",
     WARNING: "is-warning",
     DANGER: "is-danger"
 }
@@ -526,7 +527,7 @@ export function showMessage(heading, message, callbacks, callbackType, closeText
     messageModal.setHeading(heading);
     messageModal.setMessage(message);
     messageModal.setCallbacks(callbacks);
-    messageModal.setCallbackType(callbackType ?? interactionTypes.DEFAULT);
+    messageModal.setCallbackType(callbackType ?? interactionTypes.PRIMARY);
     messageModal.setCloseText(closeText ? closeText : (callbacks ? languageHelper.getTranslation("close") : languageHelper.getTranslation("okay")));
     messageModal.setCloseCallback(closeCallback);
     messageModal.setSize(isExtended ? "is-medium" : "is-small");
@@ -537,7 +538,7 @@ export function showMessage(heading, message, callbacks, callbackType, closeText
 export function showToast(message, duration, toastType) {
     const toast = document.createElement("div");
     toast.className = "notification is-toast";
-    toast.classList.add(toastType ?? interactionTypes.DEFAULT);
+    toast.classList.add(toastType ?? interactionTypes.SUCCESS);
     toast.innerHTML = message;
 
     const closeButton = document.createElement("button");

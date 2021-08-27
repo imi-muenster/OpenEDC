@@ -110,8 +110,7 @@ class WidgetOptions extends HTMLElement {
 
     saveOptions() {
         // Set widget size
-        const sizeOption = this.querySelector(".widget-size-options input:checked");
-        const size = sizeOption ? sizeOption.value : null;
+        const size = this.querySelector(".widget-size-options input:checked")?.value;
         if (size && this.component.widget.size != size) this.setWidgetComponentSize(size);
 
         // Set widget name and properties

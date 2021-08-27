@@ -55,7 +55,7 @@ export class CustomBarChart {
                     font: { weight: "bold" }
                 }
             },
-            onClick: (event, elements) => this.barChartClicked(event.chart, elements[0] ? elements[0].index : null)
+            onClick: (event, elements) => this.barChartClicked(event.chart, elements[0]?.index)
         };
     }
 

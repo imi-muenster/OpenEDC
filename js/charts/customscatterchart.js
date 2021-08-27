@@ -56,7 +56,7 @@ export class CustomScatterChart {
                     }
                 }
             },
-            onHover: (event, elements) => this.scatterChartHovered(event.chart, elements[0] ? elements[0].index : null)
+            onHover: (event, elements) => this.scatterChartHovered(event.chart, elements[0]?.index)
         };
     }
 
