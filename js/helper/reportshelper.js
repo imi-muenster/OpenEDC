@@ -60,6 +60,7 @@ export class Widget {
 let reports = null;
 
 export const init = async () => {
+    // TODO: Transform JSON to class instances (e.g., by using Object.assign() or Object.setPrototypeOf())
     reports = await ioHelper.getJSON("reports") || [];
 }
 

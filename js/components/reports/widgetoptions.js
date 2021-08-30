@@ -1,3 +1,5 @@
+import ODMPath from "../../odmwrapper/odmpath.js";
+import * as metadataWrapper from "../../odmwrapper/metadatawrapper.js";
 import * as languageHelper from "../../helper/languagehelper.js";
 import * as reportsHelper from "../../helper/reportshelper.js";
 import * as autocompleteHelper from "../../helper/autocompletehelper.js";
@@ -37,6 +39,7 @@ class WidgetOptions extends HTMLElement {
         input.className = "input is-small";
         input.type = "text";
         input.placeholder = languageHelper.getTranslation("item");
+        input.oninput = () => this.itemInputCallback();
         inputContainer.appendChild(input);
         autocompleteHelper.enableAutocomplete(input, autocompleteHelper.modes.ITEM);
 
@@ -47,6 +50,7 @@ class WidgetOptions extends HTMLElement {
         const selectContainer = document.createElement("div");
         selectContainer.className = "select is-fullwidth is-small";
         const select = document.createElement("select");
+        select.disabled = true;
         selectContainer.appendChild(select);
 
         this.appendChild(selectContainer);
@@ -106,6 +110,31 @@ class WidgetOptions extends HTMLElement {
         buttons.appendChild(cancelButton);
         
         this.appendChild(buttons);
+    }
+
+    itemInputCallback() {
+        this.querySelectorAll("select option").removeElements();
+        this.querySelector("select").disabled = true;
+        this.querySelector("select").value = null;
+
+        const path = ODMPath.parseAbsolute(this.querySelector("input").value);
+        const itemDef = metadataWrapper.getElementDefByOID(path.itemOID);
+        if (!itemDef) return;
+
+        // TODO: Move to other location?
+        const widgetTypeDataTypeMapping = {
+            [reportsHelper.Widget.types.SCATTER]: "integer, float, double",
+            [reportsHelper.Widget.types.BAR]: "text"
+        };
+
+        const enabledWidgetTypes = Object.entries(widgetTypeDataTypeMapping).filter(entry => entry[1].includes(itemDef.getDataType())).map(entry => entry[0]);
+        for (const widgetType of enabledWidgetTypes) {
+            const option = document.createElement("option");
+            option.value = widgetType;
+            option.textContent = languageHelper.getTranslation(widgetType);
+            this.querySelector("select").appendChild(option);
+            this.querySelector("select").disabled = false;
+        }
     }
 
     saveOptions() {
