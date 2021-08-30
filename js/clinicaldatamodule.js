@@ -383,12 +383,13 @@ function showItemAuditTrail(event) {
     ioHelper.showMessage(languageHelper.getTranslation("audit-trail-for-item"), auditRecords.length ? table.outerHTML : languageHelper.getTranslation("no-audit-trail-hint"), null, null, null, null, true);
 }
 
-function showDateTimePicker(event) {
+async function showDateTimePicker(event) {
     if (event.target.readOnly) return;
     event.preventDefault();
 
-    const mode = event.target.getAttribute("type").split("-")[0];
+    await import("./components/modals/datetimepicker.js");
     const picker = document.createElement("datetime-picker");
+    const mode = event.target.getAttribute("type").split("-")[0];
     picker.setInput(event.target);
     picker.setLocale(languageHelper.getCurrentLocale());
     picker.setTranslations({
