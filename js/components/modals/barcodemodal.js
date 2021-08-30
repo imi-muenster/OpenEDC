@@ -12,17 +12,17 @@ class BarcodeModal extends HTMLElement {
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
-                                <h1 class="title mb-0">${this.heading}</h1>
+                                <h1 class="title mb-0" i18n="barcode"></h1>
                                 <button class="delete is-large"></button>
                             </div>
-                            <div class="notification">${this.helpText}</div>
+                            <div class="notification" i18n="barcode-help-text"></div>
                             <div id="barcode-video-stream" class="mb-4"></div>
                             <div class="field is-grouped is-fullwidth">
                                 <div class="control is-expanded">
-                                    <input class="input" id="barcode-fallback-input" type="text" placeholder="${this.inputPlaceholder}">
+                                    <input class="input" id="barcode-fallback-input" type="text" i18n-ph="new-subject">
                                 </div>
                                 <div class="control">
-                                    <button class="button" id="barcode-fallback-button">${this.buttonText}</button>
+                                    <button class="button" id="barcode-fallback-button" i18n="add"></button>
                                 </div>
                             </div>
                         </div>
@@ -32,7 +32,7 @@ class BarcodeModal extends HTMLElement {
         `;
 
         // Initialize and start the barcode scan
-        await import("../../lib/quagga.js");
+        await import("../../../lib/quagga.js");
         Quagga.init(
             {
                 inputStream: {

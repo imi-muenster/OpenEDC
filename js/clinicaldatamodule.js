@@ -89,21 +89,12 @@ window.addSubjectAuto = function() {
 }
 
 window.addSubjectBarcode = async function() {
-    await import("./components/modals/barcodemodal.js");
-
     // Check if the data has changed / new data has been entered and show a prompt first
     if (safeCloseClinicaldata(addSubjectBarcode)) return;
 
-    // Deselect the currently selected subject
+    // Deselect the currently selected subject and mount modal
+    await ioHelper.mountElement("modals/barcodemodal.js", "barcode-modal");
     if (currentSubjectKey) loadSubjectData();
-    
-    // Open the barcode scan modal
-    const barcodeModal = document.createElement("barcode-modal");
-    barcodeModal.setHeading(languageHelper.getTranslation("barcode"));
-    barcodeModal.setHelpText(languageHelper.getTranslation("barcode-help-text"));
-    barcodeModal.setInputPlaceholder(languageHelper.getTranslation("new-subject"));
-    barcodeModal.setButtonText(languageHelper.getTranslation("add"));
-    document.body.appendChild(barcodeModal);
 }
 
 function addSubject(subjectKey, siteOID) {
@@ -705,11 +696,7 @@ function showCloseClinicaldataPrompt() {
 }
 
 async function showSurveyCodeModal() {
-    // Render and localize component
-    await import("./components/modals/surveycodemodal.js");
-    const surveyCodeModal = document.createElement("survey-code-modal");
-    document.body.appendChild(surveyCodeModal);
-    languageHelper.localize(surveyCodeModal);
+    await ioHelper.mountElement("modals/surveycodemodal.js", "survey-code-modal");
 
     // Create buttons for numpad if they dont exist
     if (!$(".numpad .buttons").hasChildNodes()) {
@@ -823,11 +810,7 @@ function dataHasChanged() {
 }
 
 window.showSubjectInfo = async function() {
-    // Render and localize component
-    await import("./components/modals/subjectmodal.js");
-    const subjectModal = document.createElement("subject-modal");
-    document.body.appendChild(subjectModal);
-    languageHelper.localize(subjectModal);
+    await ioHelper.mountElement("modals/subjectmodal.js", "subject-modal");
 
     // Create audit record entries
     $$("#audit-records .notification").removeElements();

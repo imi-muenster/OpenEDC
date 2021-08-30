@@ -979,11 +979,8 @@ window.showCodeListModal = async function() {
         return;
     }
 
-    // Render and localize component
-    await import("./components/modals/codelistmodal.js");
-    const codeListModal = document.createElement("codelist-modal");
-    document.body.appendChild(codeListModal);
-    languageHelper.localize(codeListModal);
+    // Mount modal
+    await ioHelper.mountElement("modals/codelistmodal.js", "codelist-modal");
 
     // Add the item question and use the name as fallback
     const itemDef = metadataWrapper.getElementDefByOID(currentPath.itemOID);

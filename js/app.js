@@ -311,10 +311,7 @@ window.loadExample = async function() {
 }
 
 window.showProjectModal = async function() {
-    await import("./components/modals/projectmodal.js");
-    const projectModal = document.createElement("project-modal");
-    document.body.appendChild(projectModal);
-    languageHelper.localize(projectModal);
+    await ioHelper.mountElement("modals/projectmodal.js", "project-modal");
     ioHelper.hideMenu();
 
     if (ioHelper.hasDecryptionKey()) {
@@ -340,6 +337,7 @@ window.showProjectModal = async function() {
     admindataModule.loadSites();
 }
 
+// TODO: Move to component
 window.hideProjectModal = function() {
     $("project-modal")?.remove();
 }
@@ -504,10 +502,7 @@ window.showLogoutMessage = function() {
 }
 
 window.showAboutModal = async function() {
-    await import("./components/modals/aboutmodal.js");
-    const aboutModal = document.createElement("about-modal");
-    document.body.appendChild(aboutModal);
-    languageHelper.localize(aboutModal);
+    await ioHelper.mountElement("modals/aboutmodal.js", "about-modal");
 
     // TODO: Use setter or element attribute instead
     $("#about-modal h2").textContent = languageHelper.getTranslation("version") + " " + appVersion;
