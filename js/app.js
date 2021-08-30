@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Initialize the language helper and localize the application
     await languageHelper.init();
-    await languageHelper.localize();
+    languageHelper.localize();
 
     // Check if this app might be served from an OpenEDC Server instance and then show the login modal accordingly
     await ioHelper.init()
@@ -104,7 +104,7 @@ const startApp = async () => {
     addModalsToDOM();
 
     // Localize application after remaining modals were added to DOM
-    await languageHelper.localize();
+    languageHelper.localize();
 
     // Only required because of a bug in Safari (selects without a value show a value if the textContent of their option elements is changed -- which happens during localize())
     if (getCurrentMode() == appModes.METADATA) metadataModule.reloadDetailsPanel();
@@ -316,15 +316,21 @@ window.loadExample = async function() {
     if (!ioHelper.isMobile()) ioHelper.showToast(languageHelper.getTranslation("exemplary-project-hint"), 30000);
 }
 
-window.showProjectModal = function() {
+window.showProjectModal = async function() {
+    await import("./components/projectmodal.js");
+    const projectModal = document.createElement("project-modal");
+    document.body.appendChild(projectModal);
+    languageHelper.localize(projectModal);
+    ioHelper.hideMenu();
+
     if (ioHelper.hasDecryptionKey()) {
-        $("#project-modal #encryption-password-input").parentNode.parentNode.hide();
-        $("#project-modal #data-encryption-warning").hide();
-        $("#project-modal #data-encrypted-hint").show();
+        $("project-modal #encryption-password-input").parentNode.parentNode.hide();
+        $("project-modal #data-encryption-warning").hide();
+        $("project-modal #data-encrypted-hint").show();
     }
     if (ioHelper.hasServerURL()) {
-        $("#project-modal #server-url-input").parentNode.parentNode.hide();
-        $("#project-modal #server-connected-hint").show();
+        $("project-modal #server-url-input").parentNode.parentNode.hide();
+        $("project-modal #server-connected-hint").show();
     }
 
     const subjectKeyModeRadio = $(`#${ioHelper.getSetting("subjectKeyMode")}`);
@@ -338,20 +344,10 @@ window.showProjectModal = function() {
     $("#protocol-name-input").value = metadataWrapper.getProtocolName();
     admindataModule.loadUsers();
     admindataModule.loadSites();
-
-    ioHelper.hideMenu();
-
-    $("#project-modal").activate();
 }
 
 window.hideProjectModal = function() {
-    $("#project-tabs ul li.is-active")?.deactivate();
-    $("#general-options-tab").activate();
-    $("#general-options").show();
-    $("#users-options").hide();
-    $("#sites-options").hide();
-    $("#name-description").hide();
-    $("#project-modal").deactivate();
+    $("project-modal")?.remove();
 }
 
 window.projectTabClicked = function(event) {
@@ -631,7 +627,7 @@ function enableMode(mode) {
 
 function addModalsToDOM() {
     // TODO: This could be improved in the future by loading the modal js module files dynamically
-    const modalNames = ["project", "about", "subject", "survey-code", "codelist"];
+    const modalNames = ["about", "subject", "survey-code", "codelist"];
     for (let modalName of modalNames) {
         document.body.appendChild(document.createElement(modalName + "-modal"));
     }
