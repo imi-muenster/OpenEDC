@@ -704,7 +704,13 @@ function showCloseClinicaldataPrompt() {
     );
 }
 
-function showSurveyCodeModal() {
+async function showSurveyCodeModal() {
+    // Render and localize component
+    await import("./components/modals/surveycodemodal.js");
+    const surveyCodeModal = document.createElement("survey-code-modal");
+    document.body.appendChild(surveyCodeModal);
+    languageHelper.localize(surveyCodeModal);
+
     // Create buttons for numpad if they dont exist
     if (!$(".numpad .buttons").hasChildNodes()) {
         for (let i = 1; i <= 12; i++) {
@@ -816,7 +822,13 @@ function dataHasChanged() {
     return !skipDataHasChangedCheck && currentSubjectKey && currentPath.studyEventOID && currentPath.formOID && clinicaldataWrapper.getFormDataDifference(getFormData(), currentPath.studyEventOID, currentPath.formOID).length;
 }
 
-window.showSubjectInfo = function() {
+window.showSubjectInfo = async function() {
+    // Render and localize component
+    await import("./components/modals/subjectmodal.js");
+    const subjectModal = document.createElement("subject-modal");
+    document.body.appendChild(subjectModal);
+    languageHelper.localize(subjectModal);
+
     // Create audit record entries
     $$("#audit-records .notification").removeElements();
     for (const auditRecord of clinicaldataWrapper.getAuditRecords()) {

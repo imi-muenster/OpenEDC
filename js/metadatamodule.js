@@ -979,7 +979,7 @@ window.showCodeListModal = async function() {
         return;
     }
 
-    // Render code list modal
+    // Render and localize component
     await import("./components/modals/codelistmodal.js");
     const codeListModal = document.createElement("codelist-modal");
     document.body.appendChild(codeListModal);
