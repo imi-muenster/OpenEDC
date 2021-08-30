@@ -122,12 +122,12 @@ class WidgetOptions extends HTMLElement {
         if (!itemDef) return;
 
         // TODO: Move to other location?
-        const widgetTypeDataTypeMapping = {
+        const widgetDataTypeMapping = {
             [reportsHelper.Widget.types.SCATTER]: "integer, float, double",
             [reportsHelper.Widget.types.BAR]: "text"
         };
 
-        const enabledWidgetTypes = Object.entries(widgetTypeDataTypeMapping).filter(entry => entry[1].includes(itemDef.getDataType())).map(entry => entry[0]);
+        const enabledWidgetTypes = Object.entries(widgetDataTypeMapping).filter(entry => entry[1].includes(itemDef.getDataType())).map(entry => entry[0]);
         for (const widgetType of enabledWidgetTypes) {
             const option = document.createElement("option");
             option.value = widgetType;
@@ -144,7 +144,7 @@ class WidgetOptions extends HTMLElement {
 
         // Set widget name and properties
         const name = this.querySelector(".subtitle").textContent;
-        const properties = Array.from(this.querySelectorAll("input[type='text']")).filter(input => input.value).map(input => input.value);
+        const properties = Array.from(this.querySelectorAll("input[type='text']")).map(input => input.value).filter(value => value);
         if (name != this.component.widget.name) {
             this.component.widget.name = name;
         } else if (properties[0] != this.component.widget.properties[0]) {
