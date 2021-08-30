@@ -1,7 +1,7 @@
 class LoginModal extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
-            <div class="modal is-active" id="login-modal">
+            <div class="modal" id="login-modal">
                 <div class="modal-background"></div>
                 <div class="modal-content is-medium">
                     <div class="box has-text-centered">

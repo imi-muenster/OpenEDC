@@ -522,7 +522,9 @@ export function hideMenu() {
     $("#language-dropdown").classList.add("is-hidden-touch");
 }
 
-export function showMessage(heading, message, callbacks, callbackType, closeText, closeCallback, isExtended) {
+export async function showMessage(heading, message, callbacks, callbackType, closeText, closeCallback, isExtended) {
+    await import("../components/modals/messagemodal.js");
+    
     const messageModal = document.createElement("message-modal");
     messageModal.setHeading(heading);
     messageModal.setMessage(message);

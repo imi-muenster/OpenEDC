@@ -973,11 +973,17 @@ window.showRemoveModal = async function() {
 }
 
 // TODO: Reorder other modal functions in this order (show -> save -> hide)
-window.showCodeListModal = function() {
+window.showCodeListModal = async function() {
     if (!metadataWrapper.itemHasCodeList(currentPath.itemOID)) {
         ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("no-codelist-hint"));
         return;
     }
+
+    // Render code list modal
+    await import("./components/modals/codelistmodal.js");
+    const codeListModal = document.createElement("codelist-modal");
+    document.body.appendChild(codeListModal);
+    languageHelper.localize(codeListModal);
 
     // Add the item question and use the name as fallback
     const itemDef = metadataWrapper.getElementDefByOID(currentPath.itemOID);

@@ -1,7 +1,7 @@
 class StartModal extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
-            <div class="modal is-active" id="start-modal">
+            <div class="modal" id="start-modal">
                 <div class="modal-background"></div>
                 <div class="modal-content is-medium is-fullheight-mobile">
                     <div class="box">

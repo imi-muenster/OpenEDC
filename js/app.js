@@ -115,14 +115,11 @@ const setTitles = () => {
 }
 
 async function showStartModal() {
-    await import("./components/modals/startmodal.js");
-    const startModal = document.createElement("start-modal");
-    document.body.appendChild(startModal);
-    languageHelper.localize(startModal);
+    $("#start-modal").activate();
 }
 
 function hideStartModal() {
-    $("#start-modal")?.deactivate();
+    $("#start-modal").deactivate();
 }
 
 function showNavbar() {

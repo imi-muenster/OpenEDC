@@ -89,7 +89,7 @@ window.addSubjectAuto = function() {
 }
 
 window.addSubjectBarcode = async function() {
-    await import("./components/barcodemodal.js");
+    await import("./components/modals/barcodemodal.js");
 
     // Check if the data has changed / new data has been entered and show a prompt first
     if (safeCloseClinicaldata(addSubjectBarcode)) return;
