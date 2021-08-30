@@ -600,6 +600,34 @@ export async function getSubjectsHavingDataForElement(elementType , odmPath) {
     return subjectKeys;
 }
 
+// TODO: This function is performance critical -- identify ways to improve the performance (e.g., batch loading of subject data using Promise.all())
+export async function getAllData() {
+    const data = {};
+    for (const subject of subjects) {
+        const subjectODMData = await ioHelper.getODM(subject.fileName);
+        if (!subjectODMData) continue;
+
+        const subjectData = {};
+        for (const itemData of subjectODMData.querySelectorAll("ItemData")) {
+            const studyEventOID = itemData.parentNode.parentNode.parentNode.getAttribute("StudyEventOID");
+            const formOID = itemData.parentNode.parentNode.getAttribute("FormOID");
+            const itemGroupOID = itemData.parentNode.getAttribute("ItemGroupOID");
+            const itemOID = itemData.getAttribute("ItemOID");
+            const path = new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID);
+
+            const value = itemData.getAttribute("Value");
+            if (value && value != "") subjectData[path.toString()] = value;
+            else delete subjectData[path.toString()];
+        }
+
+        data[subject.key] = subjectData;
+    }
+
+    return data;
+}
+
+// TODO: Needs to be refactored based on getAllData()
+// TODO: Should also be moved to an own converter file which extends a generic converter class
 export async function getCSVData(csvHeaders) {
     let csvData = [];
 
