@@ -100,12 +100,6 @@ const startApp = async () => {
     // If there is at least one study event, automatically open the clinicaldata module
     enableMode(metadataWrapper.getStudyEvents().length ? appModes.CLINICALDATA : appModes.METADATA);
 
-    // For performance purposes, add remaining modals to DOM after main app has been rendered
-    addModalsToDOM();
-
-    // Localize application after remaining modals were added to DOM
-    languageHelper.localize();
-
     // Only required because of a bug in Safari (selects without a value show a value if the textContent of their option elements is changed -- which happens during localize())
     if (getCurrentMode() == appModes.METADATA) metadataModule.reloadDetailsPanel();
 
@@ -120,12 +114,15 @@ const setTitles = () => {
     $("head title").textContent = "OpenEDC – " + metadataWrapper.getStudyName();
 }
 
-function showStartModal() {
-    $("#start-modal").activate();
+async function showStartModal() {
+    await import("./components/modals/startmodal.js");
+    const startModal = document.createElement("start-modal");
+    document.body.appendChild(startModal);
+    languageHelper.localize(startModal);
 }
 
 function hideStartModal() {
-    $("#start-modal").deactivate();
+    $("#start-modal")?.deactivate();
 }
 
 function showNavbar() {
@@ -317,7 +314,7 @@ window.loadExample = async function() {
 }
 
 window.showProjectModal = async function() {
-    await import("./components/projectmodal.js");
+    await import("./components/modals/projectmodal.js");
     const projectModal = document.createElement("project-modal");
     document.body.appendChild(projectModal);
     languageHelper.localize(projectModal);
@@ -509,15 +506,19 @@ window.showLogoutMessage = function() {
     });
 }
 
-window.showAboutModal = function() {
-    $("#about-modal h2").textContent = languageHelper.getTranslation("version") + " " + appVersion;
-    $("#about-modal").activate();
+window.showAboutModal = async function() {
+    await import("./components/modals/aboutmodal.js");
+    const aboutModal = document.createElement("about-modal");
+    document.body.appendChild(aboutModal);
+    languageHelper.localize(aboutModal);
 
-    ioHelper.hideMenu();
+    // TODO: Use setter or element attribute instead
+    $("#about-modal h2").textContent = languageHelper.getTranslation("version") + " " + appVersion;
 }
 
+// TODO: Move to component
 window.hideAboutModal = function() {
-    $("#about-modal").deactivate();
+    $("about-modal")?.remove();
 }
 
 window.exportODM = async function() {
@@ -623,14 +624,6 @@ function enableMode(mode) {
     }
 
     ioHelper.hideMenu();
-}
-
-function addModalsToDOM() {
-    // TODO: This could be improved in the future by loading the modal js module files dynamically
-    const modalNames = ["about", "subject", "survey-code", "codelist"];
-    for (let modalName of modalNames) {
-        document.body.appendChild(document.createElement(modalName + "-modal"));
-    }
 }
 
 function checkAppVersion() {
