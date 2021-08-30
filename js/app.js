@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Initialize the language helper and localize the application
     await languageHelper.init();
-    languageHelper.localize();
+    await languageHelper.localize();
 
     // Check if this app might be served from an OpenEDC Server instance and then show the login modal accordingly
     await ioHelper.init()
@@ -100,6 +100,12 @@ const startApp = async () => {
     // If there is at least one study event, automatically open the clinicaldata module
     enableMode(metadataWrapper.getStudyEvents().length ? appModes.CLINICALDATA : appModes.METADATA);
 
+    // For performance purposes, add remaining modals to DOM after main app has been rendered
+    addModalsToDOM();
+
+    // Localize application after remaining modals were added to DOM
+    await languageHelper.localize();
+
     // Only required because of a bug in Safari (selects without a value show a value if the textContent of their option elements is changed -- which happens during localize())
     if (getCurrentMode() == appModes.METADATA) metadataModule.reloadDetailsPanel();
 
@@ -114,7 +120,7 @@ const setTitles = () => {
     $("head title").textContent = "OpenEDC – " + metadataWrapper.getStudyName();
 }
 
-async function showStartModal() {
+function showStartModal() {
     $("#start-modal").activate();
 }
 
@@ -310,18 +316,15 @@ window.loadExample = async function() {
     if (!ioHelper.isMobile()) ioHelper.showToast(languageHelper.getTranslation("exemplary-project-hint"), 30000);
 }
 
-window.showProjectModal = async function() {
-    await ioHelper.mountElement("modals/projectmodal.js", "project-modal");
-    ioHelper.hideMenu();
-
+window.showProjectModal = function() {
     if (ioHelper.hasDecryptionKey()) {
-        $("project-modal #encryption-password-input").parentNode.parentNode.hide();
-        $("project-modal #data-encryption-warning").hide();
-        $("project-modal #data-encrypted-hint").show();
+        $("#project-modal #encryption-password-input").parentNode.parentNode.hide();
+        $("#project-modal #data-encryption-warning").hide();
+        $("#project-modal #data-encrypted-hint").show();
     }
     if (ioHelper.hasServerURL()) {
-        $("project-modal #server-url-input").parentNode.parentNode.hide();
-        $("project-modal #server-connected-hint").show();
+        $("#project-modal #server-url-input").parentNode.parentNode.hide();
+        $("#project-modal #server-connected-hint").show();
     }
 
     const subjectKeyModeRadio = $(`#${ioHelper.getSetting("subjectKeyMode")}`);
@@ -335,11 +338,20 @@ window.showProjectModal = async function() {
     $("#protocol-name-input").value = metadataWrapper.getProtocolName();
     admindataModule.loadUsers();
     admindataModule.loadSites();
+
+    ioHelper.hideMenu();
+
+    $("#project-modal").activate();
 }
 
-// TODO: Move to component
 window.hideProjectModal = function() {
-    $("project-modal")?.remove();
+    $("#project-tabs ul li.is-active")?.deactivate();
+    $("#general-options-tab").activate();
+    $("#general-options").show();
+    $("#users-options").hide();
+    $("#sites-options").hide();
+    $("#name-description").hide();
+    $("#project-modal").deactivate();
 }
 
 window.projectTabClicked = function(event) {
@@ -501,16 +513,15 @@ window.showLogoutMessage = function() {
     });
 }
 
-window.showAboutModal = async function() {
-    await ioHelper.mountElement("modals/aboutmodal.js", "about-modal");
-
-    // TODO: Use setter or element attribute instead
+window.showAboutModal = function() {
     $("#about-modal h2").textContent = languageHelper.getTranslation("version") + " " + appVersion;
+    $("#about-modal").activate();
+
+    ioHelper.hideMenu();
 }
 
-// TODO: Move to component
 window.hideAboutModal = function() {
-    $("about-modal")?.remove();
+    $("#about-modal").deactivate();
 }
 
 window.exportODM = async function() {
@@ -616,6 +627,14 @@ function enableMode(mode) {
     }
 
     ioHelper.hideMenu();
+}
+
+function addModalsToDOM() {
+    // TODO: This could be improved in the future by loading the modal js module files dynamically
+    const modalNames = ["project", "about", "subject", "survey-code", "codelist"];
+    for (let modalName of modalNames) {
+        document.body.appendChild(document.createElement(modalName + "-modal"));
+    }
 }
 
 function checkAppVersion() {

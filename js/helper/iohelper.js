@@ -522,18 +522,7 @@ export function hideMenu() {
     $("#language-dropdown").classList.add("is-hidden-touch");
 }
 
-export async function mountElement(path, name) {
-    await import("../components/" + path);
-    const element = document.createElement(name);
-    document.body.appendChild(element);
-    languageHelper.localize(element);
-
-    return element;
-}
-
-export async function showMessage(heading, message, callbacks, callbackType, closeText, closeCallback, isExtended) {
-    await import("../components/modals/messagemodal.js");
-    
+export function showMessage(heading, message, callbacks, callbackType, closeText, closeCallback, isExtended) {
     const messageModal = document.createElement("message-modal");
     messageModal.setHeading(heading);
     messageModal.setMessage(message);

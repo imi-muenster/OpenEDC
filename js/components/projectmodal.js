@@ -2,7 +2,7 @@
 class ProjectModal extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
-            <div class="modal is-active" id="project-modal">
+            <div class="modal" id="project-modal">
                 <div class="modal-background" onclick="hideProjectModal()"></div>
                 <div class="modal-content is-large">
                     <div class="is-pulled-right">

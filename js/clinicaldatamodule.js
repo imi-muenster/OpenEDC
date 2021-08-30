@@ -89,12 +89,21 @@ window.addSubjectAuto = function() {
 }
 
 window.addSubjectBarcode = async function() {
+    await import("./components/barcodemodal.js");
+
     // Check if the data has changed / new data has been entered and show a prompt first
     if (safeCloseClinicaldata(addSubjectBarcode)) return;
 
-    // Deselect the currently selected subject and mount modal
-    await ioHelper.mountElement("modals/barcodemodal.js", "barcode-modal");
+    // Deselect the currently selected subject
     if (currentSubjectKey) loadSubjectData();
+    
+    // Open the barcode scan modal
+    const barcodeModal = document.createElement("barcode-modal");
+    barcodeModal.setHeading(languageHelper.getTranslation("barcode"));
+    barcodeModal.setHelpText(languageHelper.getTranslation("barcode-help-text"));
+    barcodeModal.setInputPlaceholder(languageHelper.getTranslation("new-subject"));
+    barcodeModal.setButtonText(languageHelper.getTranslation("add"));
+    document.body.appendChild(barcodeModal);
 }
 
 function addSubject(subjectKey, siteOID) {
@@ -383,13 +392,12 @@ function showItemAuditTrail(event) {
     ioHelper.showMessage(languageHelper.getTranslation("audit-trail-for-item"), auditRecords.length ? table.outerHTML : languageHelper.getTranslation("no-audit-trail-hint"), null, null, null, null, true);
 }
 
-async function showDateTimePicker(event) {
+function showDateTimePicker(event) {
     if (event.target.readOnly) return;
     event.preventDefault();
 
-    await import("./components/modals/datetimepicker.js");
-    const picker = document.createElement("datetime-picker");
     const mode = event.target.getAttribute("type").split("-")[0];
+    const picker = document.createElement("datetime-picker");
     picker.setInput(event.target);
     picker.setLocale(languageHelper.getCurrentLocale());
     picker.setTranslations({
@@ -696,9 +704,7 @@ function showCloseClinicaldataPrompt() {
     );
 }
 
-async function showSurveyCodeModal() {
-    await ioHelper.mountElement("modals/surveycodemodal.js", "survey-code-modal");
-
+function showSurveyCodeModal() {
     // Create buttons for numpad if they dont exist
     if (!$(".numpad .buttons").hasChildNodes()) {
         for (let i = 1; i <= 12; i++) {
@@ -810,9 +816,7 @@ function dataHasChanged() {
     return !skipDataHasChangedCheck && currentSubjectKey && currentPath.studyEventOID && currentPath.formOID && clinicaldataWrapper.getFormDataDifference(getFormData(), currentPath.studyEventOID, currentPath.formOID).length;
 }
 
-window.showSubjectInfo = async function() {
-    await ioHelper.mountElement("modals/subjectmodal.js", "subject-modal");
-
+window.showSubjectInfo = function() {
     // Create audit record entries
     $$("#audit-records .notification").removeElements();
     for (const auditRecord of clinicaldataWrapper.getAuditRecords()) {

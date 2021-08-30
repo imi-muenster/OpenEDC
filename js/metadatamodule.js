@@ -973,14 +973,11 @@ window.showRemoveModal = async function() {
 }
 
 // TODO: Reorder other modal functions in this order (show -> save -> hide)
-window.showCodeListModal = async function() {
+window.showCodeListModal = function() {
     if (!metadataWrapper.itemHasCodeList(currentPath.itemOID)) {
         ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("no-codelist-hint"));
         return;
     }
-
-    // Mount modal
-    await ioHelper.mountElement("modals/codelistmodal.js", "codelist-modal");
 
     // Add the item question and use the name as fallback
     const itemDef = metadataWrapper.getElementDefByOID(currentPath.itemOID);
