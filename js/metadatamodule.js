@@ -1100,9 +1100,8 @@ function enableAsyncEditMode() {
 }
 
 window.toggleMoreExtendedOptions = function() {
-    for (const element of $$("#extended-options-button .icon, #extended-options-button .button-text, #condition-alias-column, #calculation-column")) {
-        element.classList.toggle("is-hidden")
-    }
+    $$("#condition-alias-column, #calculation-column").forEach(element => element.classList.toggle("is-hidden-desktop"));
+    $$("#extended-options-button .icon, #extended-options-button .button-text").forEach(element => element.classList.toggle("is-hidden"));
     document.activeElement.blur();
 }
 

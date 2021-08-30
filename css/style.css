@@ -263,7 +263,7 @@ a.panel-block:hover {
 .modal-content .is-close-button {
     position: fixed;
     transform: translateX(-150%) translateY(-50%);
-    background-color: rgba(10,10,10,.8);
+    background-color: black;
     z-index: 5;
 }
 
