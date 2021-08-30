@@ -339,19 +339,19 @@ function fillDetailsPanelExtended() {
     const condition = metadataWrapper.getElementCondition(currentPath.last.element, currentPath);
     switch (currentPath.last.element) {
         case ODMPath.elements.ITEMGROUP:
-            $("#collection-condition").value = condition?.getFormalExpression();
+            $("#collection-condition").value = condition ? condition.getFormalExpression() : "";
             $("#collection-condition").disabled = false;
             break;
         case ODMPath.elements.ITEM:
             fillItemRangeChecks();
             [$("#range-check-inputs .range-check-comparator-inner"), $("#range-check-inputs .range-check-value"), $("#add-range-check-button")].enableElements();
-            $("#collection-condition").value = condition?.getFormalExpression();
+            $("#collection-condition").value = condition ? condition.getFormalExpression() : "";
             $("#collection-condition").disabled = false;
             const measurementUnit = metadataWrapper.getItemMeasurementUnit(currentPath.last.value);
-            $("#measurement-unit").value = measurementUnit?.getTranslatedSymbol(languageHelper.getCurrentLocale());
+            $("#measurement-unit").value = measurementUnit ? measurementUnit.getTranslatedSymbol(languageHelper.getCurrentLocale()) : "";
             $("#measurement-unit").disabled = false;
             const method = metadataWrapper.getItemMethod(currentPath);
-            $("#item-method").value = method?.getFormalExpression();
+            $("#item-method").value = method ? method.getFormalExpression() : "";
             $("#item-method").disabled = false;
     }
 }
