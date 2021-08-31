@@ -1,7 +1,10 @@
 import * as ioHelper from "./iohelper.js";
 
 export class Report {
-    // id, name, users, list of widgets, ...
+    static fromObject(object) {
+        return Object.assign(new Report(), object);
+    }
+
     constructor(id, name) {
         this.id = id;
         this.name = name;
@@ -23,6 +26,10 @@ export class Widget {
         SCATTER: "scatter",
         NUMERIC: "numeric",
         TABLE: "table"
+    }
+
+    static fromObject(object) {
+        return Object.assign(new Widget(), object);
     }
 
     constructor(id, name) {
@@ -57,15 +64,25 @@ export class Widget {
     }
 }
 
-let reports = null;
+let reports = [];
 
-export const init = async () => {
-    // TODO: Transform JSON to class instances (e.g., by using Object.assign() or Object.setPrototypeOf())
-    reports = await ioHelper.getJSON("reports") || [];
+export const init = () => {
+    loadReports();
 }
 
 export const storeReports = async () => {
     await ioHelper.setJSON("reports", reports);
+}
+
+export const loadReports = async () => {
+    const reportObjects = await ioHelper.getJSON("reports");
+    if (!reportObjects) return;
+
+    for (const reportObject of reportObjects) {
+        const report = Report.fromObject(reportObject);
+        report.widgets = report.widgets.map(widget => Widget.fromObject(widget));
+        reports.push(report);
+    }
 }
 
 export const getReports = () => {
