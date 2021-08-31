@@ -38,6 +38,7 @@ class WidgetOptions extends HTMLElement {
         const input = document.createElement("input");
         input.className = "input is-small";
         input.type = "text";
+        input.value = this.component.widget.properties.length ? this.component.widget.properties[0] : null;
         input.placeholder = languageHelper.getTranslation("item");
         input.oninput = () => this.itemInputCallback();
         inputContainer.appendChild(input);
@@ -50,7 +51,14 @@ class WidgetOptions extends HTMLElement {
         const selectContainer = document.createElement("div");
         selectContainer.className = "select is-fullwidth is-small";
         const select = document.createElement("select");
-        select.disabled = true;
+        for (const widgetType of Object.values(reportsHelper.Widget.types)) {
+            const option = document.createElement("option");
+            option.value = widgetType;
+            option.textContent = languageHelper.getTranslation(widgetType);
+            select.appendChild(option);
+        }
+        select.value = this.component.widget.type;
+        select.disabled = this.component.widget.type ? false : true;
         selectContainer.appendChild(select);
 
         this.appendChild(selectContainer);
@@ -113,7 +121,6 @@ class WidgetOptions extends HTMLElement {
     }
 
     itemInputCallback() {
-        this.querySelectorAll("select option").removeElements();
         this.querySelector("select").disabled = true;
         this.querySelector("select").value = null;
 
@@ -128,11 +135,8 @@ class WidgetOptions extends HTMLElement {
         };
 
         const enabledWidgetTypes = Object.entries(widgetDataTypeMapping).filter(entry => entry[1].includes(itemDef.getDataType())).map(entry => entry[0]);
-        for (const widgetType of enabledWidgetTypes) {
-            const option = document.createElement("option");
-            option.value = widgetType;
-            option.textContent = languageHelper.getTranslation(widgetType);
-            this.querySelector("select").appendChild(option);
+        for (const typeOption of this.querySelectorAll("select option")) {
+            typeOption.hidden = enabledWidgetTypes.includes(typeOption.value) ? false : true;
             this.querySelector("select").disabled = false;
         }
     }
@@ -152,6 +156,9 @@ class WidgetOptions extends HTMLElement {
         }
         if (properties && properties.toString() != this.component.widget.properties.toString()) this.component.widget.properties = properties;
 
+        // Set widget type
+        const type = this.querySelector("select").value;
+        this.component.widget.type = type;
 
         // Update widget component
         this.component.update();

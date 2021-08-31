@@ -66,8 +66,8 @@ export class Widget {
 
 let reports = [];
 
-export const init = () => {
-    loadReports();
+export const init = async () => {
+    await loadReports();
 }
 
 export const storeReports = async () => {
