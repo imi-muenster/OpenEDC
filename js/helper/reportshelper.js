@@ -64,6 +64,31 @@ export class Widget {
     }
 }
 
+class WidgetData {
+    constructor(id, name, values) {
+        this.id = id;
+        this.name = name;
+        this.values = values;
+    }
+}
+
+class BarChartWidgetData extends WidgetData {
+    constructor(id, name, property, counts, labels, values) {
+        super(id, name, values);
+        this.property = property;
+        this.counts = counts;
+        this.labels = labels;
+    }
+}
+
+class ScatterChartWidgetData extends WidgetData {
+    constructor(id, name, properties, values, sortedValues) {
+        super(id, name, values);
+        this.properties = properties;
+        this.sortedValues = sortedValues;
+    }
+}
+
 let reports = [];
 
 export const init = async () => {
@@ -115,4 +140,43 @@ export const addWidget = async (reportId, name) => {
     await storeReports();
 
     return widget;
+}
+
+const getBarChartWidgetData = (id, name, property, labels, values) => {
+    // If no labels are provided, the function gets all unique values from the data for the property
+    // TODO: Use metadata for getting unique values
+    const uniqueValues = !labels ? getUniqueValues(property) : null;
+    return new BarChartWidgetData(
+        id,
+        name,
+        property,
+        Array(uniqueValues ? uniqueValues.length : labels.length),
+        uniqueValues ? uniqueValues : labels,
+        uniqueValues ? uniqueValues : values,
+    );
+}
+
+const getScatterChartWidgetData = (id, name, properties) => {
+    const values = dataset.map(entry => {
+        return {
+            x: entry[properties[0]],
+            y: properties.length > 1 ? entry[properties[1]] : Math.random(),
+            label: entry.subjectKey,
+            filtered: false
+        };
+    });
+    return new ScatterChartWidgetData(
+        id,
+        name,
+        properties,
+        values,
+        []
+    );
+}
+
+const getUniqueValues = property => {
+    return dataset.reduce((values, entry) => {
+        if (!values.includes(entry[property])) values.push(entry[property]);
+        return values;
+    }, new Array());
 }

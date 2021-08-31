@@ -1,34 +1,10 @@
 import * as reportsHelper from "./helper/reportshelper.js";
+import * as clinicaldataWrapper from "./odmwrapper/clinicaldatawrapper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 
 // Import custom charts
 import { CustomBarChart } from "./charts/custombarchart.js";
 import { CustomScatterChart } from "./charts/customscatterchart.js";
-
-class WidgetData {
-    constructor(id, name, values) {
-        this.id = id;
-        this.name = name;
-        this.values = values;
-    }
-}
-
-class BarChartWidgetData extends WidgetData {
-    constructor(id, name, property, counts, labels, values) {
-        super(id, name, values);
-        this.property = property;
-        this.counts = counts;
-        this.labels = labels;
-    }
-}
-
-class ScatterChartWidgetData extends WidgetData {
-    constructor(id, name, properties, values, sortedValues) {
-        super(id, name, values);
-        this.properties = properties;
-        this.sortedValues = sortedValues;
-    }
-}
 
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
@@ -50,6 +26,8 @@ export async function init() {
     
     await reportsHelper.init();
     if (!reportsHelper.getReports().length) reportsHelper.addReport(languageHelper.getTranslation("new-report"));
+
+    dataset = clinicaldataWrapper.getAllData();
 
     setIOListeners();
 }
@@ -88,37 +66,6 @@ const loadWidgets = () => {
 
     // Render charts
     reportsHelper.getReport(currentReportId).widgets.forEach(widget => addWidgetToGrid(widget));
-}
-
-const getBarChartWidgetData = (id, name, property, labels, values) => {
-    // If no labels are provided, the function gets all unique values from the data for the property
-    const uniqueValues = !labels ? getUniqueValues(property) : null;
-    return new BarChartWidgetData(
-        id,
-        name,
-        property,
-        Array(uniqueValues ? uniqueValues.length : labels.length),
-        uniqueValues ? uniqueValues : labels,
-        uniqueValues ? uniqueValues : values,
-    );
-}
-
-const getScatterChartWidgetData = (id, name, properties) => {
-    const values = dataset.map(entry => {
-        return {
-            x: entry[properties[0]],
-            y: properties.length > 1 ? entry[properties[1]] : Math.random(),
-            label: entry.subjectKey,
-            filtered: false
-        };
-    });
-    return new ScatterChartWidgetData(
-        id,
-        name,
-        properties,
-        values,
-        []
-    );
 }
 
 const calculateWidgetData = () => {
@@ -162,13 +109,6 @@ const getMonthsInteger = () => {
 const getMonthsShort = locale => {
     return Array.from({ length: 12 }, (_, i) => new Date(2000, i, 1))
         .map(date => date.toLocaleDateString(locale, { month: "short" }));
-}
-
-const getUniqueValues = property => {
-    return dataset.reduce((values, entry) => {
-        if (!values.includes(entry[property])) values.push(entry[property]);
-        return values;
-    }, new Array());
 }
 
 const filterCallback = (property, value) => {
