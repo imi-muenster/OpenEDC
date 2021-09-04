@@ -55,8 +55,8 @@ export class Widget {
         return this._type;
     }
 
-    set itemPaths(values) {
-        if (values && values.length <= 2) this._itemPaths = values;
+    set itemPaths(paths) {
+        if (paths && paths.length <= 2) this._itemPaths = paths;
     }
 
     get itemPaths() {
@@ -64,26 +64,24 @@ export class Widget {
     }
 }
 
-class WidgetData {
-    constructor(id, name, values) {
-        this.id = id;
-        this.name = name;
+export class WidgetData {
+    constructor(values) {
         this.values = values;
     }
 }
 
-class FrequencyWidgetData extends WidgetData {
-    constructor(id, name, itemPath, counts, labels, values) {
-        super(id, name, values);
+export class FrequencyWidgetData extends WidgetData {
+    constructor(itemPath, counts, labels, values) {
+        super(values);
         this.itemPath = itemPath;
         this.counts = counts;
         this.labels = labels;
     }
 }
 
-class DiscreteWidgetData extends WidgetData {
-    constructor(id, name, itemPaths, values, sortedValues) {
-        super(id, name, values);
+export class DiscreteWidgetData extends WidgetData {
+    constructor(itemPaths, values, sortedValues) {
+        super(values);
         this.itemPaths = itemPaths;
         this.sortedValues = sortedValues;
     }
@@ -140,43 +138,4 @@ export const addWidget = async (reportId, name) => {
     await storeReports();
 
     return widget;
-}
-
-const getFrequencyWidgetData = (id, name, itemPath, labels, values) => {
-    // If no labels are provided, the function gets all unique values from the data for the itemPath
-    // TODO: Use metadata for getting unique values
-    const uniqueValues = !labels ? getUniqueValues(itemPath) : null;
-    return new FrequencyWidgetData(
-        id,
-        name,
-        itemPath,
-        Array(uniqueValues ? uniqueValues.length : labels.length),
-        uniqueValues ? uniqueValues : labels,
-        uniqueValues ? uniqueValues : values,
-    );
-}
-
-const getDiscreteWidgetData = (id, name, itemPaths) => {
-    const values = dataset.map(entry => {
-        return {
-            x: entry[itemPaths[0]],
-            y: itemPaths.length > 1 ? entry[itemPaths[1]] : Math.random(),
-            label: entry.subjectKey,
-            filtered: false
-        };
-    });
-    return new DiscreteWidgetData(
-        id,
-        name,
-        itemPaths,
-        values,
-        []
-    );
-}
-
-const getUniqueValues = itemPath => {
-    return dataset.reduce((values, entry) => {
-        if (!values.includes(entry[itemPath])) values.push(entry[itemPath]);
-        return values;
-    }, new Array());
 }

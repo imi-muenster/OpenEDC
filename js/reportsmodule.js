@@ -144,6 +144,13 @@ const hoverCallback = (chartId, index) => {
 
 const addWidgetToGrid = widget => {
     let customChart;
+    switch (widget.type) {
+        case reportsHelper.Widget.types.BAR:
+            const widgetData = getFrequencyWidgetData(widget.property, );
+            customChart = new CustomBarChart(widgetData, filterCallback);
+    }
+
+
     // TODO: Create WidgetData and, if appropriate, CustomChart
 
     const widgetComponent = document.createElement("widget-component");
@@ -151,7 +158,7 @@ const addWidgetToGrid = widget => {
     $("#reports-section .widget.is-placeholder").insertAdjacentElement("beforebegin", widgetComponent);
 
     if (customChart) {
-        const chart = new Chart(widgetElement.querySelector("canvas"), customChart.config);
+        const chart = new Chart(widgetComponent.querySelector("canvas"), customChart.config);
         customChart.chart = chart;
         customCharts.push(customChart);
     } else {
@@ -159,6 +166,40 @@ const addWidgetToGrid = widget => {
     }
 
     widgetComponents.push(widgetComponent);
+}
+
+const getFrequencyWidgetData = itemPath => {
+    // TODO: Use metadataWrapper for getting labels and values (i.e., translated texts and oids)
+    const labels = getUniqueValues(itemPath);
+    return new FrequencyWidgetData(
+        itemPath,
+        Array(labels.length), // counts
+        labels, // labels
+        labels // values
+    );
+}
+
+const getDiscreteWidgetData = itemPaths => {
+    const values = dataset.map(entry => {
+        return {
+            x: entry[itemPaths[0]],
+            y: itemPaths.length > 1 ? entry[itemPaths[1]] : Math.random(),
+            label: entry.subjectKey,
+            filtered: false
+        };
+    });
+    return new DiscreteWidgetData(
+        itemPaths,
+        values,
+        []
+    );
+}
+
+const getUniqueValues = itemPath => {
+    return dataset.reduce((values, entry) => {
+        if (!values.includes(entry[itemPath])) values.push(entry[itemPath]);
+        return values;
+    }, new Array());
 }
 
 const getWidgetPlaceholder = () => {
