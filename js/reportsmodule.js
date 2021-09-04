@@ -27,7 +27,7 @@ export async function init() {
     await reportsHelper.init();
     if (!reportsHelper.getReports().length) reportsHelper.addReport(languageHelper.getTranslation("new-report"));
 
-    dataset = clinicaldataWrapper.getAllData();
+    dataset = await clinicaldataWrapper.getAllData();
 
     setIOListeners();
 }
@@ -146,12 +146,13 @@ const addWidgetToGrid = widget => {
     let customChart;
     switch (widget.type) {
         case reportsHelper.Widget.types.BAR:
-            const widgetData = getFrequencyWidgetData(widget.property, );
-            customChart = new CustomBarChart(widgetData, filterCallback);
+            const frequencyWidgetData = getFrequencyWidgetData(widget.itemPaths);
+            customChart = new CustomBarChart(frequencyWidgetData, filterCallback);
+            break;
+        case reportsHelper.Widget.types.SCATTER:
+            const discreteWidgetData = getDiscreteWidgetData(widget.itemPaths);
+            customChart = new CustomScatterChart(discreteWidgetData, hoverCallback);
     }
-
-
-    // TODO: Create WidgetData and, if appropriate, CustomChart
 
     const widgetComponent = document.createElement("widget-component");
     widgetComponent.setWidget(widget);
@@ -160,7 +161,7 @@ const addWidgetToGrid = widget => {
     if (customChart) {
         const chart = new Chart(widgetComponent.querySelector("canvas"), customChart.config);
         customChart.chart = chart;
-        customCharts.push(customChart);
+        // customCharts.push(customChart);
     } else {
         setTimeout(() => widgetComponent.showOptions(), 250);
     }
@@ -171,7 +172,7 @@ const addWidgetToGrid = widget => {
 const getFrequencyWidgetData = itemPath => {
     // TODO: Use metadataWrapper for getting labels and values (i.e., translated texts and oids)
     const labels = getUniqueValues(itemPath);
-    return new FrequencyWidgetData(
+    return new reportsHelper.FrequencyWidgetData(
         itemPath,
         Array(labels.length), // counts
         labels, // labels
@@ -188,7 +189,7 @@ const getDiscreteWidgetData = itemPaths => {
             filtered: false
         };
     });
-    return new DiscreteWidgetData(
+    return new reportsHelper.DiscreteWidgetData(
         itemPaths,
         values,
         []
@@ -196,7 +197,7 @@ const getDiscreteWidgetData = itemPaths => {
 }
 
 const getUniqueValues = itemPath => {
-    return dataset.reduce((values, entry) => {
+    return Object.values(dataset).reduce((values, entry) => {
         if (!values.includes(entry[itemPath])) values.push(entry[itemPath]);
         return values;
     }, new Array());

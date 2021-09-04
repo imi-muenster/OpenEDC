@@ -1,11 +1,11 @@
 import * as chartColors from "./chartcolors.js";
 
 export class CustomBarChart {
-    constructor(itemPath, counts, labels, values, filterCallback) {
-        this.itemPath = itemPath;
-        this.counts = counts;
-        this.labels = labels;
-        this.values = values;
+    constructor(frequencyWidgetData, filterCallback) {
+        this.itemPath = frequencyWidgetData.itemPath;
+        this.counts = frequencyWidgetData.counts;
+        this.labels = frequencyWidgetData.labels;
+        this.values = frequencyWidgetData.values;
         this.filterCallback = filterCallback;
     }
 

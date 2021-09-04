@@ -1,10 +1,10 @@
 import * as chartColors from "./chartcolors.js";
 
 export class CustomScatterChart {
-    constructor(itemPaths, values, labels, hoverCallback) {
-        this.itemPaths = itemPaths;
-        this.values = values;
-        this.labels = labels;
+    constructor(discreteWidgetData, hoverCallback) {
+        this.itemPaths = discreteWidgetData.itemPaths;
+        this.values = discreteWidgetData.values;
+        this.labels = discreteWidgetData.labels;
         this.hoverCallback = hoverCallback;
     }
 
