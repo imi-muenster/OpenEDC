@@ -3,6 +3,10 @@ class WidgetComponent extends HTMLElement {
         this.widget = widget;
     }
 
+    setCustomChart(customChart) {
+        this.customChart = customChart;
+    }
+
     connectedCallback() {
         this.render();
     }
@@ -39,6 +43,7 @@ class WidgetComponent extends HTMLElement {
 
     update() {
         this.widgetContent.querySelector(".subtitle").textContent = this.widget.name;
+        this.customChart?.update();
     }
 }
 

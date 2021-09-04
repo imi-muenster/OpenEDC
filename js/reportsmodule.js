@@ -12,6 +12,7 @@ const $$ = query => document.querySelectorAll(query);
 let dataset = {};
 let currentReportId = null;
 let widgetComponents = [];
+let widgetData = []; // TODO: Required?
 let activeFilters = [];
 
 export async function init() {
@@ -46,50 +47,43 @@ export function show() {
 const loadWidgets = () => {
     if (!currentReportId) return;
     widgetComponents = [];
+    widgetData = [];
     $$("#widgets .widget").removeElements();
-
-    // // Create bar charts
-    // widgetData.push(getBarChartWidgetData("Einschlussjahr", "createdYear"));
-    // widgetData.push(getBarChartWidgetData("Einschlussmonat", "createdMonth", getMonthsShort(), getMonthsInteger()));
-    // widgetData.push(getBarChartWidgetData("Klinik", "site"));
-    // widgetData.push(getBarChartWidgetData("Geschlecht", "gender"));
-
-    // // Create scatter charts
-    // widgetData.push(getScatterChartWidgetData("Größe und Gewicht", ["weight", "height"]));
-    // widgetData.push(getScatterChartWidgetData("Alter", ["age"]));
-    
-    // Fill value arrays
-    // calculateWidgetData();
 
     // Add placeholder
     $("#widgets").appendChild(getWidgetPlaceholder());
 
-    // Render charts
+    // Add widgets
     reportsHelper.getReport(currentReportId).widgets.forEach(widget => addWidgetToGrid(widget));
+
+    // Update widgets
+    updateWidgets();
 }
 
 const calculateWidgetData = () => {
     if (!currentReportId) return;
+    const subjectKeys = Object.keys(dataset);
+    const subjectData = Object.values(dataset);
     let filteredCount = 0;
 
-    widgetData.filter(entry => entry instanceof BarChartWidgetData).forEach(entry => entry.counts.fill(0));
-    widgetData.filter(entry => entry instanceof ScatterChartWidgetData).forEach(entry => entry.sortedValues.length = 0);
-    for (let i = 0; i < dataset.length; i++) {
+    widgetData.filter(entry => entry instanceof reportsHelper.FrequencyWidgetData).forEach(entry => entry.counts.fill(0));
+    widgetData.filter(entry => entry instanceof reportsHelper.DiscreteWidgetData).forEach(entry => entry.sortedValues.length = 0);
+    for (let i = 0; i < subjectKeys.length; i++) {
         let filteredInGeneral = false;
         for (const entry of widgetData) {
             let filteredForChart = false;
             for (const filter of activeFilters) {
-                if (dataset[i][filter.itemPath] != filter.value) {
+                if (subjectData[i][filter.itemPath] != filter.value) {
                     filteredInGeneral = true;
                     if (entry.itemPath != filter.itemPath) filteredForChart = true;
                 }
             }
-            if (entry instanceof BarChartWidgetData){
+            if (entry instanceof reportsHelper.FrequencyWidgetData){
                 if (filteredForChart) continue;
-                const value = dataset[i][entry.itemPath];
+                const value = subjectData[i][entry.itemPath];
                 const index = entry.values.indexOf(value);
                 entry.counts[index]++;
-            } else if (entry instanceof ScatterChartWidgetData) {
+            } else if (entry instanceof reportsHelper.DiscreteWidgetData) {
                 entry.values[i].filtered = filteredInGeneral;
                 if (filteredInGeneral) entry.sortedValues.unshift(entry.values[i]);
                 else entry.sortedValues.push(entry.values[i]);
@@ -98,7 +92,7 @@ const calculateWidgetData = () => {
         if (filteredInGeneral) filteredCount++;
     }
 
-    $("#reports-section h1").textContent = (dataset.length - filteredCount) + (activeFilters.length > 0 ? " von " + dataset.length : "") + " Patienten";
+    $("#reports-section h1").textContent = (subjectKeys.length - filteredCount) + (activeFilters.length > 0 ? " von " + subjectKeys.length : "") + " Patienten";
     $("#reports-section h2").textContent = activeFilters.length + " aktive Filter";
 }
 
@@ -114,7 +108,7 @@ const getMonthsShort = locale => {
 const filterCallback = (itemPath, value) => {
     if (value) addFilter(itemPath, value);
     else removeFilter(itemPath);
-    updateCharts();
+    updateWidgets();
 }
 
 const addFilter = (itemPath, value) => {
@@ -127,9 +121,9 @@ const removeFilter = itemPath => {
     activeFilters = activeFilters.filter(filter => filter.itemPath != itemPath);
 }
 
-const updateCharts = () => {
+const updateWidgets = () => {
     calculateWidgetData();
-    customCharts.forEach(customChart => customChart.update());
+    widgetComponents.forEach(widgetComponent => widgetComponent.update());
 }
 
 const hoverCallback = (chartId, index) => {
@@ -148,10 +142,12 @@ const addWidgetToGrid = widget => {
         case reportsHelper.Widget.types.BAR:
             const frequencyWidgetData = getFrequencyWidgetData(widget.itemPaths);
             customChart = new CustomBarChart(frequencyWidgetData, filterCallback);
+            widgetData.push(frequencyWidgetData);
             break;
         case reportsHelper.Widget.types.SCATTER:
             const discreteWidgetData = getDiscreteWidgetData(widget.itemPaths);
             customChart = new CustomScatterChart(discreteWidgetData, hoverCallback);
+            widgetData.push(discreteWidgetData);
     }
 
     const widgetComponent = document.createElement("widget-component");
@@ -161,7 +157,7 @@ const addWidgetToGrid = widget => {
     if (customChart) {
         const chart = new Chart(widgetComponent.querySelector("canvas"), customChart.config);
         customChart.chart = chart;
-        // customCharts.push(customChart);
+        widgetComponent.setCustomChart(customChart);
     } else {
         setTimeout(() => widgetComponent.showOptions(), 250);
     }
