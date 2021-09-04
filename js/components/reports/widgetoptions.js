@@ -62,6 +62,9 @@ class WidgetOptions extends HTMLElement {
         selectContainer.appendChild(select);
 
         this.appendChild(selectContainer);
+
+        // Enable allowed types
+        this.itemInputCallback();
     }
 
     addDetailsInput() {
@@ -135,9 +138,11 @@ class WidgetOptions extends HTMLElement {
         };
 
         const enabledWidgetTypes = Object.entries(widgetDataTypeMapping).filter(entry => entry[1].includes(itemDef.getDataType())).map(entry => entry[0]);
+        const typeSelect = this.querySelector("select");
         for (const typeOption of this.querySelectorAll("select option")) {
-            typeOption.hidden = enabledWidgetTypes.includes(typeOption.value) ? false : true;
-            this.querySelector("select").disabled = false;
+            typeOption.disabled = enabledWidgetTypes.includes(typeOption.value) ? false : true;
+            if (!typeSelect.value && !typeOption.disabled) typeSelect.value = typeOption.value;
+            typeSelect.disabled = false;
         }
     }
 

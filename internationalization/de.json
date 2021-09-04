@@ -151,6 +151,10 @@
     "no-codelist-hint": "Der Datentyp der aktuellen Frage ist nicht <i>Wahlmöglichkeiten</i>. Wenn Sie voreingestellte Wahlmöglichkeiten definieren wollen, stellen Sie zuerst den entsprechenden Datentypen oben ein.",
 
     "reports": "Berichte",
+    "pie-chart": "Kuchendiagramm",
+    "bar-chart": "Balkendiagramm",
+    "donut-chart": "Donutdiagramm",
+    "scatter-chart": "Streudiagramm",
     "no-reported-selected-hint": "Keinen Bericht ausgewählt",
     "please-select-record-hint": "Bitte wählen Sie einen Bericht",
     "new-report": "Neuer Bericht",

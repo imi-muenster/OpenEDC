@@ -20,12 +20,10 @@ export class Widget {
     };
 
     static types = {
-        BAR: "bar",
-        PIE: "pie",
-        DONUT: "donut",
-        SCATTER: "scatter",
-        NUMERIC: "numeric",
-        TABLE: "table"
+        BAR: "bar-chart",
+        PIE: "pie-chart",
+        DONUT: "donut-chart",
+        SCATTER: "scatter-chart"
     }
 
     static fromObject(object) {
