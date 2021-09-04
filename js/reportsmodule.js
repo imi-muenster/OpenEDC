@@ -101,8 +101,7 @@ const getMonthsInteger = () => {
 }
 
 const getMonthsShort = locale => {
-    return Array.from({ length: 12 }, (_, i) => new Date(2000, i, 1))
-        .map(date => date.toLocaleDateString(locale, { month: "short" }));
+    return Array.from({ length: 12 }, (_, i) => new Date(2000, i, 1)).map(date => date.toLocaleDateString(locale, { month: "short" }));
 }
 
 const filterCallback = (itemPath, value) => {
@@ -127,6 +126,8 @@ const updateWidgets = () => {
 }
 
 const hoverCallback = (chartId, index) => {
+    // TODO: Performance with .map() and .filter() on each hover event?
+    const customCharts = widgetComponents.map(widgetComponent => widgetComponent.customChart).filter(customChart => customChart);
     for (const customChart of customCharts) {
         if (!(customChart instanceof CustomScatterChart) || customChart.chart.id == chartId) continue;
 
@@ -177,11 +178,12 @@ const getFrequencyWidgetData = itemPath => {
 }
 
 const getDiscreteWidgetData = itemPaths => {
-    const values = dataset.map(entry => {
+    // TODO: Evaluate performance of .map() in this scenario
+    const values = Object.entries(dataset).map(entry => {
         return {
-            x: entry[itemPaths[0]],
-            y: itemPaths.length > 1 ? entry[itemPaths[1]] : Math.random(),
-            label: entry.subjectKey,
+            x: entry[1][itemPaths[0]],
+            y: itemPaths.length > 1 ? entry[1][itemPaths[1]] : Math.random(),
+            label: entry[0],
             filtered: false
         };
     });

@@ -7,6 +7,7 @@ export class CustomBarChart {
         this.labels = frequencyWidgetData.labels;
         this.values = frequencyWidgetData.values;
         this.filterCallback = filterCallback;
+        this.chart = null;
     }
 
     get data() {
