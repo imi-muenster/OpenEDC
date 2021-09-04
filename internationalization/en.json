@@ -163,6 +163,8 @@
     "small": "Small",
     "medium": "Medium",
     "large": "Large",
+    "of": "of",
+    "active-filters": "active filters",
 
     "general-options":"General Options",
     "users": "Users",

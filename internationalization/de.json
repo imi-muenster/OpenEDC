@@ -162,6 +162,8 @@
     "small": "Klein",
     "medium": "Mittel",
     "large": "Groß",
+    "of": "von",
+    "active-filters": "aktive Filter",
 
     "general-options":"Allgemeine Optionen",
     "users": "Benutzer",

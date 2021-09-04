@@ -44,6 +44,10 @@ export function show() {
     languageHelper.createLanguageSelect();
 }
 
+export function reloadReport() {
+    updateWidgets();
+}
+
 const loadWidgets = () => {
     if (!currentReportId) return;
     widgetComponents = [];
@@ -92,8 +96,8 @@ const calculateWidgetData = () => {
         if (filteredInGeneral) filteredCount++;
     }
 
-    $("#reports-section h1").textContent = (subjectKeys.length - filteredCount) + (activeFilters.length > 0 ? " von " + subjectKeys.length : "") + " Patienten";
-    $("#reports-section h2").textContent = activeFilters.length + " aktive Filter";
+    $("#reports-section h1").textContent = (subjectKeys.length - filteredCount) + (activeFilters.length > 0 ? " " + languageHelper.getTranslation("of") + " " + subjectKeys.length : "") + " " + languageHelper.getTranslation("subjects");
+    $("#reports-section h2").textContent = activeFilters.length + " " + languageHelper.getTranslation("active-filters");
 }
 
 const getMonthsInteger = () => {
