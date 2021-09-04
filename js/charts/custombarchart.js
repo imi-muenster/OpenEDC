@@ -1,23 +1,20 @@
 import * as chartColors from "./chartcolors.js";
 
 export class CustomBarChart {
-    constructor(frequencyWidgetData, filterCallback) {
-        this.itemPath = frequencyWidgetData.itemPath;
-        this.counts = frequencyWidgetData.counts;
-        this.labels = frequencyWidgetData.labels;
-        this.values = frequencyWidgetData.values;
+    constructor(widgetData, filterCallback) {
+        this.widgetData = widgetData;
         this.filterCallback = filterCallback;
         this.chart = null;
     }
 
     get data() {
         return {
-            labels: this.labels,
+            labels: this.widgetData.labels,
             datasets: [
                 {
-                    label: this.itemPath,
-                    data: this.counts,
-                    backgroundColor: chartColors.getColorArray(this.counts.length),
+                    label: this.widgetData.itemPath,
+                    data: this.widgetData.counts,
+                    backgroundColor: chartColors.getColorArray(this.widgetData.counts.length),
                     borderColor: chartColors.colorDark,
                     borderWidth: 2,
                     borderRadius: 4,
@@ -35,7 +32,7 @@ export class CustomBarChart {
             },
             scales: {
                 y: {
-                    // max: Math.max(...this.counts),
+                    // max: Math.max(...this.widgetData.counts),
                     display: false
                 },
                 x: {
@@ -74,15 +71,15 @@ export class CustomBarChart {
         if (clickedBarIndex == this.activeIndex) {
             this.activeIndex = null;
             value = null;
-            chart.data.datasets[0].backgroundColor = chartColors.getColorArray(this.counts.length);
+            chart.data.datasets[0].backgroundColor = chartColors.getColorArray(this.widgetData.counts.length);
         } else {
             this.activeIndex = clickedBarIndex;
-            value = this.values[this.activeIndex];
-            chart.data.datasets[0].backgroundColor = chartColors.getColorArray(this.counts.length, this.activeIndex);
+            value = this.widgetData.values[this.activeIndex];
+            chart.data.datasets[0].backgroundColor = chartColors.getColorArray(this.widgetData.counts.length, this.activeIndex);
         }
         
         chart.update();
-        if (this.filterCallback) this.filterCallback(this.itemPath, value);
+        if (this.filterCallback) this.filterCallback(this.widgetData.itemPath, value);
     }
 
     update() {

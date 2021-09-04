@@ -12,7 +12,6 @@ const $$ = query => document.querySelectorAll(query);
 let dataset = {};
 let currentReportId = null;
 let widgetComponents = [];
-let widgetData = []; // TODO: Required?
 let activeFilters = [];
 
 export async function init() {
@@ -51,7 +50,6 @@ export function reloadReport() {
 const loadWidgets = () => {
     if (!currentReportId) return;
     widgetComponents = [];
-    widgetData = [];
     $$("#widgets .widget").removeElements();
 
     // Add placeholder
@@ -70,6 +68,7 @@ const calculateWidgetData = () => {
     const subjectData = Object.values(dataset);
     let filteredCount = 0;
 
+    const widgetData = widgetComponents.map(widgetComponent => widgetComponent?.customChart.widgetData);
     widgetData.filter(entry => entry instanceof reportsHelper.FrequencyWidgetData).forEach(entry => entry.counts.fill(0));
     widgetData.filter(entry => entry instanceof reportsHelper.DiscreteWidgetData).forEach(entry => entry.sortedValues.length = 0);
     for (let i = 0; i < subjectKeys.length; i++) {
@@ -147,12 +146,10 @@ const addWidgetToGrid = widget => {
         case reportsHelper.Widget.types.BAR:
             const frequencyWidgetData = getFrequencyWidgetData(widget.itemPaths);
             customChart = new CustomBarChart(frequencyWidgetData, filterCallback);
-            widgetData.push(frequencyWidgetData);
             break;
         case reportsHelper.Widget.types.SCATTER:
             const discreteWidgetData = getDiscreteWidgetData(widget.itemPaths);
             customChart = new CustomScatterChart(discreteWidgetData, hoverCallback);
-            widgetData.push(discreteWidgetData);
     }
 
     const widgetComponent = document.createElement("widget-component");

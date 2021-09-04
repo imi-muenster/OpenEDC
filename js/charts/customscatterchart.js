@@ -1,10 +1,8 @@
 import * as chartColors from "./chartcolors.js";
 
 export class CustomScatterChart {
-    constructor(discreteWidgetData, hoverCallback) {
-        this.itemPaths = discreteWidgetData.itemPaths;
-        this.values = discreteWidgetData.sortedValues;
-        this.labels = discreteWidgetData.labels;
+    constructor(widgetData, hoverCallback) {
+        this.widgetData = widgetData;
         this.hoverCallback = hoverCallback;
         this.chart = null;
     }
@@ -13,8 +11,8 @@ export class CustomScatterChart {
         return {
             datasets: [
                 {
-                    label: this.itemPaths[0],
-                    data: this.values,
+                    label: this.widgetData.itemPaths[0],
+                    data: this.widgetData.values,
                     backgroundColor: chartColors.colorLight,
                     borderColor: chartColors.colorDark,
                     borderWidth: 2,
@@ -27,7 +25,7 @@ export class CustomScatterChart {
     }
 
     get options() {
-        const oneDimensional = this.itemPaths.length == 1;
+        const oneDimensional = this.widgetData.itemPaths.length == 1;
         return {
             maintainAspectRatio: false,
             scales: {
@@ -52,7 +50,7 @@ export class CustomScatterChart {
                     displayColors: false,
                     callbacks: {
                         label: event => {
-                            return "Patient: " + this.values[event.dataIndex].label;
+                            return "Patient: " + this.widgetData.values[event.dataIndex].label;
                         }
                     }
                 }
@@ -81,11 +79,11 @@ export class CustomScatterChart {
         // However, this would lead Chart.js to render all dots again leading in an undesired animation
         // The following ensures that only the changed borderColor is animated
         // TODO: Keep an eye on performance, since this is quite expensive and calculated for every scatter plot
-        this.chart.data.datasets[0].borderColor = this.values.map(value => this.previousFiltered && this.previousFiltered.includes(value.label) ? chartColors.colorLight : chartColors.colorDark);
+        this.chart.data.datasets[0].borderColor = this.widgetData.values.map(value => this.previousFiltered && this.previousFiltered.includes(value.label) ? chartColors.colorLight : chartColors.colorDark);
         this.chart.update("none");
 
         this.previousFiltered = [];
-        this.chart.data.datasets[0].borderColor = this.values.map(value => {
+        this.chart.data.datasets[0].borderColor = this.widgetData.values.map(value => {
             if (value.filtered) {
                 this.previousFiltered.push(value.label);
                 return chartColors.colorLight;
