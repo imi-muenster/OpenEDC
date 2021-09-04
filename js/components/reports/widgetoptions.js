@@ -38,7 +38,7 @@ class WidgetOptions extends HTMLElement {
         const input = document.createElement("input");
         input.className = "input is-small";
         input.type = "text";
-        input.value = this.component.widget.properties.length ? this.component.widget.properties[0] : null;
+        input.value = this.component.widget.itemPaths.length ? this.component.widget.itemPaths[0] : null;
         input.placeholder = languageHelper.getTranslation("item");
         input.oninput = () => this.itemInputCallback();
         inputContainer.appendChild(input);
@@ -146,15 +146,15 @@ class WidgetOptions extends HTMLElement {
         const size = this.querySelector(".widget-size-options input:checked")?.value;
         if (size && this.component.widget.size != size) this.setWidgetComponentSize(size);
 
-        // Set widget name and properties
+        // Set widget name and itemPaths
         const name = this.querySelector(".subtitle").textContent;
-        const properties = Array.from(this.querySelectorAll("input[type='text']")).map(input => input.value).filter(value => value);
+        const itemPaths = Array.from(this.querySelectorAll("input[type='text']")).map(input => input.value).filter(value => value);
         if (name != this.component.widget.name) {
             this.component.widget.name = name;
-        } else if (properties[0] != this.component.widget.properties[0]) {
-            this.component.widget.name = properties[0];
+        } else if (itemPaths[0] != this.component.widget.itemPaths[0]) {
+            this.component.widget.name = itemPaths[0];
         }
-        if (properties && properties.toString() != this.component.widget.properties.toString()) this.component.widget.properties = properties;
+        if (itemPaths && itemPaths.toString() != this.component.widget.itemPaths.toString()) this.component.widget.itemPaths = itemPaths;
 
         // Set widget type
         const type = this.querySelector("select").value;

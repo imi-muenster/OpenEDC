@@ -36,7 +36,7 @@ export class Widget {
         this.id = id;
         this.name = name;
         this.size = Widget.sizes.SMALL;
-        this.properties = [];
+        this.itemPaths = [];
     }
 
     set size(value) {
@@ -55,12 +55,12 @@ export class Widget {
         return this._type;
     }
 
-    set properties(values) {
-        if (values && values.length <= 2) this._properties = values;
+    set itemPaths(values) {
+        if (values && values.length <= 2) this._itemPaths = values;
     }
 
-    get properties() {
-        return this._properties;
+    get itemPaths() {
+        return this._itemPaths;
     }
 }
 
@@ -72,19 +72,19 @@ class WidgetData {
     }
 }
 
-class BarChartWidgetData extends WidgetData {
-    constructor(id, name, property, counts, labels, values) {
+class FrequencyWidgetData extends WidgetData {
+    constructor(id, name, itemPath, counts, labels, values) {
         super(id, name, values);
-        this.property = property;
+        this.itemPath = itemPath;
         this.counts = counts;
         this.labels = labels;
     }
 }
 
-class ScatterChartWidgetData extends WidgetData {
-    constructor(id, name, properties, values, sortedValues) {
+class DiscreteWidgetData extends WidgetData {
+    constructor(id, name, itemPaths, values, sortedValues) {
         super(id, name, values);
-        this.properties = properties;
+        this.itemPaths = itemPaths;
         this.sortedValues = sortedValues;
     }
 }
@@ -142,41 +142,41 @@ export const addWidget = async (reportId, name) => {
     return widget;
 }
 
-const getBarChartWidgetData = (id, name, property, labels, values) => {
-    // If no labels are provided, the function gets all unique values from the data for the property
+const getFrequencyWidgetData = (id, name, itemPath, labels, values) => {
+    // If no labels are provided, the function gets all unique values from the data for the itemPath
     // TODO: Use metadata for getting unique values
-    const uniqueValues = !labels ? getUniqueValues(property) : null;
-    return new BarChartWidgetData(
+    const uniqueValues = !labels ? getUniqueValues(itemPath) : null;
+    return new FrequencyWidgetData(
         id,
         name,
-        property,
+        itemPath,
         Array(uniqueValues ? uniqueValues.length : labels.length),
         uniqueValues ? uniqueValues : labels,
         uniqueValues ? uniqueValues : values,
     );
 }
 
-const getScatterChartWidgetData = (id, name, properties) => {
+const getDiscreteWidgetData = (id, name, itemPaths) => {
     const values = dataset.map(entry => {
         return {
-            x: entry[properties[0]],
-            y: properties.length > 1 ? entry[properties[1]] : Math.random(),
+            x: entry[itemPaths[0]],
+            y: itemPaths.length > 1 ? entry[itemPaths[1]] : Math.random(),
             label: entry.subjectKey,
             filtered: false
         };
     });
-    return new ScatterChartWidgetData(
+    return new DiscreteWidgetData(
         id,
         name,
-        properties,
+        itemPaths,
         values,
         []
     );
 }
 
-const getUniqueValues = property => {
+const getUniqueValues = itemPath => {
     return dataset.reduce((values, entry) => {
-        if (!values.includes(entry[property])) values.push(entry[property]);
+        if (!values.includes(entry[itemPath])) values.push(entry[itemPath]);
         return values;
     }, new Array());
 }

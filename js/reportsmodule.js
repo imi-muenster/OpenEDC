@@ -79,14 +79,14 @@ const calculateWidgetData = () => {
         for (const entry of widgetData) {
             let filteredForChart = false;
             for (const filter of activeFilters) {
-                if (dataset[i][filter.property] != filter.value) {
+                if (dataset[i][filter.itemPath] != filter.value) {
                     filteredInGeneral = true;
-                    if (entry.property != filter.property) filteredForChart = true;
+                    if (entry.itemPath != filter.itemPath) filteredForChart = true;
                 }
             }
             if (entry instanceof BarChartWidgetData){
                 if (filteredForChart) continue;
-                const value = dataset[i][entry.property];
+                const value = dataset[i][entry.itemPath];
                 const index = entry.values.indexOf(value);
                 entry.counts[index]++;
             } else if (entry instanceof ScatterChartWidgetData) {
@@ -111,20 +111,20 @@ const getMonthsShort = locale => {
         .map(date => date.toLocaleDateString(locale, { month: "short" }));
 }
 
-const filterCallback = (property, value) => {
-    if (value) addFilter(property, value);
-    else removeFilter(property);
+const filterCallback = (itemPath, value) => {
+    if (value) addFilter(itemPath, value);
+    else removeFilter(itemPath);
     updateCharts();
 }
 
-const addFilter = (property, value) => {
+const addFilter = (itemPath, value) => {
     // No use of data.filter(); since a filter should not be applied for the triggering chart
-    activeFilters = activeFilters.filter(filter => filter.property != property);
-    activeFilters.push({ property, value });
+    activeFilters = activeFilters.filter(filter => filter.itemPath != itemPath);
+    activeFilters.push({ itemPath, value });
 }
 
-const removeFilter = property => {
-    activeFilters = activeFilters.filter(filter => filter.property != property);
+const removeFilter = itemPath => {
+    activeFilters = activeFilters.filter(filter => filter.itemPath != itemPath);
 }
 
 const updateCharts = () => {

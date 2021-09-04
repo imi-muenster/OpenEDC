@@ -1,8 +1,8 @@
 import * as chartColors from "./chartcolors.js";
 
 export class CustomBarChart {
-    constructor(property, counts, labels, values, filterCallback) {
-        this.property = property;
+    constructor(itemPath, counts, labels, values, filterCallback) {
+        this.itemPath = itemPath;
         this.counts = counts;
         this.labels = labels;
         this.values = values;
@@ -14,7 +14,7 @@ export class CustomBarChart {
             labels: this.labels,
             datasets: [
                 {
-                    label: this.property,
+                    label: this.itemPath,
                     data: this.counts,
                     backgroundColor: chartColors.getColorArray(this.counts.length),
                     borderColor: chartColors.colorDark,
@@ -81,7 +81,7 @@ export class CustomBarChart {
         }
         
         chart.update();
-        if (this.filterCallback) this.filterCallback(this.property, value);
+        if (this.filterCallback) this.filterCallback(this.itemPath, value);
     }
 
     update() {

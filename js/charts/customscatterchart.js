@@ -1,8 +1,8 @@
 import * as chartColors from "./chartcolors.js";
 
 export class CustomScatterChart {
-    constructor(properties, values, labels, hoverCallback) {
-        this.properties = properties;
+    constructor(itemPaths, values, labels, hoverCallback) {
+        this.itemPaths = itemPaths;
         this.values = values;
         this.labels = labels;
         this.hoverCallback = hoverCallback;
@@ -12,7 +12,7 @@ export class CustomScatterChart {
         return {
             datasets: [
                 {
-                    label: this.properties[0],
+                    label: this.itemPaths[0],
                     data: this.values,
                     backgroundColor: chartColors.colorLight,
                     borderColor: chartColors.colorDark,
@@ -26,7 +26,7 @@ export class CustomScatterChart {
     }
 
     get options() {
-        const oneDimensional = this.properties.length == 1;
+        const oneDimensional = this.itemPaths.length == 1;
         return {
             maintainAspectRatio: false,
             scales: {
