@@ -124,8 +124,9 @@ class WidgetOptions extends HTMLElement {
     }
 
     itemInputCallback() {
-        this.querySelector("select").disabled = true;
-        this.querySelector("select").value = null;
+        const typeSelect = this.querySelector("select");
+        typeSelect.disabled = true;
+        typeSelect.value = null;
 
         const path = ODMPath.parseAbsolute(this.querySelector("input").value);
         const itemDef = metadataWrapper.getElementDefByOID(path.itemOID);
@@ -138,7 +139,6 @@ class WidgetOptions extends HTMLElement {
         };
 
         const enabledWidgetTypes = Object.entries(widgetDataTypeMapping).filter(entry => entry[1].includes(itemDef.getDataType())).map(entry => entry[0]);
-        const typeSelect = this.querySelector("select");
         for (const typeOption of this.querySelectorAll("select option")) {
             typeOption.disabled = enabledWidgetTypes.includes(typeOption.value) ? false : true;
             if (!typeSelect.value && !typeOption.disabled) typeSelect.value = typeOption.value;
@@ -165,13 +165,14 @@ class WidgetOptions extends HTMLElement {
         const type = this.querySelector("select").value;
         this.component.widget.type = type;
 
-        // Update widget component
-        this.component.update();
-
         // Flip component, remove the options panel, and store the updated widget and report
         this.component.classList.remove("is-flipped");
         setTimeout(() => this.remove(), 500);
         reportsHelper.storeReports();
+
+        // TODO: Send event that widget has been updated, including the widget Id within the event detail
+        // TODO: Listen in reportsModule. There, remove a possible filter for this widget, set the widgetData and the customChart, and then update all widgets
+        // TODO: If only the name was updated (neither the path nor the type), simply call this.component.update()
     }
 
     setWidgetComponentSize(size) {
