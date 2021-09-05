@@ -137,3 +137,9 @@ export const addWidget = async (reportId, name) => {
 
     return widget;
 }
+
+export const removeWidget = async (reportId, widgetId) => {
+    const report = getReport(reportId);
+    report.widgets = report.widgets.filter(widget => widget.id != widgetId);
+    await storeReports();
+}

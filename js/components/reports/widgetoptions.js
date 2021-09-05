@@ -113,11 +113,13 @@ class WidgetOptions extends HTMLElement {
         const removeButton = document.createElement("button");
         removeButton.className = "button is-danger is-light is-small";
         removeButton.textContent = languageHelper.getTranslation("remove");
+        removeButton.onclick = () => this.removeWidget();
         buttons.appendChild(removeButton);
 
         const cancelButton = document.createElement("button");
         cancelButton.className = "button is-small";
         cancelButton.textContent = languageHelper.getTranslation("cancel");
+        cancelButton.onclick = () => this.hideOptions();
         buttons.appendChild(cancelButton);
         
         this.appendChild(buttons);
@@ -166,12 +168,22 @@ class WidgetOptions extends HTMLElement {
         this.component.widget.type = type;
 
         // Flip component, remove the options panel, and store the updated widget and report
-        this.component.classList.remove("is-flipped");
-        setTimeout(() => this.remove(), 500);
+        this.hideOptions();
         reportsHelper.storeReports();
 
         // TODO: If only the name was updated (neither the path nor the type), simply call this.component.update()
         document.dispatchEvent(new CustomEvent("WidgetUpdated", { detail: this.component.widget.id }));
+    }
+
+    hideOptions() {
+        this.component.classList.remove("is-flipped");
+        setTimeout(() => this.remove(), 500);
+    }
+
+    removeWidget() {
+        this.component.customChart?.chart?.destroy();
+        this.component.remove();
+        document.dispatchEvent(new CustomEvent("WidgetRemoved", { detail: this.component.widget.id }));
     }
 
     setWidgetComponentSize(size) {

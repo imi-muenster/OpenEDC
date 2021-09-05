@@ -128,7 +128,7 @@ const updateWidgets = () => {
     widgetComponents.forEach(widgetComponent => widgetComponent.update());
 }
 
-function updateWidget(widgetId) {
+const reloadWidget = widgetId => {
     const widget = reportsHelper.getWidget(currentReportId, widgetId);
     const widgetComponent = widgetComponents.find(entry => entry.widget.id == widgetId);
 
@@ -136,7 +136,6 @@ function updateWidget(widgetId) {
     removeFilter(widget.itemPaths[0]);
 
     // Second, add or replace the chart
-    // TODO: Remove the previous chart if there was one
     const customChart = getCustomChart(widget);
     if (customChart) {
         widgetComponent.customChart?.chart?.destroy();
@@ -145,7 +144,19 @@ function updateWidget(widgetId) {
     }
 
     // Third, update all widgets
-    setTimeout(() => updateWidgets(), 250);
+    updateWidgets();
+}
+
+const removeWidget = widgetId => {
+    const widget = reportsHelper.getWidget(currentReportId, widgetId);
+
+    // Remove widget component and a possibly set filter
+    removeFilter(widget.itemPaths[0]);
+    widgetComponents = widgetComponents.filter(entry => entry.widget.id != widgetId);
+    reportsHelper.removeWidget(currentReportId, widgetId);
+
+    // Update all widgets
+    updateWidgets();
 }
 
 const hoverCallback = (chartId, index) => {
@@ -271,5 +282,6 @@ const addReport = async () => {
 
 const setIOListeners = () => {
     $("#reports-section #add-report-button").addEventListener("click", () => addReport());
-    document.addEventListener("WidgetUpdated", event => updateWidget(event.detail));
+    document.addEventListener("WidgetUpdated", event => reloadWidget(event.detail));
+    document.addEventListener("WidgetRemoved", event => removeWidget(event.detail));
 }
