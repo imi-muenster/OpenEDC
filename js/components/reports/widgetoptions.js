@@ -36,6 +36,7 @@ class WidgetOptions extends HTMLElement {
         inputContainer.className = "control has-autocomplete-bottom is-fullwidth";
 
         const input = document.createElement("input");
+        input.id = "widget-item-input";
         input.className = "input is-small";
         input.type = "text";
         input.value = this.component.widget.itemPaths.length ? this.component.widget.itemPaths[0] : null;
@@ -51,14 +52,14 @@ class WidgetOptions extends HTMLElement {
         const selectContainer = document.createElement("div");
         selectContainer.className = "select is-fullwidth is-small";
         const select = document.createElement("select");
+        select.id = "widget-type-select";
         for (const widgetType of Object.values(reportsHelper.Widget.types)) {
             const option = document.createElement("option");
             option.value = widgetType;
             option.textContent = languageHelper.getTranslation(widgetType);
             select.appendChild(option);
         }
-        select.value = this.component.widget.type;
-        select.disabled = this.component.widget.type ? false : true;
+        select.oninput = () => this.typeSelectCallback();
         selectContainer.appendChild(select);
 
         this.appendChild(selectContainer);
@@ -72,12 +73,13 @@ class WidgetOptions extends HTMLElement {
         inputContainer.className = "control has-autocomplete-bottom is-fullwidth";
 
         const input = document.createElement("input");
+        input.id = "widget-details-input";
         input.className = "input is-small";
         input.type = "text";
         input.disabled = true;
-        input.placeholder = languageHelper.getTranslation("options");
+        input.placeholder = languageHelper.getTranslation("optional-second-item");
         inputContainer.appendChild(input);
-        autocompleteHelper.enableAutocomplete(input, autocompleteHelper.modes.ITEMWITHCODELIST);
+        autocompleteHelper.enableAutocomplete(input, autocompleteHelper.modes.ITEM);
 
         this.appendChild(inputContainer);
     }
@@ -126,11 +128,11 @@ class WidgetOptions extends HTMLElement {
     }
 
     itemInputCallback() {
-        const typeSelect = this.querySelector("select");
+        const typeSelect = this.querySelector("#widget-type-select");
         typeSelect.disabled = true;
         typeSelect.value = null;
 
-        const path = ODMPath.parseAbsolute(this.querySelector("input").value);
+        const path = ODMPath.parseAbsolute(this.querySelector("#widget-item-input").value);
         const itemDef = metadataWrapper.getElementDefByOID(path.itemOID);
         if (!itemDef) return;
 
@@ -141,10 +143,23 @@ class WidgetOptions extends HTMLElement {
         };
 
         const enabledWidgetTypes = Object.entries(widgetDataTypeMapping).filter(entry => entry[1].includes(itemDef.getDataType())).map(entry => entry[0]);
-        for (const typeOption of this.querySelectorAll("select option")) {
+        for (const typeOption of this.querySelectorAll("#widget-type-select option")) {
             typeOption.disabled = enabledWidgetTypes.includes(typeOption.value) ? false : true;
             if (!typeSelect.value && !typeOption.disabled) typeSelect.value = typeOption.value;
             typeSelect.disabled = false;
+        }
+
+        this.typeSelectCallback();
+    }
+
+    typeSelectCallback() {
+        const type = this.querySelector("#widget-type-select").value;
+        switch (type) {
+            case reportsHelper.Widget.types.SCATTER:
+                this.querySelector("#widget-details-input").disabled = false;
+                break;
+            default:
+                this.querySelector("#widget-details-input").disabled = true;
         }
     }
 
@@ -164,7 +179,7 @@ class WidgetOptions extends HTMLElement {
         if (itemPaths && itemPaths.toString() != this.component.widget.itemPaths.toString()) this.component.widget.itemPaths = itemPaths;
 
         // Set widget type
-        const type = this.querySelector("select").value;
+        const type = this.querySelector("#widget-type-select").value;
         this.component.widget.type = type;
 
         // TODO: If only the name was updated (neither the path nor the type), simply call this.component.update()
