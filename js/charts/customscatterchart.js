@@ -79,9 +79,12 @@ export class CustomScatterChart {
         // The following is required since values are sorted to prevent filtered dots to be rendered over active dots
         // However, this would lead Chart.js to render all dots again leading in an undesired animation
         // The following ensures that only the changed borderColor is animated
-        // TODO: Keep an eye on performance, since this is quite expensive and calculated for every scatter plot
-        this.chart.data.datasets[0].borderColor = this.widgetData.sortedValues.map(value => this.previousFiltered && this.previousFiltered.includes(value.label) ? chartColors.colorLight : chartColors.colorDark);
-        this.chart.update("none");
+        // For over 500 points, skip the animation for performance reasons
+        let skipAnimation = this.widgetData.sortedValues.length > 500 ? true : false;
+        if (!skipAnimation) {
+            this.chart.data.datasets[0].borderColor = this.widgetData.sortedValues.map(value => this.previousFiltered && this.previousFiltered.includes(value.label) ? chartColors.colorLight : chartColors.colorDark);
+            this.chart.update("none");
+        }
 
         this.previousFiltered = [];
         this.chart.data.datasets[0].borderColor = this.widgetData.sortedValues.map(value => {
@@ -92,6 +95,7 @@ export class CustomScatterChart {
                 return chartColors.colorDark;
             }
         });
-        this.chart.update();
+        
+        this.chart.update(skipAnimation ? "none" : null);
     }
 }

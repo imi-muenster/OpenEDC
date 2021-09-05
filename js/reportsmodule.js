@@ -52,6 +52,7 @@ export function reloadReport() {
 const loadWidgets = () => {
     if (!currentReportId) return;
     widgetComponents = [];
+    activeFilters = [];
     $$("#widgets .widget").removeElements();
 
     // Add placeholder
