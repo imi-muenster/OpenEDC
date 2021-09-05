@@ -1,4 +1,6 @@
+import ODMPath from "./odmwrapper/odmpath.js";
 import * as reportsHelper from "./helper/reportshelper.js";
+import * as metadataWrapper from "./odmwrapper/metadatawrapper.js";
 import * as clinicaldataWrapper from "./odmwrapper/clinicaldatawrapper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 
@@ -44,7 +46,7 @@ export function show() {
 }
 
 export function reloadReport() {
-    updateWidgets();
+    loadWidgets();
 }
 
 const loadWidgets = () => {
@@ -191,7 +193,7 @@ const addWidgetToGrid = widget => {
 const getCustomChart = widget => {
     switch (widget.type) {
         case reportsHelper.Widget.types.BAR:
-            const frequencyWidgetData = getFrequencyWidgetData(widget.itemPaths);
+            const frequencyWidgetData = getFrequencyWidgetData(widget.itemPaths[0]);
             return new CustomBarChart(frequencyWidgetData, filterCallback);
         case reportsHelper.Widget.types.SCATTER:
             const discreteWidgetData = getDiscreteWidgetData(widget.itemPaths);
@@ -200,13 +202,16 @@ const getCustomChart = widget => {
 }
 
 const getFrequencyWidgetData = itemPath => {
-    // TODO: Use metadataWrapper for getting labels and values (i.e., translated texts and oids)
-    const labels = getUniqueValues(itemPath);
+    const codeListItems = metadataWrapper.getCodeListItemsByItem(ODMPath.parseAbsolute(itemPath).itemOID);
+    if (!codeListItems.length) return;
+
+    const values = codeListItems.map(item => item.getCodedValue());
+    const labels = codeListItems.map(item => item.getTranslatedDecode(languageHelper.getCurrentLocale()));
     return new reportsHelper.FrequencyWidgetData(
         itemPath,
-        Array(labels.length), // counts
-        labels, // labels
-        labels // values
+        Array(values.length),
+        labels,
+        values
     );
 }
 
@@ -225,13 +230,6 @@ const getDiscreteWidgetData = itemPaths => {
         values,
         []
     );
-}
-
-const getUniqueValues = itemPath => {
-    return Object.values(dataset).reduce((values, entry) => {
-        if (!values.includes(entry[itemPath])) values.push(entry[itemPath]);
-        return values;
-    }, new Array());
 }
 
 const getWidgetPlaceholder = () => {
@@ -282,6 +280,9 @@ const addReport = async () => {
 
 const setIOListeners = () => {
     $("#reports-section #add-report-button").addEventListener("click", () => addReport());
-    document.addEventListener("WidgetUpdated", event => reloadWidget(event.detail));
+    document.addEventListener("WidgetUpdated", event => {
+        reloadWidget(event.detail);
+        reportsHelper.storeReports();
+    });
     document.addEventListener("WidgetRemoved", event => removeWidget(event.detail));
 }

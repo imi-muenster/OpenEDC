@@ -167,11 +167,8 @@ class WidgetOptions extends HTMLElement {
         const type = this.querySelector("select").value;
         this.component.widget.type = type;
 
-        // Flip component, remove the options panel, and store the updated widget and report
-        this.hideOptions();
-        reportsHelper.storeReports();
-
         // TODO: If only the name was updated (neither the path nor the type), simply call this.component.update()
+        this.hideOptions();
         document.dispatchEvent(new CustomEvent("WidgetUpdated", { detail: this.component.widget.id }));
     }
 
