@@ -21,6 +21,9 @@ class WidgetOptions extends HTMLElement {
         this.addDetailsInput();
         this.addSizeOptions();
         this.addButtons();
+
+        // Enable allowed widget types
+        this.itemInputCallback();
     }
 
     addTitle() {
@@ -63,9 +66,6 @@ class WidgetOptions extends HTMLElement {
         selectContainer.appendChild(select);
 
         this.appendChild(selectContainer);
-
-        // Enable allowed types
-        this.itemInputCallback();
     }
 
     addDetailsInput() {
@@ -76,8 +76,9 @@ class WidgetOptions extends HTMLElement {
         input.id = "widget-details-input";
         input.className = "input is-small";
         input.type = "text";
-        input.disabled = true;
+        input.value = this.component.widget.itemPaths.length > 1 ? this.component.widget.itemPaths[1] : null;
         input.placeholder = languageHelper.getTranslation("optional-second-item");
+        input.disabled = true;
         inputContainer.appendChild(input);
         autocompleteHelper.enableAutocomplete(input, autocompleteHelper.modes.ITEM);
 
