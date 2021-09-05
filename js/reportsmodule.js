@@ -68,7 +68,7 @@ const calculateWidgetData = () => {
     const subjectData = Object.values(dataset);
     let filteredCount = 0;
 
-    const widgetData = widgetComponents.map(widgetComponent => widgetComponent?.customChart.widgetData);
+    const widgetData = widgetComponents.map(widgetComponent => widgetComponent?.customChart?.widgetData);
     widgetData.filter(entry => entry instanceof reportsHelper.FrequencyWidgetData).forEach(entry => entry.counts.fill(0));
     widgetData.filter(entry => entry instanceof reportsHelper.DiscreteWidgetData).forEach(entry => entry.sortedValues.length = 0);
     for (let i = 0; i < subjectKeys.length; i++) {
@@ -128,6 +128,26 @@ const updateWidgets = () => {
     widgetComponents.forEach(widgetComponent => widgetComponent.update());
 }
 
+function updateWidget(widgetId) {
+    const widget = reportsHelper.getWidget(currentReportId, widgetId);
+    const widgetComponent = widgetComponents.find(entry => entry.widget.id == widgetId);
+
+    // First, remove a filter that is possibly set for the widget
+    removeFilter(widget.itemPaths[0]);
+
+    // Second, add or replace the chart
+    // TODO: Remove the previous chart if there was one
+    const customChart = getCustomChart(widget);
+    if (customChart) {
+        widgetComponent.customChart?.chart?.destroy();
+        customChart.chart = new Chart(widgetComponent.querySelector("canvas"), customChart.config);;
+        widgetComponent.setCustomChart(customChart);
+    }
+
+    // Third, update all widgets
+    setTimeout(() => updateWidgets(), 250);
+}
+
 const hoverCallback = (chartId, index) => {
     // TODO: Performance with .map() and .filter() on each hover event?
     const customCharts = widgetComponents.map(widgetComponent => widgetComponent.customChart).filter(customChart => customChart);
@@ -141,30 +161,31 @@ const hoverCallback = (chartId, index) => {
 }
 
 const addWidgetToGrid = widget => {
-    let customChart;
-    switch (widget.type) {
-        case reportsHelper.Widget.types.BAR:
-            const frequencyWidgetData = getFrequencyWidgetData(widget.itemPaths);
-            customChart = new CustomBarChart(frequencyWidgetData, filterCallback);
-            break;
-        case reportsHelper.Widget.types.SCATTER:
-            const discreteWidgetData = getDiscreteWidgetData(widget.itemPaths);
-            customChart = new CustomScatterChart(discreteWidgetData, hoverCallback);
-    }
-
     const widgetComponent = document.createElement("widget-component");
     widgetComponent.setWidget(widget);
     $("#reports-section .widget.is-placeholder").insertAdjacentElement("beforebegin", widgetComponent);
 
+    const customChart = getCustomChart(widget);
     if (customChart) {
-        const chart = new Chart(widgetComponent.querySelector("canvas"), customChart.config);
-        customChart.chart = chart;
+        customChart.chart = new Chart(widgetComponent.querySelector("canvas"), customChart.config);
+        // TODO: Use setter instead
         widgetComponent.setCustomChart(customChart);
     } else {
         setTimeout(() => widgetComponent.showOptions(), 250);
     }
 
     widgetComponents.push(widgetComponent);
+}
+
+const getCustomChart = widget => {
+    switch (widget.type) {
+        case reportsHelper.Widget.types.BAR:
+            const frequencyWidgetData = getFrequencyWidgetData(widget.itemPaths);
+            return new CustomBarChart(frequencyWidgetData, filterCallback);
+        case reportsHelper.Widget.types.SCATTER:
+            const discreteWidgetData = getDiscreteWidgetData(widget.itemPaths);
+            return new CustomScatterChart(discreteWidgetData, hoverCallback);
+    }
 }
 
 const getFrequencyWidgetData = itemPath => {
@@ -250,4 +271,5 @@ const addReport = async () => {
 
 const setIOListeners = () => {
     $("#reports-section #add-report-button").addEventListener("click", () => addReport());
+    document.addEventListener("WidgetUpdated", event => updateWidget(event.detail));
 }

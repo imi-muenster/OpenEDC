@@ -170,9 +170,8 @@ class WidgetOptions extends HTMLElement {
         setTimeout(() => this.remove(), 500);
         reportsHelper.storeReports();
 
-        // TODO: Send event that widget has been updated, including the widget Id within the event detail
-        // TODO: Listen in reportsModule. There, remove a possible filter for this widget, set the widgetData and the customChart, and then update all widgets
         // TODO: If only the name was updated (neither the path nor the type), simply call this.component.update()
+        document.dispatchEvent(new CustomEvent("WidgetUpdated", { detail: this.component.widget.id }));
     }
 
     setWidgetComponentSize(size) {
