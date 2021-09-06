@@ -179,10 +179,11 @@ function normalizeTokens(expression) {
     });
 }
 
+// TODO: Does currently not work with decimal numbers (point will be replaced with underscores, previous regexp: ([a-zA-Z][a-zA-Z0-9]*)\.([a-zA-Z0-9\.]+))
 function escapePaths(expression) {
-    return expression.replace(/-/g, "____").replace(/([a-zA-Z][a-zA-Z0-9]*)\.([a-zA-Z0-9\.]+)/g, "$1__$2");
+    return expression.replace(/-/g, "____").replace(/(\w)\.(?=\w)/g, "$1__");
 }
 
 function unescapePaths(expression) {
-    return expression.replace(/____/g, "-").replace(/([a-zA-Z][a-zA-Z0-9]*)__([a-zA-Z0-9\.]+)/g, "$1.$2");
+    return expression.replace(/____/g, "-").replace(/(\w)__(?=\w)/g, "$1.");
 }
