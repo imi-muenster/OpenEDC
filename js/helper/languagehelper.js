@@ -37,17 +37,14 @@ export async function init() {
     defaultTranslations = await loadTranslations(defaultLocale);
 
     browserLocale = window.navigator.language.split("-")[0];
-    if (Object.values(locales).includes(browserLocale)) currentLocale = browserLocale;
+    if (Object.values(locales).includes(browserLocale)) await setCurrentLocale(browserLocale, false);
 }
 
-export async function localize() {
-    if (currentLocale == defaultLocale) translations = defaultTranslations;
-    else translations = await loadTranslations(currentLocale);
-    
-    document.querySelectorAll("[i18n]").forEach(element => element.textContent = getTranslation(element.getAttribute("i18n")));
-    document.querySelectorAll("[i18n-html]").forEach(element => element.innerHTML = getTranslation(element.getAttribute("i18n-html")));
-    document.querySelectorAll("[i18n-ph]").forEach(element => element.placeholder = getTranslation(element.getAttribute("i18n-ph")));
-    document.querySelectorAll("[i18n-href]").forEach(element => element.href = getTranslation(element.getAttribute("i18n-href")));
+export async function localize(node = document) {
+    node.querySelectorAll("[i18n]").forEach(element => element.textContent = getTranslation(element.getAttribute("i18n")));
+    node.querySelectorAll("[i18n-html]").forEach(element => element.innerHTML = getTranslation(element.getAttribute("i18n-html")));
+    node.querySelectorAll("[i18n-ph]").forEach(element => element.placeholder = getTranslation(element.getAttribute("i18n-ph")));
+    node.querySelectorAll("[i18n-href]").forEach(element => element.href = getTranslation(element.getAttribute("i18n-href")));
 }
 
 export function getTranslation(key) {
@@ -73,17 +70,22 @@ export function populatePresentLanguages(odm) {
     }
 }
 
-export function setInitialLocale() {
+export async function setInitialLocale() {
     for (const locale of localesInODM) {
-        if (!currentLocaleSet || locale == browserLocale) {
-            currentLocale = locale;
-            currentLocaleSet = true;
-        }
+        if (!currentLocaleSet || locale == browserLocale) await setCurrentLocale(locale, true);
     }
 }
 
 export function getPresentLanguages() {
     return localesInODM;
+}
+
+async function setCurrentLocale(locale, markCurrentLocaleSet) {
+    if (locale == defaultLocale) translations = defaultTranslations;
+    else if (locale != currentLocale) translations = await loadTranslations(locale);
+
+    currentLocale = locale;
+    currentLocaleSet = markCurrentLocaleSet ? true : false;
 }
 
 export function getCurrentLocale() {
@@ -124,8 +126,7 @@ function setLanguageSelectText() {
 }
 
 async function changeLanguage(locale) {
-    currentLocale = locale;
-    currentLocaleSet = true;
+    await setCurrentLocale(locale, true);
     await localize();
     setLanguageSelectText();
     document.dispatchEvent(new CustomEvent("LanguageChanged"));
