@@ -472,7 +472,6 @@ export function getAuditRecords(filter) {
     }
 
     // Localize item values
-    // TODO: Use getItemPaths(options) instead of getItemOIDsWithDataType()
     const dateItemOIDs = metadataWrapper.getItemOIDsWithDataType(metadataWrapper.dataTypes.DATE);
     const dateTimeItemOIDs = metadataWrapper.getItemOIDsWithDataType(metadataWrapper.dataTypes.DATETIME);
     const booleanItemOIDs = metadataWrapper.getItemOIDsWithDataType(metadataWrapper.dataTypes.BOOLEAN);

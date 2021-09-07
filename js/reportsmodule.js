@@ -203,11 +203,25 @@ const getCustomChart = widget => {
 }
 
 const getFrequencyWidgetData = itemPath => {
-    const codeListItems = metadataWrapper.getCodeListItemsByItem(ODMPath.parseAbsolute(itemPath).itemOID);
-    if (!codeListItems.length) return;
+    const itemOID = ODMPath.parseAbsolute(itemPath).itemOID;
 
-    const values = codeListItems.map(item => item.getCodedValue());
-    const labels = codeListItems.map(item => item.getTranslatedDecode(languageHelper.getCurrentLocale()));
+    let values, labels;
+    switch (metadataWrapper.getElementDefByOID(itemOID).getDataType()) {
+        case metadataWrapper.dataTypes.CODELISTTEXT:
+        case metadataWrapper.dataTypes.CODELISTINTEGER:
+        case metadataWrapper.dataTypes.CODELISTFLOAT:
+            const codeListItems = metadataWrapper.getCodeListItemsByItem(itemOID);
+            values = codeListItems.map(item => item.getCodedValue());
+            labels = codeListItems.map(item => item.getTranslatedDecode(languageHelper.getCurrentLocale()));
+            break;
+        case metadataWrapper.dataTypes.BOOLEAN:
+            values = ["1", "0"];
+            labels = [languageHelper.getTranslation("yes"), languageHelper.getTranslation("no")];
+            break;
+        default:
+            return;
+    }
+    
     return new reportsHelper.FrequencyWidgetData(
         itemPath,
         Array(values.length),
