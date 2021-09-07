@@ -40,7 +40,7 @@ export async function init() {
     if (Object.values(locales).includes(browserLocale)) await setCurrentLocale(browserLocale, false);
 }
 
-export async function localize(node = document) {
+export function localize(node = document) {
     node.querySelectorAll("[i18n]").forEach(element => element.textContent = getTranslation(element.getAttribute("i18n")));
     node.querySelectorAll("[i18n-html]").forEach(element => element.innerHTML = getTranslation(element.getAttribute("i18n-html")));
     node.querySelectorAll("[i18n-ph]").forEach(element => element.placeholder = getTranslation(element.getAttribute("i18n-ph")));
@@ -127,7 +127,7 @@ function setLanguageSelectText() {
 
 async function changeLanguage(locale) {
     await setCurrentLocale(locale, true);
-    await localize();
+    localize();
     setLanguageSelectText();
     document.dispatchEvent(new CustomEvent("LanguageChanged"));
 }
