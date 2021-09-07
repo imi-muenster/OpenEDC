@@ -472,9 +472,10 @@ export function getAuditRecords(filter) {
     }
 
     // Localize item values
-    const dateItemOIDs = metadataWrapper.getItemOIDsWithDataType("date");
-    const dateTimeItemOIDs = metadataWrapper.getItemOIDsWithDataType("datetime");
-    const booleanItemOIDs = metadataWrapper.getItemOIDsWithDataType("boolean");
+    // TODO: Use getItemPaths(options) instead of getItemOIDsWithDataType()
+    const dateItemOIDs = metadataWrapper.getItemOIDsWithDataType(metadataWrapper.dataTypes.DATE);
+    const dateTimeItemOIDs = metadataWrapper.getItemOIDsWithDataType(metadataWrapper.dataTypes.DATETIME);
+    const booleanItemOIDs = metadataWrapper.getItemOIDsWithDataType(metadataWrapper.dataTypes.BOOLEAN);
     for (let auditRecord of auditRecords) {
         if (!auditRecord.dataChanges) continue;
         for (let dataItem of auditRecord.dataChanges) {
