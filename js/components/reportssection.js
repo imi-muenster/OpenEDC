@@ -20,6 +20,7 @@ class ReportsSection extends HTMLElement {
                                 </aside>
                                 <div class="buttons mt-5">
                                     <button class="button is-link is-light is-small" id="add-report-button" i18n="add"></button>
+                                    <button class="button is-small is-hidden" id="edit-report-button" i18n="edit"></button>
                                 </div>
                             </div>
                         </div>

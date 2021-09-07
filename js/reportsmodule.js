@@ -282,6 +282,7 @@ const loadReportList = () => {
 const loadReport = id => {
     $(`#reports-list a.is-active`)?.deactivate();
     $(`#reports-list a[id="${id}"]`).activate();
+    $("#reports-section #edit-report-button").show();
     currentReportId = id;
     loadWidgets();
 }
@@ -293,8 +294,18 @@ const addReport = async () => {
     loadReport(currentReportId);
 }
 
+const editReport = async () => {
+    await import("./components/reports/reportmodal.js");
+    const reportModal = document.createElement("report-modal");
+
+    reportModal.setReport(reportsHelper.getReport(currentReportId));
+
+    document.body.appendChild(reportModal);
+}
+
 const setIOListeners = () => {
     $("#reports-section #add-report-button").addEventListener("click", () => addReport());
+    $("#reports-section #edit-report-button").addEventListener("click", () => editReport());
     document.addEventListener("WidgetUpdated", event => {
         reloadWidget(event.detail);
         reportsHelper.storeReports();
