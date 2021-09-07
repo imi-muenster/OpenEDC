@@ -3,6 +3,7 @@ import * as reportsHelper from "./helper/reportshelper.js";
 import * as metadataWrapper from "./odmwrapper/metadatawrapper.js";
 import * as clinicaldataWrapper from "./odmwrapper/clinicaldatawrapper.js";
 import * as languageHelper from "./helper/languagehelper.js";
+import * as ioHelper from "./helper/iohelper.js";
 
 // Import custom charts
 import { CustomBarChart } from "./charts/custombarchart.js";
@@ -29,20 +30,25 @@ export async function init() {
     await reportsHelper.init();
     if (!reportsHelper.getReports().length) reportsHelper.addReport(languageHelper.getTranslation("new-report"));
 
-    dataset = await clinicaldataWrapper.getAllData();
-
     setIOListeners();
 }
 
-export function show() {
+export async function show() {
     if (!currentReportId) {
         $("#reports-section h1").textContent = languageHelper.getTranslation("no-reported-selected-hint");
         $("#reports-section h2").textContent = languageHelper.getTranslation("please-select-record-hint");
     }
 
     loadReportList();
-    loadWidgets();
     languageHelper.createLanguageSelect();
+
+    // Load data
+    const showLoadingIndicator = ioHelper.hasServerURL() || clinicaldataWrapper.getSubjects().length > 2500;
+    if (showLoadingIndicator) ioHelper.showToast(languageHelper.getTranslation("data-loading-hint"));
+    dataset = await clinicaldataWrapper.getAllData();
+    if (showLoadingIndicator) ioHelper.showToast(languageHelper.getTranslation("data-loaded-hint"), 2500);
+    
+    loadWidgets();
 }
 
 export const loadWidgets = () => {

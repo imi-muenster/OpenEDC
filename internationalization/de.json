@@ -170,6 +170,8 @@
     "medium": "Mittel",
     "large": "Groß",
     "subject": "Proband",
+    "data-loading-hint": "Bitte warten Sie, bis die Daten geladen wurden.",
+    "data-loaded-hint": "Die Daten wurden erfolgreich geladen.",
 
     "general-options":"Allgemeine Optionen",
     "users": "Benutzer",
