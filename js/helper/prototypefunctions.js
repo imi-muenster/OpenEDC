@@ -11,7 +11,7 @@ Element.prototype.getCodedValue = function() {
 }
 
 Element.prototype.getDataType = function() {
-    return this.getAttribute("DataType");
+    return this.querySelector("CodeListRef") ? "codelist-" + this.getAttribute("DataType") : this.getAttribute("DataType");
 }
 
 Element.prototype.getTranslatedDescription = function(locale, nameFallback, fallbackLocale) {

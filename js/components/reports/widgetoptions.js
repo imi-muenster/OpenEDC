@@ -139,8 +139,18 @@ class WidgetOptions extends HTMLElement {
 
         // TODO: Move to other location?
         const widgetDataTypeMapping = {
-            [reportsHelper.Widget.types.SCATTER]: "integer, float, double",
-            [reportsHelper.Widget.types.BAR]: "text"
+            [reportsHelper.Widget.types.SCATTER]: [
+                metadataWrapper.dataTypes.INTEGER,
+                metadataWrapper.dataTypes.FLOAT,
+                metadataWrapper.dataTypes.DOUBLE
+            ],
+            [reportsHelper.Widget.types.BAR]: [
+                metadataWrapper.dataTypes.TEXT,
+                metadataWrapper.dataTypes.BOOLEAN,
+                metadataWrapper.dataTypes.CODELISTTEXT,
+                metadataWrapper.dataTypes.CODELISTINTEGER,
+                metadataWrapper.dataTypes.CODELISTFLOAT
+            ]
         };
 
         const enabledWidgetTypes = Object.entries(widgetDataTypeMapping).filter(entry => entry[1].includes(itemDef.getDataType())).map(entry => entry[0]);

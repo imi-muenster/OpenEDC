@@ -250,7 +250,7 @@ const getValueElements = () => {
     const itemPath = currentInput.value.split(" ")[currentTokenIndex - currentPart + 1];
     const itemOID = ODMPath.parseRelative(itemPath).itemOID;
     const item = metadataWrapper.getElementDefByOID(itemOID);
-    if (item && item.getDataType() == "boolean") {
+    if (item && item.getDataType() == metadataWrapper.dataTypes.BOOLEAN) {
         return [
             new AutocompleteElement(
                 "1",

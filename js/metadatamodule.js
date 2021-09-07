@@ -198,8 +198,7 @@ function loadItemsByItemGroup(hideTree) {
     let itemDefs = metadataWrapper.getItemsByItemGroup(currentPath.itemGroupOID);
     for (let itemDef of itemDefs) {
         let translatedQuestion = itemDef.getTranslatedQuestion(languageHelper.getCurrentLocale());
-        const dataType = itemDef.querySelector("CodeListRef") ? "codelist" : itemDef.getDataType();
-        let panelBlock = createPanelBlock(itemDef.getOID(), ODMPath.elements.ITEM, translatedQuestion, itemDef.getName(), languageHelper.getTranslation(dataType));
+        let panelBlock = createPanelBlock(itemDef.getOID(), ODMPath.elements.ITEM, translatedQuestion, itemDef.getName(), languageHelper.getTranslation(itemDef.getDataType()));
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
     }
@@ -325,7 +324,7 @@ function fillDetailsPanelFoundational() {
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             $("#id-input").value = currentPath.last.value;
             $("#translation-textarea").value = element.getTranslatedQuestion(languageHelper.getCurrentLocale());
-            $("#datatype-select-inner").value = metadataWrapper.getCodeListOIDByItem(currentPath.last.value) ? "codelist-" + element.getDataType() : element.getDataType();
+            $("#datatype-select-inner").value = element.getDataType();
             break;
         case ODMPath.elements.CODELISTITEM:
             $("#mandatory-select-inner").disabled = true;
