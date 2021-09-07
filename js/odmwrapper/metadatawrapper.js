@@ -25,6 +25,26 @@ const $$ = query => metadata.querySelectorAll(query);
 const expressionTypes = {
     CONDITION: "condition",
     METHOD: "method"
+};
+
+export const dataTypes = {
+    INTEGER: "integer",
+    FLOAT: "float",
+    BOOLEAN: "boolean",
+    TEXT: "text",
+    STRING: "string",
+    DATE: "date",
+    TIME: "time",
+    DATETIME: "datetime",
+    CODELISTTEXT: "codelist-text",
+    CODELISTINTEGER: "codelist-integer",
+    CODELISTFLOAT: "codelist-float",
+    DOUBLE: "double"
+};
+
+export const mandatoryTypes = {
+    YES: "Yes",
+    NO: "No"
 }
 
 export const dataStatusCodeListOID = "OpenEDC.DataStatus";

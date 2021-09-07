@@ -10,8 +10,6 @@ import * as languageHelper from "./languagehelper.js";
 
 const rangeCheckComparators = ["", "LT", "LE", "GT", "GE", "EQ", "NE"];
 const rangeCheckComparatorsDisplay = ["--", "<", "<=", ">", ">=", "=", "!="];
-const dataTypes = ["integer", "float", "boolean", "text", "string", "date", "time", "datetime", "codelist-text", "codelist-integer", "codelist-float", "double"];
-const mandatory = ["No", "Yes"];
 
 export function getMetadataPanelBlock(elementOID, elementType, titleText, fallbackText, subtitleText, draggable) {
     let panelBlock = document.createElement("a");
@@ -150,16 +148,6 @@ export function getRangeCheckInputElement(selectedComparator, checkValue) {
     field.appendChild(input.cloneNode());
 
     return field;
-}
-
-export function getDataTypeSelect() {
-    const translatedOptions = dataTypes.map(option => languageHelper.getTranslation(option));
-    return getSelect("datatype-select", true, true, dataTypes, null, translatedOptions, true);
-}
-
-export function getMandatorySelect() {
-    const translatedOptions = mandatory.map(option => languageHelper.getTranslation(option.toLowerCase()));
-    return getSelect("mandatory-select", true, true, mandatory, null, translatedOptions, true);
 }
 
 export function getSelect(name, isUnique, isFullwidth, values, selectedValue, displayTexts, i18n) {

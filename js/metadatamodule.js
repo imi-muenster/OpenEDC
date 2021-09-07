@@ -66,8 +66,13 @@ function createPanelBlock(elementOID, elementType, displayText, fallbackText, su
 }
 
 function createDatatypeMandatorySelect() {
-    if (!$("#datatype-select-outer")) $("#datatype-label").insertAdjacentElement("afterend", htmlElements.getDataTypeSelect());
-    if (!$("#mandatory-select-outer")) $("#mandatory-label").insertAdjacentElement("afterend", htmlElements.getMandatorySelect());
+    const translatedDataTypes = Object.values(metadataWrapper.dataTypes).map(type => languageHelper.getTranslation(type));
+    const dataTypeSelect = htmlElements.getSelect("datatype-select", true, true, Object.values(metadataWrapper.dataTypes), null, translatedDataTypes, true);
+    if (!$("#datatype-select-outer")) $("#datatype-label").insertAdjacentElement("afterend", dataTypeSelect);
+    
+    const translatedMandatoryTypes = Object.values(metadataWrapper.mandatoryTypes).map(option => languageHelper.getTranslation(option.toLowerCase()));
+    const mandatoryTypeSelect = htmlElements.getSelect("mandatory-select", true, true, Object.values(metadataWrapper.mandatoryTypes), null, translatedMandatoryTypes, true);
+    if (!$("#mandatory-select-outer")) $("#mandatory-label").insertAdjacentElement("afterend", mandatoryTypeSelect);
 }
 
 function hideStudyEvents(hideTree) {
