@@ -271,19 +271,19 @@ const addWidget = async () => {
 const loadReportList = () => {
     $$("#reports-list a").removeElements();
     for (const report of reportsHelper.getReports()) {
-        const reportEntry = document.createElement("a");
-        reportEntry.textContent = report.name;
-        reportEntry.setAttribute("id", report.id);
-        reportEntry.onclick = () => loadReport(report.id);
-        $("#reports-list").appendChild(reportEntry);
+        const reportElement = document.createElement("a");
+        reportElement.textContent = report.name;
+        reportElement.setAttribute("id", report.id);
+        reportElement.onclick = () => loadReport(report.id);
+        if (currentReportId == report.id) reportElement.activate();
+        $("#reports-list").appendChild(reportElement);
     }
+    currentReportId ? $("#edit-report-button").show() : $("#edit-report-button").hide();
 }
 
-const loadReport = id => {
-    $(`#reports-list a.is-active`)?.deactivate();
-    $(`#reports-list a[id="${id}"]`).activate();
-    $("#reports-section #edit-report-button").show();
+const loadReport = id => {    
     currentReportId = id;
+    loadReportList();
     loadWidgets();
 }
 
@@ -307,11 +307,12 @@ const setIOListeners = () => {
     $("#reports-section #add-report-button").addEventListener("click", () => addReport());
     $("#reports-section #edit-report-button").addEventListener("click", () => showReportModal());
 
-    document.addEventListener("report-edited", () => {
+    document.addEventListener("ReportEdited", () => {
         loadReportList();
         reportsHelper.storeReports();
     });
-    document.addEventListener("report-removed", event => {
+    document.addEventListener("ReportRemoved", event => {
+        currentReportId = null;
         reportsHelper.removeReport(event.detail);
         loadReportList();
         reportsHelper.storeReports();

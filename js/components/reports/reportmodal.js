@@ -20,7 +20,7 @@ class ReportModal extends HTMLElement {
                     <div class="box">
                         <div class="width-is-two-thirds">
                             <h1 class="title" i18n="report-options"></h1>
-                            <h2 class="subtitle"><span i18n="for-report"></span>: <strong></strong></h2>
+                            <h2 class="subtitle"><span i18n="for-report"></span>: <strong id="report-name-label"></strong></h2>
                             <hr>
                             <div class="field">
                                 <label class="label" i18n="name"></label>
@@ -28,10 +28,10 @@ class ReportModal extends HTMLElement {
                                     <input class="input" id="report-name-input" type="text">
                                 </div>
                             </div>
-                            <div class="buttons mt-5">
-                                <button class="button is-link" id="save-report-button" i18n="save-changes"></button>
-                                <button class="button is-danger" id="remove-report-button" i18n="remove"></button>
-                                <button class="button" id="close-report-button" i18n="cancel"></button>
+                            <div class="buttons">
+                                <button class="button is-link is-small" id="save-report-button" i18n="save-changes"></button>
+                                <button class="button is-danger is-small" id="remove-report-button" i18n="remove"></button>
+                                <button class="button is-small" id="close-report-button" i18n="cancel"></button>
                             </div>
                         </div>
                     </div>
@@ -41,6 +41,7 @@ class ReportModal extends HTMLElement {
     }
 
     fillValues() {
+        this.querySelector("#report-name-label").textContent = this.report.name;
         this.querySelector("#report-name-input").value = this.report.name;
     }
 
@@ -54,12 +55,12 @@ class ReportModal extends HTMLElement {
 
     saveReport() {
         this.report.name = this.querySelector("#report-name-input").value;
-        document.dispatchEvent(new CustomEvent("report-edited"));
+        document.dispatchEvent(new CustomEvent("ReportEdited"));
         this.remove();
     }
 
     removeReport() {
-        document.dispatchEvent(new CustomEvent("report-removed", { detail: this.report.id }));
+        document.dispatchEvent(new CustomEvent("ReportRemoved", { detail: this.report.id }));
         this.remove();
     }
 }
