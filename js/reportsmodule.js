@@ -45,15 +45,11 @@ export function show() {
     languageHelper.createLanguageSelect();
 }
 
-export function reloadReport() {
-    loadWidgets();
-}
-
-const loadWidgets = () => {
-    if (!currentReportId) return;
+export const loadWidgets = () => {
     widgetComponents = [];
     activeFilters = [];
     $$("#widgets .widget").removeElements();
+    if (!currentReportId) return;
 
     // Add placeholder
     $("#widgets").appendChild(getWidgetPlaceholder());
@@ -312,10 +308,8 @@ const setIOListeners = () => {
         reportsHelper.storeReports();
     });
     document.addEventListener("ReportRemoved", event => {
-        currentReportId = null;
         reportsHelper.removeReport(event.detail);
-        loadReportList();
-        reportsHelper.storeReports();
+        loadReport(null);
     });
     document.addEventListener("WidgetUpdated", event => {
         reloadWidget(event.detail);

@@ -697,7 +697,7 @@ async function reloadApp(options) {
         if (options && options.cacheFormData) clinicaldataModule.cacheFormData();
         clinicaldataModule.reloadTree();
     } else if (getCurrentMode() == appModes.REPORTS) {
-        reportsModule.reloadReport();
+        reportsModule.loadWidgets();
     }
 }
 
