@@ -423,7 +423,7 @@ export function getItemPaths(options) {
                 for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
                     const itemOID = itemRef.getAttribute("ItemOID");
                     if (!options) itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID));
-                    else if (options.withCodeList && itemHasCodeList(itemOID)) itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID));
+                    else if (options.withCodeList && getCodeListOIDByItem(itemOID)) itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID));
                 }
             }
         }
@@ -445,13 +445,6 @@ export function getElementRefs(elementOID, elementType) {
         case ODMPath.elements.CODELISTITEM:
             return Array.from($$(`CodeListRef[CodeListOID="${elementOID}"]`));
     }
-}
-
-// TODO: Could be removed -- getCodeListOIDByItem allows the same
-export function itemHasCodeList(itemOID) {
-    let codeListRef = $(`[OID="${itemOID}"] CodeListRef`)
-
-    return codeListRef != null;
 }
 
 export function setElementOID(elementOID, elementType, newOID) {

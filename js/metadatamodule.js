@@ -234,7 +234,7 @@ function loadCodeListItemsByItem(hideTree) {
         $("#code-list-items-add-button").disabled = true;
         $("#code-list-items-opt-button").disabled = true;
     } else {
-        if (metadataWrapper.itemHasCodeList(currentPath.itemOID)) $("#code-list-items-add-button").disabled = false;
+        if (metadataWrapper.getCodeListOIDByItem(currentPath.itemOID)) $("#code-list-items-add-button").disabled = false;
         $("#code-list-items-opt-button").disabled = false;
     }
 }
@@ -325,7 +325,7 @@ function fillDetailsPanelFoundational() {
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             $("#id-input").value = currentPath.last.value;
             $("#translation-textarea").value = element.getTranslatedQuestion(languageHelper.getCurrentLocale());
-            $("#datatype-select-inner").value = metadataWrapper.itemHasCodeList(currentPath.last.value) ? "codelist-" + element.getDataType() : element.getDataType();
+            $("#datatype-select-inner").value = metadataWrapper.getCodeListOIDByItem(currentPath.last.value) ? "codelist-" + element.getDataType() : element.getDataType();
             break;
         case ODMPath.elements.CODELISTITEM:
             $("#mandatory-select-inner").disabled = true;
@@ -979,7 +979,7 @@ window.showRemoveModal = async function() {
 
 // TODO: Reorder other modal functions in this order (show -> save -> hide)
 window.showCodeListModal = function() {
-    if (!metadataWrapper.itemHasCodeList(currentPath.itemOID)) {
+    if (!metadataWrapper.getCodeListOIDByItem(currentPath.itemOID)) {
         ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("no-codelist-hint"));
         return;
     }
