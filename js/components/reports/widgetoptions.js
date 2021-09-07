@@ -142,7 +142,9 @@ class WidgetOptions extends HTMLElement {
             [reportsHelper.Widget.types.SCATTER]: [
                 metadataWrapper.dataTypes.INTEGER,
                 metadataWrapper.dataTypes.FLOAT,
-                metadataWrapper.dataTypes.DOUBLE
+                metadataWrapper.dataTypes.DOUBLE,
+                metadataWrapper.dataTypes.CODELISTINTEGER,
+                metadataWrapper.dataTypes.CODELISTFLOAT
             ],
             [reportsHelper.Widget.types.BAR]: [
                 metadataWrapper.dataTypes.TEXT,
@@ -156,10 +158,10 @@ class WidgetOptions extends HTMLElement {
         const enabledWidgetTypes = Object.entries(widgetDataTypeMapping).filter(entry => entry[1].includes(itemDef.getDataType())).map(entry => entry[0]);
         for (const typeOption of this.querySelectorAll("#widget-type-select option")) {
             typeOption.disabled = enabledWidgetTypes.includes(typeOption.value) ? false : true;
-            if (!typeSelect.value && !typeOption.disabled) typeSelect.value = typeOption.value;
-            typeSelect.disabled = false;
+            if (!typeOption.disabled && (!typeSelect.value || typeOption.value == this.component.widget.type)) typeSelect.value = typeOption.value;
         }
-
+        if (enabledWidgetTypes.length) typeSelect.disabled = false;
+        
         this.typeSelectCallback();
     }
 
