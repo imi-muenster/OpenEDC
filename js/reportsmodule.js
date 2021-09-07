@@ -294,18 +294,28 @@ const addReport = async () => {
     loadReport(currentReportId);
 }
 
-const editReport = async () => {
+const showReportModal = async () => {
     await import("./components/reports/reportmodal.js");
     const reportModal = document.createElement("report-modal");
-
     reportModal.setReport(reportsHelper.getReport(currentReportId));
 
     document.body.appendChild(reportModal);
+    languageHelper.localize(reportModal);
 }
 
 const setIOListeners = () => {
     $("#reports-section #add-report-button").addEventListener("click", () => addReport());
-    $("#reports-section #edit-report-button").addEventListener("click", () => editReport());
+    $("#reports-section #edit-report-button").addEventListener("click", () => showReportModal());
+
+    document.addEventListener("report-edited", () => {
+        loadReportList();
+        reportsHelper.storeReports();
+    });
+    document.addEventListener("report-removed", event => {
+        reportsHelper.removeReport(event.detail);
+        loadReportList();
+        reportsHelper.storeReports();
+    });
     document.addEventListener("WidgetUpdated", event => {
         reloadWidget(event.detail);
         reportsHelper.storeReports();

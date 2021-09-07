@@ -30,7 +30,7 @@ class ReportModal extends HTMLElement {
                             </div>
                             <div class="buttons mt-5">
                                 <button class="button is-link" id="save-report-button" i18n="save-changes"></button>
-                                <button class="button is-danger" id="remove-report-button" i18n="remove-report"></button>
+                                <button class="button is-danger" id="remove-report-button" i18n="remove"></button>
                                 <button class="button" id="close-report-button" i18n="cancel"></button>
                             </div>
                         </div>
@@ -54,11 +54,13 @@ class ReportModal extends HTMLElement {
 
     saveReport() {
         this.report.name = this.querySelector("#report-name-input").value;
-        document.dispatchEvent(new CustomEvent("report-edited"), { detail: this.report });
+        document.dispatchEvent(new CustomEvent("report-edited"));
+        this.remove();
     }
 
     removeReport() {
-        document.dispatchEvent(new CustomEvent("report-removed"), { detail: this.report });
+        document.dispatchEvent(new CustomEvent("report-removed", { detail: this.report.id }));
+        this.remove();
     }
 }
 

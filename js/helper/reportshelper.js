@@ -123,6 +123,11 @@ export const addReport = async name => {
     return report;
 }
 
+export const removeReport = async id => {
+    reports = reports.filter(report => report.id != id);
+    await storeReports();
+}
+
 export const getWidget = (reportId, widgetId) => {
     const report = getReport(reportId);
     return report.widgets.find(widget => widget.id == widgetId);
