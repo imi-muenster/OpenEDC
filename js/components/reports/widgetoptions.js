@@ -197,7 +197,7 @@ class WidgetOptions extends HTMLElement {
 
         // TODO: If only the name was updated (neither the path nor the type), simply call this.component.update()
         this.hideOptions();
-        document.dispatchEvent(new CustomEvent("WidgetUpdated", { detail: this.component.widget.id }));
+        document.dispatchEvent(new CustomEvent("WidgetEdited", { detail: this.component.widget.id }));
     }
 
     hideOptions() {

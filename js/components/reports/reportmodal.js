@@ -28,10 +28,10 @@ class ReportModal extends HTMLElement {
                                     <input class="input" id="report-name-input" type="text">
                                 </div>
                             </div>
-                            <div class="buttons">
-                                <button class="button is-link is-small" id="save-report-button" i18n="save-changes"></button>
-                                <button class="button is-danger is-small" id="remove-report-button" i18n="remove"></button>
-                                <button class="button is-small" id="close-report-button" i18n="cancel"></button>
+                            <div class="buttons are-small">
+                                <button class="button is-link" id="save-report-button" i18n="save-changes"></button>
+                                <button class="button is-danger" id="remove-report-button" i18n="remove"></button>
+                                <button class="button" id="close-report-button" i18n="cancel"></button>
                             </div>
                         </div>
                     </div>

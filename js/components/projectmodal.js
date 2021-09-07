@@ -108,10 +108,10 @@ class ProjectModal extends HTMLElement {
                             <div class="notification is-link is-light">
                                 <h1 class="title is-4" i18n="export-data"></h1>
                                 <p class="mb-5" i18n="export-data-hint"></p>
-                                <div class="buttons">
-                                    <button class="button is-link is-small" onclick="exportODM()" i18n="export-project"></button>
-                                    <button class="button is-small" onclick="exportODMMetadata()" i18n="export-metadata"></button>
-                                    <button class="button is-small" onclick="exportCSV()" i18n="export-clinicaldata"></button>
+                                <div class="buttons are-small">
+                                    <button class="button is-link" onclick="exportODM()" i18n="export-project"></button>
+                                    <button class="button" onclick="exportODMMetadata()" i18n="export-metadata"></button>
+                                    <button class="button" onclick="exportCSV()" i18n="export-clinicaldata"></button>
                                 </div>
                             </div>
                             <div class="notification is-link is-light">
@@ -129,9 +129,9 @@ class ProjectModal extends HTMLElement {
                             <div class="notification is-danger is-light">
                                 <h1 class="title is-4" i18n="remove-data"></h1>
                                 <p class="mb-5" i18n="remove-data-hint"></p>
-                                <div class="buttons">
-                                    <button class="button is-danger is-small" onclick="showRemoveDataModal(true)" i18n="remove-project"></button>
-                                    <button class="button is-danger is-small" onclick="showRemoveDataModal()" i18n="remove-clinicaldata"></button>
+                                <div class="buttons are-small">
+                                    <button class="button is-danger" onclick="showRemoveDataModal(true)" i18n="remove-project"></button>
+                                    <button class="button is-danger" onclick="showRemoveDataModal()" i18n="remove-clinicaldata"></button>
                                 </div>
                             </div>
                         </div>
@@ -147,7 +147,7 @@ class ProjectModal extends HTMLElement {
                                             <p i18n="no-users-hint"></p>
                                         </div>
                                         <div class="panel-block" id="add-user-button">
-                                            <button class="button is-link is-light is-fullwidth" onclick="addUser()" i18n="add-user" disabled></button>
+                                            <button class="button is-link is-light is-small is-fullwidth" onclick="addUser()" i18n="add-user" disabled></button>
                                         </div>
                                     </nav>
                                 </div>
@@ -181,7 +181,7 @@ class ProjectModal extends HTMLElement {
                                             <label class="label" i18n="user-rights"></label>
                                         </div>
                                     </div>
-                                    <div class="buttons mt-5">
+                                    <div class="buttons are-small mt-5">
                                         <button class="button is-link" id="user-save-button" onclick="saveUser()" i18n="save"></button>
                                         <button class="button is-danger" id="user-remove-button" onclick="removeUser()" i18n="remove"></button>
                                     </div>
@@ -200,7 +200,7 @@ class ProjectModal extends HTMLElement {
                                             <p i18n="no-sites-hint"></p>
                                         </div>
                                         <div class="panel-block" id="add-site-button">
-                                            <button class="button is-link is-light is-fullwidth" onclick="addSite()" i18n="add-site"></button>
+                                            <button class="button is-link is-light is-small is-fullwidth" onclick="addSite()" i18n="add-site"></button>
                                         </div>
                                     </nav>
                                 </div>
@@ -209,7 +209,7 @@ class ProjectModal extends HTMLElement {
                                         <label class="label" i18n="name"></label>
                                         <input class="input" id="site-name-input" type="text">
                                     </div>
-                                    <div class="buttons">
+                                    <div class="buttons are-small">
                                         <button class="button is-link" id="site-save-button" onclick="saveSite()" i18n="save"></button>
                                         <button class="button is-danger" id="site-remove-button" onclick="removeSite()" i18n="remove"></button>
                                     </div>
@@ -233,7 +233,7 @@ class ProjectModal extends HTMLElement {
                                 <label class="label" i18n="protocol-name"></label>
                                 <input class="input" id="protocol-name-input" type="text">
                             </div>
-                            <div class="buttons">
+                            <div class="buttons are-small">
                                 <button class="button is-link" id="save-global-variables-button" onclick="saveStudyNameDescription()" i18n="save-changes"></button>
                                 <button class="button" id="cancel-global-variables-button" onclick="hideProjectModal()" i18n="cancel"></button>
                             </div>

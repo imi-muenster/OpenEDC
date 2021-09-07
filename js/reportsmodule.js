@@ -311,7 +311,7 @@ const setIOListeners = () => {
         reportsHelper.removeReport(event.detail);
         loadReport(null);
     });
-    document.addEventListener("WidgetUpdated", event => {
+    document.addEventListener("WidgetEdited", event => {
         reloadWidget(event.detail);
         reportsHelper.storeReports();
     });
