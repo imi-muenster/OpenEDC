@@ -1,7 +1,7 @@
 import * as metadataWrapper from "../odmwrapper/metadatawrapper.js";
 import * as clinicaldataWrapper from "../odmwrapper/clinicaldatawrapper.js";
 
-export const fromODM = async () => {
+export const getCSVString = async () => {
     const itemPaths = metadataWrapper.getItemPaths();
     const subjectData = await clinicaldataWrapper.getAllData();
 

@@ -543,7 +543,7 @@ window.exportODMMetadata = function() {
 }
 
 window.exportCSV = async function() {
-    ioHelper.download(metadataWrapper.getStudyName()+"_clinicaldata", "csv", await csvConverter.fromODM());
+    ioHelper.download(metadataWrapper.getStudyName()+"_clinicaldata", "csv", await csvConverter.getCSVString());
 }
 
 window.removeAllData = async function() {

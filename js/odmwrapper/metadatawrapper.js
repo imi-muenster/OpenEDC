@@ -1,6 +1,6 @@
 import ODMPath from "./odmpath.js";
 import * as metadataTemplates from "../odmtemplates/metadatatemplates.js";
-import * as odmToHTML from "../helper/odmtohtml.js";
+import * as htmlConverter from "../converter/htmlconverter.js";
 import * as languageHelper from "../helper/languagehelper.js";
 import * as ioHelper from "../helper/iohelper.js";
 
@@ -113,7 +113,7 @@ export function removeMetadata() {
 }
 
 export async function getFormAsHTML(formOID, textAsTextarea) {
-    return odmToHTML.getFormAsHTML(metadata, formOID, {
+    return htmlConverter.getFormAsHTML(metadata, formOID, {
         locale: languageHelper.getCurrentLocale(),
         defaultLocale: languageHelper.untranslatedLocale,
         missingTranslation: languageHelper.getTranslation("missing-translation"),
