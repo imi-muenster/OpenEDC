@@ -8,7 +8,11 @@ class WidgetComponent extends HTMLElement {
     }
 
     connectedCallback() {
-        this.render();
+        // Keeping track of the initialized status is required for drag-and-drop, since the element would be re-rendered after a movement otherwise
+        if (!this.initialized) {
+            this.render();
+            this.initialized = true;
+        }
     }
 
     render() {
@@ -21,6 +25,7 @@ class WidgetComponent extends HTMLElement {
         this.appendChild(this.widgetContent);
         
         this.addOptionsIcon();
+        this.addDragEventListeners();
     }
 
     addOptionsIcon() {
@@ -29,9 +34,22 @@ class WidgetComponent extends HTMLElement {
         const icon = document.createElement("i");
         icon.className = "far fa-ellipsis-h is-clickable";
         icon.onclick = () => this.showOptions();
+        icon.onmousedown = () => this.draggable = true;
+        icon.onmouseup = () => this.draggable = false;
         iconContainer.appendChild(icon);
     
         this.appendChild(iconContainer);
+    }
+
+    addDragEventListeners() {
+        this.ondragstart = event => event.dataTransfer.setData("sourceWidgetId", this.widget.id);
+        this.ondragover = event => event.preventDefault();
+        this.ondragend = () => this.draggable = false;
+        this.ondrop = event => {
+            const source = document.querySelector(`.widget[id="${event.dataTransfer.getData("sourceWidgetId")}"]`);
+            const target = event.target.closest(".widget");
+            if (source.widget.id != target.widget.id) target.parentNode.insertBefore(source, target);
+        };
     }
 
     showOptions() {

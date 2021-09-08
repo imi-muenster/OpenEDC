@@ -4,7 +4,10 @@ class WidgetContent extends HTMLElement {
     }
 
     connectedCallback() {
-        this.render();
+        if (!this.initialized) {
+            this.render();
+            this.initialized = true;
+        }
     }
 
     render() {
