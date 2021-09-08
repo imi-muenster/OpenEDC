@@ -321,5 +321,12 @@ const setIOListeners = () => {
         reloadWidget(event.detail);
         reportsHelper.storeReports();
     });
-    document.addEventListener("WidgetRemoved", event => removeWidget(event.detail));
+    document.addEventListener("WidgetMoved", event => {
+        const widgets = reportsHelper.getReport(currentReportId).widgets;
+        widgets.splice(event.detail.toIndex, 0, widgets.splice(event.detail.fromIndex, 1)[0]);
+        reportsHelper.storeReports();
+    });
+    document.addEventListener("WidgetRemoved", event => {
+        removeWidget(event.detail);
+    });
 }
