@@ -36,10 +36,18 @@ export function process(odmXMLString) {
     odm.querySelectorAll("ItemData[Value='true']").forEach(itemData => itemData.setAttribute("Value", "1"));
     odm.querySelectorAll("ItemData[Value='false']").forEach(itemData => itemData.setAttribute("Value", "0"));
 
-    // Replace hyphens with underscores in element OIDs and its references including formal expressions
+    // Replace hyphens with underscores in element OIDs and its references including formal expressions and prefix an OID that starts with a number
     const oidAttributes = ["OID", "StudyEventOID", "FormOID", "ItemGroupOID", "ItemOID", "CodeListOID", "CollectionExceptionConditionOID", "MethodOID"];
-    oidAttributes.forEach(attribute => odm.querySelectorAll(`[${attribute}]`).forEach(element => element.setAttribute(attribute, element.getAttribute(attribute).replace(/(\w)-(?=\w)/g, "$1_"))));
-    odm.querySelectorAll("FormalExpression").forEach(expression => expression.textContent = expression.textContent.replace(/(\w)-(?=\w)/g, "$1_"));
+    oidAttributes.forEach(attribute => odm.querySelectorAll(`[${attribute}]`).forEach(element => {
+        let attributeValue = element.getAttribute(attribute);
+        if (attributeValue.match(/^\d/)) attributeValue = "E" + attributeValue;
+        element.setAttribute(attribute, attributeValue.replace(/(\w)-(?=\w)/g, "$1_"));
+    }));
+    odm.querySelectorAll("FormalExpression").forEach(expression => {
+        let expressionValue = expression.textContent;
+        if (expressionValue.match(/^\d/)) expressionValue = "E" + expressionValue;
+        expression.textContent = expressionValue.replace(/(\w)-(?=\w)/g, "$1_");
+    });
 
     // Check if the uploaded ODM originates from REDCap and show a warning
     const sourceSystem = odm.querySelector("ODM").getAttribute("SourceSystem");

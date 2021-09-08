@@ -748,11 +748,14 @@ function setIOListeners() {
         };
     }
     $("#id-input").addEventListener("keydown", event => {
+        // Replace the following characters with an underscore required for evaluating formal expressions
         if (["-", "_", "(", ")", "/", "#", " "].includes(event.key)) {
             event.preventDefault();
             if (event.target.selectionStart > 0 && event.target.value[event.target.selectionStart - 1] == "_") return;
             event.target.setRangeText("_", event.target.selectionStart, event.target.selectionEnd, "end");
         };
+        // Do not allow an OID to start with a number which is required for evaluating formal expressions
+        if (!isNaN(event.key) && !event.target.selectionStart) event.preventDefault();
     });
 
     autocompleteHelper.enableAutocomplete($("#collection-condition"), autocompleteHelper.modes.CONDITION);
