@@ -8,6 +8,7 @@ import * as admindataWrapper from "./odmwrapper/admindatawrapper.js";
 import * as odmValidation from "./helper/odmvalidation.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
+import * as csvConverter from "./converter/csvconverter.js";
 import * as pluginRegistrar from "../plugins/registrar.js";
 
 const appVersion = "0.7.1";
@@ -542,11 +543,7 @@ window.exportODMMetadata = function() {
 }
 
 window.exportCSV = async function() {
-    const csvHeaders = metadataWrapper.getCSVHeaders();
-    const csvData = await clinicaldataWrapper.getCSVData(csvHeaders);
-    const csvString = ioHelper.getCSVString(csvHeaders, csvData);
-
-    ioHelper.download(metadataWrapper.getStudyName()+"_clinicaldata", "csv", csvString);
+    ioHelper.download(metadataWrapper.getStudyName()+"_clinicaldata", "csv", await csvConverter.fromODM());
 }
 
 window.removeAllData = async function() {
