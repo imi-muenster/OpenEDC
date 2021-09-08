@@ -47,8 +47,10 @@ class WidgetComponent extends HTMLElement {
         this.ondragend = () => this.draggable = false;
         this.ondrop = event => {
             const source = document.querySelector(`.widget[id="${event.dataTransfer.getData("sourceWidgetId")}"]`);
+            const sourceIndex = Array.from(source.parentNode.children).indexOf(source);
             const target = event.target.closest(".widget");
-            if (source.widget.id != target.widget.id) target.parentNode.insertBefore(source, target);
+            const targetIndex = Array.from(target.parentNode.children).indexOf(target);
+            if (source.widget.id != target.widget.id) target.parentNode.insertBefore(source, sourceIndex > targetIndex ? target : target.nextSibling);
         };
     }
 
