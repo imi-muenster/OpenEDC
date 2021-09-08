@@ -1,10 +1,10 @@
-import * as ioHelper from "./iohelper.js";
-import * as languageHelper from "./languagehelper.js";
+import * as ioHelper from "../helper/iohelper.js";
+import * as languageHelper from "../helper/languagehelper.js";
 import * as metadataTemplates from "../odmtemplates/metadatatemplates.js";
 
 // This function is used to validate an imported ODM file and prepare it before it is further processed
 // Preparing can include the removal of forgein namespaces, ordering metadata elements according to their order number, adjusting the ODM version, handling translated texts without lang attribute, etc.
-export function process(odmXMLString) {
+export function validateImport(odmXMLString) {
     let odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
 
     // Basic file checks

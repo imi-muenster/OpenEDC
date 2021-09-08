@@ -5,9 +5,9 @@ import * as clinicaldataWrapper from "./odmwrapper/clinicaldatawrapper.js";
 import * as reportsModule from "./reportsmodule.js";
 import * as admindataModule from "./admindatamodule.js";
 import * as admindataWrapper from "./odmwrapper/admindatawrapper.js";
-import * as odmValidation from "./helper/odmvalidation.js";
 import * as ioHelper from "./helper/iohelper.js";
 import * as languageHelper from "./helper/languagehelper.js";
+import * as odmConverter from "./converter/odmconverter.js";
 import * as csvConverter from "./converter/csvconverter.js";
 import * as pluginRegistrar from "../plugins/registrar.js";
 
@@ -288,7 +288,7 @@ window.openODM = async function() {
 
 function validateODM(content) {
     try {
-        return odmValidation.process(content);
+        return odmConverter.validateImport(content);
     } catch (error) {
         ioHelper.showMessage(languageHelper.getTranslation("error"), error);
         return;
