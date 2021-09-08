@@ -1,13 +1,9 @@
-const $ = query => odm.querySelector(query);
-const $$ = query => odm.querySelectorAll(query);
+import * as metadataWrapper from "../odmwrapper/metadatawrapper.js";
 
-let odm = null;
-let options = {};
+const $ = query => metadataWrapper.getMetadata().querySelector(query);
+const $$ = query => metadataWrapper.getMetadata().querySelectorAll(query);
 
-export function getFormAsHTML(odmParam, formOID, optionsParam) {
-    odm = odmParam;
-    options = optionsParam;
-
+export function getFormAsHTML(formOID, options) {
     const formAsHTML = document.createElement("div");
     formAsHTML.id = "odm-html-content";
 
@@ -39,7 +35,7 @@ export function getFormAsHTML(odmParam, formOID, optionsParam) {
             itemQuestion.innerHTML += itemRef.getAttribute("Mandatory") == "Yes" ? " (*)" : "";
             itemField.appendChild(itemQuestion);
 
-            const itemInput = getItemInput(itemDef, itemGroupOID);
+            const itemInput = getItemInput(itemDef, itemGroupOID, options);
             itemField.appendChild(itemInput);
             itemGroupContent.appendChild(itemField);
         }
@@ -49,11 +45,10 @@ export function getFormAsHTML(odmParam, formOID, optionsParam) {
         formAsHTML.appendChild(itemGroupContent);
     }
 
-    odm = null;
     return formAsHTML;
 }
 
-function getItemInput(itemDef, itemGroupOID) {
+function getItemInput(itemDef, itemGroupOID, options) {
     const inputContainer = document.createElement("div");
     inputContainer.className = "field";
 
@@ -63,7 +58,7 @@ function getItemInput(itemDef, itemGroupOID) {
         const codeListOID = codeListRef.getAttribute("CodeListOID");
         const codeListItems = $$(`CodeList[OID="${codeListOID}"] CodeListItem`);
         if (codeListItems.length >= 10) {
-            const selectInput = getSelectInput(codeListItems, itemDef.getAttribute("OID"));
+            const selectInput = getSelectInput(codeListItems, itemDef.getAttribute("OID"), options);
             inputContainer.appendChild(selectInput);
         } else {
             for (let codeListItem of codeListItems) {
@@ -95,14 +90,14 @@ function getItemInput(itemDef, itemGroupOID) {
         addonUnit.appendChild(unit);
         inputContainer.appendChild(addonUnit);
     } else {
-        const textInput = getTextInput(itemDef);
+        const textInput = getTextInput(itemDef, options);
         inputContainer.appendChild(textInput);
     }
 
     return inputContainer;
 }
 
-const getSelectInput = (codeListItems, itemOID) => {
+const getSelectInput = (codeListItems, itemOID, options) => {
     const selectContainer = document.createElement("div");
     selectContainer.className = "select is-fullwidth";
     const select = document.createElement("select");
@@ -137,7 +132,7 @@ const getRadioInput = (value, translatedText, itemOID, itemGroupOID) => {
     return radioContainer;
 }
 
-const getTextInput = itemDef => {
+const getTextInput = (itemDef, options) => {
     let input = document.createElement("input");
     input.type = "text";
     input.className = "input";

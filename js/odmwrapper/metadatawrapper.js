@@ -113,7 +113,7 @@ export function removeMetadata() {
 }
 
 export async function getFormAsHTML(formOID, textAsTextarea) {
-    return htmlConverter.getFormAsHTML(metadata, formOID, {
+    return htmlConverter.getFormAsHTML(formOID, {
         locale: languageHelper.getCurrentLocale(),
         defaultLocale: languageHelper.untranslatedLocale,
         missingTranslation: languageHelper.getTranslation("missing-translation"),
