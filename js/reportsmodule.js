@@ -2,6 +2,7 @@ import ODMPath from "./odmwrapper/odmpath.js";
 import * as reportsHelper from "./helper/reportshelper.js";
 import * as metadataWrapper from "./odmwrapper/metadatawrapper.js";
 import * as clinicaldataWrapper from "./odmwrapper/clinicaldatawrapper.js";
+import * as admindataWrapper from "./odmwrapper/admindatawrapper.js";
 import * as languageHelper from "./helper/languagehelper.js";
 import * as ioHelper from "./helper/iohelper.js";
 
@@ -210,8 +211,10 @@ const getFrequencyWidgetData = widget => {
                 labels = Array.from({ length: 12 }, (_, i) => new Date(2000, i, 1)).map(date => date.toLocaleDateString(languageHelper.getCurrentLocale(), { month: "short" }));
                 break;
             case "siteOID":
-                values = [];
-                labels = [];
+                values = ["no-site"];
+                labels = [languageHelper.getTranslation("no-site")];
+                admindataWrapper.getSites().forEach(site => values.push(site.getOID()));
+                admindataWrapper.getSites().forEach(site => labels.push(site.getName()));
                 break;
             default:
                 return;

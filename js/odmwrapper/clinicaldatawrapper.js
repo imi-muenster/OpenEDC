@@ -623,7 +623,7 @@ export async function getAllData(options) {
             const createdDate = subjectODMData.querySelector("AuditRecord DateTimeStamp") ? new Date(subjectODMData.querySelector("AuditRecord DateTimeStamp").textContent) : null;
             subjectData["createdYear"] = createdDate ? createdDate.getFullYear() : null;
             subjectData["createdMonth"] = createdDate ? createdDate.getMonth() + 1 : null;
-            subjectData["siteOID"] = subjectODMData.querySelector("SiteRef") ? subjectODMData.querySelector("SiteRef").getAttribute("LocationOID") : null;
+            subjectData["siteOID"] = subjectODMData.querySelector("SiteRef") ? subjectODMData.querySelector("SiteRef").getAttribute("LocationOID") : "no-site";
         }
 
         data[subject.key] = subjectData;
