@@ -292,16 +292,17 @@ const addWidget = async () => {
 }
 
 const loadReportList = () => {
-    Object.values(reportsHelper.Report.types).forEach(type => $$(`#${type}-reports-list a`).removeElements());
+    $$("#standard-reports-list a").removeElements();
+    $$("#custom-reports-list a").removeElements();
     for (const report of reportsHelper.getReports()) {
         const reportElement = document.createElement("a");
-        reportElement.textContent = report.type == reportsHelper.Report.types.STANDARD ? languageHelper.getTranslation(report.name) : report.name;
+        reportElement.textContent = report.isStandard ? languageHelper.getTranslation(report.name) : report.name;
         reportElement.setAttribute("id", report.id);
         reportElement.onclick = () => loadReport(report.id);
         if (currentReportId == report.id) reportElement.activate();
-        $(`#${report.type}-reports-list`).appendChild(reportElement);
+        report.isStandard ? $("#standard-reports-list").appendChild(reportElement) : $("#custom-reports-list").appendChild(reportElement);
     }
-    currentReportId ? $("#edit-report-button").show() : $("#edit-report-button").hide();
+    currentReportId && !reportsHelper.getReport(currentReportId).isStandard ? $("#edit-report-button").show() : $("#edit-report-button").hide();
 }
 
 const loadReport = id => {    
@@ -311,7 +312,7 @@ const loadReport = id => {
 }
 
 const addReport = async () => {
-    const report = await reportsHelper.addReport(languageHelper.getTranslation("new-report"), reportsHelper.Report.types.CUSTOM);
+    const report = await reportsHelper.addReport(languageHelper.getTranslation("new-report"));
     currentReportId = report.id;
     loadReportList();
     loadReport(currentReportId);

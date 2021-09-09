@@ -1,22 +1,15 @@
-import * as languageHelper from "./languagehelper.js";
 import * as ioHelper from "./iohelper.js";
 
 export class Report {
-    // TODO: Use isStandard property similar to Widget class
-    static types = {
-        STANDARD: "standard",
-        CUSTOM: "custom"
-    };
-
     static fromObject(object) {
         return Object.assign(new Report(), object);
     }
 
-    constructor(id, name, type, widgets) {
+    constructor(id, name, widgets, isStandard) {
         this.id = id;
         this.name = name;
-        this.type = type;
         this.widgets = widgets ?? [];
+        this.isStandard = isStandard;
     }
 }
 
@@ -100,11 +93,7 @@ let reports = [];
 export const init = async () => {
     await loadReports();
 
-    // Add initial standard and one custom report
-    if (!reports.length) {
-        await addStandardReports();
-        await addReport(languageHelper.getTranslation("new-report"), Report.types.CUSTOM);
-    };
+    if (!reports.length) await addStandardReports();
 }
 
 export const storeReports = async () => {
@@ -130,9 +119,9 @@ export const getReport = reportId => {
     return reports.find(report => report.id == reportId);
 }
 
-export const addReport = async (name, type) => {
+export const addReport = async name => {
     const id = reports.reduce((highestId, report) => report.id >= highestId ? report.id : highestId, 0) + 1;
-    const report = new Report(id, name, type);
+    const report = new Report(id, name);
     reports.push(report);
     await storeReports();
 
@@ -171,8 +160,8 @@ const addStandardReports = async () => {
     const createdYearWidget = new Widget(1, "year-of-inclusion", Widget.types.BAR, ["createdYear"], Widget.sizes.SMALL, true);
     const createdMonthWidget = new Widget(2, "month-of-inclusion", Widget.types.BAR, ["createdMonth"], Widget.sizes.MEDIUM, true);
     const siteWidget = new Widget(3, "site", Widget.types.BAR, ["siteOID"], Widget.sizes.MEDIUM, true);
-    const inclusions = new Report(1, "inclusion-report", Report.types.STANDARD, [createdYearWidget, createdMonthWidget, siteWidget]);
-    reports.push(inclusions);
+    const inclusionReport = new Report(1, "inclusion-report", [createdYearWidget, createdMonthWidget, siteWidget], true);
+    reports.push(inclusionReport);
 
     await storeReports();
 }
