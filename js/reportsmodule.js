@@ -51,6 +51,10 @@ export async function show() {
     loadWidgets();
 }
 
+export function reload() {
+    loadReport(currentReportId);
+}
+
 export const loadWidgets = () => {
     widgetComponents = [];
     activeFilters = [];
@@ -291,7 +295,7 @@ const loadReportList = () => {
     Object.values(reportsHelper.Report.types).forEach(type => $$(`#${type}-reports-list a`).removeElements());
     for (const report of reportsHelper.getReports()) {
         const reportElement = document.createElement("a");
-        reportElement.textContent = report.name;
+        reportElement.textContent = report.type == reportsHelper.Report.types.STANDARD ? languageHelper.getTranslation(report.name) : report.name;
         reportElement.setAttribute("id", report.id);
         reportElement.onclick = () => loadReport(report.id);
         if (currentReportId == report.id) reportElement.activate();

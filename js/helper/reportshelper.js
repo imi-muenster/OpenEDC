@@ -2,6 +2,7 @@ import * as languageHelper from "./languagehelper.js";
 import * as ioHelper from "./iohelper.js";
 
 export class Report {
+    // TODO: Use isStandard property similar to Widget class
     static types = {
         STANDARD: "standard",
         CUSTOM: "custom"
@@ -170,7 +171,7 @@ const addStandardReports = async () => {
     const createdYearWidget = new Widget(1, "year-of-inclusion", Widget.types.BAR, ["createdYear"], Widget.sizes.SMALL, true);
     const createdMonthWidget = new Widget(2, "month-of-inclusion", Widget.types.BAR, ["createdMonth"], Widget.sizes.MEDIUM, true);
     const siteWidget = new Widget(3, "site", Widget.types.BAR, ["siteOID"], Widget.sizes.MEDIUM, true);
-    const inclusions = new Report(1, "inclusion-statistics", Report.types.STANDARD, [createdYearWidget, createdMonthWidget, siteWidget]);
+    const inclusions = new Report(1, "inclusion-report", Report.types.STANDARD, [createdYearWidget, createdMonthWidget, siteWidget]);
     reports.push(inclusions);
 
     await storeReports();
