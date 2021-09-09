@@ -103,14 +103,6 @@ const calculateWidgetData = () => {
     $("#reports-section h2").textContent = activeFilters.length + " " + languageHelper.getTranslation("active-filters");
 }
 
-const getMonthsInteger = () => {
-    return Array.from({ length: 12 }, (_, i) => i + 1);
-}
-
-const getMonthsShort = locale => {
-    return Array.from({ length: 12 }, (_, i) => new Date(2000, i, 1)).map(date => date.toLocaleDateString(locale, { month: "short" }));
-}
-
 const filterCallback = (itemPath, value) => {
     if (value) addFilter(itemPath, value);
     else removeFilter(itemPath);
@@ -204,24 +196,45 @@ const getCustomChart = widget => {
 }
 
 const getFrequencyWidgetData = itemPath => {
-    const itemOID = ODMPath.parseAbsolute(itemPath).itemOID;
-
     let values, labels;
-    switch (metadataWrapper.getElementDefByOID(itemOID).getDataType()) {
-        case metadataWrapper.dataTypes.CODELISTTEXT:
-        case metadataWrapper.dataTypes.CODELISTINTEGER:
-        case metadataWrapper.dataTypes.CODELISTFLOAT:
-            const codeListItems = metadataWrapper.getCodeListItemsByItem(itemOID);
-            values = codeListItems.map(item => item.getCodedValue());
-            labels = codeListItems.map(item => item.getTranslatedDecode(languageHelper.getCurrentLocale()));
-            break;
-        case metadataWrapper.dataTypes.BOOLEAN:
-            values = ["1", "0"];
-            labels = [languageHelper.getTranslation("yes"), languageHelper.getTranslation("no")];
-            break;
-        default:
-            return;
+
+    // TODO: Move conditional logic to dedicated functions
+    if (reportsHelper.getReport(currentReportId).type == reportsHelper.Report.types.STANDARD) {
+        switch (itemPath) {
+            case "createdYear":
+                values = [2021]; // TODO: use getUniqueValues() instead
+                labels = [2021]; // TODO: use getUniqueValues() instead
+                break;
+            case "createdMonth":
+                values = Array.from({ length: 12 }, (_, i) => i + 1);
+                labels = Array.from({ length: 12 }, (_, i) => new Date(2000, i, 1)).map(date => date.toLocaleDateString(languageHelper.getCurrentLocale(), { month: "short" }));
+                break;
+            case "siteOID":
+                values = [];
+                labels = [];
+                break;
+            default:
+                return;
+        }
+    } else {
+        const itemOID = ODMPath.parseAbsolute(itemPath).itemOID;
+        switch (metadataWrapper.getElementDefByOID(itemOID).getDataType()) {
+            case metadataWrapper.dataTypes.CODELISTTEXT:
+            case metadataWrapper.dataTypes.CODELISTINTEGER:
+            case metadataWrapper.dataTypes.CODELISTFLOAT:
+                const codeListItems = metadataWrapper.getCodeListItemsByItem(itemOID);
+                values = codeListItems.map(item => item.getCodedValue());
+                labels = codeListItems.map(item => item.getTranslatedDecode(languageHelper.getCurrentLocale()));
+                break;
+            case metadataWrapper.dataTypes.BOOLEAN:
+                values = ["1", "0"];
+                labels = [languageHelper.getTranslation("yes"), languageHelper.getTranslation("no")];
+                break;
+            default:
+                return;
+        }
     }
+    
     
     return new reportsHelper.FrequencyWidgetData(
         itemPath,
