@@ -11,11 +11,11 @@ export class Report {
         return Object.assign(new Report(), object);
     }
 
-    constructor(id, name, type) {
+    constructor(id, name, type, widgets) {
         this.id = id;
         this.name = name;
         this.type = type;
-        this.widgets = [];
+        this.widgets = widgets ?? [];
     }
 }
 
@@ -37,12 +37,12 @@ export class Widget {
         return Object.assign(new Widget(), object);
     }
 
-    constructor(id, name) {
+    constructor(id, name, type, itemPaths) {
         this.id = id;
         this.name = name;
-        this.type = null;
+        this.type = type;
+        this.itemPaths = itemPaths ?? [];
         this.size = Widget.sizes.SMALL;
-        this.itemPaths = [];
     }
 
     set size(value) {
@@ -100,7 +100,8 @@ export const init = async () => {
 
     // Add initial standard and one custom report
     if (!reports.length) {
-        addReport(languageHelper.getTranslation("new-report"), Report.types.CUSTOM);
+        await addStandardReports();
+        await addReport(languageHelper.getTranslation("new-report"), Report.types.CUSTOM);
     };
 }
 
@@ -159,5 +160,16 @@ export const addWidget = async (reportId, name) => {
 export const removeWidget = async (reportId, widgetId) => {
     const report = getReport(reportId);
     report.widgets = report.widgets.filter(widget => widget.id != widgetId);
+    await storeReports();
+}
+
+const addStandardReports = async () => {
+    // Inclusion statistic report
+    const createdYearWidget = new Widget(1, "Inclusion Year", Widget.types.BAR, ["createdYear"]);
+    const createdMonthWidget = new Widget(2, "Inclusion Month", Widget.types.BAR, ["createdMonth"]);
+    const siteWidget = new Widget(3, "Site", Widget.types.BAR, ["siteOID"]);
+    const inclusionStatistic = new Report(1, "Inclusion Statistic", Report.types.STANDARD, [createdYearWidget, createdMonthWidget, siteWidget]);
+    reports.push(inclusionStatistic);
+
     await storeReports();
 }

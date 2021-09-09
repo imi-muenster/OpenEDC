@@ -270,7 +270,7 @@ const addWidget = async () => {
 }
 
 const loadReportList = () => {
-    Object.values(reportsHelper.Report.types).forEach(type => $(`#${type}-reports-list`).removeElements());
+    Object.values(reportsHelper.Report.types).forEach(type => $$(`#${type}-reports-list a`).removeElements());
     for (const report of reportsHelper.getReports()) {
         const reportElement = document.createElement("a");
         reportElement.textContent = report.name;
