@@ -197,54 +197,55 @@ const getCustomChart = widget => {
 }
 
 const getFrequencyWidgetData = widget => {
-    let values, labels;
-
-    // TODO: Move conditional logic to dedicated functions
-    if (widget.isStandard) {
-        switch (widget.itemPaths[0]) {
-            case "createdYear":
-                values = [2021]; // TODO: use getUniqueValues() instead
-                labels = [2021]; // TODO: use getUniqueValues() instead
-                break;
-            case "createdMonth":
-                values = Array.from({ length: 12 }, (_, i) => i + 1);
-                labels = Array.from({ length: 12 }, (_, i) => new Date(2000, i, 1)).map(date => date.toLocaleDateString(languageHelper.getCurrentLocale(), { month: "short" }));
-                break;
-            case "siteOID":
-                values = ["no-site"];
-                labels = [languageHelper.getTranslation("no-site")];
-                admindataWrapper.getSites().forEach(site => values.push(site.getOID()));
-                admindataWrapper.getSites().forEach(site => labels.push(site.getName()));
-                break;
-            default:
-                return;
-        }
-    } else {
-        const itemOID = ODMPath.parseAbsolute(widget.itemPaths[0]).itemOID;
-        switch (metadataWrapper.getElementDefByOID(itemOID).getDataType()) {
-            case metadataWrapper.dataTypes.CODELISTTEXT:
-            case metadataWrapper.dataTypes.CODELISTINTEGER:
-            case metadataWrapper.dataTypes.CODELISTFLOAT:
-                const codeListItems = metadataWrapper.getCodeListItemsByItem(itemOID);
-                values = codeListItems.map(item => item.getCodedValue());
-                labels = codeListItems.map(item => item.getTranslatedDecode(languageHelper.getCurrentLocale()));
-                break;
-            case metadataWrapper.dataTypes.BOOLEAN:
-                values = ["1", "0"];
-                labels = [languageHelper.getTranslation("yes"), languageHelper.getTranslation("no")];
-                break;
-            default:
-                return;
-        }
-    }
-    
-    
+    const [values, labels] = widget.isStandard ? getStandardWidgetValuesLabels(widget) : getCustomWidgetValuesLabels(widget);
     return new reportsHelper.FrequencyWidgetData(
         widget.itemPaths[0],
         Array(values.length),
         labels,
         values
     );
+}
+
+const getStandardWidgetValuesLabels = widget => {
+    let values, labels;
+    switch (widget.itemPaths[0]) {
+        case "createdYear":
+            values = labels = Object.values(dataset).reduce((values, entry) => {
+                if (!values.includes(entry["createdYear"])) values.push(entry["createdYear"]);
+                return values;
+            }, new Array());
+            break;
+        case "createdMonth":
+            values = Array.from({ length: 12 }, (_, i) => i + 1);
+            labels = Array.from({ length: 12 }, (_, i) => new Date(2000, i, 1)).map(date => date.toLocaleDateString(languageHelper.getCurrentLocale(), { month: "short" }));
+            break;
+        case "siteOID":
+            values = ["no-site"];
+            labels = [languageHelper.getTranslation("no-site")];
+            admindataWrapper.getSites().forEach(site => values.push(site.getOID()));
+            admindataWrapper.getSites().forEach(site => labels.push(site.getName()));
+    }
+
+    return [values, labels];
+}
+
+const getCustomWidgetValuesLabels = widget => {
+    let values, labels;
+    const itemOID = ODMPath.parseAbsolute(widget.itemPaths[0]).itemOID;
+    switch (metadataWrapper.getElementDefByOID(itemOID).getDataType()) {
+        case metadataWrapper.dataTypes.CODELISTTEXT:
+        case metadataWrapper.dataTypes.CODELISTINTEGER:
+        case metadataWrapper.dataTypes.CODELISTFLOAT:
+            const codeListItems = metadataWrapper.getCodeListItemsByItem(itemOID);
+            values = codeListItems.map(item => item.getCodedValue());
+            labels = codeListItems.map(item => item.getTranslatedDecode(languageHelper.getCurrentLocale()));
+            break;
+        case metadataWrapper.dataTypes.BOOLEAN:
+            values = ["1", "0"];
+            labels = [languageHelper.getTranslation("yes"), languageHelper.getTranslation("no")];
+    }
+
+    return [values, labels];
 }
 
 const getDiscreteWidgetData = itemPaths => {
