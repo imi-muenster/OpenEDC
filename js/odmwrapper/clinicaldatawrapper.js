@@ -601,7 +601,7 @@ export async function getSubjectsHavingDataForElement(elementType , odmPath) {
 }
 
 // TODO: This function is performance critical -- identify ways to improve the performance (e.g., batch loading of subject data using Promise.all())
-export async function getAllData() {
+export async function getAllData(options) {
     const data = {};
     for (const subject of subjects) {
         const subjectODMData = await ioHelper.getODM(subject.fileName);
@@ -618,6 +618,12 @@ export async function getAllData() {
             const value = itemData.getAttribute("Value");
             if (value && value != "") subjectData[path.toString()] = value;
             else delete subjectData[path.toString()];
+        }
+        if (options && options.includeInfo) {
+            const createdDate = subjectODMData.querySelector("AuditRecord DateTimeStamp") ? new Date(subjectODMData.querySelector("AuditRecord DateTimeStamp").textContent) : null;
+            subjectData["createdYear"] = createdDate ? createdDate.getFullYear() : null;
+            subjectData["createdMonth"] = createdDate ? createdDate.getMonth() + 1 : null;
+            subjectData["siteOID"] = subjectODMData.querySelector("SiteRef") ? subjectODMData.querySelector("SiteRef").getAttribute("LocationOID") : null;
         }
 
         data[subject.key] = subjectData;

@@ -45,7 +45,7 @@ export async function show() {
     // Load data
     const showLoadingIndicator = ioHelper.hasServerURL() || clinicaldataWrapper.getSubjects().length > 2500;
     if (showLoadingIndicator) ioHelper.showToast(languageHelper.getTranslation("data-loading-hint"));
-    dataset = await clinicaldataWrapper.getAllData();
+    dataset = await clinicaldataWrapper.getAllData({ includeInfo: true });
     if (showLoadingIndicator) ioHelper.showToast(languageHelper.getTranslation("data-loaded-hint"), 2500);
     
     loadWidgets();
