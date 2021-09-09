@@ -191,7 +191,7 @@ const getCustomChart = widget => {
             const frequencyWidgetData = getFrequencyWidgetData(widget);
             return new CustomBarChart(frequencyWidgetData, filterCallback);
         case reportsHelper.Widget.types.SCATTER:
-            const discreteWidgetData = getDiscreteWidgetData(widget.itemPaths);
+            const discreteWidgetData = getDiscreteWidgetData(widget);
             return new CustomScatterChart(discreteWidgetData, hoverCallback);
     }
 }
@@ -248,18 +248,18 @@ const getCustomWidgetValuesLabels = widget => {
     return [values, labels];
 }
 
-const getDiscreteWidgetData = itemPaths => {
+const getDiscreteWidgetData = widget => {
     // TODO: Evaluate performance of .map() in this scenario
     const values = Object.entries(dataset).map(entry => {
         return {
-            x: entry[1][itemPaths[0]],
-            y: itemPaths.length > 1 ? entry[1][itemPaths[1]] : Math.random(),
+            x: entry[1][widget.itemPaths[0]],
+            y: widget.itemPaths.length > 1 ? entry[1][widget.itemPaths[1]] : Math.random(),
             label: entry[0],
             filtered: false
         };
     });
     return new reportsHelper.DiscreteWidgetData(
-        itemPaths,
+        widget.itemPaths,
         values,
         []
     );
