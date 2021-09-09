@@ -1,13 +1,20 @@
+import * as languageHelper from "./languagehelper.js";
 import * as ioHelper from "./iohelper.js";
 
 export class Report {
+    static types = {
+        STANDARD: "standard",
+        CUSTOM: "custom"
+    };
+
     static fromObject(object) {
         return Object.assign(new Report(), object);
     }
 
-    constructor(id, name) {
+    constructor(id, name, type) {
         this.id = id;
         this.name = name;
+        this.type = type;
         this.widgets = [];
     }
 }
@@ -24,7 +31,7 @@ export class Widget {
         PIE: "pie-chart",
         DONUT: "donut-chart",
         SCATTER: "scatter-chart"
-    }
+    };
 
     static fromObject(object) {
         return Object.assign(new Widget(), object);
@@ -33,6 +40,7 @@ export class Widget {
     constructor(id, name) {
         this.id = id;
         this.name = name;
+        this.type = null;
         this.size = Widget.sizes.SMALL;
         this.itemPaths = [];
     }
@@ -89,6 +97,11 @@ let reports = [];
 
 export const init = async () => {
     await loadReports();
+
+    // Add initial standard and one custom report
+    if (!reports.length) {
+        addReport(languageHelper.getTranslation("new-report"), Report.types.CUSTOM);
+    };
 }
 
 export const storeReports = async () => {
@@ -114,9 +127,9 @@ export const getReport = reportId => {
     return reports.find(report => report.id == reportId);
 }
 
-export const addReport = async name => {
+export const addReport = async (name, type) => {
     const id = reports.reduce((highestId, report) => report.id >= highestId ? report.id : highestId, 0) + 1;
-    const report = new Report(id, name);
+    const report = new Report(id, name, type);
     reports.push(report);
     await storeReports();
 

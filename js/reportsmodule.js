@@ -28,7 +28,6 @@ export async function init() {
     await import("../lib/chart-datalabels.js");
     
     await reportsHelper.init();
-    if (!reportsHelper.getReports().length) reportsHelper.addReport(languageHelper.getTranslation("new-report"));
 
     setIOListeners();
 }
@@ -271,14 +270,14 @@ const addWidget = async () => {
 }
 
 const loadReportList = () => {
-    $$("#reports-list a").removeElements();
+    Object.values(reportsHelper.Report.types).forEach(type => $(`#${type}-reports-list`).removeElements());
     for (const report of reportsHelper.getReports()) {
         const reportElement = document.createElement("a");
         reportElement.textContent = report.name;
         reportElement.setAttribute("id", report.id);
         reportElement.onclick = () => loadReport(report.id);
         if (currentReportId == report.id) reportElement.activate();
-        $("#reports-list").appendChild(reportElement);
+        $(`#${report.type}-reports-list`).appendChild(reportElement);
     }
     currentReportId ? $("#edit-report-button").show() : $("#edit-report-button").hide();
 }
@@ -290,7 +289,7 @@ const loadReport = id => {
 }
 
 const addReport = async () => {
-    const report = await reportsHelper.addReport(languageHelper.getTranslation("new-report"));
+    const report = await reportsHelper.addReport(languageHelper.getTranslation("new-report"), reportsHelper.Report.types.CUSTOM);
     currentReportId = report.id;
     loadReportList();
     loadReport(currentReportId);
