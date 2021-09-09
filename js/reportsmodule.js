@@ -187,7 +187,7 @@ const addWidgetToGrid = widget => {
 const getCustomChart = widget => {
     switch (widget.type) {
         case reportsHelper.Widget.types.BAR:
-            const frequencyWidgetData = getFrequencyWidgetData(widget.itemPaths[0]);
+            const frequencyWidgetData = getFrequencyWidgetData(widget);
             return new CustomBarChart(frequencyWidgetData, filterCallback);
         case reportsHelper.Widget.types.SCATTER:
             const discreteWidgetData = getDiscreteWidgetData(widget.itemPaths);
@@ -195,12 +195,12 @@ const getCustomChart = widget => {
     }
 }
 
-const getFrequencyWidgetData = itemPath => {
+const getFrequencyWidgetData = widget => {
     let values, labels;
 
     // TODO: Move conditional logic to dedicated functions
-    if (reportsHelper.getReport(currentReportId).type == reportsHelper.Report.types.STANDARD) {
-        switch (itemPath) {
+    if (widget.isStandard) {
+        switch (widget.itemPaths[0]) {
             case "createdYear":
                 values = [2021]; // TODO: use getUniqueValues() instead
                 labels = [2021]; // TODO: use getUniqueValues() instead
@@ -217,7 +217,7 @@ const getFrequencyWidgetData = itemPath => {
                 return;
         }
     } else {
-        const itemOID = ODMPath.parseAbsolute(itemPath).itemOID;
+        const itemOID = ODMPath.parseAbsolute(widget.itemPaths[0]).itemOID;
         switch (metadataWrapper.getElementDefByOID(itemOID).getDataType()) {
             case metadataWrapper.dataTypes.CODELISTTEXT:
             case metadataWrapper.dataTypes.CODELISTINTEGER:
@@ -237,7 +237,7 @@ const getFrequencyWidgetData = itemPath => {
     
     
     return new reportsHelper.FrequencyWidgetData(
-        itemPath,
+        widget.itemPaths[0],
         Array(values.length),
         labels,
         values

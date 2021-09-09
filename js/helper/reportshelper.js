@@ -37,12 +37,13 @@ export class Widget {
         return Object.assign(new Widget(), object);
     }
 
-    constructor(id, name, type, itemPaths, size) {
+    constructor(id, name, type, itemPaths, size, isStandard) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.itemPaths = itemPaths ?? [];
         this.size = size ?? Widget.sizes.SMALL;
+        this.isStandard = isStandard;
     }
 
     set size(value) {
@@ -163,11 +164,12 @@ export const removeWidget = async (reportId, widgetId) => {
     await storeReports();
 }
 
+// TODO: Make more generic via a new function to get standard widgets
 const addStandardReports = async () => {
     // Inclusions report
-    const createdYearWidget = new Widget(1, "Inclusion Year", Widget.types.BAR, ["createdYear"]);
-    const createdMonthWidget = new Widget(2, "Inclusion Month", Widget.types.BAR, ["createdMonth"], Widget.sizes.MEDIUM);
-    const siteWidget = new Widget(3, "Site", Widget.types.BAR, ["siteOID"], Widget.sizes.MEDIUM);
+    const createdYearWidget = new Widget(1, "Inclusion Year", Widget.types.BAR, ["createdYear"], Widget.sizes.SMALL, true);
+    const createdMonthWidget = new Widget(2, "Inclusion Month", Widget.types.BAR, ["createdMonth"], Widget.sizes.MEDIUM, true);
+    const siteWidget = new Widget(3, "Site", Widget.types.BAR, ["siteOID"], Widget.sizes.MEDIUM, true);
     const inclusions = new Report(1, "Inclusions", Report.types.STANDARD, [createdYearWidget, createdMonthWidget, siteWidget]);
     reports.push(inclusions);
 
