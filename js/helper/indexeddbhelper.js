@@ -6,7 +6,9 @@ export const init = async fileTypes => {
     await new Promise(resolve => setTimeout(() => resolve(), 100));
 
     const request = indexedDB.open("OpenEDC", 2);
-    request.onupgradeneeded = () => fileTypes.forEach(fileType => request.result.createObjectStore(fileType));
+    request.onupgradeneeded = () => fileTypes.forEach(fileType => {
+        if (!request.result.objectStoreNames.contains(fileType)) request.result.createObjectStore(fileType);
+    });
 
     db = await promisifyRequest(request);
 }
