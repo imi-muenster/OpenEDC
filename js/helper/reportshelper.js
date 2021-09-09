@@ -37,12 +37,12 @@ export class Widget {
         return Object.assign(new Widget(), object);
     }
 
-    constructor(id, name, type, itemPaths) {
+    constructor(id, name, type, itemPaths, size) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.itemPaths = itemPaths ?? [];
-        this.size = Widget.sizes.SMALL;
+        this.size = size ?? Widget.sizes.SMALL;
     }
 
     set size(value) {
@@ -164,12 +164,12 @@ export const removeWidget = async (reportId, widgetId) => {
 }
 
 const addStandardReports = async () => {
-    // Inclusion statistic report
+    // Inclusions report
     const createdYearWidget = new Widget(1, "Inclusion Year", Widget.types.BAR, ["createdYear"]);
-    const createdMonthWidget = new Widget(2, "Inclusion Month", Widget.types.BAR, ["createdMonth"]);
-    const siteWidget = new Widget(3, "Site", Widget.types.BAR, ["siteOID"]);
-    const inclusionStatistic = new Report(1, "Inclusion Statistic", Report.types.STANDARD, [createdYearWidget, createdMonthWidget, siteWidget]);
-    reports.push(inclusionStatistic);
+    const createdMonthWidget = new Widget(2, "Inclusion Month", Widget.types.BAR, ["createdMonth"], Widget.sizes.MEDIUM);
+    const siteWidget = new Widget(3, "Site", Widget.types.BAR, ["siteOID"], Widget.sizes.MEDIUM);
+    const inclusions = new Report(1, "Inclusions", Report.types.STANDARD, [createdYearWidget, createdMonthWidget, siteWidget]);
+    reports.push(inclusions);
 
     await storeReports();
 }
