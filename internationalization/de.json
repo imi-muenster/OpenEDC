@@ -153,6 +153,8 @@
     "no-reported-selected-hint": "Keinen Bericht ausgewählt",
     "please-select-record-hint": "Bitte wählen Sie einen Bericht",
     "of": "von",
+    "standard-reports": "Standardberichte",
+    "custom-reports": "Eigene Berichte",
     "inclusion-report": "Einschlussbericht",
     "year-of-inclusion": "Jahr des Einschlusses",
     "month-of-inclusion": "Monat des Einschlusses",

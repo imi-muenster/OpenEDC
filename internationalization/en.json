@@ -154,6 +154,8 @@
     "no-reported-selected-hint": "No reported selected",
     "please-select-record-hint": "Please select a record first",
     "of": "of",
+    "standard-reports": "Standard Reports",
+    "custom-reports": "Custom Reports",
     "inclusion-report": "Inclusion Report",
     "year-of-inclusion": "Year of Inclusion",
     "month-of-inclusion": "Month of Inclusion",

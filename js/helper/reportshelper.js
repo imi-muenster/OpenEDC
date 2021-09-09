@@ -1,3 +1,4 @@
+import * as languageHelper from "./languagehelper.js";
 import * as ioHelper from "./iohelper.js";
 
 export class Report {
@@ -93,7 +94,11 @@ let reports = [];
 export const init = async () => {
     await loadReports();
 
-    if (!reports.length) await addStandardReports();
+    // Add initial standard and one custom report
+    if (!reports.length) {
+        await addStandardReports();
+        await addReport(languageHelper.getTranslation("new-report"));
+    };
 }
 
 export const storeReports = async () => {
