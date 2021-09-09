@@ -171,6 +171,7 @@ const hoverCallback = (chartId, index) => {
 const addWidgetToGrid = widget => {
     const widgetComponent = document.createElement("widget-component");
     widgetComponent.setWidget(widget);
+    widgetComponent.setTitle(widget.isStandard ? languageHelper.getTranslation(widget.name) : widget.name);
     $("#reports-section .widget.is-placeholder").insertAdjacentElement("beforebegin", widgetComponent);
 
     const customChart = getCustomChart(widget);

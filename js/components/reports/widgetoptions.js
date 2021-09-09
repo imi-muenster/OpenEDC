@@ -185,9 +185,9 @@ class WidgetOptions extends HTMLElement {
         const name = this.querySelector(".subtitle").textContent;
         const itemPaths = Array.from(this.querySelectorAll("input[type='text']")).map(input => input.value).filter(value => value);
         if (name != this.component.widget.name) {
-            this.component.widget.name = name;
+            this.component.widget.name = this.component.titleText = name;
         } else if (itemPaths[0] != this.component.widget.itemPaths[0]) {
-            this.component.widget.name = itemPaths[0];
+            this.component.widget.name = this.component.titleText = itemPaths[0];
         }
         if (itemPaths && itemPaths.toString() != this.component.widget.itemPaths.toString()) this.component.widget.itemPaths = itemPaths;
 

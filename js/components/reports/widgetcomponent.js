@@ -7,6 +7,10 @@ class WidgetComponent extends HTMLElement {
         this.customChart = customChart;
     }
 
+    setTitle(titleText) {
+        this.titleText = titleText;
+    }
+
     connectedCallback() {
         // Keeping track of the initialized status is required for drag-and-drop, since the element would be re-rendered after a movement otherwise
         if (!this.initialized) {
@@ -21,7 +25,6 @@ class WidgetComponent extends HTMLElement {
         this.id = this.widget.id;
 
         this.widgetContent = document.createElement("widget-content");
-        this.widgetContent.setTitle(this.widget.name);
         this.appendChild(this.widgetContent);
         
         this.addOptionsIcon();
@@ -63,7 +66,7 @@ class WidgetComponent extends HTMLElement {
     }
 
     update() {
-        this.widgetContent.querySelector(".subtitle").textContent = this.widget.name;
+        this.widgetContent.querySelector(".subtitle").textContent = this.titleText;
         this.customChart?.update();
     }
 }

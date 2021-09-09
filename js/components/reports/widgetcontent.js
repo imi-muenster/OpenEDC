@@ -1,8 +1,4 @@
 class WidgetContent extends HTMLElement {
-    setTitle(titleText) {
-        this.titleText = titleText;
-    }
-
     connectedCallback() {
         if (!this.initialized) {
             this.render();
@@ -15,7 +11,7 @@ class WidgetContent extends HTMLElement {
 
         const title = document.createElement("h2");
         title.className = "subtitle";
-        title.textContent = this.titleText;
+        title.innerHTML = "&nbsp;";
         this.appendChild(title);
 
         const canvasContainer = document.createElement("div");
