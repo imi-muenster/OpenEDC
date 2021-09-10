@@ -124,7 +124,7 @@ export const init = async () => {
     if (!reports.length) {
         addStandardReports();
         addReport(languageHelper.getTranslation("new-report"));
-        await storeReports();
+        storeReports();
     };
 }
 
@@ -159,6 +159,11 @@ export const addReport = (name, isStandard) => {
     return report;
 }
 
+export const removeReport = async reportId => {
+    getReport(reportId).filter(report => report.id != reportId);
+    await storeReports();
+}
+
 export const addWidget = (reportId, name, type, itemPaths, size, isStandard) => {
     const report = getReport(reportId);
     const id = report.widgets.reduce((highestId, widget) => widget.id >= highestId ? widget.id : highestId, 0) + 1;
@@ -166,6 +171,11 @@ export const addWidget = (reportId, name, type, itemPaths, size, isStandard) => 
     report.widgets.push(widget);
 
     return widget;
+}
+
+export const removeWidget = async (reportId, widgetId) => {
+    getReport(reportId).widgets.filter(widget => widget.id != widgetId);
+    await storeReports();
 }
 
 const addStandardReports = () => {
