@@ -138,11 +138,6 @@ export const removeReport = async id => {
     await storeReports();
 }
 
-export const getWidget = (reportId, widgetId) => {
-    const report = getReport(reportId);
-    return report.widgets.find(widget => widget.id == widgetId);
-}
-
 export const addWidget = async (reportId, name) => {
     const report = getReport(reportId);
     const id = report.widgets.reduce((highestId, widget) => widget.id >= highestId ? widget.id : highestId, 0) + 1;
@@ -162,10 +157,10 @@ export const removeWidget = async (reportId, widgetId) => {
 // TODO: Make more generic via a new function to get standard widgets
 const addStandardReports = async () => {
     // Inclusions report
-    const createdYearWidget = new Widget(1, "year-of-inclusion", Widget.types.BAR, ["createdYear"], Widget.sizes.SMALL, true);
-    const createdMonthWidget = new Widget(2, "month-of-inclusion", Widget.types.BAR, ["createdMonth"], Widget.sizes.SMALL, true);
-    const siteWidget = new Widget(3, "site", Widget.types.BAR, ["siteOID"], Widget.sizes.SMALL, true);
-    const inclusionReport = new Report(1, "inclusion-report", [createdYearWidget, createdMonthWidget, siteWidget], true);
+    const siteWidget = new Widget(1, "site", Widget.types.BAR, ["siteOID"], Widget.sizes.SMALL, true);
+    const createdYearWidget = new Widget(2, "year-of-inclusion", Widget.types.BAR, ["createdYear"], Widget.sizes.SMALL, true);
+    const createdMonthWidget = new Widget(3, "month-of-inclusion", Widget.types.BAR, ["createdMonth"], Widget.sizes.SMALL, true);
+    const inclusionReport = new Report(1, "inclusion-report", [siteWidget, createdYearWidget, createdMonthWidget], true);
     reports.push(inclusionReport);
 
     await storeReports();

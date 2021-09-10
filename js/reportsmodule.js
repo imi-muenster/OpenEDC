@@ -14,7 +14,7 @@ const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
 let dataset = {};
-let currentReportId = null;
+let currentReport = null;
 let widgetComponents = [];
 let activeFilters = [];
 
@@ -34,7 +34,7 @@ export async function init() {
 }
 
 export async function show() {
-    if (!currentReportId) {
+    if (!currentReport) {
         $("#reports-section h1").textContent = languageHelper.getTranslation("no-reported-selected-hint");
         $("#reports-section h2").textContent = languageHelper.getTranslation("please-select-record-hint");
     }
@@ -52,27 +52,27 @@ export async function show() {
 }
 
 export function reload() {
-    loadReport(currentReportId);
+    loadReport(currentReport);
 }
 
 export const loadWidgets = () => {
     widgetComponents = [];
     activeFilters = [];
     $$("#widgets .widget").removeElements();
-    if (!currentReportId) return;
+    if (!currentReport) return;
 
     // Add placeholder
-    $("#widgets").appendChild(getWidgetPlaceholder());
+    if (!currentReport.isStandard) $("#widgets").appendChild(getWidgetPlaceholder());
 
     // Add widgets
-    reportsHelper.getReport(currentReportId).widgets.forEach(widget => addWidgetToGrid(widget));
+    currentReport.widgets.forEach(widget => addWidgetToGrid(widget));
 
     // Update widgets
     updateWidgets();
 }
 
 const calculateWidgetData = () => {
-    if (!currentReportId) return;
+    if (!currentReport) return;
     const subjectKeys = Object.keys(dataset);
     const subjectData = Object.values(dataset);
     let filteredCount = 0;
@@ -130,7 +130,7 @@ const updateWidgets = () => {
 }
 
 const reloadWidget = widgetId => {
-    const widget = reportsHelper.getWidget(currentReportId, widgetId);
+    const widget = currentReport.widgets.find(widget => widget.id == widgetId);
     const widgetComponent = widgetComponents.find(entry => entry.widget.id == widgetId);
 
     // First, remove a filter that is possibly set for the widget
@@ -149,12 +149,12 @@ const reloadWidget = widgetId => {
 }
 
 const removeWidget = widgetId => {
-    const widget = reportsHelper.getWidget(currentReportId, widgetId);
+    const widget = currentReport.widgets.find(widget => widget.id == widgetId);
 
     // Remove widget component and a possibly set filter
     removeFilter(widget.itemPaths[0]);
     widgetComponents = widgetComponents.filter(entry => entry.widget.id != widgetId);
-    reportsHelper.removeWidget(currentReportId, widgetId);
+    reportsHelper.removeWidget(currentReport.id, widgetId);
 
     // Update all widgets
     updateWidgets();
@@ -176,7 +176,8 @@ const addWidgetToGrid = widget => {
     const widgetComponent = document.createElement("widget-component");
     widgetComponent.setWidget(widget);
     widgetComponent.setTitle(widget.isStandard ? languageHelper.getTranslation(widget.name) : widget.name);
-    $("#reports-section .widget.is-placeholder").insertAdjacentElement("beforebegin", widgetComponent);
+    if (currentReport.isStandard) $("#reports-section #widgets").appendChild(widgetComponent);
+    else $("#reports-section .widget.is-placeholder").insertAdjacentElement("beforebegin", widgetComponent);
 
     const customChart = getCustomChart(widget);
     if (customChart) {
@@ -292,7 +293,7 @@ const getWidgetPlaceholder = () => {
 }
 
 const addWidget = async () => {
-    const widget = await reportsHelper.addWidget(currentReportId, languageHelper.getTranslation("new-chart"));
+    const widget = await reportsHelper.addWidget(currentReport.id, languageHelper.getTranslation("new-chart"));
     addWidgetToGrid(widget);
 }
 
@@ -303,30 +304,29 @@ const loadReportList = () => {
         const reportElement = document.createElement("a");
         reportElement.textContent = report.isStandard ? languageHelper.getTranslation(report.name) : report.name;
         reportElement.setAttribute("id", report.id);
-        reportElement.onclick = () => loadReport(report.id);
-        if (currentReportId == report.id) reportElement.activate();
+        reportElement.onclick = () => loadReport(report);
+        if (currentReport && currentReport.id == report.id) reportElement.activate();
         report.isStandard ? $("#standard-reports-list").appendChild(reportElement) : $("#custom-reports-list").appendChild(reportElement);
     }
-    currentReportId && !reportsHelper.getReport(currentReportId).isStandard ? $("#edit-report-button").show() : $("#edit-report-button").hide();
+    currentReport && !currentReport.isStandard ? $("#edit-report-button").show() : $("#edit-report-button").hide();
 }
 
-const loadReport = id => {    
-    currentReportId = id;
+const loadReport = report => {    
+    currentReport = report;
     loadReportList();
     loadWidgets();
 }
 
 const addReport = async () => {
     const report = await reportsHelper.addReport(languageHelper.getTranslation("new-report"));
-    currentReportId = report.id;
     loadReportList();
-    loadReport(currentReportId);
+    loadReport(report);
 }
 
 const showReportModal = async () => {
     await import("./components/reports/reportmodal.js");
     const reportModal = document.createElement("report-modal");
-    reportModal.setReport(reportsHelper.getReport(currentReportId));
+    reportModal.setReport(currentReport);
 
     document.body.appendChild(reportModal);
     languageHelper.localize(reportModal);
@@ -349,7 +349,7 @@ const setIOListeners = () => {
         reportsHelper.storeReports();
     });
     document.addEventListener("WidgetMoved", event => {
-        const widgets = reportsHelper.getReport(currentReportId).widgets;
+        const widgets = currentReport.widgets;
         widgets.splice(event.detail.toIndex, 0, widgets.splice(event.detail.fromIndex, 1)[0]);
         reportsHelper.storeReports();
     });
