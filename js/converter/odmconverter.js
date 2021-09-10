@@ -29,11 +29,6 @@ export function validateImport(odmXMLString) {
         odm.querySelectorAll("StudyEventDef").forEach(studyEventDef => odm.querySelector("Protocol").appendChild(metadataTemplates.getStudyEventRef(studyEventDef.getOID())));
     }
 
-    // Add a lang attribute to translated texts without one
-    for (const translatedText of odm.querySelectorAll("TranslatedText")) {
-        if (!translatedText.getAttribute("xml:lang")) translatedText.setAttribute("xml:lang", languageHelper.untranslatedLocale);
-    }
-
     // Replace ItemData values having true or false with 1 or 0
     odm.querySelectorAll("ItemData[Value='true']").forEach(itemData => itemData.setAttribute("Value", "1"));
     odm.querySelectorAll("ItemData[Value='false']").forEach(itemData => itemData.setAttribute("Value", "0"));

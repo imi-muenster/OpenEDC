@@ -1,7 +1,5 @@
 import * as ioHelper from "./iohelper.js";
 
-export const untranslatedLocale = "none";
-
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
@@ -62,7 +60,7 @@ export function populatePresentLanguages(odm) {
 
     for (const translatedText of odm.querySelectorAll("TranslatedText")) {
         const locale = translatedText.getAttribute("xml:lang");
-        if (!localesInODM.includes(locale)) localesInODM.push(locale);
+        if (locale && !localesInODM.includes(locale)) localesInODM.push(locale);
     }
 
     for (let locale of Object.values(locales)) {
@@ -98,9 +96,9 @@ export function createLanguageSelect(includeUnavailable) {
 
     if (localesInODM.length) {
         localesInODM.forEach(locale => addLanguageOptionNavbar(locale));
-        if (includeUnavailable || localesInODM.includes(untranslatedLocale)) addDividerNavbar();
+        if (includeUnavailable) addDividerNavbar();
     }
-    if (includeUnavailable || localesInODM.includes(untranslatedLocale)) localesNotInODM.forEach(locale => addLanguageOptionNavbar(locale));
+    if (includeUnavailable) localesNotInODM.forEach(locale => addLanguageOptionNavbar(locale));
 
     setLanguageSelectText();
 }

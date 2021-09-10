@@ -14,27 +14,27 @@ Element.prototype.getDataType = function() {
     return this.querySelector("CodeListRef") ? "codelist-" + this.getAttribute("DataType") : this.getAttribute("DataType");
 }
 
-Element.prototype.getTranslatedDescription = function(locale, nameFallback, fallbackLocale) {
+Element.prototype.getTranslatedDescription = function(locale, nameFallback) {
     let translatedText = this.querySelector(`Description TranslatedText[*|lang="${locale}"]`);
-    if (!translatedText && fallbackLocale) translatedText = this.querySelector(`Description TranslatedText[*|lang="${fallbackLocale}"]`);
+    if (!translatedText) translatedText = this.querySelector(`Description TranslatedText:not([*|lang])`);
     return translatedText ? translatedText.textContent : (nameFallback ? this.getName() : null);
 }
 
-Element.prototype.getTranslatedQuestion = function(locale, nameFallback, fallbackLocale) {
+Element.prototype.getTranslatedQuestion = function(locale, nameFallback) {
     let translatedText = this.querySelector(`Question TranslatedText[*|lang="${locale}"]`);
-    if (!translatedText && fallbackLocale) translatedText = this.querySelector(`Question TranslatedText[*|lang="${fallbackLocale}"]`);
+    if (!translatedText) translatedText = this.querySelector(`Question TranslatedText:not([*|lang])`);
     return translatedText ? translatedText.textContent : (nameFallback ? this.getName() : null);
 }
 
-Element.prototype.getTranslatedSymbol = function(locale, nameFallback, fallbackLocale) {
+Element.prototype.getTranslatedSymbol = function(locale, nameFallback) {
     let translatedText = this.querySelector(`Symbol TranslatedText[*|lang="${locale}"]`);
-    if (!translatedText && fallbackLocale) translatedText = this.querySelector(`Symbol TranslatedText[*|lang="${fallbackLocale}"]`);
+    if (!translatedText) translatedText = this.querySelector(`Symbol TranslatedText:not([*|lang])`);
     return translatedText ? translatedText.textContent : (nameFallback ? this.getName() : null);
 }
 
-Element.prototype.getTranslatedDecode = function(locale, codedValueFallback, fallbackLocale) {
+Element.prototype.getTranslatedDecode = function(locale, codedValueFallback) {
     let translatedText = this.querySelector(`Decode TranslatedText[*|lang="${locale}"]`);
-    if (!translatedText && fallbackLocale) translatedText = this.querySelector(`Decode TranslatedText[*|lang="${fallbackLocale}"]`);
+    if (!translatedText) translatedText = this.querySelector(`Decode TranslatedText:not([*|lang])`);
     return translatedText ? translatedText.textContent : (codedValueFallback ? this.getCodedValue() : null);
 }
 
