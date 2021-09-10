@@ -25,6 +25,7 @@ class WidgetComponent extends HTMLElement {
         this.id = this.widget.id;
 
         this.widgetContent = document.createElement("widget-content");
+        this.widgetContent.setTitle(this.titleText);
         this.appendChild(this.widgetContent);
         
         this.addOptionsIcon();
