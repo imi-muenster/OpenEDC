@@ -89,6 +89,32 @@ export class DiscreteWidgetData extends WidgetData {
     }
 }
 
+const standardReports = {
+    INCLUSIONS: {
+        name: "inclusion-report",
+        widgets: [
+            {
+                name: "year-of-inclusion",
+                type: Widget.types.BAR,
+                itemPaths: ["createdYear"],
+                size: Widget.sizes.SMALL
+            },
+            {
+                name: "month-of-inclusion",
+                type: Widget.types.BAR,
+                itemPaths: ["createdMonth"],
+                size: Widget.sizes.SMALL
+            },
+            {
+                name: "site",
+                type: Widget.types.BAR,
+                itemPaths: ["siteOID"],
+                size: Widget.sizes.SMALL
+            }
+        ]
+    }
+}
+
 let reports = [];
 
 export const init = async () => {
@@ -96,8 +122,9 @@ export const init = async () => {
 
     // Add initial standard and one custom report
     if (!reports.length) {
-        await addStandardReports();
-        await addReport(languageHelper.getTranslation("new-report"));
+        addStandardReports();
+        addReport(languageHelper.getTranslation("new-report"));
+        await storeReports();
     };
 }
 
@@ -124,44 +151,28 @@ export const getReport = reportId => {
     return reports.find(report => report.id == reportId);
 }
 
-export const addReport = async name => {
+export const addReport = (name, isStandard) => {
     const id = reports.reduce((highestId, report) => report.id >= highestId ? report.id : highestId, 0) + 1;
-    const report = new Report(id, name);
+    const report = new Report(id, name, null, isStandard);
     reports.push(report);
-    await storeReports();
 
     return report;
 }
 
-export const removeReport = async id => {
-    reports = reports.filter(report => report.id != id);
-    await storeReports();
-}
-
-export const addWidget = async (reportId, name) => {
+export const addWidget = (reportId, name, type, itemPaths, size, isStandard) => {
     const report = getReport(reportId);
     const id = report.widgets.reduce((highestId, widget) => widget.id >= highestId ? widget.id : highestId, 0) + 1;
-    const widget = new Widget(id, name);
+    const widget = new Widget(id, name, type, itemPaths, size, isStandard);
     report.widgets.push(widget);
-    await storeReports();
 
     return widget;
 }
 
-export const removeWidget = async (reportId, widgetId) => {
-    const report = getReport(reportId);
-    report.widgets = report.widgets.filter(widget => widget.id != widgetId);
-    await storeReports();
-}
-
-// TODO: Make more generic via a new function to get standard widgets
-const addStandardReports = async () => {
-    // Inclusions report
-    const siteWidget = new Widget(1, "site", Widget.types.BAR, ["siteOID"], Widget.sizes.SMALL, true);
-    const createdYearWidget = new Widget(2, "year-of-inclusion", Widget.types.BAR, ["createdYear"], Widget.sizes.SMALL, true);
-    const createdMonthWidget = new Widget(3, "month-of-inclusion", Widget.types.BAR, ["createdMonth"], Widget.sizes.SMALL, true);
-    const inclusionReport = new Report(1, "inclusion-report", [siteWidget, createdYearWidget, createdMonthWidget], true);
-    reports.push(inclusionReport);
-
-    await storeReports();
+const addStandardReports = () => {
+    for (const standardReport of Object.values(standardReports)) {
+        const report = addReport(standardReport.name, true);
+        for (const widget of standardReport.widgets) {
+            addWidget(report.id, widget.name, widget.type, widget.itemPaths, widget.size, true);
+        }
+    }
 }

@@ -46,7 +46,7 @@ export function validateImport(odmXMLString) {
         expression.textContent = expressionValue.replace(/(\w)-(?=\w)/g, "$1_");
     });
 
-    // If SubjectData has no AuditRecord, add one. If no user is currently logged in, use U.1 as offline user
+    // Add an audit record if no one is present
     const creationDate = new Date();
     const userOID = admindataWrapper.getCurrentUserOID();
     odm.querySelectorAll("SubjectData").forEach(subjectData => {

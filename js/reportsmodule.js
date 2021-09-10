@@ -292,9 +292,10 @@ const getWidgetPlaceholder = () => {
     return placeholder;
 }
 
-const addWidget = async () => {
-    const widget = await reportsHelper.addWidget(currentReport.id, languageHelper.getTranslation("new-chart"));
+const addWidget = () => {
+    const widget = reportsHelper.addWidget(currentReport.id, languageHelper.getTranslation("new-chart"));
     addWidgetToGrid(widget);
+    reportsHelper.storeReports();
 }
 
 const loadReportList = () => {
@@ -317,10 +318,11 @@ const loadReport = report => {
     loadWidgets();
 }
 
-const addReport = async () => {
-    const report = await reportsHelper.addReport(languageHelper.getTranslation("new-report"));
+const addReport = () => {
+    const report = reportsHelper.addReport(languageHelper.getTranslation("new-report"));
     loadReportList();
     loadReport(report);
+    reportsHelper.storeReports();
 }
 
 const showReportModal = async () => {
@@ -341,8 +343,9 @@ const setIOListeners = () => {
         reportsHelper.storeReports();
     });
     document.addEventListener("ReportRemoved", event => {
-        reportsHelper.removeReport(event.detail);
+        reportsHelper.getReports().filter(report => report.id != event.detail);
         loadReport(null);
+        reportsHelper.storeReports();
     });
     document.addEventListener("WidgetEdited", event => {
         reloadWidget(event.detail);
@@ -354,6 +357,7 @@ const setIOListeners = () => {
         reportsHelper.storeReports();
     });
     document.addEventListener("WidgetRemoved", event => {
-        removeWidget(event.detail);
+        currentReport.widgets.filter(widget => widget.id != event.detail);
+        reportsHelper.storeReports();
     });
 }
