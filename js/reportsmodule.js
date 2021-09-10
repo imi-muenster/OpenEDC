@@ -235,7 +235,7 @@ const getStandardWidgetValuesLabels = widget => {
 
 const getUniqueValues = itemPath => {
     return Object.values(dataset).reduce((values, entry) => {
-        if (!values.includes(entry[itemPath])) values.push(entry[itemPath]);
+        if (entry[itemPath] && !values.includes(entry[itemPath])) values.push(entry[itemPath]);
         return values;
     }, new Array());
 }

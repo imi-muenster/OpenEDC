@@ -1,6 +1,8 @@
-import * as ioHelper from "../helper/iohelper.js";
-import * as languageHelper from "../helper/languagehelper.js";
+import * as admindataWrapper from "../odmwrapper/admindatawrapper.js";
 import * as metadataTemplates from "../odmtemplates/metadatatemplates.js";
+import * as clinicaldataTemplates from "../odmtemplates/clinicaldatatemplates.js";
+import * as languageHelper from "../helper/languagehelper.js";
+import * as ioHelper from "../helper/iohelper.js";
 
 // This function is used to validate an imported ODM file and prepare it before it is further processed
 // Preparing can include the removal of forgein namespaces, ordering metadata elements according to their order number, adjusting the ODM version, handling translated texts without lang attribute, etc.
@@ -47,6 +49,13 @@ export function validateImport(odmXMLString) {
         let expressionValue = expression.textContent;
         if (expressionValue.match(/^\d/)) expressionValue = "E" + expressionValue;
         expression.textContent = expressionValue.replace(/(\w)-(?=\w)/g, "$1_");
+    });
+
+    // If SubjectData has no AuditRecord, add one. If no user is currently logged in, use U.1 as offline user
+    const creationDate = new Date();
+    const userOID = admindataWrapper.getCurrentUserOID();
+    odm.querySelectorAll("SubjectData").forEach(subjectData => {
+        if (!subjectData.querySelector("AuditRecord")) subjectData.appendChild(clinicaldataTemplates.getAuditRecord(userOID, null, creationDate.toISOString()));
     });
 
     // Check if the uploaded ODM originates from REDCap and show a warning

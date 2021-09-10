@@ -93,11 +93,9 @@ export function getUserFullName(userOID) {
 }
 
 export function getCurrentUserOID() {
-    if (ioHelper.getLoggedInUser()) {
-        return ioHelper.getLoggedInUser().oid;
-    } else {
-        return getUsers()[0].getOID();
-    }
+    if (ioHelper.getLoggedInUser()) return ioHelper.getLoggedInUser().oid;
+    else if (admindata) return getUsers()[0].getOID();
+    else return "U.1";
 }
 
 export function getCurrentUserSiteOID() {
@@ -110,13 +108,10 @@ export function addUser() {
     const newUser = admindataTemplates.getUser(newUserOID, languageHelper.getTranslation("new"), languageHelper.getTranslation("user"));
     
     const lastUser = getUsers().getLastElement();
-    if (lastUser) {
-        lastUser.insertAdjacentElement("afterend", newUser);
-    } else {
-        admindata.appendChild(newUser);
-    }
+    if (lastUser) lastUser.insertAdjacentElement("afterend", newUser);
+    else admindata.appendChild(newUser);
+
     storeAdmindata();
-    
     return newUserOID;
 }
 
@@ -141,6 +136,7 @@ export function setUserInfo(userOID, firstName, lastName, locationOID) {
 export function removeUser(userOID) {
     const user = getUser(userOID);
     if (user) user.remove();
+    
     storeAdmindata();
 }
 
@@ -167,19 +163,17 @@ export function addSite() {
     const newSite = admindataTemplates.getSite(newSiteOID, languageHelper.getTranslation("new-site"), metadataWrapper.getStudyOID(), metadataWrapper.getMetaDataVersionOID(), new Date().toISOString().split("T")[0]);
     
     const lastSite = getSites().getLastElement();
-    if (lastSite) {
-        lastSite.insertAdjacentElement("afterend", newSite);
-    } else {
-        admindata.appendChild(newSite);
-    }
-    storeAdmindata();
+    if (lastSite) lastSite.insertAdjacentElement("afterend", newSite);
+    else admindata.appendChild(newSite);
 
+    storeAdmindata();
     return newSiteOID;
 }
 
 export function setSiteName(siteOID, name) {
     const site = getSite(siteOID);
     if (site) site.setAttribute("Name", name);
+
     storeAdmindata();
 }
 
@@ -189,8 +183,8 @@ export function removeSite(siteOID) {
 
     const site = getSite(siteOID);
     if (site) site.remove();
-    storeAdmindata();
 
+    storeAdmindata();
     return Promise.resolve();
 }
 
