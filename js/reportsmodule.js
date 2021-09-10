@@ -215,10 +215,8 @@ const getStandardWidgetValuesLabels = widget => {
     let values, labels;
     switch (widget.itemPaths[0]) {
         case "createdYear":
-            values = labels = Object.values(dataset).reduce((values, entry) => {
-                if (!values.includes(entry["createdYear"])) values.push(entry["createdYear"]);
-                return values;
-            }, new Array());
+            const years = getUniqueValues("createdYear");
+            values = labels = years.length ? years : [new Date().getFullYear()];
             break;
         case "createdMonth":
             values = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -232,6 +230,13 @@ const getStandardWidgetValuesLabels = widget => {
     }
 
     return [values, labels];
+}
+
+const getUniqueValues = itemPath => {
+    return Object.values(dataset).reduce((values, entry) => {
+        if (!values.includes(entry[itemPath])) values.push(entry[itemPath]);
+        return values;
+    }, new Array());
 }
 
 const getCustomWidgetValuesLabels = widget => {

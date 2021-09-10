@@ -163,8 +163,8 @@ export const removeWidget = async (reportId, widgetId) => {
 const addStandardReports = async () => {
     // Inclusions report
     const createdYearWidget = new Widget(1, "year-of-inclusion", Widget.types.BAR, ["createdYear"], Widget.sizes.SMALL, true);
-    const createdMonthWidget = new Widget(2, "month-of-inclusion", Widget.types.BAR, ["createdMonth"], Widget.sizes.MEDIUM, true);
-    const siteWidget = new Widget(3, "site", Widget.types.BAR, ["siteOID"], Widget.sizes.MEDIUM, true);
+    const createdMonthWidget = new Widget(2, "month-of-inclusion", Widget.types.BAR, ["createdMonth"], Widget.sizes.SMALL, true);
+    const siteWidget = new Widget(3, "site", Widget.types.BAR, ["siteOID"], Widget.sizes.SMALL, true);
     const inclusionReport = new Report(1, "inclusion-report", [createdYearWidget, createdMonthWidget, siteWidget], true);
     reports.push(inclusionReport);
 

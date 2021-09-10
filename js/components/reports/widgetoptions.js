@@ -44,6 +44,7 @@ class WidgetOptions extends HTMLElement {
         input.type = "text";
         input.value = this.component.widget.itemPaths.length ? this.component.widget.itemPaths[0] : null;
         input.placeholder = languageHelper.getTranslation("item");
+        input.disabled = this.component.widget.isStandard;
         input.oninput = () => this.itemInputCallback();
         inputContainer.appendChild(input);
         autocompleteHelper.enableAutocomplete(input, autocompleteHelper.modes.ITEM);
@@ -116,6 +117,7 @@ class WidgetOptions extends HTMLElement {
         const removeButton = document.createElement("button");
         removeButton.className = "button is-danger is-light is-small";
         removeButton.textContent = languageHelper.getTranslation("remove");
+        removeButton.disabled = this.component.widget.isStandard;
         removeButton.onclick = () => this.removeWidget();
         buttons.appendChild(removeButton);
 
