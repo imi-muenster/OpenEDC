@@ -160,7 +160,7 @@ export const addReport = (name, isStandard) => {
 }
 
 export const removeReport = async reportId => {
-    getReport(reportId).filter(report => report.id != reportId);
+    reports = reports.filter(report => report.id != reportId);
     await storeReports();
 }
 

@@ -32,7 +32,7 @@ class ReportModal extends HTMLElement {
                                 </div>
                             </div>
                             <div class="field" id="standard-widgets">
-                                <label class="label" i18n="standard-widgets"></label>
+                                <label class="label" i18n="standard-filters"></label>
                             </div>
                             <div class="buttons are-small">
                                 <button class="button is-link" id="save-report-button" i18n="save-changes"></button>
