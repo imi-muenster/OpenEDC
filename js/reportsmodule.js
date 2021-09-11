@@ -337,7 +337,7 @@ const setIOListeners = () => {
     $("#reports-section #edit-report-button").addEventListener("click", () => showReportModal());
 
     document.addEventListener("ReportEdited", () => {
-        loadReportList();
+        reload();
         reportsHelper.storeReports();
     });
     document.addEventListener("ReportRemoved", event => {
@@ -354,6 +354,6 @@ const setIOListeners = () => {
         reportsHelper.storeReports();
     });
     document.addEventListener("WidgetRemoved", event => {
-        reportsHelper.removeWidget(event.detail);
+        removeWidget(event.detail);
     });
 }

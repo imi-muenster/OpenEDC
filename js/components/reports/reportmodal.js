@@ -56,7 +56,7 @@ class ReportModal extends HTMLElement {
 
             const input = document.createElement("input");
             input.type = "checkbox";
-            input.id = standardWidget.name;
+            input.name = standardWidget.name;
             if (this.report.widgets.find(widget => widget.name == standardWidget.name)) input.checked = true;
             checkboxWrapper.appendChild(input);
 
@@ -78,6 +78,14 @@ class ReportModal extends HTMLElement {
 
     saveReport() {
         this.report.name = this.querySelector("#report-name-input").value;
+
+        for (const checkbox of this.querySelectorAll("#standard-widgets input[type='checkbox']")) {
+            const standardWidget = reportsHelper.standardReports.INCLUSIONS.widgets.find(widget => widget.name == checkbox.name);
+            const included = this.report.widgets.find(widget => widget.name == standardWidget.name);
+            if (checkbox.checked && !included) reportsHelper.addWidget(this.report.id, standardWidget.name, standardWidget.type, standardWidget.itemPaths, standardWidget.size, true);
+            else if (!checkbox.checked && included) this.report.widgets = this.report.widgets.filter(widget => widget.name != standardWidget.name);
+        }
+
         document.dispatchEvent(new CustomEvent("ReportEdited"));
         this.remove();
     }
