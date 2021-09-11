@@ -1,3 +1,6 @@
+import * as reportsHelper from "../../helper/reportshelper.js";
+import * as languageHelper from "../../helper/languagehelper.js";
+
 class ReportModal extends HTMLElement {
     setReport(report) {
         this.report = report;
@@ -28,6 +31,9 @@ class ReportModal extends HTMLElement {
                                     <input class="input" id="report-name-input" type="text">
                                 </div>
                             </div>
+                            <div class="field" id="standard-widgets">
+                                <label class="label" i18n="standard-widgets"></label>
+                            </div>
                             <div class="buttons are-small">
                                 <button class="button is-link" id="save-report-button" i18n="save-changes"></button>
                                 <button class="button is-danger" id="remove-report-button" i18n="remove"></button>
@@ -43,6 +49,23 @@ class ReportModal extends HTMLElement {
     fillValues() {
         this.querySelector("#report-name-label").textContent = this.report.name;
         this.querySelector("#report-name-input").value = this.report.name;
+
+        for (const standardWidget of reportsHelper.standardReports.INCLUSIONS.widgets) {
+            const checkboxWrapper = document.createElement("label");
+            checkboxWrapper.className = "checkbox";
+
+            const input = document.createElement("input");
+            input.type = "checkbox";
+            input.id = standardWidget.name;
+            if (this.report.widgets.find(widget => widget.name == standardWidget.name)) input.checked = true;
+            checkboxWrapper.appendChild(input);
+
+            const description = document.createElement("span");
+            description.textContent = languageHelper.getTranslation(standardWidget.name);
+            checkboxWrapper.appendChild(description);
+            
+            this.querySelector("#standard-widgets").insertAdjacentElement("beforeend", checkboxWrapper);
+        }
     }
 
     setIOListeners() {

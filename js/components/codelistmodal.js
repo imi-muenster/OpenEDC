@@ -23,7 +23,7 @@ class CodeListModal extends HTMLElement {
                                 <textarea class="textarea" id="textitems-textarea" rows="8" i18n-ph="coded-value-translated-choice"></textarea>
                             </div>
                             <div id="codelist-reference-field">
-                                <div class="text-divider is-size-6 mt-5 mb-3" i18n="or"></div>
+                                <div class="text-divider mt-5 mb-3" i18n="or"></div>
                                 <label class="label" i18n="choices-reference-hint"></label>
                                 <div class="field is-grouped is-fullwidth">
                                     <div class="control is-expanded has-autocomplete-top">

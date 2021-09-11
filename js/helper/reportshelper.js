@@ -89,7 +89,7 @@ export class DiscreteWidgetData extends WidgetData {
     }
 }
 
-const standardReports = {
+export const standardReports = {
     INCLUSIONS: {
         name: "inclusion-report",
         widgets: [

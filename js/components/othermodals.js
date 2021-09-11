@@ -169,7 +169,7 @@ class SubjectModal extends HTMLElement {
                                 <button class="button is-danger is-small" id="save-subject-info-button" onclick="saveSubjectInfo()" i18n="save-changes"></button>
                                 <button class="button is-small" onclick="hideSubjectInfo()" i18n="cancel"></button>
                             </div>
-                            <div class="text-divider has-text-6 mb-5" i18n="audit-trail"></div>
+                            <div class="text-divider mb-5" i18n="audit-trail"></div>
                             <div id="audit-records"></div>
                             <button class="button is-danger is-small" onclick="removeSubject()" i18n="remove-subject"></button>
                         </div>
