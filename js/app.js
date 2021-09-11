@@ -183,6 +183,7 @@ function showLoginModal() {
             if (credentials.error) {
                 // TODO: This could be improved in the future -- passing the error to the languageHelper is not very nice
                 ioHelper.showMessage(languageHelper.getTranslation("password-not-set"), languageHelper.getTranslation(credentials.error));
+                clickEvent.target.hideLoading();
                 return;
             }
             ioHelper.setOwnPassword(credentials)

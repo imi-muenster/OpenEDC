@@ -118,7 +118,7 @@ window.saveUser = function() {
         const username = $("#user-username-input").value;
         const initialPassword = $("#user-password-input").value;
         const credentials = new ioHelper.Credentials(username, initialPassword);
-        const rights = Array.from($$("#user-rights input:checked")).map(checkbox => checkbox.name);
+        const rights = Array.from($$("#user-rights custom-checkbox")).filter(checkbox => checkbox.checked).map(checkbox => checkbox.name);
         ioHelper.setUserOnServer(userOID, credentials, rights, locationOID).catch(error => console.log(error));
     }
 
