@@ -51,20 +51,12 @@ class ReportModal extends HTMLElement {
         this.querySelector("#report-name-input").value = this.report.name;
 
         for (const standardWidget of reportsHelper.standardReports.INCLUSIONS.widgets) {
-            const checkboxWrapper = document.createElement("label");
-            checkboxWrapper.className = "checkbox";
-
-            const input = document.createElement("input");
-            input.type = "checkbox";
-            input.name = standardWidget.name;
-            if (this.report.widgets.find(widget => widget.name == standardWidget.name)) input.checked = true;
-            checkboxWrapper.appendChild(input);
-
-            const description = document.createElement("span");
-            description.textContent = languageHelper.getTranslation(standardWidget.name);
-            checkboxWrapper.appendChild(description);
+            const checkbox = document.createElement("custom-checkbox");
+            checkbox.name = standardWidget.name;
+            checkbox.textContent = languageHelper.getTranslation(standardWidget.name);
+            checkbox.checked = this.report.widgets.find(widget => widget.name == standardWidget.name) ? true : false;
             
-            this.querySelector("#standard-widgets").insertAdjacentElement("beforeend", checkboxWrapper);
+            this.querySelector("#standard-widgets").insertAdjacentElement("beforeend", checkbox);
         }
     }
 
@@ -79,7 +71,7 @@ class ReportModal extends HTMLElement {
     saveReport() {
         this.report.name = this.querySelector("#report-name-input").value;
 
-        for (const checkbox of this.querySelectorAll("#standard-widgets input[type='checkbox']")) {
+        for (const checkbox of this.querySelectorAll("#standard-widgets custom-checkbox")) {
             const standardWidget = reportsHelper.standardReports.INCLUSIONS.widgets.find(widget => widget.name == checkbox.name);
             const included = this.report.widgets.find(widget => widget.name == standardWidget.name);
             if (checkbox.checked && !included) reportsHelper.addWidget(this.report.id, standardWidget.name, standardWidget.type, standardWidget.itemPaths, standardWidget.size, true);

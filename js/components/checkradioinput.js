@@ -31,7 +31,7 @@ class CustomCheckbox extends HTMLElement {
                 cursor: pointer;
             }
             input {
-                margin: 0 .25rem 0 0;
+                margin: 0 .2rem 0 0;
                 cursor: pointer;
             }
         `;
@@ -43,6 +43,10 @@ class CustomCheckbox extends HTMLElement {
 
     get checked() {
         return this.input.checked;
+    }
+
+    set checked(value) {
+        this.input.checked = value;
     }
 }
 
