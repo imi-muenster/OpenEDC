@@ -29,7 +29,7 @@ class WidgetOptions extends HTMLElement {
     addTitle() {
         const title = document.createElement("h2");
         title.className = "subtitle mb-1";
-        title.contentEditable = true;
+        title.contentEditable = !this.component.widget.isStandard;
         title.textContent = this.component.widget.name;
         this.appendChild(title);
     }

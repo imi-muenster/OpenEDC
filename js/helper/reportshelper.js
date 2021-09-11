@@ -94,6 +94,12 @@ export const standardReports = {
         name: "inclusion-report",
         widgets: [
             {
+                name: "site",
+                type: Widget.types.BAR,
+                itemPaths: ["siteOID"],
+                size: Widget.sizes.SMALL
+            },
+            {
                 name: "year-of-inclusion",
                 type: Widget.types.BAR,
                 itemPaths: ["createdYear"],
@@ -103,12 +109,6 @@ export const standardReports = {
                 name: "month-of-inclusion",
                 type: Widget.types.BAR,
                 itemPaths: ["createdMonth"],
-                size: Widget.sizes.SMALL
-            },
-            {
-                name: "site",
-                type: Widget.types.BAR,
-                itemPaths: ["siteOID"],
                 size: Widget.sizes.SMALL
             }
         ]
