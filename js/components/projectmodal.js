@@ -96,14 +96,8 @@ class ProjectModal extends HTMLElement {
                             <div class="notification is-link is-light">
                                 <h1 class="title is-4" i18n="miscellaneous-options"></h1>
                                 <p class="mb-5" i18n="miscellaneous-options-hint"></p>
-                                <label class="checkbox mb-1">
-                                    <input type="checkbox" id="text-as-textarea-checkbox" oninput="miscOptionClicked(event)">
-                                    <span i18n="textarea-hint"></span>
-                                </label>
-                                <label class="checkbox">
-                                    <input type="checkbox" id="auto-survey-view-checkbox" oninput="miscOptionClicked(event)">
-                                    <span i18n="survey-view-hint"></span>
-                                </label>
+                                <custom-checkbox id="text-as-textarea-checkbox" i18n="textarea-hint" oninput="miscOptionClicked(event)"></custom-checkbox>
+                                <custom-checkbox id="auto-survey-view-checkbox" i18n="survey-view-hint" oninput="miscOptionClicked(event)"></custom-checkbox>
                             </div>
                             <div class="notification is-link is-light">
                                 <h1 class="title is-4" i18n="export-data"></h1>

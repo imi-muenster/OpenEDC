@@ -28,10 +28,12 @@ class CustomCheckbox extends HTMLElement {
         return `
             label {
                 display: block;
+                line-height: 1.25;
+                margin-bottom: .25rem;
                 cursor: pointer;
             }
             input {
-                margin: 0 .2rem 0 0;
+                margin: 0 .25rem 0 0;
                 cursor: pointer;
             }
         `;
@@ -47,6 +49,14 @@ class CustomCheckbox extends HTMLElement {
 
     set checked(value) {
         this.input.checked = value;
+    }
+
+    get disabled() {
+        return this.input.disabled;
+    }
+
+    set disabled(value) {
+        this.input.disabled = value;
     }
 }
 

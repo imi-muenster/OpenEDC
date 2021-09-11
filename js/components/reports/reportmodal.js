@@ -55,7 +55,6 @@ class ReportModal extends HTMLElement {
             checkbox.name = standardWidget.name;
             checkbox.textContent = languageHelper.getTranslation(standardWidget.name);
             checkbox.checked = this.report.widgets.find(widget => widget.name == standardWidget.name) ? true : false;
-            
             this.querySelector("#standard-widgets").insertAdjacentElement("beforeend", checkbox);
         }
     }
