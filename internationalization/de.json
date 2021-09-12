@@ -208,7 +208,7 @@
     "survey-code-hint": "Mit dieser Option können Sie einen vierstelligen Zahlencode festlegen, der eingegeben werden muss, nachdem eine lokale Umfrage (gestartet mit der Schaltfläche <i>Umfrageansicht</i>) beendet oder abgebrochen wurde. Dadurch wird verhindert, dass Studienteilnehmer fremde Daten sehen können.",
     "miscellaneous-options": "Zusatzoptionen",
     "miscellaneous-options-hint": "Im Folgenden sind verschiedene Zusatzoptionen aufgeführt, die Sie durch Anklicken aktivieren können. Wenn Sie mit einem Server verbunden sind, sind die Optionen für alle Benutzer gültig.",
-    "textarea-hint": "Zeige Fragen mit dem Datentyp String als mehrzeilige statt einzilige Textboxen.",
+    "textarea-hint": "Zeige Fragen mit dem Datentyp String als mehrzeilige statt einzeilige Textboxen.",
     "survey-view-hint": "Öffne die Umfrageansicht auf mobilen Geräten beim Klicken auf ein Ereignis automatisch.",
     "export-data": "Datenexport",
     "export-data-hint": "Mit diesen Optionen können Sie das Projekt im CDISC ODM-XML oder CSV-Format herunterladen. Sie können entweder alle Daten herunterladen (einschließlich der Metadaten und Daten aller Probanden inklusive des gesamten Audit Trails) oder nur die Metadaten oder klinischen Daten. Bitte beachten Sie, dass nur die erste Option ein Backup Ihres Projekts erstellt.",
