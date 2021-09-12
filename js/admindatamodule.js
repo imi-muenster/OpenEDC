@@ -36,7 +36,7 @@ export async function loadUsers() {
 
     for (let userRight of Object.values(admindataWrapper.userRights)) {
         const checkboxWrapper = document.createElement("label");
-        checkboxWrapper.className = "checkbox";
+        checkboxWrapper.className = "checkbox is-block";
 
         const input = document.createElement("input");
         input.type = "checkbox";
@@ -45,7 +45,7 @@ export async function loadUsers() {
         checkboxWrapper.appendChild(input);
 
         const description = document.createElement("span");
-        description.textContent = languageHelper.getTranslation(userRight);
+        description.textContent = " " + languageHelper.getTranslation(userRight);
         checkboxWrapper.appendChild(description);
 
         $("#user-rights").insertAdjacentElement("beforeend", checkboxWrapper);

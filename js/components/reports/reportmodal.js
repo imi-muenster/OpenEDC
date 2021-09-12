@@ -52,7 +52,7 @@ class ReportModal extends HTMLElement {
 
         for (const standardWidget of reportsHelper.standardReports.INCLUSIONS.widgets) {
             const checkboxWrapper = document.createElement("label");
-            checkboxWrapper.className = "checkbox";
+            checkboxWrapper.className = "checkbox is-block";
 
             const input = document.createElement("input");
             input.type = "checkbox";
@@ -61,7 +61,7 @@ class ReportModal extends HTMLElement {
             checkboxWrapper.appendChild(input);
 
             const description = document.createElement("span");
-            description.textContent = languageHelper.getTranslation(standardWidget.name);
+            description.textContent = " " + languageHelper.getTranslation(standardWidget.name);
             checkboxWrapper.appendChild(description);
             
             this.querySelector("#standard-widgets").insertAdjacentElement("beforeend", checkboxWrapper);
