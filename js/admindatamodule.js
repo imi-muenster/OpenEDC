@@ -13,7 +13,7 @@ export async function init() {
 
 export async function loadUsers() {
     $$("#users-options .panel a").removeElements();
-    $$("#user-rights custom-checkbox").removeElements();
+    $$("#user-rights .checkbox").removeElements();
     $("#user-site-select-outer")?.remove();
 
     $("#user-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("user-site-select", true, true, [], null));
@@ -35,11 +35,20 @@ export async function loadUsers() {
     }
 
     for (let userRight of Object.values(admindataWrapper.userRights)) {
-        const checkbox = document.createElement("custom-checkbox");
-        checkbox.name = userRight;
-        checkbox.textContent = languageHelper.getTranslation(userRight);
-        checkbox.disabled = true;
-        $("#user-rights").insertAdjacentElement("beforeend", checkbox);
+        const checkboxWrapper = document.createElement("label");
+        checkboxWrapper.className = "checkbox";
+
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.name = userRight;
+        input.disabled = true;
+        checkboxWrapper.appendChild(input);
+
+        const description = document.createElement("span");
+        description.textContent = languageHelper.getTranslation(userRight);
+        checkboxWrapper.appendChild(description);
+
+        $("#user-rights").insertAdjacentElement("beforeend", checkboxWrapper);
     }
 
     const localUserOID = admindataWrapper.getCurrentUserOID();
@@ -77,7 +86,7 @@ function loadUser(userOID) {
         [$("#user-username-input"), $("#user-password-input")].emptyInputs();
         [$("#user-username-input"), $("#user-password-input")].enableElements();
         $("#user-password-input").placeholder = "";
-        $$("#user-rights custom-checkbox").forEach(checkbox => {
+        $$("#user-rights input").forEach(checkbox => {
             checkbox.disabled = false;
             checkbox.checked = false;
         });
@@ -87,14 +96,14 @@ function loadUser(userOID) {
                     $("#user-username-input").value = user.username
                     $("#user-password-input").placeholder = languageHelper.getTranslation("reset-initial-password");
                 }
-                $$("#user-rights custom-checkbox").forEach(checkbox => {
+                $$("#user-rights input").forEach(checkbox => {
                     if (user.rights && user.rights.includes(checkbox.name)) checkbox.checked = true;
                 });
             })
             .catch(() => console.log("The selected user could not be loaded from the server (i.e., offline, no permission, or user not yet synced with the server)."));
     } else {
         // Local users have all rights
-        $$("#user-rights custom-checkbox").forEach(checkbox => checkbox.checked = true);
+        $$("#user-rights input").forEach(checkbox => checkbox.checked = true);
     }
 }
 
@@ -118,7 +127,7 @@ window.saveUser = function() {
         const username = $("#user-username-input").value;
         const initialPassword = $("#user-password-input").value;
         const credentials = new ioHelper.Credentials(username, initialPassword);
-        const rights = Array.from($$("#user-rights custom-checkbox")).filter(checkbox => checkbox.checked).map(checkbox => checkbox.name);
+        const rights = Array.from($$("#user-rights input:checked")).map(checkbox => checkbox.name);
         ioHelper.setUserOnServer(userOID, credentials, rights, locationOID).catch(error => console.log(error));
     }
 

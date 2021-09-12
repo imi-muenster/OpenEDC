@@ -333,6 +333,15 @@ a.panel-block:hover {
     background-color: #f5f5f5;
 }
 
+label.checkbox {
+    display: block;
+    margin-bottom: .25rem;
+}
+
+label.checkbox input {
+    margin-right: .1rem;
+}
+
 .message {
     margin-bottom: 20px;
 }
