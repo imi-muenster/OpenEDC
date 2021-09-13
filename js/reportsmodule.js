@@ -19,12 +19,10 @@ let widgetComponents = [];
 let activeFilters = [];
 
 export async function init() {
-    // TODO: Do not init within startApp() but only when needed
-
-    // Only load chart.js library if required
     await import("./components/reports/widgetcomponent.js");
     await import("./components/reports/widgetcontent.js");
     await import("./components/reports/widgetoptions.js");
+    await import("./components/reports/reportmodal.js");
     await import("../lib/chart.js");
     await import("../lib/chart-datalabels.js");
     
@@ -309,9 +307,14 @@ const loadReportList = () => {
         if (currentReport && currentReport.id == report.id) reportElement.activate();
         report.isStandard ? $("#standard-reports-list").appendChild(reportElement) : $("#custom-reports-list").appendChild(reportElement);
     }
-    ioHelper.userHasRight(ioHelper.userRights.PROJECTOPTIONS) ? $("#manage-report-buttons").show() : $("#manage-report-buttons").hide();
-    currentReport && !currentReport.isStandard ? $("#edit-report-button").show() : $("#edit-report-button").hide();
     reports.length > Object.values(reportsHelper.standardReports).length ? $("#custom-reports-label").show() : $("#custom-reports-label").hide();
+
+    if (ioHelper.userHasRight(ioHelper.userRights.PROJECTOPTIONS)) {
+        $("#manage-report-buttons").show();
+        currentReport && !currentReport.isStandard ? $("#edit-report-button").show() : $("#edit-report-button").hide();
+    } else {
+        $("#manage-report-buttons").hide()
+    }
 }
 
 const loadReport = report => {    
@@ -327,7 +330,6 @@ const addReport = () => {
 }
 
 const showReportModal = async () => {
-    await import("./components/reports/reportmodal.js");
     const reportModal = document.createElement("report-modal");
     reportModal.setReport(currentReport);
 
