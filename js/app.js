@@ -218,31 +218,30 @@ function loginNotSuccessful(error) {
 }
 
 function adjustUIToUser() {
-    // TODO: Refactor with new User class from admindataWrapper
+    // TODO: Refactor with new User class from admindataWrapper / ioHelper
     if (ioHelper.hasServerURL()) {
-        const user = ioHelper.getLoggedInUser();
-        if (!user.rights.includes(admindataWrapper.userRights.PROJECTOPTIONS)) {
+        if (!ioHelper.userHasRight(ioHelper.userRights.PROJECTOPTIONS)) {
             $("#project-modal-button").hide();
         }
-        if (!user.rights.includes(admindataWrapper.userRights.EDITMETADATA)) {
+        if (!ioHelper.userHasRight(ioHelper.userRights.EDITMETADATA)) {
             if (getCurrentMode() == appModes.METADATA) metadataModule.hide();
             $("#metadata-mode-button").hide();
         }
-        if (!user.rights.includes(admindataWrapper.userRights.MANAGESUBJECTS)) {
+        if (!ioHelper.userHasRight(ioHelper.userRights.MANAGESUBJECTS)) {
             $("#subject-info-button").hide();
         }
-        if (!user.rights.includes(admindataWrapper.userRights.VALIDATEFORMS)) {
+        if (!ioHelper.userHasRight(ioHelper.userRights.VALIDATEFORMS)) {
             $("#form-validate-level").hide();
         }
-        if (!user.rights.includes(admindataWrapper.userRights.ADDSUBJECTDATA)) {
+        if (!ioHelper.userHasRight(ioHelper.userRights.ADDSUBJECTDATA)) {
             $("#add-subject-input").disabled = true;
             $$(".subject-key-mode-element .button").forEach(button => button.disabled = true);
         }
-        if (user.site) {
-            $("#filter-site-select-inner").value = admindataWrapper.getSiteNameByOID(user.site);
+        if (ioHelper.getLoggedInUser().site) {
+            $("#filter-site-select-inner").value = admindataWrapper.getSiteNameByOID(ioHelper.getLoggedInUser().site);
             $("#filter-site-select-inner").disabled = true;
         }
-        $("#logout-button-name").textContent = admindataWrapper.getUserFullName(user.oid);
+        $("#logout-button-name").textContent = admindataWrapper.getUserFullName(ioHelper.getLoggedInUser().oid);
     } else {      
         const siteOID = admindataWrapper.getCurrentUserSiteOID();
         if (siteOID) $("#filter-site-select-inner").value = admindataWrapper.getSiteNameByOID(siteOID);

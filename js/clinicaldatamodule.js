@@ -157,7 +157,7 @@ function subjectClicked(subjectKey) {
     // If the currently logged in user has no metadata edit rights, then disable the form preview as well
     if (subjectKey == currentSubjectKey) {
         subjectKey = null;
-        if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataWrapper.userRights.EDITMETADATA)) currentPath.formOID = null;
+        if (!ioHelper.userHasRight(ioHelper.userRights.EDITMETADATA)) currentPath.formOID = null;
     }
 
     loadSubjectData(subjectKey);
@@ -182,7 +182,7 @@ async function loadSubjectData(subjectKey) {
     if (currentSubjectKey) $(`#subject-panel-blocks [oid="${currentSubjectKey}"]`).activate();
     if (currentSubjectKey) ioHelper.scrollParentToChild($(`#subject-panel-blocks [oid="${currentSubjectKey}"]`));
     $("#subject-info-button").disabled = currentSubjectKey ? false : true;
-    if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataWrapper.userRights.MANAGESUBJECTS)) $("#subject-info-button").disabled = true;
+    if (!ioHelper.userHasRight(ioHelper.userRights.MANAGESUBJECTS)) $("#subject-info-button").disabled = true;
 
     await reloadTree();
 }
@@ -257,7 +257,7 @@ async function loadFormsByStudyEvent() {
 
 async function loadFormData() {
     // If connected to the server and the user has no metadata edit rights then disable the form preview functionality
-    if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataWrapper.userRights.EDITMETADATA) && !currentSubjectKey) {
+    if (!ioHelper.userHasRight(ioHelper.userRights.EDITMETADATA) && !currentSubjectKey) {
         ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("no-subject-selected-warning"));
         return;
     }
@@ -298,7 +298,7 @@ function resetFormUIElements() {
     $("#form-validate-button").classList.remove("is-validated");
 
     if (surveyViewIsActive()) $("#survey-view-button").hide();
-    if (surveyViewIsActive() || (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataWrapper.userRights.VALIDATEFORMS))) $("#form-validate-level").hide();
+    if (surveyViewIsActive() || !ioHelper.userHasRight(ioHelper.userRights.VALIDATEFORMS)) $("#form-validate-level").hide();
 }
 
 async function loadFormMetadata() {

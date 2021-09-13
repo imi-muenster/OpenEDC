@@ -13,9 +13,9 @@ class ReportsSection extends HTMLElement {
                         <div class="card has-border-shadow">
                             <div class="card-content">
                                 <aside class="menu">
-                                    <p class="menu-label" i18n="standard-reports"></p>
+                                    <p class="menu-label" id="standard-reports-label" i18n="standard-reports"></p>
                                     <div class="menu-list" id="standard-reports-list"></div>
-                                    <p class="menu-label" i18n="custom-reports"></p>
+                                    <p class="menu-label" id="custom-reports-label" i18n="custom-reports"></p>
                                     <div class="menu-list" id="custom-reports-list"></div>
                                 </aside>
                                 <div class="buttons mt-5">

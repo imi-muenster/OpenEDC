@@ -11,6 +11,10 @@ class WidgetComponent extends HTMLElement {
         this.titleText = titleText;
     }
 
+    setEnableOptions(value) {
+        this.enableOptions = value;
+    }
+
     connectedCallback() {
         // Keeping track of the initialized status is required for drag-and-drop, since the element would be re-rendered after a movement otherwise
         if (!this.initialized) {
@@ -28,8 +32,10 @@ class WidgetComponent extends HTMLElement {
         this.widgetContent.setTitle(this.titleText);
         this.appendChild(this.widgetContent);
         
-        this.addOptionsIcon();
-        this.addDragEventListeners();
+        if (this.enableOptions) {
+            this.addOptionsIcon();
+            this.addDragEventListeners();
+        }
     }
 
     addOptionsIcon() {

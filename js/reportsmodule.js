@@ -62,7 +62,7 @@ export const loadWidgets = () => {
     if (!currentReport) return;
 
     // Add placeholder
-    if (!currentReport.isStandard) $("#widgets").appendChild(getWidgetPlaceholder());
+    $("#widgets").appendChild(getWidgetPlaceholder());
 
     // Add widgets
     currentReport.widgets.forEach(widget => addWidgetToGrid(widget));
@@ -176,8 +176,8 @@ const addWidgetToGrid = widget => {
     const widgetComponent = document.createElement("widget-component");
     widgetComponent.setWidget(widget);
     widgetComponent.setTitle(widget.isStandard ? languageHelper.getTranslation(widget.name) : widget.name);
-    if (currentReport.isStandard) $("#reports-section #widgets").appendChild(widgetComponent);
-    else $("#reports-section .widget.is-placeholder").insertAdjacentElement("beforebegin", widgetComponent);
+    widgetComponent.setEnableOptions(ioHelper.userHasRight(ioHelper.userRights.PROJECTOPTIONS));
+    $("#reports-section .widget.is-placeholder").insertAdjacentElement("beforebegin", widgetComponent);
 
     const customChart = getCustomChart(widget);
     if (customChart) {
@@ -279,6 +279,7 @@ const getDiscreteWidgetData = widget => {
 const getWidgetPlaceholder = () => {
     const placeholder = document.createElement("div");
     placeholder.className = "widget is-placeholder is-flex is-align-items-center is-justify-content-center is-clickable";
+    placeholder.onclick = () => addWidget();
 
     const iconContainer = document.createElement("span");
     iconContainer.className = "icon is-size-1";
@@ -287,8 +288,7 @@ const getWidgetPlaceholder = () => {
     iconContainer.appendChild(icon);
     placeholder.appendChild(iconContainer);
 
-    placeholder.onclick = () => addWidget();
-
+    if (currentReport.isStandard || !ioHelper.userHasRight(ioHelper.userRights.PROJECTOPTIONS)) placeholder.hide();
     return placeholder;
 }
 
@@ -300,7 +300,8 @@ const addWidget = () => {
 const loadReportList = () => {
     $$("#standard-reports-list a").removeElements();
     $$("#custom-reports-list a").removeElements();
-    for (const report of reportsHelper.getReports()) {
+    const reports = reportsHelper.getReports();
+    for (const report of reports) {
         const reportElement = document.createElement("a");
         reportElement.textContent = report.isStandard ? languageHelper.getTranslation(report.name) : report.name;
         reportElement.setAttribute("id", report.id);
@@ -309,6 +310,7 @@ const loadReportList = () => {
         report.isStandard ? $("#standard-reports-list").appendChild(reportElement) : $("#custom-reports-list").appendChild(reportElement);
     }
     currentReport && !currentReport.isStandard ? $("#edit-report-button").show() : $("#edit-report-button").hide();
+    reports.length > Object.values(reportsHelper.standardReports).length ? $("#custom-reports-label").show() : $("#custom-reports-label").hide();
 }
 
 const loadReport = report => {    

@@ -210,7 +210,7 @@ export async function loadSubjects() {
             subjects[i+1].uniqueKey = subjects[i+1].key + ioHelper.fileNameSeparator + i;
             
             // Show a warning that data conflicts exist when the user has manage subjects right and the warning has not shown before
-            if (!subject && ioHelper.getLoggedInUser().rights.includes(admindataWrapper.userRights.MANAGESUBJECTS) && !document.querySelector(".panel-icon.has-text-danger")) {
+            if (!subject && ioHelper.userHasRight(ioHelper.userRights.MANAGESUBJECTS) && !document.querySelector(".panel-icon.has-text-danger")) {
                 ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("data-conflicts-present-error"));
             }
         }
@@ -320,14 +320,14 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
     if (currentDataStatus == dataStatus && formDataDifference.length == 0) return;
 
     // Do not store data if connected to server and user has no rights to store data
-    if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataWrapper.userRights.ADDSUBJECTDATA)) return;
+    if (!ioHelper.userHasRight(ioHelper.userRights.ADDSUBJECTDATA)) return;
 
     // Do not store data if the current data status is set to validated and the user has no permission for invalidation
-    if (currentDataStatus == dataStatusTypes.VALIDATED && ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataWrapper.userRights.VALIDATEFORMS)) return;
+    if (currentDataStatus == dataStatusTypes.VALIDATED && !ioHelper.userHasRight(ioHelper.userRights.VALIDATEFORMS)) return;
 
     // Do not store data if the form status is set to (in-)validated without permission
     if (currentDataStatus != dataStatus && (currentDataStatus == dataStatusTypes.VALIDATED || dataStatus == dataStatusTypes.VALIDATED)) {
-        if (ioHelper.hasServerURL() && !ioHelper.getLoggedInUser().rights.includes(admindataWrapper.userRights.VALIDATEFORMS)) return;
+        if (!ioHelper.userHasRight(ioHelper.userRights.VALIDATEFORMS)) return;
     }
 
     // Create a new FormData element and store the data

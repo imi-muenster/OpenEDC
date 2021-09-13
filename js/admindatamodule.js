@@ -34,7 +34,7 @@ export async function loadUsers() {
         $("#add-user-button").insertAdjacentElement("beforebegin", panelBlock);
     }
 
-    for (let userRight of Object.values(admindataWrapper.userRights)) {
+    for (let userRight of Object.values(ioHelper.userRights)) {
         const checkboxWrapper = document.createElement("label");
         checkboxWrapper.className = "checkbox is-block";
         const checkbox = document.createElement("input");

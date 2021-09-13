@@ -67,6 +67,14 @@ const fileTypes = {
     JSON: "json"
 }
 
+export const userRights = {
+    PROJECTOPTIONS: "project-options",
+    EDITMETADATA: "edit-metadata",
+    MANAGESUBJECTS: "manage-subjects",
+    VALIDATEFORMS: "validate-forms",
+    ADDSUBJECTDATA: "add-subject-data"
+};
+
 const $ = query => document.querySelector(query);
 
 let user = null;
@@ -269,6 +277,10 @@ export function hasServerURL() {
 
 export function getLoggedInUser() {
     return user;
+}
+
+export function userHasRight(right) {
+    return !serverURL || user.rights.includes(right);
 }
 
 export async function loadSettings() {
