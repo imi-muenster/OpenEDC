@@ -3,72 +3,24 @@ const odmCacheName = "odm-cache";
 const dynamicCacheName = "dynamic-cache";
 const messageQueueName = "message-queue";
 
-const staticAssets = [
-    "./",
-    "./css/style.css",
-    "./internationalization/en.json",
-    "./internationalization/es.json",
-    "./internationalization/de.json",
-    "./js/app.js",
-    "./js/metadatamodule.js",
-    "./js/admindatamodule.js",
-    "./js/clinicaldatamodule.js",
-    "./js/odmwrapper/metadatawrapper.js",
-    "./js/odmwrapper/admindatawrapper.js",
-    "./js/odmwrapper/clinicaldatawrapper.js",
-    "./js/odmwrapper/odmpath.js",
-    "./js/helper/expressionhelper.js",
-    "./js/helper/htmlelements.js",
-    "./js/helper/iohelper.js",
-    "./js/helper/indexeddbhelper.js",
-    "./js/helper/languagehelper.js",
-    "./js/helper/odmvalidation.js",
-    "./js/helper/validationhelper.js",
-    "./js/helper/cryptohelper.js",
-    "./js/helper/autocompletehelper.js",
-    "./js/helper/prototypefunctions.js",
-    "./js/helper/odmtohtml.js",
-    "./js/odmtemplates/metadatatemplates.js",
-    "./js/odmtemplates/admindatatemplates.js",
-    "./js/odmtemplates/clinicaldatatemplates.js",
-    "./js/components/datetimepicker.js",
-    "./js/components/navigationbar.js",
-    "./js/components/metadatasection.js",
-    "./js/components/clinicaldatasection.js",
-    "./js/components/projectmodal.js",
-    "./js/components/codelistmodal.js",
-    "./js/components/othermodals.js",
-    "./lib/expr-eval.js",
-    "./lib/bulma.css",
-    "./lib/fontawesome.css",
-    "./lib/webfonts/fa-regular-400.woff2",
-    "./lib/webfonts/fa-solid-900.woff2",
-    "./img/title-logo.png"
+const staticURLs = [
+    "/css/",
+    "/img/",
+    "/internationalization/",
+    "/js/",
+    "/lib/",
+    "/plugins/",
+    "/favicon.ico",
+    "/manifest.json"
 ];
 
-const odmRequestURLs = [
+const odmURLs = [
     "/metadata/",
     "/clinicaldata/",
     "/admindata/"
 ];
 
-const cacheFirstURLs = staticAssets
-    .filter(asset => asset.length > 2)
-    .map(asset => asset.slice(1))
-    .concat(odmRequestURLs);
-
-// Cache static assets
-self.addEventListener("install", installEvent => {
-    installEvent.waitUntil(
-        caches.open(staticCacheName).then(cache => {
-            // It seems that cache.addAll sometimes adds old cached assets to the new cache
-            // Therefore, cache.add with a custom request is used
-            return Promise.all(staticAssets
-                .map(asset => cache.add(new Request(asset, { cache: "reload" })))
-            );
-        })
-    );
-});
+const cacheFirstURLs = staticURLs.concat(odmURLs);
 
 // Remove old static assets
 self.addEventListener("activate", activateEvent => {
@@ -90,8 +42,9 @@ self.addEventListener("fetch", fetchEvent => {
             const isCacheFirst = cacheFirstURLs.some(url => cacheResponse ? cacheResponse.url.includes(url) : false);
             return isCacheFirst && cacheResponse ? cacheResponse : fetch(new Request(fetchEvent.request, { cache: "reload" }))
                 .then(async fetchResponse => {
-                    const isODMRequest = odmRequestURLs.some(url => fetchEvent.request.url.includes(url));
-                    const cache = await caches.open(isODMRequest ? odmCacheName : dynamicCacheName);
+                    const isStaticRequest = staticURLs.some(url => fetchEvent.request.url.includes(url));
+                    const isODMRequest = odmURLs.some(url => fetchEvent.request.url.includes(url));
+                    const cache = await caches.open(isStaticRequest ? staticCacheName : (isODMRequest ? odmCacheName : dynamicCacheName));
                     if (fetchEvent.request.method == "GET" && !fetchEvent.request.url.includes("version.json")) {
                         cache.put(fetchEvent.request.url, fetchResponse.clone());
                     } else if (isODMRequest && fetchEvent.request.method == "PUT") {
