@@ -18,7 +18,7 @@ class ReportsSection extends HTMLElement {
                                     <p class="menu-label" id="custom-reports-label" i18n="custom-reports"></p>
                                     <div class="menu-list" id="custom-reports-list"></div>
                                 </aside>
-                                <div class="buttons mt-5">
+                                <div class="buttons mt-5" id="manage-report-buttons">
                                     <button class="button is-link is-light is-small" id="add-report-button" i18n="add"></button>
                                     <button class="button is-small is-hidden" id="edit-report-button" i18n="edit"></button>
                                 </div>

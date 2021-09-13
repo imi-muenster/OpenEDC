@@ -309,6 +309,7 @@ const loadReportList = () => {
         if (currentReport && currentReport.id == report.id) reportElement.activate();
         report.isStandard ? $("#standard-reports-list").appendChild(reportElement) : $("#custom-reports-list").appendChild(reportElement);
     }
+    ioHelper.userHasRight(ioHelper.userRights.PROJECTOPTIONS) ? $("#manage-report-buttons").show() : $("#manage-report-buttons").hide();
     currentReport && !currentReport.isStandard ? $("#edit-report-button").show() : $("#edit-report-button").hide();
     reports.length > Object.values(reportsHelper.standardReports).length ? $("#custom-reports-label").show() : $("#custom-reports-label").hide();
 }
