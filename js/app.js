@@ -84,10 +84,9 @@ const startApp = async () => {
     languageHelper.populatePresentLanguages(metadataWrapper.getMetadata());
     await languageHelper.setInitialLocale();
     
-    metadataModule.init();
+    await metadataModule.init();
     await admindataModule.init();
     await clinicaldataModule.init();
-    reportsModule.init();
 
     // Last UI adjustments
     setTitles();
@@ -110,9 +109,10 @@ const startApp = async () => {
     // Only required because of a bug in Safari (selects without a value show a value if the textContent of their option elements is changed -- which happens during localize())
     if (getCurrentMode() == appModes.METADATA) metadataModule.reloadDetailsPanel();
 
-    // After all, check app version or whether app is currently offline, subscribe to server updates, and enable plugins
+    // After all, check app version, subscribe to server updates, and enable plugins
     checkAppVersion();
     subscribeToServerUpdates();
+    reportsModule.init();
     pluginRegistrar.enablePlugins();
 }
 
@@ -628,8 +628,8 @@ function enableMode(mode) {
 }
 
 function addModalsToDOM() {
-    // TODO: This could be improved in the future by loading the modal js module files dynamically
-    const modalNames = ["project", "about", "subject", "survey-code", "codelist"];
+    // TODO: This could be improved in the future by importing the modal js module files dynamically in the respective files
+    const modalNames = ["project", "about", "subject", "survey-code"];
     for (let modalName of modalNames) {
         document.body.appendChild(document.createElement(modalName + "-modal"));
     }

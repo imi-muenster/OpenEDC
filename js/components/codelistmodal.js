@@ -1,7 +1,7 @@
 class CodeListModal extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
-            <div class="modal" id="codelist-modal">
+            <div class="modal is-active" id="codelist-modal">
                 <div class="modal-background" onclick="hideCodeListModal()"></div>
                 <div class="modal-content is-medium">
                     <div class="is-pulled-right">

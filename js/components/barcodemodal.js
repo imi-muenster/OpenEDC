@@ -9,12 +9,12 @@ class BarcodeModal extends HTMLElement {
             <div class="modal is-active" id="barcode-modal">
                 <div class="modal-background"></div>
                 <div class="modal-content is-medium is-fullheight-mobile">
+                    <div class="is-pulled-right">
+                        <button class="delete is-close-button is-large"></button>
+                    </div>
                     <div class="box">
                         <div class="width-is-two-thirds">
-                            <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
-                                <h1 class="title mb-0">${this.heading}</h1>
-                                <button class="delete is-large"></button>
-                            </div>
+                            <h1 class="title">${this.heading}</h1>
                             <div class="notification">${this.helpText}</div>
                             <div id="barcode-video-stream" class="mb-4"></div>
                             <div class="field is-grouped is-fullwidth">

@@ -23,7 +23,9 @@ let viewOnlyMode = false;
 let asyncEditMode = false;
 let elementTypeOnDrag = null;
 
-export function init() {
+export async function init() {
+    await import("./components/codelistmodal.js");
+
     createDatatypeMandatorySelect();
     setIOListeners();
 }
@@ -986,6 +988,11 @@ window.showCodeListModal = function() {
         return;
     }
 
+    // Add modal to DOM
+    const modal = document.createElement("codelist-modal");
+    document.body.appendChild(modal);
+    languageHelper.localize(modal);
+
     // Add the item question and use the name as fallback
     const itemDef = metadataWrapper.getElementDefByOID(currentPath.itemOID);
     $("#codelist-modal h2").textContent = itemDef.getTranslatedQuestion(languageHelper.getCurrentLocale(), true);
@@ -1011,7 +1018,6 @@ window.showCodeListModal = function() {
 
     $("#codelist-modal #textitems-textarea").value = codeListItemsString;
     $("#codelist-modal #codelist-reference-input").value = null;
-    $("#codelist-modal").activate();
 }
 
 window.saveCodeListModal = function() {
@@ -1042,7 +1048,7 @@ window.saveCodeListModal = function() {
 
 window.hideCodeListModal = function() {
     autocompleteHelper.disableAutocomplete($("#codelist-modal #codelist-reference-input"));
-    $("#codelist-modal").deactivate();
+    $("codelist-modal").remove();
 }
 
 window.referenceCodeList = function() {
