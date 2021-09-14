@@ -446,6 +446,7 @@ export async function setUserOnServer(oid, credentials, rights, site) {
         body: JSON.stringify(userRequest)
     });
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
+    user = await userResponse.json();
 }
 
 export async function getUserOnServer(oid) {

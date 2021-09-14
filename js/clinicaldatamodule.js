@@ -41,11 +41,9 @@ export function createSiteFilterSelect() {
     let sites = [languageHelper.getTranslation("all-sites")];
     admindataWrapper.getSites().forEach(site => sites.push(site.getName()));
 
-    let currentSelection = null;
-    if ($("#filter-site-select-inner")) currentSelection = $("#filter-site-select-inner").value;
-
     $("#filter-site-select-outer")?.remove();
-    $("#filter-site-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("filter-site-select", true, true, sites, currentSelection));
+    $("#filter-site-control").appendChild(htmlElements.getSelect("filter-site-select", true, true, sites));
+    $("#filter-site-select-inner option").setAttribute("i18n", "all-sites");
     $("#filter-site-select-inner").onmouseup = clickEvent => {
         if (safeCloseClinicaldata(() => loadTree(currentPath.studyEventOID, null))) clickEvent.target.blur();
     };
@@ -60,7 +58,7 @@ export function createSiteFilterSelect() {
 function createSortTypeSelect() {
     const translatedSortTypes = Object.values(clinicaldataWrapper.sortOrderTypes).map(sortType => languageHelper.getTranslation(sortType));
     $("#sort-subject-select-outer")?.remove();
-    $("#sort-subject-control").insertAdjacentElement("afterbegin", htmlElements.getSelect("sort-subject-select", true, true, Object.values(clinicaldataWrapper.sortOrderTypes), null, translatedSortTypes, true));
+    $("#sort-subject-control").appendChild(htmlElements.getSelect("sort-subject-select", true, true, Object.values(clinicaldataWrapper.sortOrderTypes), null, translatedSortTypes, true));
     $("#sort-subject-select-inner").oninput = inputEvent => {
         loadSubjectKeys();
         inputEvent.target.blur();
@@ -193,9 +191,6 @@ export async function reloadTree() {
         $("#clinicaldata-study-events-column").hide();
         currentPath.studyEventOID = metadataWrapper.getStudyEvents()[0].getOID();
     } else $("#clinicaldata-study-events-column").show();
-
-    // Reload the site filter select (special case since the first entry -- All Sites -- should be i18n while the others should not)
-    createSiteFilterSelect();
 
     skipDataHasChangedCheck = true;
     await loadTree(currentPath.studyEventOID, currentPath.formOID);

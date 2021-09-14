@@ -110,21 +110,21 @@ window.addUser = function() {
     loadUser(userOID);
 }
 
-window.saveUser = function() {
+window.saveUser = async function() {
     const userOID = $("#users-options .panel a.is-active").getOID();
     if (!userOID) return;
 
     const firstName = $("#user-first-name-input").value;
     const lastName = $("#user-last-name-input").value
     const locationOID = admindataWrapper.getSiteOIDByName($("#user-site-select-inner").value);
-    admindataWrapper.setUserInfo(userOID, firstName, lastName, locationOID);
+    await admindataWrapper.setUserInfo(userOID, firstName, lastName, locationOID);
     
     if (ioHelper.hasServerURL()) {
         const username = $("#user-username-input").value;
         const initialPassword = $("#user-password-input").value;
         const credentials = new ioHelper.Credentials(username, initialPassword);
         const rights = Array.from($$("#user-rights input:checked")).map(checkbox => checkbox.name);
-        ioHelper.setUserOnServer(userOID, credentials, rights, locationOID).catch(error => console.log(error));
+        await ioHelper.setUserOnServer(userOID, credentials, rights, locationOID).catch(error => console.log(error));
     }
 
     if (userOID == admindataWrapper.getCurrentUserOID()) document.dispatchEvent(new CustomEvent("CurrentUserEdited"));

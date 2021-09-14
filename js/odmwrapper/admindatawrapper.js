@@ -108,7 +108,7 @@ export function addUser() {
     return newUserOID;
 }
 
-export function setUserInfo(userOID, firstName, lastName, locationOID) {
+export async function setUserInfo(userOID, firstName, lastName, locationOID) {
     let user = getUser(userOID);
     if (!user) return;
 
@@ -123,7 +123,7 @@ export function setUserInfo(userOID, firstName, lastName, locationOID) {
         if (locationRef) locationRef.remove();
     }
     
-    storeAdmindata();
+    await storeAdmindata();
 }
 
 export function removeUser(userOID) {
