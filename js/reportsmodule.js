@@ -314,7 +314,7 @@ const loadReportList = () => {
     const reports = reportsHelper.getReports();
     for (const report of reports) {
         const reportElement = document.createElement("a");
-        reportElement.textContent = report.isStandard ? languageHelper.getTranslation(report.name) : report.name;
+        reportElement.textContent = report.isStandard || report.hasDefaultName ? languageHelper.getTranslation(report.name) : report.name;
         reportElement.setAttribute("id", report.id);
         reportElement.onclick = () => loadReport(report);
         if (currentReport && currentReport.id == report.id) reportElement.activate();
@@ -337,7 +337,7 @@ const loadReport = report => {
 }
 
 const addReport = () => {
-    const report = reportsHelper.addReport(languageHelper.getTranslation("new-report"));
+    const report = reportsHelper.addReport("new-report");
     loadReportList();
     loadReport(report);
 }

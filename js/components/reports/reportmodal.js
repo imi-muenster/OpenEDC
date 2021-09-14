@@ -47,8 +47,9 @@ class ReportModal extends HTMLElement {
     }
 
     fillValues() {
-        this.querySelector("#report-name-label").textContent = this.report.name;
-        this.querySelector("#report-name-input").value = this.report.name;
+        const name = this.report.hasDefaultName ? languageHelper.getTranslation(this.report.name) : this.report.name;
+        this.querySelector("#report-name-label").textContent = name;
+        this.querySelector("#report-name-input").value = name;
 
         for (const standardWidget of reportsHelper.standardReports.INCLUSIONS.widgets) {
             const checkboxWrapper = document.createElement("label");
@@ -74,6 +75,7 @@ class ReportModal extends HTMLElement {
 
     saveReport() {
         this.report.name = this.querySelector("#report-name-input").value;
+        this.report.hasDefaultName = true;
 
         for (const checkbox of this.querySelectorAll("#standard-widgets input[type='checkbox']")) {
             const standardWidget = reportsHelper.standardReports.INCLUSIONS.widgets.find(widget => widget.name == checkbox.name);

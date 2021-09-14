@@ -1,4 +1,3 @@
-import * as languageHelper from "./languagehelper.js";
 import * as ioHelper from "./iohelper.js";
 
 export class Report {
@@ -11,6 +10,7 @@ export class Report {
         this.name = name;
         this.widgets = widgets ?? [];
         this.isStandard = isStandard;
+        this.hasDefaultName = true;
     }
 }
 
@@ -39,6 +39,7 @@ export class Widget {
         this.itemPaths = itemPaths ?? [];
         this.size = size ?? Widget.sizes.SMALL;
         this.isStandard = isStandard;
+        this.hasDefaultName = true;
     }
 
     set size(value) {
@@ -123,7 +124,7 @@ export const init = async () => {
     // Add initial standard and one custom report
     if (!reports.length) {
         addStandardReports();
-        addReport(languageHelper.getTranslation("new-report"));
+        addReport("new-report");
         storeReports();
     };
 }
