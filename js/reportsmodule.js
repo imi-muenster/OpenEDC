@@ -56,12 +56,12 @@ export async function show() {
 }
 
 const loadExample = async () => {
-    await clinicaldataWrapper.loadExample();
-
     const reportResponse = await fetch(ioHelper.getBaseURL() + "/example/report.json");
     const report = await reportResponse.json();
     reportsHelper.getReports().find(report => !report.isStandard).widgets = report.widgets.map(widget => reportsHelper.Widget.fromObject(widget));
+    reportsHelper.storeReports();
 
+    await clinicaldataWrapper.loadExample();
     show();
 }
 
