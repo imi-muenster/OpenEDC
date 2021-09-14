@@ -156,6 +156,7 @@ export async function loadExample() {
     const odmXMLString = await exampleResponse.text();
     
     await importClinicaldata(odmXMLString);
+    await loadSubjects();
 }
 
 async function loadStoredSubjectData(fileName) {

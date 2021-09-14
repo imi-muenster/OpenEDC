@@ -32,11 +32,8 @@ export async function init() {
 }
 
 export async function show() {
-    if (!currentReport) {
-        $("#reports-section h1").textContent = languageHelper.getTranslation("no-reported-selected-hint");
-        $("#reports-section h2").textContent = languageHelper.getTranslation("please-select-record-hint");
-    }
-
+    // If not report is selected, choose the first inclusion standard report
+    if (!currentReport) currentReport = reportsHelper.getReports().find(report => report.name == reportsHelper.standardReports.INCLUSIONS.name);
     loadReportList();
     languageHelper.createLanguageSelect();
 
@@ -45,8 +42,22 @@ export async function show() {
     if (showLoadingIndicator) ioHelper.showToast(languageHelper.getTranslation("data-loading-hint"));
     dataset = await clinicaldataWrapper.getAllData({ includeInfo: true });
     if (showLoadingIndicator) ioHelper.showToast(languageHelper.getTranslation("data-loaded-hint"), 2500);
+
+    // If the example project is opened, ask to load exemplary subject data
+    if (metadataWrapper.getStudyName() == languageHelper.getTranslation("exemplary-project") && Object.values(dataset).length < 5) {
+        ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("exemplary-subject-data-question"), 
+            {
+                [languageHelper.getTranslation("load")]: () => loadExample()
+            }
+        );
+    }
     
     loadWidgets();
+}
+
+const loadExample = async () => {
+    await clinicaldataWrapper.loadExample();
+    show();
 }
 
 export function reload() {

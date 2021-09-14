@@ -150,8 +150,6 @@
     "no-codelist-hint": "The data type of the current item is not <i>Choices</i>. If you want to add predefined choices, first set the according data type at the top.",
 
     "reports": "Reports",
-    "no-reported-selected-hint": "No reported selected",
-    "please-select-record-hint": "Please select a record first",
     "of": "of",
     "standard-reports": "Standard Reports",
     "custom-reports": "Custom Reports",
