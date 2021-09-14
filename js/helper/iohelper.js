@@ -430,6 +430,7 @@ export async function setOwnPassword(credentials) {
 }
 
 // TODO: Naming -- should I add a new serverhelper.js that handles all server communication?
+// TODO: Setting the currently logged in user in this location good approach?
 export async function setUserOnServer(oid, credentials, rights, site) {
     let userRequest = null;
     if (credentials.username && credentials.password) {
@@ -446,7 +447,7 @@ export async function setUserOnServer(oid, credentials, rights, site) {
         body: JSON.stringify(userRequest)
     });
     if (!userResponse.ok) return Promise.reject(await userResponse.text());
-    user = await userResponse.json();
+    if (user.oid == oid) user = await userResponse.json();
 }
 
 export async function getUserOnServer(oid) {

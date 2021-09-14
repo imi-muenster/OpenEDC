@@ -22,6 +22,8 @@ const odmURLs = [
 
 const cacheFirstURLs = staticURLs.concat(odmURLs);
 
+// Note: Install event and list of static assets was removed in commit 24ce064
+
 // Remove old static assets
 self.addEventListener("activate", activateEvent => {
     activateEvent.waitUntil(

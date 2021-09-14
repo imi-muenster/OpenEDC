@@ -603,7 +603,7 @@ export async function getSubjectsHavingDataForElement(elementType , odmPath) {
 // TODO: This function is performance critical -- identify ways to improve the performance (e.g., batch loading of subject data using Promise.all())
 export async function getAllData(options) {
     const data = {};
-    for (const subject of subjects) {
+    for (const subject of getSubjects(admindataWrapper.getCurrentUserSiteOID())) {
         const subjectODMData = await ioHelper.getODM(subject.fileName);
         if (!subjectODMData) continue;
 
