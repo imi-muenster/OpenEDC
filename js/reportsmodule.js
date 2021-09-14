@@ -184,16 +184,25 @@ const hoverCallback = (chartId, index) => {
 }
 
 const addWidgetToGrid = widget => {
+    let title;
+    if (widget.isStandard) {
+        title = languageHelper.getTranslation(widget.name);
+    } else if (widget.hasDefaultName && widget.itemPaths[0]) {
+        const path = ODMPath.parseAbsolute(widget.itemPaths[0]);
+        title = metadataWrapper.getElementDefByOID(path.itemOID).getTranslatedQuestion(languageHelper.getCurrentLocale());
+    } else {
+        title = widget.name;
+    }
+
     const widgetComponent = document.createElement("widget-component");
     widgetComponent.setWidget(widget);
-    widgetComponent.setTitle(widget.isStandard ? languageHelper.getTranslation(widget.name) : widget.name);
+    widgetComponent.setTitle(title);
     widgetComponent.setEnableOptions(ioHelper.userHasRight(ioHelper.userRights.PROJECTOPTIONS));
     $("#reports-section .widget.is-placeholder").insertAdjacentElement("beforebegin", widgetComponent);
 
     const customChart = getCustomChart(widget);
     if (customChart) {
         customChart.chart = new Chart(widgetComponent.querySelector("canvas"), customChart.config);
-        // TODO: Use setter instead
         widgetComponent.setCustomChart(customChart);
     } else {
         setTimeout(() => widgetComponent.showOptions(), 250);

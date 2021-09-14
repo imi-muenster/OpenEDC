@@ -188,8 +188,12 @@ class WidgetOptions extends HTMLElement {
         const itemPaths = Array.from(this.querySelectorAll("input[type='text']")).map(input => input.value).filter(value => value);
         if (name != this.component.widget.name) {
             this.component.widget.name = this.component.titleText = name;
+            this.component.widget.hasDefaultName = false;
         } else if (itemPaths[0] != this.component.widget.itemPaths[0]) {
-            this.component.widget.name = this.component.titleText = itemPaths[0];
+            const path = ODMPath.parseAbsolute(itemPaths[0]);
+            this.component.widget.name = path.toString();
+            this.component.titleText = metadataWrapper.getElementDefByOID(path.itemOID).getTranslatedQuestion(languageHelper.getCurrentLocale());
+            this.component.widget.hasDefaultName = true;
         }
         if (itemPaths && itemPaths.toString() != this.component.widget.itemPaths.toString()) this.component.widget.itemPaths = itemPaths;
 
