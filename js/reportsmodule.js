@@ -32,8 +32,8 @@ export async function init() {
 }
 
 export async function show() {
-    // If not report is selected, choose the first inclusion standard report
-    if (!currentReport) currentReport = reportsHelper.getReports().find(report => report.name == reportsHelper.standardReports.INCLUSIONS.name);
+    // If not report is selected, choose the first standard report
+    if (!currentReport) loadReport(reportsHelper.getReports().find(report => report.isStandard));
     loadReportList();
     languageHelper.createLanguageSelect();
 
