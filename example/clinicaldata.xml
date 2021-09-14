@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" FileType="Snapshot" FileOID="Beispielprojekt" CreationDateTime="2021-09-09T12:56:57.639Z" ODMVersion="1.3.2" SourceSystem="OpenEDC">
+    <ClinicalData StudyOID="S.1" MetaDataVersionOID="MDV.1">
+        <SubjectData xmlns="http://www.cdisc.org/ns/odm/v1.3" SubjectKey="1">
+            <AuditRecord>
+                <UserRef UserOID="U.1"/>
+                <LocationRef LocationOID="-"/>
+                <DateTimeStamp>2020-12-04T11:58:54.171Z</DateTimeStamp>
+            </AuditRecord>
+            <StudyEventData StudyEventOID="SE.1">
+                <FormData FormOID="F.1" TransactionType="Insert">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T11:59:00.298Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.1">
+                        <ItemData ItemOID="Gender" Value="Male"/>
+                    </ItemGroupData>
+                </FormData>
+                <FormData FormOID="F.1" TransactionType="Update">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T11:59:16.377Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.2">
+                        <ItemData ItemOID="CountryOfBirth" Value="Germany"/>
+                    </ItemGroupData>
+                </FormData>
+                <FormData FormOID="F.1" TransactionType="Update">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T12:47:41.384Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.1">
+                        <ItemData ItemOID="Age" Value="25"/>
+                    </ItemGroupData>
+                </FormData>
+                <FormData FormOID="F.1" TransactionType="Update">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T12:53:08.937Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.1">
+                        <ItemData ItemOID="Weight" Value="80"/>
+                    </ItemGroupData>
+                </FormData>
+            </StudyEventData>
+        </SubjectData>
+        <SubjectData xmlns="http://www.cdisc.org/ns/odm/v1.3" SubjectKey="2">
+            <SiteRef LocationOID="L.1"/>
+            <AuditRecord>
+                <UserRef UserOID="U.1"/>
+                <LocationRef LocationOID="-"/>
+                <DateTimeStamp>2020-12-04T11:58:54.631Z</DateTimeStamp>
+            </AuditRecord>
+            <StudyEventData StudyEventOID="SE.1">
+                <FormData FormOID="F.1" TransactionType="Insert">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T11:59:03.159Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.1">
+                        <ItemData ItemOID="Gender" Value="Male"/>
+                    </ItemGroupData>
+                </FormData>
+                <FormData FormOID="F.1" TransactionType="Update">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T11:59:22.075Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.2">
+                        <ItemData ItemOID="CountryOfBirth" Value="Italy"/>
+                    </ItemGroupData>
+                </FormData>
+                <FormData FormOID="F.1" TransactionType="Update">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T12:47:43.880Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.1">
+                        <ItemData ItemOID="Age" Value="26"/>
+                    </ItemGroupData>
+                </FormData>
+                <FormData FormOID="F.1" TransactionType="Update">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T12:53:12.724Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.1">
+                        <ItemData ItemOID="Weight" Value="82"/>
+                    </ItemGroupData>
+                </FormData>
+            </StudyEventData>
+        </SubjectData>
+        <SubjectData xmlns="http://www.cdisc.org/ns/odm/v1.3" SubjectKey="3">
+            <SiteRef LocationOID="L.1"/>
+            <AuditRecord>
+                <UserRef UserOID="U.1"/>
+                <LocationRef LocationOID="-"/>
+                <DateTimeStamp>2021-01-04T11:58:55.065Z</DateTimeStamp>
+            </AuditRecord>
+            <StudyEventData StudyEventOID="SE.1">
+                <FormData FormOID="F.1" TransactionType="Insert">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T11:59:06.438Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.1">
+                        <ItemData ItemOID="Gender" Value="Male"/>
+                    </ItemGroupData>
+                </FormData>
+                <FormData FormOID="F.1" TransactionType="Update">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T11:59:27.078Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.2">
+                        <ItemData ItemOID="CountryOfBirth" Value="Germany"/>
+                    </ItemGroupData>
+                </FormData>
+                <FormData FormOID="F.1" TransactionType="Update">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T12:47:47.203Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.1">
+                        <ItemData ItemOID="Age" Value="27"/>
+                    </ItemGroupData>
+                </FormData>
+                <FormData FormOID="F.1" TransactionType="Update">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T12:53:16.684Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.1">
+                        <ItemData ItemOID="Weight" Value="89"/>
+                    </ItemGroupData>
+                </FormData>
+            </StudyEventData>
+        </SubjectData>
+        <SubjectData xmlns="http://www.cdisc.org/ns/odm/v1.3" SubjectKey="4">
+            <SiteRef LocationOID="L.2"/>
+            <AuditRecord>
+                <UserRef UserOID="U.1"/>
+                <LocationRef LocationOID="-"/>
+                <DateTimeStamp>2021-02-04T11:58:55.533Z</DateTimeStamp>
+            </AuditRecord>
+            <StudyEventData StudyEventOID="SE.1">
+                <FormData FormOID="F.1" TransactionType="Insert">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T11:59:10.116Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.1">
+                        <ItemData ItemOID="Gender" Value="Female"/>
+                    </ItemGroupData>
+                </FormData>
+                <FormData FormOID="F.1" TransactionType="Update">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T11:59:33.041Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.2">
+                        <ItemData ItemOID="CountryOfBirth" Value="Greece"/>
+                    </ItemGroupData>
+                </FormData>
+                <FormData FormOID="F.1" TransactionType="Update">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T12:47:50.338Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.1">
+                        <ItemData ItemOID="Age" Value="27"/>
+                    </ItemGroupData>
+                </FormData>
+                <FormData FormOID="F.1" TransactionType="Update">
+                    <AuditRecord>
+                        <UserRef UserOID="U.1"/>
+                        <LocationRef LocationOID="-"/>
+                        <DateTimeStamp>2021-09-04T12:53:20.241Z</DateTimeStamp>
+                    </AuditRecord>
+                    <Annotation SeqNum="1">
+                        <Flag>
+                            <FlagValue CodeListOID="OpenEDC.DataStatus">3</FlagValue>
+                        </Flag>
+                    </Annotation>
+                    <ItemGroupData ItemGroupOID="IG.1">
+                        <ItemData ItemOID="Weight" Value="75"/>
+                    </ItemGroupData>
+                </FormData>
+            </StudyEventData>
+        </SubjectData>
+    </ClinicalData>
+</ODM>

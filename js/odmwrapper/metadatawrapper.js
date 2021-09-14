@@ -73,7 +73,7 @@ export function importMetadata(odmXMLString) {
 }
 
 export async function loadExample() {
-    const exampleResponse = await fetch(ioHelper.getBaseURL() + "/odm/example.xml");
+    const exampleResponse = await fetch(ioHelper.getBaseURL() + "/example/metadata.xml");
     const exampleODM = await exampleResponse.text();
 
     metadata = new DOMParser().parseFromString(exampleODM, "text/xml");

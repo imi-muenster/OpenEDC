@@ -151,6 +151,13 @@ export async function importClinicaldata(odmXMLString) {
     if (subjectDataList.length) await ioHelper.setODMBulk(subjectFileNameList, subjectDataList);
 }
 
+export async function loadExample() {
+    const exampleResponse = await fetch(ioHelper.getBaseURL() + "/example/clinicaldata.xml");
+    const odmXMLString = await exampleResponse.text();
+    
+    await importClinicaldata(odmXMLString);
+}
+
 async function loadStoredSubjectData(fileName) {
     const xmlData = await ioHelper.getODM(fileName);
     return xmlData.documentElement;
