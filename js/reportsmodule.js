@@ -43,13 +43,10 @@ export async function show() {
     dataset = await clinicaldataWrapper.getAllData({ includeInfo: true });
     if (showLoadingIndicator) ioHelper.showToast(languageHelper.getTranslation("data-loaded-hint"), 2500);
 
-    // If the example project is opened, ask to load exemplary subject data
-    if (metadataWrapper.getStudyName() == languageHelper.getTranslation("exemplary-project") && Object.values(dataset).length < 5) {
-        ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("exemplary-subject-data-question"), 
-            {
-                [languageHelper.getTranslation("load")]: () => loadExample()
-            }
-        );
+    // If the example project is opened and almost no data was entered, load exemplary subject data and report
+    if (metadataWrapper.getStudyName() == languageHelper.getTranslation("exemplary-project") && !Object.values(dataset).length) {
+        ioHelper.showToast(languageHelper.getTranslation("example-data-loaded-hint"), 5000);
+        await loadExample();
     }
     
     loadWidgets();
@@ -230,7 +227,7 @@ const getStandardWidgetValuesLabels = widget => {
     let values, labels;
     switch (widget.itemPaths[0]) {
         case "createdYear":
-            const years = getUniqueValues("createdYear");
+            const years = getUniqueValues("createdYear").sort();
             values = labels = years.length ? years : [new Date().getFullYear()];
             break;
         case "createdMonth":

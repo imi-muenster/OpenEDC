@@ -176,6 +176,7 @@
     "subject": "Proband",
     "data-loading-hint": "Bitte warten Sie, bis die Daten geladen wurden.",
     "data-loaded-hint": "Die Daten wurden erfolgreich geladen.",
+    "example-data-loaded-hint": "Es wurden einige Beispieldaten und Beispielberichte geladen.",
 
     "general-options":"Allgemeine Optionen",
     "users": "Benutzer",

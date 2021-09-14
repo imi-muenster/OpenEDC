@@ -176,6 +176,7 @@
     "subject": "Subject",
     "data-loading-hint": "Please wait until the data is loaded.",
     "data-loaded-hint": "The data was successfully loaded.",
+    "example-data-loaded-hint": "Some sample data and reports have been loaded.",
 
     "general-options":"General Options",
     "users": "Users",
