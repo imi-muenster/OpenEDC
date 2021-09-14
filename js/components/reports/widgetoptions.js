@@ -30,7 +30,7 @@ class WidgetOptions extends HTMLElement {
         const title = document.createElement("h2");
         title.className = "subtitle mb-1";
         title.contentEditable = !this.component.widget.isStandard;
-        title.textContent = this.component.widget.name;
+        title.textContent = this.component.titleText;
         this.appendChild(title);
     }
 
@@ -184,10 +184,10 @@ class WidgetOptions extends HTMLElement {
         if (size && this.component.widget.size != size) this.setWidgetComponentSize(size);
 
         // Set widget name and itemPaths
-        const name = this.querySelector(".subtitle").textContent;
+        const title = this.querySelector(".subtitle").textContent;
         const itemPaths = Array.from(this.querySelectorAll("input[type='text']")).map(input => input.value).filter(value => value);
-        if (name != this.component.widget.name) {
-            this.component.widget.name = this.component.titleText = name;
+        if (title != this.component.titleText) {
+            this.component.widget.name = this.component.titleText = title;
             this.component.widget.hasDefaultName = false;
         } else if (itemPaths[0] != this.component.widget.itemPaths[0]) {
             const path = ODMPath.parseAbsolute(itemPaths[0]);
