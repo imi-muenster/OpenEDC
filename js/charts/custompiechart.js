@@ -28,15 +28,19 @@ export class CustomPieChart {
             maintainAspectRatio: false,
             plugins: {
                 legend: { position: "right" },
-                tooltip: { enabled: false },
+                tooltip: {
+                    caretSize: 0,
+                    caretPadding: 10,
+                    backgroundColor: chartColors.colorDark,
+                    displayColors: false,
+                    callbacks: {
+                        label: event => event.label
+                    }
+                },
                 datalabels: {
                     font: { weight: "bold" },
-                    color: function(context) {
-                        return context.dataset.backgroundColor[context.dataIndex] == chartColors.colorLight ? chartColors.colorDark : chartColors.colorLight;
-                    },
-                    display: function(context) {
-                        return context.dataset.data[context.dataIndex] != 0;
-                    }
+                    color: context => context.dataset.backgroundColor[context.dataIndex] == chartColors.colorLight ? chartColors.colorDark : chartColors.colorLight,
+                    display: context =>  context.dataset.data[context.dataIndex] != 0
                 }
             },
             onClick: (event, elements) => this.pieChartClicked(event.chart, elements[0]?.index)
@@ -69,7 +73,7 @@ export class CustomPieChart {
     }
 
     update() {
-        if (this.chart.canvas.height == 300) {
+        if (this.chart.canvas.height % 300 == 0) {
             this.chart.canvas.style.height = null;
             this.chart.canvas.height = null;
         }

@@ -50,9 +50,7 @@ export class CustomScatterChart {
                     backgroundColor: chartColors.colorDark,
                     displayColors: false,
                     callbacks: {
-                        label: event => {
-                            return languageHelper.getTranslation("subject") + ": " + this.widgetData.sortedValues[event.dataIndex].label;
-                        }
+                        label: event => languageHelper.getTranslation("subject") + ": " + this.widgetData.sortedValues[event.dataIndex].label
                     }
                 }
             },
