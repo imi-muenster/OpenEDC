@@ -14,7 +14,7 @@ export class CustomBarChart {
                 {
                     label: this.widgetData.itemPath,
                     data: this.widgetData.counts,
-                    backgroundColor: chartColors.getColorArray(this.widgetData.counts.length),
+                    backgroundColor: chartColors.getColorArray(true, this.widgetData.counts.length),
                     borderColor: chartColors.colorDark,
                     borderWidth: 2,
                     borderRadius: 4,
@@ -71,11 +71,11 @@ export class CustomBarChart {
         if (clickedBarIndex == this.activeIndex) {
             this.activeIndex = null;
             value = null;
-            chart.data.datasets[0].backgroundColor = chartColors.getColorArray(this.widgetData.counts.length);
+            chart.data.datasets[0].backgroundColor = chartColors.getColorArray(true, this.widgetData.counts.length);
         } else {
             this.activeIndex = clickedBarIndex;
             value = this.widgetData.values[this.activeIndex];
-            chart.data.datasets[0].backgroundColor = chartColors.getColorArray(this.widgetData.counts.length, this.activeIndex);
+            chart.data.datasets[0].backgroundColor = chartColors.getColorArray(true, this.widgetData.counts.length, this.activeIndex);
         }
         
         chart.update();

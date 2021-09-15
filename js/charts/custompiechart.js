@@ -15,7 +15,7 @@ export class CustomPieChart {
                 {
                     label: this.widgetData.itemPath,
                     data: this.widgetData.counts,
-                    backgroundColor: chartColors.getColorArray(this.widgetData.counts.length),
+                    backgroundColor: chartColors.getColorArray(false, this.widgetData.counts.length),
                     borderColor: chartColors.colorDark,
                     borderWidth: 2
                 }
@@ -30,7 +30,7 @@ export class CustomPieChart {
                 legend: { position: "right" },
                 tooltip: { enabled: false },
                 datalabels: {
-                    color: chartColors.colorDark,
+                    color: chartColors.colorWhite,
                     font: { weight: "bold" },
                     display: function(context) {
                         return context.dataset.data[context.dataIndex] != 0;
@@ -55,11 +55,11 @@ export class CustomPieChart {
         if (clickedBarIndex == this.activeIndex) {
             this.activeIndex = null;
             value = null;
-            chart.data.datasets[0].backgroundColor = chartColors.getColorArray(this.widgetData.counts.length);
+            chart.data.datasets[0].backgroundColor = chartColors.getColorArray(false, this.widgetData.counts.length);
         } else {
             this.activeIndex = clickedBarIndex;
             value = this.widgetData.values[this.activeIndex];
-            chart.data.datasets[0].backgroundColor = chartColors.getColorArray(this.widgetData.counts.length, this.activeIndex);
+            chart.data.datasets[0].backgroundColor = chartColors.getColorArray(true, this.widgetData.counts.length, this.activeIndex);
         }
         
         chart.update();
