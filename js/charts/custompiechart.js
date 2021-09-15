@@ -30,8 +30,10 @@ export class CustomPieChart {
                 legend: { position: "right" },
                 tooltip: { enabled: false },
                 datalabels: {
-                    color: chartColors.colorWhite,
                     font: { weight: "bold" },
+                    color: function(context) {
+                        return context.dataset.backgroundColor[context.dataIndex] == chartColors.colorLight ? chartColors.colorDark : chartColors.colorLight;
+                    },
                     display: function(context) {
                         return context.dataset.data[context.dataIndex] != 0;
                     }
