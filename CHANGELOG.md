@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.8.0
+
+- This update introduces interactive, customizable, and responsive reports for OpenEDC
+- Bar, pie, and donut charts can be used to filter data in real time
+- Scatter charts can show item correlations by displaying two distinct items
+- Support for absolute and relative item paths for conditional and calculated items
+- First version of a plugin mechanism to develop encapsulated extensions for OpenEDC
+- Various further internal improvements
+
 ## 0.7.1
 
 - A new user button shows the name of the current user and allows to log out

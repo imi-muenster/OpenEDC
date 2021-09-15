@@ -68,7 +68,7 @@ export class CustomBarChart {
 
     barChartClicked(chart, clickedBarIndex) {
         let value;
-        if (clickedBarIndex == this.activeIndex) {
+        if (clickedBarIndex == this.activeIndex || clickedBarIndex == null) {
             this.activeIndex = null;
             value = null;
             chart.data.datasets[0].backgroundColor = chartColors.getColorArray(true, this.widgetData.counts.length);

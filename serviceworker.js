@@ -1,4 +1,4 @@
-const staticCacheName = "static-cache-0.7.1";
+const staticCacheName = "static-cache-0.8.0";
 const odmCacheName = "odm-cache";
 const dynamicCacheName = "dynamic-cache";
 const messageQueueName = "message-queue";
