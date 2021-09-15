@@ -1,61 +1,79 @@
 {
     "id":1,
-    "name":"Exemplary Report",
+    "name":"new-report",
     "widgets":[
         {
             "id":1,
-            "name":"Gender",
+            "name":"year-of-inclusion",
+            "_type":"bar-chart",
             "_itemPaths":[
-            "SE.1-F.1-IG.1-Gender"
+            "createdYear"
             ],
             "_size":"small",
-            "_type":"bar-chart"
+            "isStandard":true,
+            "hasDefaultName":true
         },
         {
             "id":2,
-            "name":"CountryOfBirth",
+            "name":"month-of-inclusion",
+            "_type":"bar-chart",
             "_itemPaths":[
-            "SE.1-F.1-IG.2-CountryOfBirth"
+            "createdMonth"
             ],
             "_size":"medium",
-            "_type":"bar-chart"
+            "isStandard":true,
+            "hasDefaultName":true
         },
         {
             "id":4,
-            "name":"Weight and Height",
-            "_itemPaths":[
-            "SE.1-F.1-IG.1-Weight",
-            "SE.1-F.1-IG.1-Height"
-            ],
-            "_size":"medium",
-            "_type":"scatter-chart"
-        },
-        {
-            "id":3,
-            "name":"Age",
+            "name":"SE.1-F.1-IG.1-Age",
             "_itemPaths":[
             "SE.1-F.1-IG.1-Age"
             ],
             "_size":"small",
+            "hasDefaultName":true,
+            "_type":"scatter-chart"
+        },
+        {
+            "id":3,
+            "name":"SE.1-F.1-IG.1-Gender",
+            "_itemPaths":[
+            "SE.1-F.1-IG.1-Gender"
+            ],
+            "_size":"small",
+            "hasDefaultName":true,
+            "_type":"bar-chart"
+        },
+        {
+            "id":7,
+            "name":"SE.1-F.1-IG.1-Height",
+            "_itemPaths":[
+            "SE.1-F.1-IG.1-Height"
+            ],
+            "_size":"small",
+            "hasDefaultName":true,
             "_type":"scatter-chart"
         },
         {
             "id":5,
-            "name":"CardiovascularDisease",
+            "name":"SE.1-F.1-IG.2-CountryOfBirth",
             "_itemPaths":[
-            "SE.1-F.2-IG.3-CardiovascularDiseases"
+            "SE.1-F.1-IG.2-CountryOfBirth"
             ],
-            "_size":"small",
+            "_size":"medium",
+            "hasDefaultName":true,
             "_type":"bar-chart"
         },
         {
             "id":6,
-            "name":"TumorDisease",
+            "name":"SE.2-F.4-WHO.Q-WHO.1",
             "_itemPaths":[
-            "SE.1-F.2-IG.4-TumorDiseases"
+            "SE.2-F.4-WHO.Q-WHO.1"
             ],
-            "_size":"small",
+            "_size":"medium",
+            "hasDefaultName":true,
             "_type":"bar-chart"
         }
-    ]
+    ],
+    "hasDefaultName":true
 }

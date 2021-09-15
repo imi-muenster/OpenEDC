@@ -45,7 +45,7 @@ export async function show() {
 
     // If the example project is opened and almost no data was entered, load exemplary subject data and report
     if (metadataWrapper.getStudyName() == languageHelper.getTranslation("exemplary-project") && !Object.values(dataset).length) {
-        ioHelper.showToast(languageHelper.getTranslation("example-data-loaded-hint"), 5000);
+        ioHelper.showToast(languageHelper.getTranslation("example-data-loaded-hint"), 3500);
         await loadExample();
     }
     
@@ -323,7 +323,7 @@ const loadReportList = () => {
     const reports = reportsHelper.getReports();
     for (const report of reports) {
         const reportElement = document.createElement("a");
-        reportElement.textContent = report.isStandard || report.hasDefaultName ? languageHelper.getTranslation(report.name) : report.name;
+        reportElement.textContent = report.hasDefaultName ? languageHelper.getTranslation(report.name) : report.name;
         reportElement.setAttribute("id", report.id);
         reportElement.onclick = () => loadReport(report);
         if (currentReport && currentReport.id == report.id) reportElement.activate();

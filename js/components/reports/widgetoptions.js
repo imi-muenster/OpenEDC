@@ -14,7 +14,7 @@ class WidgetOptions extends HTMLElement {
     }
 
     render() {
-        this.className = "widget-options is-flex is-flex-direction-column is-justify-content-space-between is-align-items-center has-text-centered p-5";
+        this.className = "widget-options is-flex is-flex-direction-column is-justify-content-space-between is-align-items-center p-5";
         this.addTitle();
         this.addItemInput();
         this.addTypeSelect();
@@ -28,7 +28,7 @@ class WidgetOptions extends HTMLElement {
 
     addTitle() {
         const title = document.createElement("h2");
-        title.className = "subtitle mb-1";
+        title.className = "subtitle has-text-centered mb-1";
         title.contentEditable = !this.component.widget.isStandard;
         title.textContent = this.component.titleText;
         this.appendChild(title);
