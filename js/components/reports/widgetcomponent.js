@@ -72,8 +72,11 @@ class WidgetComponent extends HTMLElement {
         this.classList.add("is-flipped");
     }
 
-    update() {
+    updateTitle() {
         this.widgetContent.querySelector(".subtitle").textContent = this.titleText;
+    }
+
+    updateChart() {
         this.customChart?.update();
     }
 }

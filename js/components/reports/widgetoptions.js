@@ -14,7 +14,7 @@ class WidgetOptions extends HTMLElement {
     }
 
     render() {
-        this.className = "widget-options is-flex is-flex-direction-column is-justify-content-space-between is-align-items-center p-5";
+        this.className = "widget-options is-flex is-flex-direction-column is-justify-content-space-between is-align-items-center has-text-centered p-5";
         this.addTitle();
         this.addItemInput();
         this.addTypeSelect();
@@ -179,10 +179,6 @@ class WidgetOptions extends HTMLElement {
     }
 
     saveOptions() {
-        // Set widget size
-        const size = this.querySelector(".widget-size-options input:checked")?.value;
-        if (size && this.component.widget.size != size) this.setWidgetComponentSize(size);
-
         // Set widget name and itemPaths
         const title = this.querySelector(".subtitle").textContent;
         const itemPaths = Array.from(this.querySelectorAll("input[type='text']")).map(input => input.value).filter(value => value);
@@ -201,8 +197,13 @@ class WidgetOptions extends HTMLElement {
         const type = this.querySelector("#widget-type-select").value;
         this.component.widget.type = type;
 
-        // TODO: If only the name was updated (neither the path nor the type), simply call this.component.update()
+        // Set widget size
+        const size = this.querySelector(".widget-size-options input:checked")?.value;
+        if (size && this.component.widget.size != size) this.setWidgetComponentSize(size);
+
+        // TODO: If only the name was updated (neither the path, type nor size), simply call this.component.updateTitle()
         this.hideOptions();
+        this.component.updateTitle();
         document.dispatchEvent(new CustomEvent("WidgetEdited", { detail: this.component.widget.id }));
     }
 

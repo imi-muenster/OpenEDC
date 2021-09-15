@@ -137,7 +137,7 @@ const removeFilter = itemPath => {
 
 const updateWidgets = () => {
     calculateWidgetData();
-    widgetComponents.forEach(widgetComponent => widgetComponent.update());
+    widgetComponents.forEach(widgetComponent => widgetComponent.updateChart());
 }
 
 const reloadWidget = widgetId => {
@@ -151,7 +151,7 @@ const reloadWidget = widgetId => {
     const customChart = getCustomChart(widget);
     if (customChart) {
         widgetComponent.customChart?.chart?.destroy();
-        customChart.chart = new Chart(widgetComponent.querySelector("canvas"), customChart.config);;
+        customChart.chart = new Chart(widgetComponent.querySelector("canvas"), customChart.config);
         widgetComponent.setCustomChart(customChart);
     }
 
@@ -185,7 +185,7 @@ const hoverCallback = (chartId, index) => {
 
 const addWidgetToGrid = widget => {
     let title;
-    if (widget.isStandard) {
+    if (widget.isStandard || (widget.hasDefaultName && !widget.itemPaths[0])) {
         title = languageHelper.getTranslation(widget.name);
     } else if (widget.hasDefaultName && widget.itemPaths[0]) {
         const path = ODMPath.parseAbsolute(widget.itemPaths[0]);
@@ -313,7 +313,7 @@ const getWidgetPlaceholder = () => {
 }
 
 const addWidget = () => {
-    const widget = reportsHelper.addWidget(currentReport.id, languageHelper.getTranslation("new-chart"));
+    const widget = reportsHelper.addWidget(currentReport.id, "new-chart");
     addWidgetToGrid(widget);
 }
 
