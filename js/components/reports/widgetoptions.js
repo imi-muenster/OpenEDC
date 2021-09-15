@@ -139,7 +139,7 @@ class WidgetOptions extends HTMLElement {
         const itemDef = metadataWrapper.getElementDefByOID(path.itemOID);
         if (!itemDef) return;
 
-        // TODO: Move to other location?
+        // TODO: Move to other location? And maybe refactor to reduce code?
         const widgetDataTypeMapping = {
             [reportsHelper.Widget.types.SCATTER]: [
                 metadataWrapper.dataTypes.INTEGER,
@@ -156,6 +156,13 @@ class WidgetOptions extends HTMLElement {
                 metadataWrapper.dataTypes.CODELISTFLOAT
             ],
             [reportsHelper.Widget.types.PIE]: [
+                metadataWrapper.dataTypes.TEXT,
+                metadataWrapper.dataTypes.BOOLEAN,
+                metadataWrapper.dataTypes.CODELISTTEXT,
+                metadataWrapper.dataTypes.CODELISTINTEGER,
+                metadataWrapper.dataTypes.CODELISTFLOAT
+            ],
+            [reportsHelper.Widget.types.DONUT]: [
                 metadataWrapper.dataTypes.TEXT,
                 metadataWrapper.dataTypes.BOOLEAN,
                 metadataWrapper.dataTypes.CODELISTTEXT,

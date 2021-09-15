@@ -218,6 +218,8 @@ const getCustomChart = widget => {
             return new CustomBarChart(getFrequencyWidgetData(widget), filterCallback);
         case reportsHelper.Widget.types.PIE:
             return new CustomPieChart(getFrequencyWidgetData(widget), filterCallback);
+        case reportsHelper.Widget.types.DONUT:
+            return new CustomPieChart(getFrequencyWidgetData(widget), filterCallback, true);
         case reportsHelper.Widget.types.SCATTER:
             return new CustomScatterChart(getDiscreteWidgetData(widget), hoverCallback);
     }

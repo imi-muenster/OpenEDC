@@ -1,9 +1,10 @@
 import * as chartColors from "./chartcolors.js";
 
 export class CustomPieChart {
-    constructor(widgetData, filterCallback) {
+    constructor(widgetData, filterCallback, isDonut) {
         this.widgetData = widgetData;
         this.filterCallback = filterCallback;
+        this.isDonut = isDonut;
         this.chart = null;
     }
 
@@ -27,9 +28,13 @@ export class CustomPieChart {
             maintainAspectRatio: false,
             plugins: {
                 legend: { position: "right" },
+                tooltip: { enabled: false },
                 datalabels: {
                     color: chartColors.colorDark,
-                    font: { weight: "bold" }
+                    font: { weight: "bold" },
+                    display: function(context) {
+                        return context.dataset.data[context.dataIndex] != 0;
+                    }
                 }
             },
             onClick: (event, elements) => this.pieChartClicked(event.chart, elements[0]?.index)
@@ -38,7 +43,7 @@ export class CustomPieChart {
 
     get config() {
         return {
-            type: "pie",
+            type: this.isDonut ? "doughnut" : "pie",
             data: this.data,
             options: this.options,
             plugins: [ ChartDataLabels ]
