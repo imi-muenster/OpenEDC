@@ -8,6 +8,7 @@ import * as ioHelper from "./helper/iohelper.js";
 
 // Import custom charts
 import { CustomBarChart } from "./charts/custombarchart.js";
+import { CustomPieChart } from "./charts/custompiechart.js";
 import { CustomScatterChart } from "./charts/customscatterchart.js";
 
 const $ = query => document.querySelector(query);
@@ -214,11 +215,11 @@ const addWidgetToGrid = widget => {
 const getCustomChart = widget => {
     switch (widget.type) {
         case reportsHelper.Widget.types.BAR:
-            const frequencyWidgetData = getFrequencyWidgetData(widget);
-            return new CustomBarChart(frequencyWidgetData, filterCallback);
+            return new CustomBarChart(getFrequencyWidgetData(widget), filterCallback);
+        case reportsHelper.Widget.types.PIE:
+            return new CustomPieChart(getFrequencyWidgetData(widget), filterCallback);
         case reportsHelper.Widget.types.SCATTER:
-            const discreteWidgetData = getDiscreteWidgetData(widget);
-            return new CustomScatterChart(discreteWidgetData, hoverCallback);
+            return new CustomScatterChart(getDiscreteWidgetData(widget), hoverCallback);
     }
 }
 

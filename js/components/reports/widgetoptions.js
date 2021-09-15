@@ -154,6 +154,13 @@ class WidgetOptions extends HTMLElement {
                 metadataWrapper.dataTypes.CODELISTTEXT,
                 metadataWrapper.dataTypes.CODELISTINTEGER,
                 metadataWrapper.dataTypes.CODELISTFLOAT
+            ],
+            [reportsHelper.Widget.types.PIE]: [
+                metadataWrapper.dataTypes.TEXT,
+                metadataWrapper.dataTypes.BOOLEAN,
+                metadataWrapper.dataTypes.CODELISTTEXT,
+                metadataWrapper.dataTypes.CODELISTINTEGER,
+                metadataWrapper.dataTypes.CODELISTFLOAT
             ]
         };
 
