@@ -73,7 +73,8 @@ export class CustomPieChart {
     }
 
     update() {
-        if (this.chart.canvas.height % 300 == 0) {
+        // Pie and donut charts have a minimal height of 300px which must be reset in order to display it within small widgets
+        if (this.chart.canvas.style.height == "300px") {
             this.chart.canvas.style.height = null;
             this.chart.canvas.height = null;
         }
