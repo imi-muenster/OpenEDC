@@ -3,6 +3,8 @@ const odmCacheName = "odm-cache";
 const dynamicCacheName = "dynamic-cache";
 const messageQueueName = "message-queue";
 
+const baseURL = self.location.href.replace("serviceworker.js", "");
+
 const staticURLs = [
     "/css/",
     "/img/",
@@ -22,7 +24,14 @@ const odmURLs = [
 
 const cacheFirstURLs = staticURLs.concat(odmURLs);
 
-// Note: Install event and list of static assets was removed in commit 24ce064
+// Cache base url
+self.addEventListener("install", installEvent => {
+    installEvent.waitUntil(
+        caches.open(staticCacheName).then(cache => {
+            return cache.add(new Request("./", { cache: "reload" }));
+        })
+    );
+});
 
 // Remove old static assets
 self.addEventListener("activate", activateEvent => {
@@ -36,12 +45,12 @@ self.addEventListener("activate", activateEvent => {
     );
 });
 
-// Return static and dynamic assets
+// Cache and return static and dynamic assets
 self.addEventListener("fetch", fetchEvent => {
     fetchEvent.respondWith(
         caches.match(fetchEvent.request, { ignoreVary: true }).then(async cacheResponse => {
             const requestBody = await fetchEvent.request.clone().text();
-            const isCacheFirst = cacheFirstURLs.some(url => cacheResponse ? cacheResponse.url.includes(url) : false);
+            const isCacheFirst = cacheFirstURLs.some(url => cacheResponse ? cacheResponse.url.includes(url) || cacheResponse.url == baseURL : false);
             return isCacheFirst && cacheResponse ? cacheResponse : fetch(new Request(fetchEvent.request, { cache: "reload" }))
                 .then(async fetchResponse => {
                     const isStaticRequest = staticURLs.some(url => fetchEvent.request.url.includes(url));
