@@ -53,10 +53,6 @@ html, body {
     box-shadow: 0 8px 8px rgba(10, 10, 10, .1), 0 0 0 1px rgba(10, 10, 10, .1);
 }
 
-#mobile-back-button {
-    font-weight: 500;
-}
-
 .navbar-item .dropdown-menu {
     top: calc(100% - 4px);
 }
@@ -544,6 +540,7 @@ a.panel-block:hover {
     -webkit-user-select: text;
     user-select: text;
 }
+
 @media only screen and (max-width: 1024px) {
     #app-mode-button .dropdown-menu {
         top: auto;

@@ -908,7 +908,7 @@ window.backOnMobile = function() {
     }
 }
 
-function adjustMobileUI(forceHideBackButton) {
+export function adjustMobileUI(forceHideBackButton) {
     if (!ioHelper.isMobile()) return;
     
     // Hide or show navbar back button

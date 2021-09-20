@@ -10,7 +10,7 @@ class NavigationBar extends HTMLElement {
                         <span class="icon">
                             <i class="fas fa-chevron-left"></i>
                         </span>
-                        <span i18n="back"></span>
+                        <span class="has-text-weight-semibold" i18n="back"></span>
                     </a>
                     <a class="navbar-burger">
                         <span aria-hidden="true"></span>

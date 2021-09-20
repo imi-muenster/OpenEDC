@@ -604,6 +604,7 @@ function enableMode(mode) {
             $("#app-mode-button .icon i").className = "fas fa-drafting-compass";
             $("#metadata-section").show();
             $("#metadata-mode-button").hide();
+            clinicaldataModule.adjustMobileUI(true);
             metadataModule.show();
             break;
         case appModes.CLINICALDATA:
@@ -620,6 +621,7 @@ function enableMode(mode) {
             $("#app-mode-button .icon i").className = "fas fa-chart-pie";
             $("#reports-section").show();
             $("#reports-mode-button").hide();
+            clinicaldataModule.adjustMobileUI(true);
             reportsModule.show();
     }
 
