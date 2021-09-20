@@ -544,17 +544,18 @@ a.panel-block:hover {
     -webkit-user-select: text;
     user-select: text;
 }
-
-@media only screen and (max-width: 768px) {
-    #language-dropdown {
-        box-shadow: none;
-    }
-
+@media only screen and (max-width: 1024px) {
     #app-mode-button .dropdown-menu {
         top: auto;
         left: 0;
         bottom: 100%;
         padding-bottom: 4px;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    #language-dropdown {
+        box-shadow: none;
     }
 
     .modal-content.is-fullheight-mobile {
