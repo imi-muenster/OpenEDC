@@ -42,6 +42,7 @@ export class CustomScatterChart {
                     }
                 }
             },
+            interaction: { mode: "nearest" },
             plugins: {
                 legend: { display: false },
                 tooltip: {
@@ -50,7 +51,11 @@ export class CustomScatterChart {
                     backgroundColor: chartColors.colorDark,
                     displayColors: false,
                     callbacks: {
-                        label: event => languageHelper.getTranslation("subject") + ": " + this.widgetData.sortedValues[event.dataIndex].label
+                        label: event => [
+                            languageHelper.getTranslation("subject") + ": " + this.widgetData.sortedValues[event.dataIndex].label,
+                            languageHelper.getTranslation(oneDimensional ? "value": "values") + ": " + this.widgetData.sortedValues[event.dataIndex].x
+                            + (oneDimensional ? "" : " | " + this.widgetData.sortedValues[event.dataIndex].y),
+                        ]
                     }
                 }
             },

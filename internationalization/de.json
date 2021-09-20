@@ -283,6 +283,7 @@
     "remove-subject": "Proband löschen",
     "audit-trail-for-item": "Audit Trail für Element",
     "value": "Wert",
+    "values": "Werte",
     "no-audit-trail-hint": "Keine Daten im Audit Trail vorhanden.",
 
     "note": "Hinweis",

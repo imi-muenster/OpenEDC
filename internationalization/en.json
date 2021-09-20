@@ -283,6 +283,7 @@
     "remove-subject": "Remove Subject",
     "audit-trail-for-item": "Audit Trail for Item",
     "value": "Value",
+    "values": "Values",
     "no-audit-trail-hint": "No audit trail data available.",
 
     "note": "Note",
