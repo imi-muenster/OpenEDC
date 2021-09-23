@@ -54,7 +54,7 @@ export class CustomScatterChart {
                         label: event => [
                             languageHelper.getTranslation("subject") + ": " + this.widgetData.sortedValues[event.dataIndex].label,
                             languageHelper.getTranslation(oneDimensional ? "value": "values") + ": " + this.widgetData.sortedValues[event.dataIndex].x
-                            + (oneDimensional ? "" : " | " + this.widgetData.sortedValues[event.dataIndex].y),
+                            + (oneDimensional ? "" : " | " + this.widgetData.sortedValues[event.dataIndex].y)
                         ]
                     }
                 }

@@ -32,7 +32,8 @@ class BarcodeModal extends HTMLElement {
         `;
 
         // Initialize and start the barcode scan
-        await import("../../lib/quagga.js");
+        // TODO: Quagga was not developed for working with Web Components -- use the Barcode Detection API as soon as it is supported by iOS
+        await import("../../lib/quagga.js?noCache=" + Math.random());
         Quagga.init(
             {
                 inputStream: {
@@ -41,7 +42,7 @@ class BarcodeModal extends HTMLElement {
                     target: document.querySelector("#barcode-video-stream")
                 },
                 decoder : {
-                    readers: ["code_128_reader", "code_39_reader"]
+                    readers: ["code_128_reader", "code_39_reader", "i2of5_reader", "2of5_reader"]
                 }
             },
             error => {
@@ -88,6 +89,7 @@ class BarcodeModal extends HTMLElement {
 
     finish = () => {
         Quagga.stop();
+        delete window.Quagga;
         this.remove();
     }
 }
