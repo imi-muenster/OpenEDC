@@ -12,11 +12,16 @@ export function setVariables(variables) {
     conditionVariables = {};
     methodVariables = {};
     
-    for (const [key, value] of Object.entries(variables)) {
-        conditionVariables[escapePaths(key)] = value;
-        // Only evaluate method expressions where all variables have a value != ""
-        if (value != "") methodVariables[escapePaths(key)] = value;
-    }
+    Object.entries(variables).forEach(([path, value]) => setVariable(path, value));
+}
+
+export function setVariable(path, value) {
+    const escapedPaths = escapePaths(path);
+    conditionVariables[escapedPaths] = !value ? "" : value;
+
+    // Only evaluate method expressions where all variables have a value != ""
+    if (value && value != "") methodVariables[escapedPaths] = value;
+    else delete methodVariables[escapedPaths];
 }
 
 export function process(elements) {
@@ -81,7 +86,7 @@ function processCondition(condition) {
 }
 
 function respondToInputChangeCondition(input, itemPath, condition, conditionalElement) {
-    conditionVariables[escapePaths(itemPath.toString())] = !input.value ? "" : input.value;
+    setVariable(itemPath.toString(), input.value);
     showOrHideConditionalElement(conditionalElement, condition.expression.evaluate(conditionVariables));
 }
 
@@ -144,8 +149,7 @@ function processMethod(method) {
 }
 
 function respondToInputChangeMethod(input, itemPath, method, computedElement) {
-    if (input.value) methodVariables[escapePaths(itemPath.toString())] = input.value.replace(",", ".");
-    else delete methodVariables[escapePaths(itemPath.toString())];
+    setVariable(itemPath.toString(), input.value ? input.value.replace(",", ".") : null);
 
     computedElement.value = computeExpression(method);
     computedElement.dispatchEvent(new Event("input"));
