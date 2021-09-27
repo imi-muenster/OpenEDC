@@ -49,6 +49,15 @@ export function parse(formalExpression) {
     }
 }
 
+export function evaluate(expression, expressionType) {
+    try {
+        if (expressionType == "condition") return expression.evaluate(conditionVariables);
+        else if (expressionType == "method") return expression.evaluate(methodVariables);
+    } catch (error) {
+        // Error while evaluating the expressions
+    }
+}
+
 function getParser() {
     if (!parser) parser = new Parser( { operators: { assignment: false } } );
     return parser;
@@ -62,13 +71,8 @@ function processCondition(condition) {
     conditionalElement.hide();
 
     // If the expression evaluates to true, show condition element
-    try {
-        if (condition.expression.evaluate(conditionVariables)) conditionalElement.show();
-    } catch (error) {
-        // Error while evaluating the formal expressions
-    }
+    if (evaluate(condition.expression, condition.expressionType)) conditionalElement.show();
     
-
     // Add event listeners to respond to inputs to the determinant items
     for (const variable of condition.expression.variables()) {
         const itemPath = ODMPath.parseAbsolute(unescapePaths(variable));
@@ -87,7 +91,7 @@ function processCondition(condition) {
 
 function respondToInputChangeCondition(input, itemPath, condition, conditionalElement) {
     setVariable(itemPath.toString(), input.value);
-    showOrHideConditionalElement(conditionalElement, condition.expression.evaluate(conditionVariables));
+    showOrHideConditionalElement(conditionalElement, evaluate(condition.expression, condition.expressionType));
 }
 
 function showOrHideConditionalElement(conditionalElement, show) {
@@ -130,7 +134,7 @@ function processMethod(method) {
     computedElement.readOnly = true;
 
     // If a value can already be calculated, assign it
-    computedElement.value = computeExpression(method);
+    computedElement.value = computeMethod(method);
 
     // Add event listeners to respond to inputs to the determinant items
     for (const variable of method.expression.variables()) {
@@ -151,18 +155,13 @@ function processMethod(method) {
 function respondToInputChangeMethod(input, itemPath, method, computedElement) {
     setVariable(itemPath.toString(), input.value ? input.value.replace(",", ".") : null);
 
-    computedElement.value = computeExpression(method);
+    computedElement.value = computeMethod(method);
     computedElement.dispatchEvent(new Event("input"));
 }
 
-function computeExpression(method) {
-    try {
-        const computedValue = method.expression.evaluate(methodVariables);
-        if (!isNaN(computedValue)) return isFinite(computedValue) ? Math.round(computedValue * 100) / 100 : null;
-        else return computedValue;
-    } catch (error) {
-        return "";
-    }
+function computeMethod(method) {
+    const computedValue = evaluate(method.expression, method.expressionType);
+    return !isNaN(computedValue) && isFinite(computedValue) ? Math.round(computedValue * 100) / 100 : null;
 }
 
 // Helper functions
