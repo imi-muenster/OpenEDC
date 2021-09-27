@@ -17,7 +17,7 @@ export function setVariables(variables) {
 
 export function setVariable(path, value) {
     const escapedPaths = escapePaths(path);
-    conditionVariables[escapedPaths] = !value ? "" : value;
+    conditionVariables[escapedPaths] = value ?? "";
 
     // Only evaluate method expressions where all variables have a value != ""
     if (value && value != "") methodVariables[escapedPaths] = value;
@@ -26,24 +26,24 @@ export function setVariable(path, value) {
 
 export function process(elements) {
     for (let element of elements) {
-        const expression = parse(element.formalExpression);
+        const expression = parse(element.formalExpression, element.elementPath);
         if (expression) {
             element.expression = expression;
-            element.expression.variables().forEach(variable => {
-                const absolutePath = ODMPath.parseRelative(unescapePaths(variable)).getItemAbsolute(element.elementPath);
-                element.expression = element.expression.substitute(variable, escapePaths(absolutePath.toString()));
-            });
-
             if (element.expressionType == "condition") processCondition(element);
             else if (element.expressionType == "method") processMethod(element);
         }
     }
 }
 
-export function parse(formalExpression) {
+export function parse(formalExpression, referencePath) {
     try {
         // Expr-eval does not support dots in variables names which are therefore replaced with underscores
-        return getParser().parse(escapePaths(normalizeTokens(formalExpression)));
+        let expression = getParser().parse(escapePaths(normalizeTokens(formalExpression)));
+        if (referencePath) expression.variables().forEach(variable => {
+            const absolutePath = ODMPath.parseRelative(unescapePaths(variable)).getItemAbsolute(referencePath);
+            expression = expression.substitute(variable, escapePaths(absolutePath.toString()));
+        });
+        return expression;
     } catch (error) {
         // Error while parsing the formal expressions
     }
