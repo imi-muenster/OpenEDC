@@ -5,14 +5,34 @@ const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
 let parser = null;
-
-let expressionElements = [];
 let conditionVariables = {};
 let methodVariables = {};
 
-function getParser() {
-    if (!parser) parser = new Parser( { operators: { assignment: false } } );
-    return parser;
+export function setVariables(variables) {
+    conditionVariables = {};
+    methodVariables = {};
+    
+    for (const [key, value] of Object.entries(variables)) {
+        conditionVariables[escapePaths(key)] = value;
+        // Only evaluate method expressions where all variables have a value != ""
+        if (value != "") methodVariables[escapePaths(key)] = value;
+    }
+}
+
+export function process(elements) {
+    for (let element of elements) {
+        const expression = parse(element.formalExpression);
+        if (expression) {
+            element.expression = expression;
+            element.expression.variables().forEach(variable => {
+                const absolutePath = ODMPath.parseRelative(unescapePaths(variable)).getItemAbsolute(element.elementPath);
+                element.expression = element.expression.substitute(variable, escapePaths(absolutePath.toString()));
+            });
+
+            if (element.expressionType == "condition") processCondition(element);
+            else if (element.expressionType == "method") processMethod(element);
+        }
+    }
 }
 
 export function parse(formalExpression) {
@@ -24,40 +44,9 @@ export function parse(formalExpression) {
     }
 }
 
-export function getVariables(elements) {
-    expressionElements = [];
-    const variables = new Set();
-
-    for (let element of elements) {
-        const expression = parse(element.formalExpression);
-        if (expression) {
-            element.expression = expression;
-            element.expression.variables().forEach(variable => {
-                const absolutePath = ODMPath.parseRelative(unescapePaths(variable)).getItemAbsolute(element.elementPath);
-                element.expression = element.expression.substitute(variable, escapePaths(absolutePath.toString()));
-                variables.add(absolutePath);
-            });
-            expressionElements.push(element);
-        }
-    }
-
-    return Array.from(variables);
-}
-
-export function process(variables) {
-    conditionVariables = {};
-    methodVariables = {};
-    
-    for (const [key, value] of Object.entries(variables)) {
-        conditionVariables[escapePaths(key)] = value;
-        // Only evaluate method expressions where all variables have a value != ""
-        if (value != "") methodVariables[escapePaths(key)] = value;
-    }
-
-    for (const expressionElement of expressionElements) {
-        if (expressionElement.expressionType == "condition") processCondition(expressionElement);
-        else if (expressionElement.expressionType == "method") processMethod(expressionElement);
-    }
+function getParser() {
+    if (!parser) parser = new Parser( { operators: { assignment: false } } );
+    return parser;
 }
 
 function processCondition(condition) {
@@ -68,7 +57,12 @@ function processCondition(condition) {
     conditionalElement.hide();
 
     // If the expression evaluates to true, show condition element
-    if (condition.expression.evaluate(conditionVariables)) conditionalElement.show();
+    try {
+        if (condition.expression.evaluate(conditionVariables)) conditionalElement.show();
+    } catch (error) {
+        // Error while evaluating the formal expressions
+    }
+    
 
     // Add event listeners to respond to inputs to the determinant items
     for (const variable of condition.expression.variables()) {

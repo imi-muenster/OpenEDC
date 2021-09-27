@@ -388,21 +388,6 @@ function getFormItemDataList(formDataElements) {
     return formItemDataList;
 }
 
-export function getDataForItems(itemPaths) {
-    let data = {};
-    for (const itemPath of itemPaths) {
-        const itemData = subject ? $$(`
-            StudyEventData[StudyEventOID="${itemPath.studyEventOID}"]
-            FormData[FormOID="${itemPath.formOID}"]
-            ItemGroupData[ItemGroupOID="${itemPath.itemGroupOID}"]
-            ItemData[ItemOID="${itemPath.itemOID}"]
-        `).getLastElement() : null;
-        data[itemPath.toString()] = itemData ? itemData.getAttribute("Value") : "";
-    }
-
-    return data;
-}
-
 // TODO: Can this be performance improved?
 export function getFormDataDifference(formItemDataList, studyEventOID, formOID) {
     console.log("Check which data items have changed ...");
@@ -608,34 +593,42 @@ export async function getSubjectsHavingDataForElement(elementType , odmPath) {
     return subjectKeys;
 }
 
-// TODO: This function is performance critical -- identify ways to improve the performance (e.g., batch loading of subject data using Promise.all())
+// TODO: The following functions are performance critical -- identify ways to improve the performance (e.g., batch loading of subject data using Promise.all())
 export async function getAllData(options) {
     const data = {};
     for (const subject of getSubjects(admindataWrapper.getCurrentUserSiteOID())) {
         const subjectODMData = await ioHelper.getODM(subject.fileName);
         if (!subjectODMData) continue;
 
-        const subjectData = {};
-        for (const itemData of subjectODMData.querySelectorAll("ItemData")) {
-            const studyEventOID = itemData.parentNode.parentNode.parentNode.getAttribute("StudyEventOID");
-            const formOID = itemData.parentNode.parentNode.getAttribute("FormOID");
-            const itemGroupOID = itemData.parentNode.getAttribute("ItemGroupOID");
-            const itemOID = itemData.getAttribute("ItemOID");
-            const path = new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID);
-
-            const value = itemData.getAttribute("Value");
-            if (value && value != "") subjectData[path.toString()] = value;
-            else delete subjectData[path.toString()];
-        }
-        if (options && options.includeInfo) {
-            const createdDate = subjectODMData.querySelector("AuditRecord DateTimeStamp") ? new Date(subjectODMData.querySelector("AuditRecord DateTimeStamp").textContent) : null;
-            subjectData["createdYear"] = createdDate ? createdDate.getFullYear() : null;
-            subjectData["createdMonth"] = createdDate ? createdDate.getMonth() + 1 : null;
-            subjectData["siteOID"] = subjectODMData.querySelector("SiteRef") ? subjectODMData.querySelector("SiteRef").getAttribute("LocationOID") : "no-site";
-        }
-
-        data[subject.key] = subjectData;
+        data[subject.key] = formatSubjectData(subjectODMData, options);
     }
 
     return data;
+}
+
+export function getCurrentData(options) {
+    return subjectData ? formatSubjectData(subjectData, options) : {};
+}
+
+function formatSubjectData(subjectODMData, options) {
+    const subjectData = {};
+    for (const itemData of subjectODMData.querySelectorAll("ItemData")) {
+        const studyEventOID = itemData.parentNode.parentNode.parentNode.getAttribute("StudyEventOID");
+        const formOID = itemData.parentNode.parentNode.getAttribute("FormOID");
+        const itemGroupOID = itemData.parentNode.getAttribute("ItemGroupOID");
+        const itemOID = itemData.getAttribute("ItemOID");
+        const path = new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID);
+
+        const value = itemData.getAttribute("Value");
+        if (value && value != "") subjectData[path.toString()] = value;
+        else delete subjectData[path.toString()];
+    }
+    if (options && options.includeInfo) {
+        const createdDate = subjectODMData.querySelector("AuditRecord DateTimeStamp") ? new Date(subjectODMData.querySelector("AuditRecord DateTimeStamp").textContent) : null;
+        subjectData["createdYear"] = createdDate ? createdDate.getFullYear() : null;
+        subjectData["createdMonth"] = createdDate ? createdDate.getMonth() + 1 : null;
+        subjectData["siteOID"] = subjectODMData.querySelector("SiteRef") ? subjectODMData.querySelector("SiteRef").getAttribute("LocationOID") : "no-site";
+    }
+
+    return subjectData;
 }

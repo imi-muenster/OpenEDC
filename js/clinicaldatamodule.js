@@ -320,14 +320,13 @@ async function loadFormMetadata() {
 // Must be in place before clinical data is added to the form's input elements
 function addDynamicFormLogicPre() {
     // Add real-time logic to process items with conditions and methods
-    const itemPaths = expressionHelper.getVariables(metadataWrapper.getElementsWithExpression(currentPath.studyEventOID, currentPath.formOID));
-    const itemData = clinicaldataWrapper.getDataForItems(itemPaths);
+    const variables = clinicaldataWrapper.getCurrentData(currentSubjectKey);
     if (cachedFormData) cachedFormData.forEach(entry => {
         const cachedFormDataPath = new ODMPath(currentPath.studyEventOID, currentPath.formOID, entry.itemGroupOID, entry.itemOID);
-        const itemPath = itemPaths.find(itemPath => itemPath.toString() == cachedFormDataPath.toString());
-        if (itemPath) itemData[itemPath.toString()] = entry.value;
+        variables[cachedFormDataPath.toString()] = entry.value;
     });
-    expressionHelper.process(itemData);
+    expressionHelper.setVariables(variables);
+    expressionHelper.process(metadataWrapper.getElementsWithExpression(currentPath.studyEventOID, currentPath.formOID));
 }
 
 // Added after the form has been rendered for performance purposes

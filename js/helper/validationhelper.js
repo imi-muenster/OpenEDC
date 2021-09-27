@@ -75,19 +75,19 @@ export function process(itemsWithRangeChecks) {
     }
 }
 
-function isInt(value) {
+export function isInt(value) {
     return value == parseInt(value) && !value.includes(".");
 }
 
-function isDecimal(value) {
+export function isDecimal(value) {
     return value == parseFloat(value);
 }
 
-function isDate(value) {
+export function isDate(value) {
     return !isNaN(Date.parse(value));
 }
 
-function isTime(value) {
+export function isTime(value) {
     return new RegExp(/^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/).test(value);
 }
 

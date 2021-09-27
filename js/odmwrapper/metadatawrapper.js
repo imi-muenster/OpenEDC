@@ -412,14 +412,17 @@ export function getItemPaths(options) {
     const itemPaths = [];
     for (const studyEventRef of $$(`Protocol StudyEventRef`)) {
         const studyEventOID = studyEventRef.getAttribute("StudyEventOID");
+        if (options && options.includeStudyEvents) itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroup));
         for (const formRef of $$(`StudyEventDef[OID="${studyEventOID}"] FormRef`)) {
             const formOID = formRef.getAttribute("FormOID");
+            if (options && options.includeForms) itemPaths.push(new ODMPath(studyEventOID, formOID));
             for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
                 const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
+                if (options && options.includeItemGroups) itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID));
                 for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
                     const itemOID = itemRef.getAttribute("ItemOID");
-                    if (!options) itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID));
-                    else if (options.withCodeList && getCodeListOIDByItem(itemOID)) itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID));
+                    if (options && options.withCodeList && getCodeListOIDByItem(itemOID)) itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID));
+                    else itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID));
                 }
             }
         }
