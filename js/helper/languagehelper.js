@@ -22,20 +22,46 @@ const locales = {
 const defaultLocale = locales.ENGLISH;
 
 let currentLocale = defaultLocale;
-let currentLocaleSet = false;
 let browserLocale = null;
 
+let translationFiles = [];
 let localesInODM = [];
 let localesNotInODM = [];
 
 let translations = {};
-let defaultTranslations = {};
+let fallbackTranslations = {};
 
 export async function init() {
-    defaultTranslations = await loadTranslations(defaultLocale);
+    // Register default translation files
+    for (const locale of Object.values(locales)) {
+        await registerTranslationFile(locale, ioHelper.getBaseURL() + "/internationalization/" + locale + ".json");
+    }
 
+    // Set fallback translations (at this point translations correspond to default locale), browser locale, and the current locale
+    fallbackTranslations = { ...translations };
     browserLocale = window.navigator.language.split("-")[0];
-    if (Object.values(locales).includes(browserLocale)) await setCurrentLocale(browserLocale, false);
+    if (Object.values(locales).includes(browserLocale)) await loadTranslations(browserLocale);
+}
+
+export async function registerTranslationFile(locale, url) {
+    translationFiles.push({ locale, url });
+    if (locale == currentLocale) Object.assign(translations, await getTranslationFile(url));
+}
+
+async function getTranslationFile(url) {
+    const response = await fetch(url);
+    return await response.json().catch(() => {});
+}
+
+async function loadTranslations(locale) {
+    if (locale != currentLocale) {
+        translations = {};
+        for (const translationFile of translationFiles) {
+            if (translationFile.locale == locale) Object.assign(translations, await getTranslationFile(translationFile.url));
+        }
+    }
+
+    currentLocale = locale;
 }
 
 export function localize(node = document) {
@@ -46,12 +72,7 @@ export function localize(node = document) {
 }
 
 export function getTranslation(key) {
-    return translations[key] || defaultTranslations[key] || key;
-}
-
-async function loadTranslations(locale) {
-    const response = await fetch(ioHelper.getBaseURL() + "/internationalization/" + locale + ".json");
-    return await response.json().catch(() => []);
+    return translations[key] || fallbackTranslations[key] || key;
 }
 
 export function populatePresentLanguages(odm) {
@@ -69,21 +90,12 @@ export function populatePresentLanguages(odm) {
 }
 
 export async function setInitialLocale() {
-    for (const locale of localesInODM) {
-        if (!currentLocaleSet || locale == browserLocale) await setCurrentLocale(locale, true);
-    }
+    const initialLocale = localesInODM.includes(browserLocale) ? browserLocale : localesInODM[0];
+    if (initialLocale) await loadTranslations(initialLocale);
 }
 
 export function getPresentLanguages() {
     return localesInODM;
-}
-
-async function setCurrentLocale(locale, markCurrentLocaleSet) {
-    if (locale == defaultLocale) translations = defaultTranslations;
-    else if (locale != currentLocale) translations = await loadTranslations(locale);
-
-    currentLocale = locale;
-    currentLocaleSet = markCurrentLocaleSet ? true : false;
 }
 
 export function getCurrentLocale() {
@@ -124,7 +136,7 @@ function setLanguageSelectText() {
 }
 
 async function changeLanguage(locale) {
-    await setCurrentLocale(locale, true);
+    await loadTranslations(locale);
     localize();
     setLanguageSelectText();
     document.dispatchEvent(new CustomEvent("LanguageChanged"));

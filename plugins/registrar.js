@@ -1,8 +1,8 @@
 // This file allows to specify custom plugins for OpenEDC
 // Reference your plugin in the array below and make sure it exports a default function (e.g., export default () => { ... })
-// Currently, three events are fired by OpenEDC that can be listened to: LanguageChanged, CurrentUserEdited, and CurrentSubjectEdited
-// New events can be fired with document.dispatchEvent(new CustomEvent( ... ))
-// All modules from the app can be imported and used here as well (e.g., import ODMPath from "../js/odmwrapper/odmpath.js")
+// Currently, the following events are fired by OpenEDC and can be listened to: LanguageChanged, CurrentUserEdited, and CurrentSubjectEdited
+// All modules from the app can be imported and used within a plugin as well (e.g., import * as languageHelper from "../js/helper/languagehelper.js")
+// New translations can be registered with, for example, languageHelper.registerTranslations("en", new URL("./translations/en.json", import.meta.url))
 
 const enabledPlugins = [
     // "./myplugin.js"
