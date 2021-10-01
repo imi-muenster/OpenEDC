@@ -45,10 +45,10 @@ export async function init() {
 
 export async function registerTranslationFile(locale, url) {
     translationFiles.push({ locale, url });
-    if (locale == currentLocale) Object.assign(translations, await getTranslationFile(url));
+    if (locale == currentLocale) Object.assign(translations, await getTranslations(url));
 }
 
-async function getTranslationFile(url) {
+async function getTranslations(url) {
     const response = await fetch(url);
     return await response.json().catch(() => {});
 }
@@ -57,7 +57,7 @@ async function loadTranslations(locale) {
     if (locale != currentLocale) {
         translations = {};
         for (const translationFile of translationFiles) {
-            if (translationFile.locale == locale) Object.assign(translations, await getTranslationFile(translationFile.url));
+            if (translationFile.locale == locale) Object.assign(translations, await getTranslations(translationFile.url));
         }
     }
 

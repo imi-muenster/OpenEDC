@@ -421,8 +421,11 @@ export function getItemPaths(options) {
                 if (options && options.includeItemGroups) itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID));
                 for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
                     const itemOID = itemRef.getAttribute("ItemOID");
-                    if (options && options.withCodeList && getCodeListOIDByItem(itemOID)) itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID));
-                    else itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID));
+                    if (options && options.withCodeList) {
+                        if (getCodeListOIDByItem(itemOID)) itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID));
+                    } else {
+                        itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID));
+                    }
                 }
             }
         }
