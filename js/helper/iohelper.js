@@ -630,7 +630,16 @@ export function scrollParentToChild(child) {
     }
 }
 
-export function setTreeMaxHeight() {
+export const debounce = (callback, sleep = 50) => {
+    let timeoutId = null;
+
+    return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => callback(...args), sleep);
+    };
+};
+
+export const setTreeMaxHeight = debounce(() => {
     const offset = 30;
     const minHeight = 250;
     const windowHeight = window.innerHeight;
@@ -651,8 +660,8 @@ export function setTreeMaxHeight() {
 
         treePanelBlock.style.maxHeight = `${remainingSpace}px`;
     }
-}
+});
 
-export function isMobile() {
+export const isMobile = () => {
     return window.innerWidth < 1024;
-}
+};
