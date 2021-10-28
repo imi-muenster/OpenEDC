@@ -9,20 +9,28 @@ class LoadXMLException {
 }
 
 export class Credentials {
+    static errors = {
+        NOTALLFIELDSENTERED: "enter-all-fields",
+        PASSWORDSNOTEQUAL: "passwords-not-equal",
+        PASSWORDPATTERNVIOLATION: "password-not-secure"
+    };
+    
     constructor(username, password, confirmPassword) {
-        const errors = {
-            NOTALLFIELDSENTERED: "enter-all-fields",
-            PASSWORDSNOTEQUAL: "passwords-not-equal",
-            PASSWORDPATTERNVIOLATION: "password-not-secure"
-        }
-
         // Do not throw error since validation is not desired in all instances (e.g., not when setting a new inital user password)
-        if (!username || !password || confirmPassword === "") this.error = errors.NOTALLFIELDSENTERED;
-        else if ((confirmPassword || confirmPassword === "") && password != confirmPassword) this.error = errors.PASSWORDSNOTEQUAL;
-        else if (!new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/).test(password)) this.error = errors.PASSWORDPATTERNVIOLATION;
+        if (!username || !password || confirmPassword === "") this.error = Credentials.errors.NOTALLFIELDSENTERED;
+        else if ((confirmPassword || confirmPassword === "") && password != confirmPassword) this.error = Credentials.errors.PASSWORDSNOTEQUAL;
+        else if (!new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/).test(password)) this.error = Credentials.errors.PASSWORDPATTERNVIOLATION;
 
-        this.username = username;
-        this.password = password;
+        this._username = username;
+        this._password = password;
+    }
+
+    get username() {
+        return this._username.toLowerCase();
+    }
+
+    get password() {
+        return this._password;
     }
 }
 
