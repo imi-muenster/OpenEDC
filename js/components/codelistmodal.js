@@ -101,15 +101,15 @@ class CodelistModal extends HTMLElement {
         const codeListOID = metadataWrapper.getCodeListOIDByItem(this.path.itemOID);
         const lines = this.querySelector("#textitems-textarea").value.split("\n");
         for (const line of lines) {
+            if (!line.length) continue;
+            
             const parts = line.split(",");
-            if (parts.length < 2) continue;
-
-            const codedValue = parts.shift();
-            const translatedDecode = parts.join(",").trim();
+            let codedValue = parts.length > 1 ? parts.shift().trim() : null;
+            let translatedDecode = parts.join(",").trim();
 
             const currentItem = Array.from(currentItems.childNodes).find(item => item.getCodedValue() == codedValue);
             if (currentItem) metadataWrapper.insertCodeListItem(currentItem, codeListOID);
-            else metadataWrapper.addCodeListItem(codeListOID, codedValue);
+            else codedValue = metadataWrapper.addCodeListItem(codeListOID, codedValue);
 
             metadataWrapper.setCodeListItemDecodedText(codeListOID, codedValue, translatedDecode);
         }
