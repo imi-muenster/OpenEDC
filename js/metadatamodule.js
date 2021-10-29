@@ -766,6 +766,8 @@ function setIOListeners() {
     autocompleteHelper.enableAutocomplete($("#measurement-unit"), autocompleteHelper.modes.MEASUREMENTUNIT);
     autocompleteHelper.enableAutocomplete($("#item-method"), autocompleteHelper.modes.METHOD);
 
+    document.addEventListener("CodelistEdited", () => reloadAndStoreMetadata());
+    
     $("#collection-condition").addEventListener("focus", () => $("#collection-condition").setAttribute("context-path", currentPath.toString()));
     $("#item-method").addEventListener("focus", () => $("#item-method").setAttribute("context-path", currentPath.toString()));
 }
@@ -993,40 +995,8 @@ window.showCodeListModal = function() {
     // Add modal to DOM
     const codelistModal = document.createElement("codelist-modal");
     codelistModal.setPath(currentPath);
-
     document.body.appendChild(codelistModal);
     languageHelper.localize(codelistModal);
-}
-
-window.saveCodeListModal = function() {
-    // Create a temporary element and move all code list items to that element
-    const codeListOID = metadataWrapper.getCodeListOIDByItem(currentPath.itemOID);
-    const currentItems = document.createElement("current-items");
-    metadataWrapper.getCodeListItemsByItem(currentPath.itemOID).forEach(item => currentItems.appendChild(item));
-
-    // Iterate over the text input and move existing items from the temporary element to the code list to preserve translations
-    const lines = $("#textitems-textarea").value.split("\n");
-    for (const line of lines) {
-        const parts = line.split(",");
-        if (parts.length < 2) continue;
-
-        const codedValue = parts.shift();
-        const translatedDecode = parts.join(",").trim();
-
-        const currentItem = Array.from(currentItems.childNodes).find(item => item.getCodedValue() == codedValue);
-        if (currentItem) metadataWrapper.insertCodeListItem(currentItem, codeListOID);
-        else metadataWrapper.addCodeListItem(codeListOID, codedValue);
-
-        metadataWrapper.setCodeListItemDecodedText(codeListOID, codedValue, translatedDecode);
-    }
-
-    hideCodeListModal();
-    reloadAndStoreMetadata();
-}
-
-window.hideCodeListModal = function() {
-    autocompleteHelper.disableAutocomplete($("#codelist-modal #codelist-reference-input"));
-    $("codelist-modal").remove();
 }
 
 window.referenceCodeList = function() {

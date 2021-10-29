@@ -84,12 +84,43 @@ class CodelistModal extends HTMLElement {
     }
 
     setIOListeners() {
-        this.querySelector(".modal-background").addEventListener("click", () => this.remove());
-        this.querySelector(".is-close-button").addEventListener("click", () => this.remove());
-        this.querySelector("#hide-codelist-modal-button").addEventListener("click", () => this.remove());
+        this.querySelector(".modal-background").addEventListener("click", () => this.close());
+        this.querySelector(".is-close-button").addEventListener("click", () => this.close());
+        this.querySelector("#hide-codelist-modal-button").addEventListener("click", () => this.close());
         this.querySelector("#save-codelist-modal-button").addEventListener("click", () => this.save());
         this.querySelector("#reference-codelist-button").addEventListener("click", () => this.referenceCodelist());
         this.querySelector("#unreference-codelist-button").addEventListener("click", () => this.unreferenceCodelist());
+    }
+
+    save() {
+        // Create a temporary element and move all code list items to that element
+        const currentItems = document.createElement("current-items");
+        metadataWrapper.getCodeListItemsByItem(this.path.itemOID).forEach(item => currentItems.appendChild(item));
+
+        // Iterate over the text input and move existing items from the temporary element to the code list to preserve translations
+        const codeListOID = metadataWrapper.getCodeListOIDByItem(this.path.itemOID);
+        const lines = this.querySelector("#textitems-textarea").value.split("\n");
+        for (const line of lines) {
+            const parts = line.split(",");
+            if (parts.length < 2) continue;
+
+            const codedValue = parts.shift();
+            const translatedDecode = parts.join(",").trim();
+
+            const currentItem = Array.from(currentItems.childNodes).find(item => item.getCodedValue() == codedValue);
+            if (currentItem) metadataWrapper.insertCodeListItem(currentItem, codeListOID);
+            else metadataWrapper.addCodeListItem(codeListOID, codedValue);
+
+            metadataWrapper.setCodeListItemDecodedText(codeListOID, codedValue, translatedDecode);
+        }
+
+        document.dispatchEvent(new CustomEvent("CodelistEdited"));
+        this.close();
+    }
+
+    close() {
+        autocompleteHelper.disableAutocomplete(this.querySelector("#codelist-reference-input"));
+        this.remove();
     }
 }
 
