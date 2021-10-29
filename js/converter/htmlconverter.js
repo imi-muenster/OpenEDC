@@ -17,7 +17,7 @@ export function getFormAsHTML(formOID, options) {
 
         const itemGroupDescr = document.createElement("h2");
         itemGroupDescr.className = "subtitle";
-        itemGroupDescr.innerHTML = processMarkdown(itemGroupDef.getTranslatedDescription(options.locale, false));
+        itemGroupDescr.innerHTML = processMarkdown(itemGroupDef.getTranslatedDescription(options.useNames ? null : options.locale, options.useNames));
         itemGroupContent.appendChild(itemGroupDescr);
 
         for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
@@ -31,7 +31,7 @@ export function getFormAsHTML(formOID, options) {
 
             const itemQuestion = document.createElement("label");
             itemQuestion.className = "label";
-            itemQuestion.innerHTML = processMarkdown(itemDef.getTranslatedQuestion(options.locale, false)) || options.missingTranslation;
+            itemQuestion.innerHTML = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
             itemQuestion.innerHTML += itemRef.getAttribute("Mandatory") == "Yes" ? " (*)" : "";
             itemField.appendChild(itemQuestion);
 
@@ -62,7 +62,7 @@ function getItemInput(itemDef, itemGroupOID, options) {
             inputContainer.appendChild(selectInput);
         } else {
             for (let codeListItem of codeListItems) {
-                const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
+                const translatedText = codeListItem.getTranslatedDecode(options.useNames ? null : options.locale, options.useNames) || options.missingTranslation;
                 const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), translatedText, itemDef.getAttribute("OID"), itemGroupOID);
                 inputContainer.appendChild(radioInput);
                 inputContainer.appendChild(document.createElement("br"));
@@ -86,7 +86,7 @@ function getItemInput(itemDef, itemGroupOID, options) {
         const unit = document.createElement("a");
         unit.className = "button is-static";
         const measurementUnitDef = $(`MeasurementUnit[OID="${measurementUnitRef.getAttribute("MeasurementUnitOID")}"]`);
-        unit.textContent = measurementUnitDef.getTranslatedSymbol(options.locale, false) || options.missingTranslation;
+        unit.textContent = measurementUnitDef.getTranslatedSymbol(options.useNames ? null : options.locale, options.useNames) || options.missingTranslation;
         addonUnit.appendChild(unit);
         inputContainer.appendChild(addonUnit);
     } else {
@@ -110,7 +110,7 @@ const getSelectInput = (codeListItems, itemOID, options) => {
     for (let codeListItem of codeListItems) {
         const option = document.createElement("option");
         option.value = codeListItem.getAttribute("CodedValue");
-        option.textContent = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
+        option.textContent = codeListItem.getTranslatedDecode(options.useNames ? null : options.locale, options.useNames) || options.missingTranslation;
         select.appendChild(option);
     }
 

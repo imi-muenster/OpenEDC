@@ -164,8 +164,8 @@ async function loadStoredSubjectData(fileName) {
     return xmlData.documentElement;
 }
 
-export function getSubject() {
-    return subject;
+export function getSubject(uniqueKey) {
+    return uniqueKey ? subjects.find(subject => subject.uniqueKey == uniqueKey) : subject;
 }
 
 export function getLastUpdate() {

@@ -8,9 +8,9 @@ const enabledPlugins = [
     // "./myplugin.js"
 ];
 
-export const enablePlugins = async () => {
+export const enablePlugins = () => {
     for (const enabledPlugin of enabledPlugins) {
-        await import(enabledPlugin)
+        import(enabledPlugin)
             .then(plugin => plugin.default())
             .catch(error => console.log(error));
     }

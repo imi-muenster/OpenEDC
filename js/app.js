@@ -14,15 +14,15 @@ import * as pluginRegistrar from "../plugins/registrar.js";
 const appVersion = "0.8.0";
 
 const appModes = {
-    METADATA: 1,
-    CLINICALDATA: 2,
-    REPORTS: 3
+    METADATA: "metadata",
+    CLINICALDATA: "clinicaldata",
+    REPORTS: "reports"
 };
 
 const appStates = {
-    EMPTY: 1,
-    LOCKED: 2,
-    UNLOCKED: 3
+    EMPTY: "empty",
+    LOCKED: "locked",
+    UNLOCKED: "unlocked"
 }
 
 const $ = query => document.querySelector(query);
@@ -626,6 +626,7 @@ function enableMode(mode) {
     }
 
     ioHelper.hideMenu();
+    document.dispatchEvent(new CustomEvent("ModeEnabled", { detail: getCurrentMode() }));
 }
 
 function addModalsToDOM() {

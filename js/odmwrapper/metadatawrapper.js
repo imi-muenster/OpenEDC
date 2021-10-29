@@ -112,13 +112,14 @@ export function removeMetadata() {
     metadata = null;
 }
 
-export async function getFormAsHTML(formOID, textAsTextarea) {
+export async function getFormAsHTML(formOID, textAsTextarea = false, useNames = false) {
     return htmlConverter.getFormAsHTML(formOID, {
         locale: languageHelper.getCurrentLocale(),
         missingTranslation: languageHelper.getTranslation("missing-translation"),
         yes: languageHelper.getTranslation("yes"),
         no: languageHelper.getTranslation("no"),
-        textAsTextarea: textAsTextarea
+        textAsTextarea: textAsTextarea,
+        useNames: useNames
     });
 }
 

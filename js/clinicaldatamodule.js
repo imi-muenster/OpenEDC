@@ -11,7 +11,7 @@ import * as languageHelper from "./helper/languagehelper.js";
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-let currentPath = new ODMPath();
+export let currentPath = new ODMPath();
 let currentSubjectKey = null;
 
 let skipMandatoryCheck = false;
@@ -145,6 +145,7 @@ export function loadSubjectKeys() {
     }
 
     if (currentSubjectKey) $(`#subject-panel-blocks [oid="${currentSubjectKey}"]`).activate();
+    document.dispatchEvent(new CustomEvent("SubjectKeysLoaded"));
 }
 
 function subjectClicked(subjectKey) {
@@ -281,6 +282,7 @@ async function loadFormData() {
     cachedFormData = null;
 
     scrollToFormStart();
+    document.dispatchEvent(new CustomEvent("FormDataLoaded"));
 }
 
 function resetFormUIElements() {

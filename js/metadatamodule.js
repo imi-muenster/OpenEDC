@@ -17,7 +17,7 @@ const detailsPanelViews = {
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-let currentPath = new ODMPath();
+export let currentPath = new ODMPath();
 
 let viewOnlyMode = false;
 let asyncEditMode = false;
@@ -399,6 +399,8 @@ export function reloadDetailsPanel() {
         else if (getCurrentDetailsView() == detailsPanelViews.EXTENDED) fillDetailsPanelExtended();
         else if (getCurrentDetailsView() == detailsPanelViews.DUPLICATE) fillDetailsPanelDuplicate();
     }
+
+    document.dispatchEvent(new CustomEvent("MetadataPanelLoaded"));
 }
 
 function fillItemRangeChecks() {
