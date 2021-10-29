@@ -767,7 +767,7 @@ function setIOListeners() {
     autocompleteHelper.enableAutocomplete($("#item-method"), autocompleteHelper.modes.METHOD);
 
     document.addEventListener("CodelistEdited", () => reloadAndStoreMetadata());
-    
+
     $("#collection-condition").addEventListener("focus", () => $("#collection-condition").setAttribute("context-path", currentPath.toString()));
     $("#item-method").addEventListener("focus", () => $("#item-method").setAttribute("context-path", currentPath.toString()));
 }
@@ -997,41 +997,6 @@ window.showCodeListModal = function() {
     codelistModal.setPath(currentPath);
     document.body.appendChild(codelistModal);
     languageHelper.localize(codelistModal);
-}
-
-window.referenceCodeList = function() {
-    const externalItemOID = ODMPath.parseAbsolute($("#codelist-modal #codelist-reference-input").value).itemOID;
-    if (!externalItemOID) return;
-
-    if (externalItemOID == currentPath.itemOID) {
-        ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("same-item-referenced-error"));
-        return;
-    }
-
-    const externalCodeListOID = metadataWrapper.getCodeListOIDByItem(externalItemOID);
-    if (!externalCodeListOID) {
-        ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("codelist-not-found-error"));
-        return;
-    };
-
-    const currentCodeListOID = metadataWrapper.getCodeListOIDByItem(currentPath.itemOID);
-    metadataWrapper.removeCodeListRef(currentPath.itemOID, currentCodeListOID);
-    metadataWrapper.addCodeListRef(currentPath.itemOID, externalCodeListOID);
-    currentPath.codeListItem = null;
-
-    hideCodeListModal();
-    reloadAndStoreMetadata();
-}
-
-window.unreferenceCodeList = function() {
-    const currentCodeListOID = metadataWrapper.getCodeListOIDByItem(currentPath.itemOID);
-    const newCodeListOID = metadataWrapper.copyCodeList(currentCodeListOID);
-    metadataWrapper.removeCodeListRef(currentPath.itemOID, currentCodeListOID);
-    metadataWrapper.addCodeListRef(currentPath.itemOID, newCodeListOID);
-    currentPath.codeListItem = null;
-
-    showCodeListModal();
-    reloadAndStoreMetadata();
 }
 
 function reloadAndStoreMetadata() {

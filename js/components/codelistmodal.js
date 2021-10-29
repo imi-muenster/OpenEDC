@@ -2,6 +2,7 @@ import ODMPath from "../odmwrapper/odmpath.js";
 import * as metadataWrapper from "../odmwrapper/metadatawrapper.js";
 import * as languageHelper from "../helper/languagehelper.js";
 import * as autocompleteHelper from "../helper/autocompletehelper.js";
+import * as ioHelper from "../helper/iohelper.js";
 
 class CodelistModal extends HTMLElement {
     setPath(path) {
@@ -102,7 +103,7 @@ class CodelistModal extends HTMLElement {
         const lines = this.querySelector("#textitems-textarea").value.split("\n");
         for (const line of lines) {
             if (!line.length) continue;
-            
+
             const parts = line.split(",");
             let codedValue = parts.length > 1 ? parts.shift().trim() : null;
             let translatedDecode = parts.join(",").trim();
@@ -114,6 +115,41 @@ class CodelistModal extends HTMLElement {
             metadataWrapper.setCodeListItemDecodedText(codeListOID, codedValue, translatedDecode);
         }
 
+        document.dispatchEvent(new CustomEvent("CodelistEdited"));
+        this.close();
+    }
+
+    referenceCodelist() {
+        const externalItemOID = ODMPath.parseAbsolute(this.querySelector("#codelist-reference-input").value).itemOID;
+        if (!externalItemOID) return;
+    
+        if (externalItemOID == this.path.itemOID) {
+            ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("same-item-referenced-error"));
+            return;
+        }
+    
+        const externalCodeListOID = metadataWrapper.getCodeListOIDByItem(externalItemOID);
+        if (!externalCodeListOID) {
+            ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("codelist-not-found-error"));
+            return;
+        };
+    
+        const currentCodeListOID = metadataWrapper.getCodeListOIDByItem(this.path.itemOID);
+        metadataWrapper.removeCodeListRef(this.path.itemOID, currentCodeListOID);
+        metadataWrapper.addCodeListRef(this.path.itemOID, externalCodeListOID);
+        this.path.codeListItem = null;
+    
+        document.dispatchEvent(new CustomEvent("CodelistEdited"));
+        this.close();
+    }
+    
+    unreferenceCodelist() {
+        const currentCodeListOID = metadataWrapper.getCodeListOIDByItem(this.path.itemOID);
+        const newCodeListOID = metadataWrapper.copyCodeList(currentCodeListOID);
+        metadataWrapper.removeCodeListRef(this.path.itemOID, currentCodeListOID);
+        metadataWrapper.addCodeListRef(this.path.itemOID, newCodeListOID);
+        this.path.codeListItem = null;
+    
         document.dispatchEvent(new CustomEvent("CodelistEdited"));
         this.close();
     }
