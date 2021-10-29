@@ -1,11 +1,26 @@
-class CodeListModal extends HTMLElement {
+import ODMPath from "../odmwrapper/odmpath.js";
+import * as metadataWrapper from "../odmwrapper/metadatawrapper.js";
+import * as languageHelper from "../helper/languagehelper.js";
+import * as autocompleteHelper from "../helper/autocompletehelper.js";
+
+class CodelistModal extends HTMLElement {
+    setPath(path) {
+        this.path = path;
+    }
+    
     connectedCallback() {
+        this.render();
+        this.fillValues();
+        this.setIOListeners();
+    }
+
+    render() {
         this.innerHTML = `
             <div class="modal is-active" id="codelist-modal">
-                <div class="modal-background" onclick="hideCodeListModal()"></div>
+                <div class="modal-background"></div>
                 <div class="modal-content is-medium">
                     <div class="is-pulled-right">
-                        <button class="delete is-close-button is-large" onclick="hideCodeListModal()"></button>
+                        <button class="delete is-close-button is-large"></button>
                     </div>
                     <div class="box">
                         <div class="width-is-two-thirds">
@@ -16,7 +31,7 @@ class CodeListModal extends HTMLElement {
                                 <p i18n="choices-multiple-references-hint"></p>
                                 <p class="has-text-weight-bold mt-3" id="codelist-references-list">
                                 </p>
-                                <button class="button is-link is-small is-outlined mt-5" onclick="unreferenceCodeList()" i18n="cancel-reference-option"></button>
+                                <button class="button is-link is-small is-outlined mt-5" id="unreference-codelist-button" i18n="cancel-reference-option"></button>
                             </div>
                             <div class="field">
                                 <label class="label" i18n="textitems-hint"></label>
@@ -30,13 +45,13 @@ class CodeListModal extends HTMLElement {
                                         <input class="input" id="codelist-reference-input" type="text" autocomplete="off" i18n-ph="item-with-choices">
                                     </div>
                                     <div class="control">
-                                        <button class="button" i18n="use" onclick="referenceCodeList()"></button>
+                                        <button class="button" id="reference-codelist-button" i18n="use"></button>
                                     </div>
                                 </div>
                             </div>
                             <div class="buttons mt-5">
-                                <button class="button is-link" i18n="save" onclick="saveCodeListModal()"></button>
-                                <button class="button" i18n="cancel" onclick="hideCodeListModal()"></button>
+                                <button class="button is-link" id="save-codelist-modal-button" i18n="save"></button>
+                                <button class="button" id="hide-codelist-modal-button" i18n="cancel"></button>
                             </div>
                         </div>
                     </div>
@@ -44,6 +59,38 @@ class CodeListModal extends HTMLElement {
             </div>
         `;
     }
+
+    fillValues() {
+        // Add the item question and use the name as fallback
+        this.querySelector("h2").textContent = metadataWrapper.getElementDefByOID(this.path.itemOID).getTranslatedQuestion(languageHelper.getCurrentLocale(), true);
+
+        // Render the notification when the codelist is used for more than one item
+        const codeListReferences = metadataWrapper.getElementRefs(metadataWrapper.getCodeListOIDByItem(this.path.itemOID), ODMPath.elements.CODELISTITEM);
+        if (codeListReferences.length > 1) {
+            const translatedQuestions = codeListReferences.map(reference => reference.parentNode.getTranslatedQuestion(languageHelper.getCurrentLocale(), true));
+            this.querySelector("#codelist-references-list").innerHTML = translatedQuestions.join("<br>");
+            this.querySelector(".notification").show();
+            this.querySelector("#codelist-reference-field").hide();
+        } else {
+            this.querySelector(".notification").hide();
+            this.querySelector("#codelist-reference-field").show();
+            autocompleteHelper.enableAutocomplete(this.querySelector("#codelist-reference-input"), autocompleteHelper.modes.ITEMWITHCODELIST);
+        }
+
+        // Generate the string containing all coded values and translated decodes
+        this.querySelector("#textitems-textarea").value = metadataWrapper.getCodeListItemsByItem(this.path.itemOID).reduce((string, item) => {
+            return string += `${item.getCodedValue()}, ${item.getTranslatedDecode(languageHelper.getCurrentLocale()) || ""}\n`;
+        }, "");
+    }
+
+    setIOListeners() {
+        this.querySelector(".modal-background").addEventListener("click", () => this.remove());
+        this.querySelector(".is-close-button").addEventListener("click", () => this.remove());
+        this.querySelector("#hide-codelist-modal-button").addEventListener("click", () => this.remove());
+        this.querySelector("#save-codelist-modal-button").addEventListener("click", () => this.save());
+        this.querySelector("#reference-codelist-button").addEventListener("click", () => this.referenceCodelist());
+        this.querySelector("#unreference-codelist-button").addEventListener("click", () => this.unreferenceCodelist());
+    }
 }
 
-window.customElements.define("codelist-modal", CodeListModal);
+window.customElements.define("codelist-modal", CodelistModal);

@@ -983,7 +983,7 @@ window.showRemoveModal = async function() {
     }
 }
 
-// TODO: Reorder other modal functions in this order (show -> save -> hide)
+// TODO: Rename all codeList and CodeList occurrences to codelist and Codelist
 window.showCodeListModal = function() {
     if (!metadataWrapper.getCodeListOIDByItem(currentPath.itemOID)) {
         ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("no-codelist-hint"));
@@ -991,35 +991,11 @@ window.showCodeListModal = function() {
     }
 
     // Add modal to DOM
-    const modal = document.createElement("codelist-modal");
-    document.body.appendChild(modal);
-    languageHelper.localize(modal);
+    const codelistModal = document.createElement("codelist-modal");
+    codelistModal.setPath(currentPath);
 
-    // Add the item question and use the name as fallback
-    const itemDef = metadataWrapper.getElementDefByOID(currentPath.itemOID);
-    $("#codelist-modal h2").textContent = itemDef.getTranslatedQuestion(languageHelper.getCurrentLocale(), true);
-
-    // Render the notification when the codelist is used for more than one item
-    const codeListOID = metadataWrapper.getCodeListOIDByItem(currentPath.itemOID);
-    const codeListReferences = metadataWrapper.getElementRefs(codeListOID, ODMPath.elements.CODELISTITEM);
-    if (codeListReferences.length > 1) {
-        const translatedQuestions = codeListReferences.map(reference => reference.parentNode.getTranslatedQuestion(languageHelper.getCurrentLocale(), true));
-        $("#codelist-modal #codelist-references-list").innerHTML = translatedQuestions.join("<br>");
-        $("#codelist-modal .notification").show();
-        $("#codelist-modal #codelist-reference-field").hide();
-    } else {
-        $("#codelist-modal .notification").hide();
-        $("#codelist-modal #codelist-reference-field").show();
-        autocompleteHelper.enableAutocomplete($("#codelist-modal #codelist-reference-input"), autocompleteHelper.modes.ITEMWITHCODELIST);
-    }
-
-    // Generate the string containing all coded values and translated decodes
-    const codeListItemsString = metadataWrapper.getCodeListItemsByItem(currentPath.itemOID).reduce((string, item) => {
-        return string += `${item.getCodedValue()}, ${item.getTranslatedDecode(languageHelper.getCurrentLocale()) || ""}\n`;
-    }, "");
-
-    $("#codelist-modal #textitems-textarea").value = codeListItemsString;
-    $("#codelist-modal #codelist-reference-input").value = null;
+    document.body.appendChild(codelistModal);
+    languageHelper.localize(codelistModal);
 }
 
 window.saveCodeListModal = function() {
