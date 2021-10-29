@@ -62,7 +62,7 @@ function getItemInput(itemDef, itemGroupOID, options) {
             inputContainer.appendChild(selectInput);
         } else {
             for (let codeListItem of codeListItems) {
-                const translatedText = codeListItem.getTranslatedDecode(options.useNames ? null : options.locale, options.useNames) || options.missingTranslation;
+                const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
                 const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), translatedText, itemDef.getAttribute("OID"), itemGroupOID);
                 inputContainer.appendChild(radioInput);
                 inputContainer.appendChild(document.createElement("br"));
