@@ -115,7 +115,7 @@ class CodelistModal extends HTMLElement {
             metadataWrapper.setCodeListItemDecodedText(codeListOID, codedValue, translatedDecode);
         }
 
-        document.dispatchEvent(new CustomEvent("CodelistEdited"));
+        ioHelper.dispatchGlobalEvent("CodelistEdited");
         this.close();
     }
 
@@ -139,7 +139,7 @@ class CodelistModal extends HTMLElement {
         metadataWrapper.addCodeListRef(this.path.itemOID, externalCodeListOID);
         this.path.codeListItem = null;
     
-        document.dispatchEvent(new CustomEvent("CodelistEdited"));
+        ioHelper.dispatchGlobalEvent("CodelistEdited");
         this.close();
     }
     
@@ -150,7 +150,7 @@ class CodelistModal extends HTMLElement {
         metadataWrapper.addCodeListRef(this.path.itemOID, newCodeListOID);
         this.path.codeListItem = null;
     
-        document.dispatchEvent(new CustomEvent("CodelistEdited"));
+        ioHelper.dispatchGlobalEvent("CodelistEdited");
         this.close();
     }
 

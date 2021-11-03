@@ -139,5 +139,5 @@ async function changeLanguage(locale) {
     await loadTranslations(locale);
     localize();
     setLanguageSelectText();
-    document.dispatchEvent(new CustomEvent("LanguageChanged"));
+    ioHelper.dispatchGlobalEvent("LanguageChanged");
 }

@@ -1,3 +1,5 @@
+import * as ioHelper from "../../helper/iohelper.js";
+
 class WidgetComponent extends HTMLElement {
     setWidget(widget) {
         this.widget = widget;
@@ -61,7 +63,7 @@ class WidgetComponent extends HTMLElement {
             const target = event.target.closest(".widget");
             const targetIndex = Array.from(target.parentNode.children).indexOf(target);
             if (source.widget.id != target.widget.id) target.parentNode.insertBefore(source, sourceIndex > targetIndex ? target : target.nextSibling);
-            document.dispatchEvent(new CustomEvent("WidgetMoved", { detail: { fromIndex: sourceIndex, toIndex: targetIndex } }));
+            ioHelper.dispatchGlobalEvent("WidgetMoved", { fromIndex: sourceIndex, toIndex: targetIndex });
         };
     }
 

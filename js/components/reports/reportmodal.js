@@ -1,5 +1,6 @@
 import * as reportsHelper from "../../helper/reportshelper.js";
 import * as languageHelper from "../../helper/languagehelper.js";
+import * as ioHelper from "../../helper/iohelper.js";
 
 class ReportModal extends HTMLElement {
     setReport(report) {
@@ -84,12 +85,12 @@ class ReportModal extends HTMLElement {
             else if (!checkbox.checked && included) this.report.widgets = this.report.widgets.filter(widget => widget.name != standardWidget.name);
         }
 
-        document.dispatchEvent(new CustomEvent("ReportEdited"));
+        ioHelper.dispatchGlobalEvent("ReportEdited");
         this.remove();
     }
 
     removeReport() {
-        document.dispatchEvent(new CustomEvent("ReportRemoved", { detail: this.report.id }));
+        ioHelper.dispatchGlobalEvent("ReportRemoved", this.report.id);
         this.remove();
     }
 }

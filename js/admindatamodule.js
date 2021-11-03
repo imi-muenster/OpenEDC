@@ -127,7 +127,7 @@ window.saveUser = async function() {
         await ioHelper.setUserOnServer(userOID, credentials, rights, locationOID).catch(error => console.log(error));
     }
 
-    if (userOID == admindataWrapper.getCurrentUserOID()) document.dispatchEvent(new CustomEvent("CurrentUserEdited"));
+    if (userOID == admindataWrapper.getCurrentUserOID()) ioHelper.dispatchGlobalEvent("CurrentUserEdited");
     
     loadUsers();
 }

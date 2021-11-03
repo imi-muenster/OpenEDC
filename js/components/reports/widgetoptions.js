@@ -3,6 +3,7 @@ import * as metadataWrapper from "../../odmwrapper/metadatawrapper.js";
 import * as languageHelper from "../../helper/languagehelper.js";
 import * as reportsHelper from "../../helper/reportshelper.js";
 import * as autocompleteHelper from "../../helper/autocompletehelper.js";
+import * as ioHelper from "../../helper/iohelper.js";
 
 class WidgetOptions extends HTMLElement {
     setComponent(component) {
@@ -218,7 +219,7 @@ class WidgetOptions extends HTMLElement {
         // TODO: If only the name was updated (neither the path, type nor size), simply call this.component.updateTitle()
         this.hideOptions();
         this.component.updateTitle();
-        document.dispatchEvent(new CustomEvent("WidgetEdited", { detail: this.component.widget.id }));
+        ioHelper.dispatchGlobalEvent("WidgetEdited", this.component.widget.id);
     }
 
     hideOptions() {
@@ -229,7 +230,7 @@ class WidgetOptions extends HTMLElement {
     removeWidget() {
         this.component.customChart?.chart?.destroy();
         this.component.remove();
-        document.dispatchEvent(new CustomEvent("WidgetRemoved", { detail: this.component.widget.id }));
+        ioHelper.dispatchGlobalEvent("WidgetRemoved", this.component.widget.id);
     }
 
     setWidgetComponentSize(size) {

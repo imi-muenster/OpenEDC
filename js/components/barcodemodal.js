@@ -1,9 +1,12 @@
+import * as ioHelper from "../helper/iohelper.js";
+
 class BarcodeModal extends HTMLElement {
     setHeading(heading) { this.heading = heading; }
     setHelpText(helpText) { this.helpText = helpText; }
     setInputPlaceholder(inputPlaceholder) { this.inputPlaceholder = inputPlaceholder; }
     setButtonText(buttonText) { this.buttonText = buttonText; }
 
+    // TODO: Use i18n approach
     async connectedCallback() {
         this.innerHTML = `
             <div class="modal is-active" id="barcode-modal">
@@ -58,12 +61,12 @@ class BarcodeModal extends HTMLElement {
         // Allow the manual entry of a barcode value
         this.querySelector("#barcode-fallback-button").onclick = () => {
             const barcodeValue = this.querySelector("#barcode-fallback-input").value;
-            this.dispatchBarcodeFoundEvent(barcodeValue);
+            this.dispatchResult(barcodeValue);
         }
         this.querySelector("#barcode-fallback-input").onkeydown = keyEvent => {
             if (keyEvent.code == "Enter") {
                 const barcodeValue = this.querySelector("#barcode-fallback-input").value;
-                this.dispatchBarcodeFoundEvent(barcodeValue);
+                this.dispatchResult(barcodeValue);
             }
         }
 
@@ -79,11 +82,11 @@ class BarcodeModal extends HTMLElement {
         else this.foundBarcodeNumber = 0;
         this.foundBarcode = barcode;
 
-        if (this.foundBarcodeNumber == 5) this.dispatchBarcodeFoundEvent(this.foundBarcode);
+        if (this.foundBarcodeNumber == 5) this.dispatchResult(this.foundBarcode);
     }
 
-    dispatchBarcodeFoundEvent = barcodeValue => {
-        document.dispatchEvent(new CustomEvent("BarcodeFound", { detail: barcodeValue }));
+    dispatchResult = barcodeValue => {
+        ioHelper.dispatchGlobalEvent("BarcodeFound", barcodeValue);
         this.finish();
     }
 

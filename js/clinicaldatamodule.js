@@ -145,7 +145,7 @@ export function loadSubjectKeys() {
     }
 
     if (currentSubjectKey) $(`#subject-panel-blocks [oid="${currentSubjectKey}"]`).activate();
-    document.dispatchEvent(new CustomEvent("SubjectKeysLoaded"));
+    ioHelper.dispatchGlobalEvent("SubjectKeysLoaded");
 }
 
 function subjectClicked(subjectKey) {
@@ -282,7 +282,7 @@ async function loadFormData() {
     cachedFormData = null;
 
     scrollToFormStart();
-    document.dispatchEvent(new CustomEvent("FormDataLoaded"));
+    ioHelper.dispatchGlobalEvent("FormDataLoaded");
 }
 
 function resetFormUIElements() {

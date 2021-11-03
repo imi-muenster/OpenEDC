@@ -400,7 +400,7 @@ export function reloadDetailsPanel() {
         else if (getCurrentDetailsView() == detailsPanelViews.DUPLICATE) fillDetailsPanelDuplicate();
     }
 
-    document.dispatchEvent(new CustomEvent("MetadataPanelLoaded"));
+    ioHelper.dispatchGlobalEvent("MetadataPanelLoaded");
 }
 
 function fillItemRangeChecks() {
