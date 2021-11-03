@@ -12,7 +12,7 @@ const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
 export let currentPath = new ODMPath();
-let currentSubjectKey = null;
+export let currentSubjectKey = null;
 
 let skipMandatoryCheck = false;
 let skipDataHasChangedCheck = false;
