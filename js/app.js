@@ -626,7 +626,7 @@ function enableMode(mode) {
     }
 
     ioHelper.hideMenu();
-    document.dispatchEvent(new CustomEvent("ModeEnabled", { detail: mode }));
+    ioHelper.dispatchGlobalEvent("ModeEnabled", mode);
 }
 
 function addModalsToDOM() {

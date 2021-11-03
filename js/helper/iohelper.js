@@ -89,6 +89,7 @@ let user = null;
 let decryptionKey = null;
 let serverURL = null;
 let settings = null;
+let eventListeners = [];
 
 export const fileNameSeparator = "__";
 
@@ -583,6 +584,21 @@ function fadeInToast(toast) {
 function fadeOutToast(toast) {
     toast.style.opacity = 0;
     setTimeout(() => toast.remove(), 500);
+}
+
+export function addGlobalEventListener(name, callback, options) {
+    if (options && options.replace) eventListeners = eventListeners.reduce((listeners, listener) => {
+        if (listener.name == name) document.removeEventListener(listener.name, listener.callback);
+        else listeners.push(listener);
+        return listeners;
+    }, []);
+
+    document.addEventListener(name, callback);
+    eventListeners.push({ name, callback });
+}
+
+export function dispatchGlobalEvent(name, detail) {
+    document.dispatchEvent(new CustomEvent(name, detail ? { detail } : null));
 }
 
 export function download(filename, extension, content) {

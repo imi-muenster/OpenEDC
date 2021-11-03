@@ -946,7 +946,7 @@ function setIOListeners() {
     };
     $("#search-subject-input").oninput = inputEvent => filterSubjects(inputEvent.target.value);
 
-    document.addEventListener("BarcodeFound", barcodeEvent => {
+    ioHelper.addGlobalEventListener("BarcodeFound", barcodeEvent => {
         const siteOID = admindataWrapper.getSiteOIDByName($("#filter-site-select-inner").value);
         const subjectKey = barcodeEvent.detail;
         addSubject(subjectKey, siteOID);
