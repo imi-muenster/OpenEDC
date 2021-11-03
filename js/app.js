@@ -28,7 +28,7 @@ const appStates = {
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
-document.addEventListener("DOMContentLoaded", async () => {
+ioHelper.addGlobalEventListener("DOMContentLoaded", async () => {
     // If index.html is requested, redirect to the base url
     if (window.location.pathname.includes("/index.html")) {
         window.location.replace(ioHelper.getBaseURL().replace("/index.html", ""));
@@ -66,16 +66,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-document.addEventListener("LanguageChanged", () => {
+ioHelper.addGlobalEventListener("LanguageChanged", () => {
     reloadApp({ cacheFormData: true });
     ioHelper.hideMenu();
 });
 
-document.addEventListener("CurrentSubjectEdited", () => {    
+ioHelper.addGlobalEventListener("CurrentSubjectEdited", () => {    
     reloadApp();
 });
 
-document.addEventListener("CurrentUserEdited", () => {    
+ioHelper.addGlobalEventListener("CurrentUserEdited", () => {    
     adjustUIToUser();
 });
 

@@ -1,6 +1,7 @@
 import ODMPath from "../odmwrapper/odmpath.js";
 import * as metadataWrapper from "../odmwrapper/metadatawrapper.js";
 import * as languageHelper from "./languagehelper.js";
+import * as ioHelper from "./iohelper.js";
 
 class AutocompleteElement {
     constructor(value, label) {
@@ -55,7 +56,7 @@ export const enableAutocomplete = (input, mode) => {
     input.addEventListener("blur", blurEventListener);
 
     // Close the autocomplete list when the user clicks somewhere else
-    document.addEventListener("click", closeLists);
+    ioHelper.addGlobalEventListener("click", closeLists);
 }
 
 export const disableAutocomplete = input => {

@@ -766,7 +766,7 @@ function setIOListeners() {
     autocompleteHelper.enableAutocomplete($("#measurement-unit"), autocompleteHelper.modes.MEASUREMENTUNIT);
     autocompleteHelper.enableAutocomplete($("#item-method"), autocompleteHelper.modes.METHOD);
 
-    document.addEventListener("CodelistEdited", () => reloadAndStoreMetadata());
+    ioHelper.addGlobalEventListener("CodelistEdited", () => reloadAndStoreMetadata());
 
     $("#collection-condition").addEventListener("focus", () => $("#collection-condition").setAttribute("context-path", currentPath.toString()));
     $("#item-method").addEventListener("focus", () => $("#item-method").setAttribute("context-path", currentPath.toString()));

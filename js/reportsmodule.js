@@ -366,24 +366,24 @@ const setIOListeners = () => {
     $("#reports-section #add-report-button").addEventListener("click", () => addReport());
     $("#reports-section #edit-report-button").addEventListener("click", () => showReportModal());
 
-    document.addEventListener("ReportEdited", () => {
+    ioHelper.addGlobalEventListener("ReportEdited", () => {
         reload();
         reportsHelper.storeReports();
     });
-    document.addEventListener("ReportRemoved", event => {
+    ioHelper.addGlobalEventListener("ReportRemoved", event => {
         reportsHelper.removeReport(event.detail);
         loadReport(null);
     });
-    document.addEventListener("WidgetEdited", event => {
+    ioHelper.addGlobalEventListener("WidgetEdited", event => {
         reloadWidget(event.detail);
         reportsHelper.storeReports();
     });
-    document.addEventListener("WidgetMoved", event => {
+    ioHelper.addGlobalEventListener("WidgetMoved", event => {
         const widgets = currentReport.widgets;
         widgets.splice(event.detail.toIndex, 0, widgets.splice(event.detail.fromIndex, 1)[0]);
         reportsHelper.storeReports();
     });
-    document.addEventListener("WidgetRemoved", event => {
+    ioHelper.addGlobalEventListener("WidgetRemoved", event => {
         removeWidget(event.detail);
     });
 }
