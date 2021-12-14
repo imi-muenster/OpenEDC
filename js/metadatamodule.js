@@ -57,9 +57,9 @@ function setEditMode() {
     }
 }
 
-function createPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText) {
+function createPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, hasCondition) {
     const draggable = viewOnlyMode ? false : true;
-    let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, draggable);
+    let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, draggable, hasCondition);
 
     panelBlock.ondragstart = dragStart;
     panelBlock.ondragenter = dragEnter;
@@ -199,8 +199,10 @@ function loadItemsByItemGroup(hideTree) {
 
     let itemDefs = metadataWrapper.getItemsByItemGroup(currentPath.itemGroupOID);
     for (let itemDef of itemDefs) {
+        let path = currentPath.clone().set(ODMPath.elements.ITEM, itemDef.getOID());
+        let hasCondition = metadataWrapper.getElementCondition(ODMPath.elements.ITEM, path) ? true : false;
         let translatedQuestion = itemDef.getTranslatedQuestion(languageHelper.getCurrentLocale());
-        let panelBlock = createPanelBlock(itemDef.getOID(), ODMPath.elements.ITEM, translatedQuestion, itemDef.getName(), languageHelper.getTranslation(itemDef.getDataType()));
+        let panelBlock = createPanelBlock(itemDef.getOID(), ODMPath.elements.ITEM, translatedQuestion, itemDef.getName(), languageHelper.getTranslation(itemDef.getDataType()), hasCondition);
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
     }

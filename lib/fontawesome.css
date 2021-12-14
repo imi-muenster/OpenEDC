@@ -215,6 +215,9 @@ readers do not read off random characters that represent icons */
 .fa-clone:before {
   content: "\f24d"; }
 
+.fa-code-branch:before {
+  content: "\f126"; }
+
 .fa-dot-circle:before {
   content: "\f192"; }
 
