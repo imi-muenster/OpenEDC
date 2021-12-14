@@ -230,6 +230,9 @@ readers do not read off random characters that represent icons */
 .fa-expand:before {
   content: "\f065"; }
 
+.fa-eye-slash:before {
+  content: "\f070"; }
+
 .fa-lock:before {
   content: "\f023"; }
 

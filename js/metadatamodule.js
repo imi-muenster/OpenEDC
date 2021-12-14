@@ -57,9 +57,9 @@ function setEditMode() {
     }
 }
 
-function createPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, hasCondition) {
+function createPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, hasCondition, conditionIsFalse) {
     const draggable = viewOnlyMode ? false : true;
-    let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, draggable, hasCondition);
+    let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, draggable, hasCondition, conditionIsFalse);
 
     panelBlock.ondragstart = dragStart;
     panelBlock.ondragenter = dragEnter;
@@ -200,9 +200,10 @@ function loadItemsByItemGroup(hideTree) {
     let itemDefs = metadataWrapper.getItemsByItemGroup(currentPath.itemGroupOID);
     for (let itemDef of itemDefs) {
         let path = currentPath.clone().set(ODMPath.elements.ITEM, itemDef.getOID());
-        let hasCondition = metadataWrapper.getElementCondition(ODMPath.elements.ITEM, path) ? true : false;
+        let condition = metadataWrapper.getElementCondition(ODMPath.elements.ITEM, path);
+        let conditionIsFalse = condition ? condition.getFormalExpression() == "false" : false;
         let translatedQuestion = itemDef.getTranslatedQuestion(languageHelper.getCurrentLocale());
-        let panelBlock = createPanelBlock(itemDef.getOID(), ODMPath.elements.ITEM, translatedQuestion, itemDef.getName(), languageHelper.getTranslation(itemDef.getDataType()), hasCondition);
+        let panelBlock = createPanelBlock(itemDef.getOID(), ODMPath.elements.ITEM, translatedQuestion, itemDef.getName(), languageHelper.getTranslation(itemDef.getDataType()), condition, conditionIsFalse);
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
     }

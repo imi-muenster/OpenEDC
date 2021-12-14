@@ -11,7 +11,7 @@ import * as languageHelper from "./languagehelper.js";
 const rangeCheckComparators = ["", "LT", "LE", "GT", "GE", "EQ", "NE"];
 const rangeCheckComparatorsDisplay = ["--", "<", "<=", ">", ">=", "=", "!="];
 
-export function getMetadataPanelBlock(elementOID, elementType, titleText, fallbackText, subtitleText, draggable, hasCondition) {
+export function getMetadataPanelBlock(elementOID, elementType, titleText, fallbackText, subtitleText, draggable, hasCondition, conditionIsFalse) {
     let panelBlock = document.createElement("a");
     panelBlock.className = "panel-block";
     panelBlock.setAttribute("oid", elementOID);
@@ -26,13 +26,13 @@ export function getMetadataPanelBlock(elementOID, elementType, titleText, fallba
         let dot = document.createElement("span");
         dot.className = "panel-icon has-text-link";
         let dotIcon = document.createElement("i");
-        dotIcon.className = !titleText ? "fas fa-question" : "fas fa-code-branch";
+        dotIcon.className = !titleText ? "fas fa-question" : (conditionIsFalse ? "fas fa-eye-slash" : "fas fa-code-branch");
         dot.appendChild(dotIcon);
         panelBlock.appendChild(dot);
         subtitleText = !titleText ? languageHelper.getTranslation("missing-translation") : subtitleText;
-        if (fallbackText) {
+        if (!titleText && fallbackText) {
             title.textContent = fallbackText;
-        } else {
+        } else if (!titleText) {
             title.innerHTML = "&nbsp;";
         }
     }
