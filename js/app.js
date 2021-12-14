@@ -11,7 +11,7 @@ import * as odmConverter from "./converter/odmconverter.js";
 import * as csvConverter from "./converter/csvconverter.js";
 import * as pluginRegistrar from "../plugins/registrar.js";
 
-const appVersion = "0.8.0";
+const appVersion = "0.8.1";
 
 const appModes = {
     METADATA: "metadata",

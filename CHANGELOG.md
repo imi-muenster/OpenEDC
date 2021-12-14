@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.8.1
+
+- Code list items can now be entered without explicitly stating coded values
+- Visually highlight items with conditional skip logic
+- Various smaller updates for improved plugin development
+
 ## 0.8.0
 
 - This update introduces interactive, customizable, and responsive reports for OpenEDC
