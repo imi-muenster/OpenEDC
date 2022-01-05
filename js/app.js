@@ -295,15 +295,21 @@ function validateODM(content) {
     }
 }
 
-// Currently only adds metadata elements (in contrast to openODM)
-window.importODM = async function() {
-    const files = Array.from($("#odm-import .file-input").files);
+window.importODMMetadata = async function() {
+    const files = Array.from($("#odm-import-metadata .file-input").files);
     const contents = await Promise.all(files.map(file => ioHelper.getFileContent(file)));
     if (!contents.length) return;
 
-    const odmXMLStrings = contents.map(content => validateODM(content)).filter(content => content);
-    mergeMetadataModels(odmXMLStrings);
+    mergeMetadataModels(contents);
+    hideProjectModal();
+}
 
+window.importODMClinicaldata = async function() {
+    const files = Array.from($("#odm-import-clinicaldata .file-input").files);
+    const contents = await Promise.all(files.map(file => ioHelper.getFileContent(file)));
+    if (!contents.length) return;
+
+    mergeClinicaldataModels(contents);
     hideProjectModal();
 }
 
@@ -685,6 +691,15 @@ function mergeMetadataModels(models) {
     else if (getCurrentState() == appStates.EMPTY) startApp();
 }
 
+async function mergeClinicaldataModels(models) {
+    models.forEach(async model => {
+        await clinicaldataWrapper.importClinicaldata(model);
+    });
+
+    await clinicaldataWrapper.loadSubjects();
+    reloadApp();
+}
+
 async function reloadApp(options) {
     if (options && options.reloadMetadata) await metadataWrapper.loadStoredMetadata();
 
@@ -693,6 +708,7 @@ async function reloadApp(options) {
         metadataModule.reloadDetailsPanel();
     } else if (getCurrentMode() == appModes.CLINICALDATA) {
         if (options && options.cacheFormData) clinicaldataModule.cacheFormData();
+        clinicaldataModule.loadSubjectKeys();
         clinicaldataModule.reloadTree();
     } else if (getCurrentMode() == appModes.REPORTS) {
         reportsModule.reload();

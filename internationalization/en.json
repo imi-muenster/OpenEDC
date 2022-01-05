@@ -217,6 +217,7 @@
     "import-data": "Import Data",
     "import-data-hint": "With this option you can import metadata from a CDISC ODM-XML file. Events and forms will then be added. If you want to import an entire project with clinical data, first remove all current data with the option below.",
     "import-metadata": "Import Metadata (ODM)",
+    "import-clinicaldata": "Import Clinical Data (ODM)",
     "remove-data": "Remove Data",
     "remove-data-hint": "The following option lets you remove all stored data and thereby reset the current project.",
     "remove-project": "Remove Project",

@@ -120,10 +120,16 @@ class ProjectModal extends HTMLElement {
                                 <h1 class="title is-4" i18n="import-data"></h1>
                                 <p class="mb-5" i18n="import-data-hint"></p>
                                 <div class="buttons">
-                                    <div class="file" id="odm-import">
+                                    <div class="file" id="odm-import-metadata">
                                         <label class="file-label">
-                                            <input class="file-input" type="file" accept=".xml,text/xml" name="odm-xml" onchange="importODM()" multiple>
+                                            <input class="file-input" type="file" accept=".xml,text/xml" onchange="importODMMetadata()" multiple>
                                             <span class="file-cta button is-link is-small" i18n="import-metadata"></span>
+                                        </label>
+                                    </div>
+                                    <div class="file" id="odm-import-clinicaldata">
+                                        <label class="file-label">
+                                            <input class="file-input" type="file" accept=".xml,text/xml" onchange="importODMClinicaldata()" multiple>
+                                            <span class="file-cta button is-link is-small" i18n="import-clinicaldata"></span>
                                         </label>
                                     </div>
                                 </div>

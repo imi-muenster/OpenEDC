@@ -217,6 +217,7 @@
     "import-data": "Datenimport",
     "import-data-hint": "Mit dieser Option können Sie Metadaten einer CDISC ODM-XML Datei importieren. Ereignisse und Formulare werden dann hinzugefügt. Wenn Sie ein ganzes Projekt mit klinischen Daten importieren möchten, löschen Sie zunächst alle aktuellen Daten mit der Option unten.",
     "import-metadata": "Metadaten importieren (ODM)",
+    "import-clinicaldata": "Klinische Daten importieren (ODM)",
     "remove-data": "Datenlöschung",
     "remove-data-hint": "Mit der folgenden Option können Sie alle gespeicherten Daten löschen und damit das aktuelle Projekt zurücksetzen.",
     "remove-project": "Projekt löschen",
