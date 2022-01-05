@@ -297,14 +297,12 @@ function validateODM(content) {
 
 // Currently only adds metadata elements (in contrast to openODM)
 window.importODM = async function() {
-    const file = $("#odm-import .file-input");
-    const content = await ioHelper.getFileContent(file.files[0]);
-    if (!content) return;
+    const files = Array.from($("#odm-import .file-input").files);
+    const contents = await Promise.all(files.map(file => ioHelper.getFileContent(file)));
+    if (!contents.length) return;
 
-    const odmXMLString = validateODM(content);
-    if (!odmXMLString) return;
-
-    mergeMetadataModels([odmXMLString]);
+    const odmXMLStrings = contents.map(content => validateODM(content)).filter(content => content);
+    mergeMetadataModels(odmXMLStrings);
 
     hideProjectModal();
 }

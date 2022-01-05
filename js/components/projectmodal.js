@@ -122,7 +122,7 @@ class ProjectModal extends HTMLElement {
                                 <div class="buttons">
                                     <div class="file" id="odm-import">
                                         <label class="file-label">
-                                            <input class="file-input" type="file" accept=".xml,text/xml" name="odm-xml" onchange="importODM()">
+                                            <input class="file-input" type="file" accept=".xml,text/xml" name="odm-xml" onchange="importODM()" multiple>
                                             <span class="file-cta button is-link is-small" i18n="import-metadata"></span>
                                         </label>
                                     </div>
