@@ -365,8 +365,6 @@
     "forms-import-error": "Could not load forms from external repository.",
 
     "upload-error-no-odm": "No ODM file uploaded.",
-    "upload-error-empty-odm": "Empty ODM file uploaded.",
-    "upload-error-no-metadata": "ODM without metadata uploaded.",
     "upload-note-redcap": "You uploaded a REDCap ODM file. Please note that REDCap currently does not fully adhere to the CDISC ODM-XML standard. There might be some hickups in using this file.",
 
     "new-project-hint": "<strong>You created your new project</strong><br><br>Start by adding your first event with a click on the <i>Add</i> button below the <i>Events</i> title.<br><br>Events refer to points in time or incidents during your study for which you want to collect data. This could be, for example, <i>Baseline</i> and <i>Follow-up</i> or <i>Patient-reported data</i> and <i>Routine data</i>. It is fine if your study consists of only one event.",

@@ -365,8 +365,6 @@
     "forms-import-error": "Externe Formulare konnten nicht geladen werden.",
 
     "upload-error-no-odm": "Keine ODM-Datei hochgeladen.",
-    "upload-error-empty-odm": "Leere ODM-Datei hochgeladen.",
-    "upload-error-no-metadata": "ODM-Datei ohne Metadaten hochgeladen.",
     "upload-note-redcap": "Sie haben eine REDCap ODM-Datei hochgeladen. Bitte beachten Sie, dass REDCap sich derzeit nicht vollständig an den CDISC ODM-XML Standard hält. Es könnte kleinere Probleme bei der Verwendung dieser Datei geben.",
 
     "new-project-hint": "<strong>Sie haben Ihr neues Projekt erstellt</strong><br><br>Beginnen Sie damit, Ihr erstes Ereignis mit einem Klick auf die Schaltfläche <i>Hinzufügen</i> unterhalb des Titels <i>Ereignisse</i> hinzuzufügen.<br><br>Ereignisse beziehen sich auf Zeitpunkte oder Visiten während Ihrer Studie, für die Sie Daten erheben möchten. Das könnten zum Beispiel <i>Vorbefragung</i> und <i>Folgebefragung</i> oder <i>Patientenberichtete Daten</i> und <i>Routinedaten</i> sein. Es ist in Ordnung, wenn Ihre Studie nur aus einem Ereignis besteht",

@@ -12,12 +12,10 @@ export function validateImport(odmXMLString) {
     // Basic file checks
     // A check against the ODM xsd schema is currently not implemented for flexibility purposes (e.g., for supporting REDCap ODM files)
     if (!odm.querySelector("ODM")) throw languageHelper.getTranslation("upload-error-no-odm");
-    if (!odm.querySelector("Study")) throw languageHelper.getTranslation("upload-error-empty-odm");
-    if (!odm.querySelector("MetaDataVersion")) throw languageHelper.getTranslation("upload-error-no-metadata");
 
     // Add a protocol element if there is no one present (e.g., for supporting the CDISC eCRF Portal)
     // Moreover, add a study event and reference all forms within this event if there is no one available
-    if (!odm.querySelector("Protocol")) {
+    if (odm.querySelector("MetaDataVersion") && !odm.querySelector("Protocol")) {
         odm.querySelector("MetaDataVersion").insertAdjacentElement("afterbegin", metadataTemplates.getProtocol());
 
         if (!odm.querySelector("StudyEventDef")) {

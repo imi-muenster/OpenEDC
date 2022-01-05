@@ -693,7 +693,8 @@ function mergeMetadataModels(models) {
 
 async function mergeClinicaldataModels(models) {
     models.forEach(async model => {
-        await clinicaldataWrapper.importClinicaldata(model);
+        const odmXMLString = validateODM(model);
+        await clinicaldataWrapper.importClinicaldata(odmXMLString);
     });
 
     await clinicaldataWrapper.loadSubjects();
