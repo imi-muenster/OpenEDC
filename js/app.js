@@ -691,6 +691,7 @@ function mergeMetadataModels(models) {
     else if (getCurrentState() == appStates.EMPTY) startApp();
 }
 
+// Very rudimentary implementation. In the future, it should be possible to merge data for an existing patient
 async function mergeClinicaldataModels(models) {
     models.forEach(async model => {
         const odmXMLString = validateODM(model);

@@ -126,7 +126,7 @@ class ProjectModal extends HTMLElement {
                                             <span class="file-cta button is-link is-small" i18n="import-metadata"></span>
                                         </label>
                                     </div>
-                                    <div class="file" id="odm-import-clinicaldata">
+                                    <div class="file is-hidden" id="odm-import-clinicaldata">
                                         <label class="file-label">
                                             <input class="file-input" type="file" accept=".xml,text/xml" onchange="importODMClinicaldata()" multiple>
                                             <span class="file-cta button is-link is-small" i18n="import-clinicaldata"></span>
