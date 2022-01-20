@@ -47,10 +47,14 @@ class MetadataSection extends HTMLElement {
                                             <label class="label" id="mandatory-label" i18n="mandatory"></label>
                                         </div>
                                     </div>
-                                    <div class="column">
+                                    <div class="column is-flex is-flex-direction-column">
                                         <div class="field">
+                                            <label class="label" id="element-name-label" i18n="name"></label>
+                                            <input class="input" type="text" id="name-input" autocomplete="off">
+                                        </div>
+                                        <div class="field is-flex is-flex-direction-column is-flex-grow-1">
                                             <label class="label" id="element-long-label"></label>
-                                            <textarea class="textarea" id="translation-textarea"></textarea>
+                                            <textarea class="textarea is-flex-grow-1" id="translation-textarea"></textarea>
                                         </div>
                                     </div>
                                 </div>

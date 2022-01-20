@@ -265,8 +265,8 @@ function resetDetailsPanel() {
     $("#save-button").unhighlight();
 
     // Foundational
-    [$("#id-input"), $("#translation-textarea"), $("#datatype-select-inner"), $("#mandatory-select-inner")].disableElements();
-    [$("#id-input"), $("#translation-textarea"), $("#datatype-select-inner"), $("#mandatory-select-inner")].emptyInputs();
+    [$("#id-input"), $("#name-input"), $("#translation-textarea"), $("#datatype-select-inner"), $("#mandatory-select-inner")].disableElements();
+    [$("#id-input"), $("#name-input"), $("#translation-textarea"), $("#datatype-select-inner"), $("#mandatory-select-inner")].emptyInputs();
     $("#element-oid-label").textContent = languageHelper.getTranslation("unique-id");
     $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
 
@@ -310,8 +310,7 @@ function highlightRemoveButton() {
 }
 
 function fillDetailsPanelFoundational() {
-    $("#id-input").disabled = false;
-    $("#translation-textarea").disabled = false;
+    [$("#id-input"), $("#name-input"), $("#translation-textarea")].enableElements();
 
     let element = metadataWrapper.getElementDefByOID(currentPath.last.value);
     const elementRef = metadataWrapper.getElementRefByOID(currentPath.last.element, currentPath);
@@ -320,19 +319,20 @@ function fillDetailsPanelFoundational() {
         case ODMPath.elements.FORM:
         case ODMPath.elements.ITEMGROUP:
             $("#id-input").value = currentPath.last.value;
+            $("#name-input").value = element.getName();
             $("#translation-textarea").value = element.getTranslatedDescription(languageHelper.getCurrentLocale());
             break;
         case ODMPath.elements.ITEM:
-            $("#datatype-select-inner").disabled = false;
-            $("#mandatory-select-inner").disabled = false;
+            [$("#datatype-select-inner"), $("#mandatory-select-inner")].enableElements();
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-question");
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             $("#id-input").value = currentPath.last.value;
+            $("#name-input").value = element.getName();
             $("#translation-textarea").value = element.getTranslatedQuestion(languageHelper.getCurrentLocale());
             $("#datatype-select-inner").value = element.getDataType();
             break;
         case ODMPath.elements.CODELISTITEM:
-            $("#mandatory-select-inner").disabled = true;
+            [$("#name-input"), $("#mandatory-select-inner")].disableElements();
             $("#element-oid-label").textContent = languageHelper.getTranslation("coded-value");
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-choice");
             element = metadataWrapper.getCodeListItem(metadataWrapper.getCodeListOIDByItem(currentPath.itemOID), currentPath.codeListItem);
@@ -464,26 +464,25 @@ window.saveElement = async function() {
 }
 
 async function saveDetailsFoundational() {
-    const newID = $("#id-input").value;
-    const newTranslatedText = $("#translation-textarea").value;
-    
     switch (currentPath.last.element) {
         case ODMPath.elements.STUDYEVENT:
             showFirstEventEditedHelp();
         case ODMPath.elements.FORM:
         case ODMPath.elements.ITEMGROUP:
-            await setElementOIDAndName(newID);
-            metadataWrapper.setElementDescription(currentPath.last.value, newTranslatedText);
+            await setElementOID($("#id-input").value);
+            metadataWrapper.setElementName(currentPath.last.value, $("#name-input").value);
+            metadataWrapper.setElementDescription(currentPath.last.value, $("#translation-textarea").value);
             break;
         case ODMPath.elements.ITEM:
-            await setElementOIDAndName(newID);
-            metadataWrapper.setItemQuestion(currentPath.last.value, newTranslatedText);
+            await setElementOID($("#id-input").value);
+            metadataWrapper.setElementName(currentPath.last.value, $("#name-input").value);
+            metadataWrapper.setItemQuestion(currentPath.last.value, $("#translation-textarea").value);
             metadataWrapper.setElementMandatory(currentPath.last.element, currentPath, $("#mandatory-select-inner").value);
             handleItemDataType(currentPath.last.value, $("#datatype-select-inner").value);
             break;
         case ODMPath.elements.CODELISTITEM:
-            await setCodeListItemCodedValue(newID);
-            metadataWrapper.setCodeListItemDecodedText(metadataWrapper.getCodeListOIDByItem(currentPath.itemOID), currentPath.codeListItem, newTranslatedText);
+            await setCodeListItemCodedValue($("#id-input").value);
+            metadataWrapper.setCodeListItemDecodedText(metadataWrapper.getCodeListOIDByItem(currentPath.itemOID), currentPath.codeListItem, $("#translation-textarea").value);
     }
 
     if (!languageHelper.getPresentLanguages().includes(languageHelper.getCurrentLocale())) {
@@ -494,16 +493,13 @@ async function saveDetailsFoundational() {
     reloadAndStoreMetadata();
 }
 
-async function setElementOIDAndName(oid) {
+async function setElementOID(oid) {
     if (currentPath.last.value == oid) return;
 
     const subjectKeys = await clinicaldataWrapper.getSubjectsHavingDataForElement(currentPath.last.value, currentPath.last.element);
     if (subjectKeys.length == 0) {
         await metadataWrapper.setElementOID(currentPath.last.value, currentPath.last.element, oid)
-            .then(() => {
-                currentPath.set(currentPath.last.element, oid);
-                metadataWrapper.setElementName(currentPath.last.value, oid);
-            })
+            .then(() => currentPath.set(currentPath.last.element, oid))
             .catch(() => ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("id-not-changed-error-used")))
     } else {
         ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("id-not-changed-error-data"));
