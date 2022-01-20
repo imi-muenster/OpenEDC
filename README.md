@@ -10,7 +10,7 @@
 
 ## About
 
-[OpenEDC](https://openedc.org/) is a cross-platform progressive web application (PWA) that can also be installed as a standalone app and works offline. The application itself is client-based. All data is exclusively processed on the local device it is running on. For security reasons, all data can be AES encrypted on the device as well.
+[OpenEDC](https://openedc.org/) is a cross-platform web application that works offline. The application itself is client-based. All data is exclusively processed on the local device it is running on. For security reasons, all data can be AES encrypted on the device as well.
 
 An instance of the [OpenEDC Server](https://github.com/imi-muenster/OpenEDC-Server) can be hosted optionally to create a project with multiple users and sites. Forms already designed or data already captured with [openedc.org](https://openedc.org/) can be synced with the server. When connected to a server, all data is end-to-end encrypted by default. The application can work offline and syncs data back to the server when an internet connection could be re-established.
 
