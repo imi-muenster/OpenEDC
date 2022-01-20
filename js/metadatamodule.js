@@ -469,14 +469,16 @@ async function saveDetailsFoundational() {
             showFirstEventEditedHelp();
         case ODMPath.elements.FORM:
         case ODMPath.elements.ITEMGROUP:
-            await setElementOID($("#id-input").value);
-            metadataWrapper.setElementName(currentPath.last.value, $("#name-input").value);
-            metadataWrapper.setElementDescription(currentPath.last.value, $("#translation-textarea").value);
+            await setElementOID($("#id-input").value).then(() => {
+                metadataWrapper.setElementName(currentPath.last.value, $("#name-input").value);
+                metadataWrapper.setElementDescription(currentPath.last.value, $("#translation-textarea").value);
+            });
             break;
         case ODMPath.elements.ITEM:
-            await setElementOID($("#id-input").value);
-            metadataWrapper.setElementName(currentPath.last.value, $("#name-input").value);
-            metadataWrapper.setItemQuestion(currentPath.last.value, $("#translation-textarea").value);
+            await setElementOID($("#id-input").value).then(() => {
+                metadataWrapper.setElementName(currentPath.last.value, $("#name-input").value);
+                metadataWrapper.setItemQuestion(currentPath.last.value, $("#translation-textarea").value);
+            });
             metadataWrapper.setElementMandatory(currentPath.last.element, currentPath, $("#mandatory-select-inner").value);
             handleItemDataType(currentPath.last.value, $("#datatype-select-inner").value);
             break;
@@ -494,15 +496,22 @@ async function saveDetailsFoundational() {
 }
 
 async function setElementOID(oid) {
-    if (currentPath.last.value == oid) return;
+    if (currentPath.last.value == oid) return Promise.resolve();
 
     const subjectKeys = await clinicaldataWrapper.getSubjectsHavingDataForElement(currentPath.last.value, currentPath.last.element);
     if (subjectKeys.length == 0) {
-        await metadataWrapper.setElementOID(currentPath.last.value, currentPath.last.element, oid)
-            .then(() => currentPath.set(currentPath.last.element, oid))
-            .catch(() => ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("id-not-changed-error-used")))
+        return await metadataWrapper.setElementOID(currentPath.last.value, currentPath.last.element, oid)
+            .then(() => {
+                currentPath.set(currentPath.last.element, oid);
+                return Promise.resolve();
+            })
+            .catch(() => {
+                ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("id-not-changed-error-used"));
+                return Promise.reject();
+            });
     } else {
         ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("id-not-changed-error-data"));
+        return Promise.reject();
     }
 }
 
