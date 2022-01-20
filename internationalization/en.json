@@ -207,6 +207,7 @@
     "survey-code-hint": "This option lets you set a four-digit numerical code that needs to be entered after a local survey (started with the <i>Survey View</i> button) is finished or canceled. This prevents study participants from seeing foreign data.",
     "miscellaneous-options": "Miscellaneous Options",
     "miscellaneous-options-hint": "In the following, different miscellaneous options are listed that you can activate by clicking on it. If you are connected to a server, the options are valid for all users.",
+    "element-name-hint": "Allow editing the name of elements, according to the CDISC ODM standard. If disabled, the name is automatically set to the value of the ID.",
     "textarea-hint": "Render items with the datatype String as multi-line textareas instead of one-line inputs.",
     "survey-view-hint": "Automatically open the survey view on mobile devices when clicking on a study event.",
     "export-data": "Export Data",

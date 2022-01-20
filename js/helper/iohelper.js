@@ -297,6 +297,7 @@ export async function loadSettings() {
         surveyCode: null,
         textAsTextarea: false,
         autoSurveyView: false,
+        showElementName: false,
         subjectKeyMode: subjectKeyModes.MANUAL
     };
 

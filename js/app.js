@@ -465,14 +465,20 @@ window.setSurveyCode = function() {
     }
 }
 
-window.miscOptionClicked = function(event) {
+// TODO: Make more generic by removing switch-statement and use checkbox ids as setting keys instead
+window.miscOptionClicked = async function(event) {
     switch (event.target.id) {
+        case "show-element-name":
+            await ioHelper.setSetting("showElementName", event.target.checked);
+            break;
         case "text-as-textarea-checkbox":
-            ioHelper.setSetting("textAsTextarea", event.target.checked);
-            return;
+            await ioHelper.setSetting("textAsTextarea", event.target.checked);
+            break;
         case "auto-survey-view-checkbox":
-            ioHelper.setSetting("autoSurveyView", event.target.checked);
+            await ioHelper.setSetting("autoSurveyView", event.target.checked);
     }
+
+    reloadApp();
 }
 
 window.subjectKeyModeClicked = function(event) {

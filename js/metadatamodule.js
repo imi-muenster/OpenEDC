@@ -269,6 +269,7 @@ function resetDetailsPanel() {
     [$("#id-input"), $("#name-input"), $("#translation-textarea"), $("#datatype-select-inner"), $("#mandatory-select-inner")].emptyInputs();
     $("#element-oid-label").textContent = languageHelper.getTranslation("unique-id");
     $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
+    ioHelper.getSetting("showElementName") ? $("#name-input").parentNode.show() : $("#name-input").parentNode.hide();
 
     // Extended
     [$("#measurement-unit"), $("#collection-condition"), $("#item-method"), $("#add-range-check-button"), $("#add-alias-button")].disableElements();
@@ -470,13 +471,13 @@ async function saveDetailsFoundational() {
         case ODMPath.elements.FORM:
         case ODMPath.elements.ITEMGROUP:
             await setElementOID($("#id-input").value).then(() => {
-                metadataWrapper.setElementName(currentPath.last.value, $("#name-input").value);
+                metadataWrapper.setElementName(currentPath.last.value, ioHelper.getSetting("showElementName") ? $("#name-input").value : $("#id-input").value);
                 metadataWrapper.setElementDescription(currentPath.last.value, $("#translation-textarea").value);
             });
             break;
         case ODMPath.elements.ITEM:
             await setElementOID($("#id-input").value).then(() => {
-                metadataWrapper.setElementName(currentPath.last.value, $("#name-input").value);
+                metadataWrapper.setElementName(currentPath.last.value, ioHelper.getSetting("showElementName") ? $("#name-input").value : $("#id-input").value);
                 metadataWrapper.setItemQuestion(currentPath.last.value, $("#translation-textarea").value);
             });
             metadataWrapper.setElementMandatory(currentPath.last.element, currentPath, $("#mandatory-select-inner").value);

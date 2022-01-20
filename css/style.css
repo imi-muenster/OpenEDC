@@ -173,6 +173,10 @@ a.panel-block {
     overflow-y: auto;
 }
 
+#translation-textarea {
+    min-height: 5rem;
+}
+
 #extended-options-button {
     position: absolute;
     right: 0;

@@ -98,6 +98,10 @@ class ProjectModal extends HTMLElement {
                                 <p class="mb-5" i18n="miscellaneous-options-hint"></p>
                                 <div class="field">
                                     <label class="checkbox is-block">
+                                        <input type="checkbox" id="show-element-name" oninput="miscOptionClicked(event)">
+                                        <span i18n="element-name-hint"></span>
+                                    </label>
+                                    <label class="checkbox is-block">
                                         <input type="checkbox" id="text-as-textarea-checkbox" oninput="miscOptionClicked(event)">
                                         <span i18n="textarea-hint"></span>
                                     </label>
