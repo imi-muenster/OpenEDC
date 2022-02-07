@@ -625,6 +625,8 @@ function formatSubjectData(subjectODMData, options) {
     }
     if (options && options.includeInfo) {
         const createdDate = subjectODMData.querySelector("AuditRecord DateTimeStamp") ? new Date(subjectODMData.querySelector("AuditRecord DateTimeStamp").textContent) : null;
+        subjectData["createdDate"] = createdDate ? createdDate.toLocaleDateString() : null;
+        subjectData["createdTime"] = createdDate ? createdDate.toLocaleTimeString() : null;
         subjectData["createdYear"] = createdDate ? createdDate.getFullYear() : null;
         subjectData["createdMonth"] = createdDate ? createdDate.getMonth() + 1 : null;
         subjectData["siteOID"] = subjectODMData.querySelector("SiteRef") ? subjectODMData.querySelector("SiteRef").getAttribute("LocationOID") : "no-site";
