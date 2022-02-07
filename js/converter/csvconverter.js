@@ -5,11 +5,13 @@ export const getCSVString = async () => {
     const itemPaths = metadataWrapper.getItemPaths();
     const subjectData = await clinicaldataWrapper.getAllData({ includeInfo: true });
 
-    // Start with an empty CSV string only containing the subject column as well as the creation date
-    let csvString = "Subject,Creation_Date,Creation_Time";
-
-    // First, add the headers to the CSV string
+    // Start with an empty CSV string only and add the item OIDs as headers
+    let csvString = ",,,";
     csvString += itemPaths.map(path => path.toString().replace(/,/g, "")).join(",") + "\n";
+
+    // Then, add the subject column as well as the creation date and add the item names as headers to the CSV string
+    csvString += "Subject,Creation_Date,Creation_Time,";
+    csvString += itemPaths.map(path => metadataWrapper.getElementDefByOID(path.itemOID).getName()).join(",") + "\n";
 
     // Second, add the creation date and clinical data for each subject
     for (let [key, value] of Object.entries(subjectData)) {
