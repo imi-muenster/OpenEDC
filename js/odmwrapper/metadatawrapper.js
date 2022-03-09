@@ -797,7 +797,7 @@ export function insertCodeListItem(codeListItem, codeListOID) {
 }
 
 export function addCodeListRef(itemOID, codeListOID) {
-    getElementDefByOID(itemOID).appendChild(metadataTemplates.getCodeListRef(codeListOID));
+    insertCodeListRef(metadataTemplates.getCodeListRef(codeListOID), itemOID);
 }
 
 export function removeStudyEventRef(studyEventOID) {
