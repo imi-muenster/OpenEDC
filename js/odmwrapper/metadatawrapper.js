@@ -1034,6 +1034,10 @@ export async function mergeMetadata(odmXMLString) {
         Object.keys(replaceOIDs).reverse().forEach(oldOID => odmXMLString = odmXMLString.replace(new RegExp(`OID="${oldOID}"`, "g"), `OID="${replaceOIDs[oldOID]}"`));
         const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
 
+        // Remove OpenEDC data status code list if present (used to interpret the flag of clinical data entries; will be created on download again)
+        // TODO: This is similar to importMetadata() and should be abstracted, e.g., in validateODM()
+        odm.querySelector(`CodeList[OID="${dataStatusCodeListOID}"]`)?.remove();
+
         // Merge the new model into the old one
         odm.querySelectorAll("MeasurementUnit").forEach(measurementUnit => insertMeasurementUnit(measurementUnit));
         odm.querySelectorAll("StudyEventRef").forEach(studyEventRef => insertStudyEventRef(studyEventRef));
