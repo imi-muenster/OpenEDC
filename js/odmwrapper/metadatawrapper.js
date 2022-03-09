@@ -740,12 +740,18 @@ export function createCodeList(itemOID) {
     return newCodeListOID;
 }
 
+// TODO: insertPositionRef approach similar to insertItemRef, insertItemGroupRef, and insertFormRef -- should be abstracted in the future
 export function insertCodeListRef(codeListRef, itemOID) {
     let insertPositionRef = $$(`[OID="${itemOID}"] Question`).getLastElement();
     if (insertPositionRef) {
         insertPositionRef.insertAdjacentElement("afterend", codeListRef);
     } else {
-        $(`[OID="${itemOID}"]`).insertAdjacentElement("beforeend", codeListRef);
+        insertPositionRef = $(`[OID="${itemOID}"] Alias`);
+        if (insertPositionRef) {
+            insertPositionRef.insertAdjacentElement("beforebegin", codeListRef);
+        } else {
+            $(`[OID="${itemOID}"]`).insertAdjacentElement("beforeend", codeListRef);
+        }
     }
 }
 
