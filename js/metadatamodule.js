@@ -291,13 +291,8 @@ function adjustDetailsPanelSidebar() {
     if (currentPath.last.element != ODMPath.elements.CODELISTITEM) references = metadataWrapper.getElementRefs(currentPath.last.value, currentPath.last.element);
     else references = metadataWrapper.getElementRefs(metadataWrapper.getCodeListOIDByItem(currentPath.itemOID), currentPath.last.element);
 
-    if (references.length > 1) {
-        $("#duplicate-option").classList.add("has-text-danger");
-        $("#duplicate-option i").className = "fas fa-clone";
-    } else {
-        $("#duplicate-option").classList.remove("has-text-danger");
-        $("#duplicate-option i").className = "far fa-clone";
-    }
+    if (references.length > 1) $("#duplicate-option").classList.add("has-text-danger");
+    else $("#duplicate-option").classList.remove("has-text-danger");
 }
 
 function highlightSaveButton() {

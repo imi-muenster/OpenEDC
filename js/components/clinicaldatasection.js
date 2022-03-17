@@ -11,7 +11,7 @@ class ClinicaldataSection extends HTMLElement {
                                     <div class="control is-expanded has-icons-left">
                                         <input class="input" id="add-subject-input" type="text" i18n-ph="new-subject">
                                         <span class="icon is-left">
-                                            <i class="far fa-plus"></i>
+                                            <i class="fas fa-plus"></i>
                                         </span>
                                     </div>
                                     <div class="control">
@@ -22,7 +22,7 @@ class ClinicaldataSection extends HTMLElement {
                             <div class="panel-block has-no-padding-bottom has-no-border-bottom subject-key-mode-element">
                                 <button class="button is-link is-light is-fullwidth" id="subject-key-mode-auto-element" onclick="addSubjectAuto()">
                                     <span class="icon">
-                                        <i class="far fa-plus"></i>
+                                        <i class="fas fa-plus"></i>
                                     </span>
                                     <span i18n="add"></span>
                                 </button>
@@ -30,7 +30,7 @@ class ClinicaldataSection extends HTMLElement {
                             <div class="panel-block has-no-padding-bottom has-no-border-bottom subject-key-mode-element">
                                 <button class="button is-link is-light is-fullwidth" id="subject-key-mode-barcode-element" onclick="addSubjectBarcode()">
                                     <span class="icon">
-                                        <i class="far fa-barcode-read"></i>
+                                        <i class="fas fa-barcode-read"></i>
                                     </span>
                                     <span i18n="barcode"></span>
                                 </button>
@@ -39,7 +39,7 @@ class ClinicaldataSection extends HTMLElement {
                                 <div class="field is-fullwidth">
                                     <div class="control has-icons-left is-fullwidth" id="filter-site-control">
                                         <div class="icon">
-                                            <i class="far fa-map-marker-alt"></i>
+                                            <i class="fas fa-map-marker-alt"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -48,7 +48,7 @@ class ClinicaldataSection extends HTMLElement {
                                 <div class="field is-fullwidth">
                                     <div class="control has-icons-left is-fullwidth" id="sort-subject-control">
                                         <div class="icon">
-                                            <i class="far fa-sort-alpha-down"></i>
+                                            <i class="fas fa-sort-alpha-down"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -57,7 +57,7 @@ class ClinicaldataSection extends HTMLElement {
                                 <div class="control has-icons-left">
                                     <input class="input" id="search-subject-input" type="text" i18n-ph="search">
                                     <span class="icon is-left">
-                                        <i class="far fa-search"></i>
+                                        <i class="fas fa-search"></i>
                                     </span>
                                 </div>
                             </div>
@@ -101,7 +101,7 @@ class ClinicaldataSection extends HTMLElement {
                                             <div class="level-item">
                                                 <button class="button is-link is-light is-small" onclick="showSurveyView()">
                                                     <span class="icon">
-                                                        <i class="far fa-expand"></i>
+                                                        <i class="fas fa-expand"></i>
                                                     </span>
                                                     <span i18n="survey-view"></span>
                                                 </button>
