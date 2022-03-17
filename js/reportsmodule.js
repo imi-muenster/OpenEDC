@@ -307,7 +307,7 @@ const getWidgetPlaceholder = () => {
     const iconContainer = document.createElement("span");
     iconContainer.className = "icon is-size-1";
     const icon = document.createElement("i");
-    icon.className = "fas fa-plus is-clickable";
+    icon.className = "fa-solid fa-plus is-clickable";
     iconContainer.appendChild(icon);
     placeholder.appendChild(iconContainer);
 

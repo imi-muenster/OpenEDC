@@ -167,14 +167,14 @@ class DateTimePicker extends HTMLElement {
                             <div class="mb-5" id="year-month-select">
                                 <button class="button is-link is-inverted" id="previous-month-button">
                                     <span class="icon">
-                                        <i class="fas fa-xs fa-arrow-left"></i>
+                                        <i class="fa-solid fa-xs fa-arrow-left"></i>
                                     </span>
                                 </button>
                                 <div class="select is-rounded" id="picker-years-select"></div>
                                 <div class="select is-rounded" id="picker-months-select"></div>
                                 <button class="button is-link is-inverted" id="next-month-button">
                                     <span class="icon">
-                                        <i class="fas fa-xs fa-arrow-right"></i>
+                                        <i class="fa-solid fa-xs fa-arrow-right"></i>
                                     </span>
                                 </button>
                             </div>

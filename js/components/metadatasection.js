@@ -12,23 +12,23 @@ class MetadataSection extends HTMLElement {
                             <nav class="sidebar">
                                 <ul class="sidebar-options">
                                     <li class="sidebar-option is-activable is-active" id="foundational-option" onclick="sidebarOptionClicked(event)">
-                                        <i class="fas fa-text"></i>
+                                        <i class="fa-solid fa-pen"></i>
                                         <span i18n="foundational"></span>
                                     </li>
                                     <li class="sidebar-option is-activable" id="extended-option" onclick="sidebarOptionClicked(event)">
-                                        <i class="fas fa-ruler"></i>
+                                        <i class="fa-solid fa-gear"></i>
                                         <span i18n="extended"></span>
                                     </li>
                                     <li class="sidebar-option is-activable" id="duplicate-option" onclick="sidebarOptionClicked(event)">
-                                        <i class="fas fa-clone"></i>
+                                        <i class="fa-solid fa-clone"></i>
                                         <span i18n="duplicate"></span>
                                     </li>
                                     <li class="sidebar-option" id="remove-button" onclick="showRemoveModal()">
-                                        <i class="fas fa-trash"></i>
+                                        <i class="fa-solid fa-trash"></i>
                                         <span i18n="remove"></span>
                                     </li>
                                     <li class="sidebar-option" id="save-button" onclick="saveElement()">
-                                        <i class="fas fa-check"></i>
+                                        <i class="fa-solid fa-check"></i>
                                         <span i18n="save"></span>
                                     </li>
                                 </ul>
@@ -62,12 +62,12 @@ class MetadataSection extends HTMLElement {
                             <div class="box-content is-relative is-hidden" id="extended-options">
                                 <button class="button is-link is-outlined is-rounded is-small is-hidden-touch" id="extended-options-button" onclick="toggleMoreExtendedOptions()">
                                     <span class="icon is-hidden">
-                                        <i class="fas fa-arrow-left"></i>
+                                        <i class="fa-solid fa-arrow-left"></i>
                                     </span>
                                     <span class="button-text is-hidden" i18n="back"></span>
                                     <span class="button-text" i18n="more"></span>
                                     <span class="icon">
-                                        <i class="fas fa-arrow-right"></i>
+                                        <i class="fa-solid fa-arrow-right"></i>
                                     </span>
                                 </button>
                                 <div class="columns">
@@ -176,7 +176,7 @@ class MetadataSection extends HTMLElement {
                                     <div class="control">
                                         <button class="button is-white" id="code-list-items-opt-button" onclick="showCodeListModal()" disabled>
                                             <span class="icon">
-                                                <i class="fas fa-bars"></i>
+                                                <i class="fa-solid fa-bars"></i>
                                             </span>
                                         </button>
                                     </div>

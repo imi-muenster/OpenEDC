@@ -611,7 +611,7 @@ function enableMode(mode) {
         case appModes.METADATA:
             $("#current-app-mode").textContent = languageHelper.getTranslation("form-design");
             $("#current-app-mode").setAttribute("i18n", "form-design");
-            $("#app-mode-button .icon i").className = "fas fa-drafting-compass";
+            $("#app-mode-button .icon i").className = "fa-solid fa-drafting-compass";
             $("#metadata-section").show();
             $("#metadata-mode-button").hide();
             clinicaldataModule.adjustMobileUI(true);
@@ -620,7 +620,7 @@ function enableMode(mode) {
         case appModes.CLINICALDATA:
             $("#current-app-mode").textContent = languageHelper.getTranslation("data-collection");
             $("#current-app-mode").setAttribute("i18n", "data-collection");
-            $("#app-mode-button .icon i").className = "fas fa-stethoscope";
+            $("#app-mode-button .icon i").className = "fa-solid fa-stethoscope";
             $("#clinicaldata-section").show();
             $("#clinicaldata-mode-button").hide();
             clinicaldataModule.show();
@@ -628,7 +628,7 @@ function enableMode(mode) {
         case appModes.REPORTS:
             $("#current-app-mode").textContent = languageHelper.getTranslation("report-view");
             $("#current-app-mode").setAttribute("i18n", "report-view");
-            $("#app-mode-button .icon i").className = "fas fa-chart-pie";
+            $("#app-mode-button .icon i").className = "fa-solid fa-chart-pie";
             $("#reports-section").show();
             $("#reports-mode-button").hide();
             clinicaldataModule.adjustMobileUI(true);

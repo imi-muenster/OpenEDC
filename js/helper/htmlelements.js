@@ -26,7 +26,7 @@ export function getMetadataPanelBlock(elementOID, elementType, titleText, fallba
         let dot = document.createElement("span");
         dot.className = "panel-icon has-text-link";
         let dotIcon = document.createElement("i");
-        dotIcon.className = !titleText ? "fas fa-question" : (conditionIsFalse ? "fas fa-eye-slash" : "fas fa-code-branch");
+        dotIcon.className = !titleText ? "fa-solid fa-question" : (conditionIsFalse ? "fa-solid fa-eye-slash" : "fa-solid fa-code-branch");
         dot.appendChild(dotIcon);
         panelBlock.appendChild(dot);
         subtitleText = !titleText ? languageHelper.getTranslation("missing-translation") : subtitleText;
@@ -65,16 +65,16 @@ export function getClinicaldataPanelBlock(elementOID, titleText, fallbackText, s
 
         switch (dataStatus) {
             case 1:
-                dotIcon.className = "far fa-circle";
+                dotIcon.className = "fa-regular fa-circle";
                 break;
             case 2:
-                dotIcon.className = "fas fa-dot-circle";
+                dotIcon.className = "fa-solid fa-dot-circle";
                 break;
             case 3:
-                dotIcon.className = "fas fa-circle";
+                dotIcon.className = "fa-solid fa-circle";
                 break;
             case 4:
-                dotIcon.className = "fas fa-check-circle";
+                dotIcon.className = "fa-solid fa-check-circle";
         }
 
         dot.appendChild(dotIcon);

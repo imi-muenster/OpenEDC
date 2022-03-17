@@ -44,7 +44,7 @@ class WidgetComponent extends HTMLElement {
         const iconContainer = document.createElement("span");
         iconContainer.className = "icon has-text-link";
         const icon = document.createElement("i");
-        icon.className = "fas fa-ellipsis-h is-clickable";
+        icon.className = "fa-solid fa-ellipsis-h is-clickable";
         icon.onclick = () => this.showOptions();
         icon.onmousedown = () => this.draggable = true;
         icon.onmouseup = () => this.draggable = false;

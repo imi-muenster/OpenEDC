@@ -8,7 +8,7 @@ class NavigationBar extends HTMLElement {
                     </div>
                     <a class="navbar-item is-hidden" id="mobile-back-button" onclick="backOnMobile()">
                         <span class="icon">
-                            <i class="fas fa-chevron-left"></i>
+                            <i class="fa-solid fa-chevron-left"></i>
                         </span>
                         <span class="has-text-weight-semibold" i18n="back"></span>
                     </a>
@@ -44,19 +44,19 @@ class NavigationBar extends HTMLElement {
                                         <div class="dropdown-content has-border-shadow">
                                             <a class="dropdown-item" id="clinicaldata-mode-button">
                                                 <span class="icon">
-                                                    <i class="fas fa-stethoscope"></i>
+                                                    <i class="fa-solid fa-stethoscope"></i>
                                                 </span>
                                                 <span i18n="data-collection"></span>
                                             </a>
                                             <a class="dropdown-item" id="metadata-mode-button">
                                                 <span class="icon">
-                                                    <i class="fas fa-drafting-compass"></i>
+                                                    <i class="fa-solid fa-drafting-compass"></i>
                                                 </span>
                                                 <span i18n="form-design"></span>
                                             </a>
                                             <a class="dropdown-item" id="reports-mode-button">
                                                 <span class="icon">
-                                                    <i class="fas fa-chart-pie"></i>
+                                                    <i class="fa-solid fa-chart-pie"></i>
                                                 </span>
                                                 <span i18n="report-view"></span>
                                             </a>
@@ -67,7 +67,7 @@ class NavigationBar extends HTMLElement {
                                     <div class="dropdown-trigger">
                                         <button class="button is-link" onclick="showLogoutMessage()">
                                             <span class="icon">
-                                                <i class="fas fa-user"></i>
+                                                <i class="fa-solid fa-user"></i>
                                             </span>
                                             <span id="logout-button-name"></span>
                                         </button>

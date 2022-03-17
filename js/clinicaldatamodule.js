@@ -718,7 +718,7 @@ function showSurveyCodeModal() {
                 button.onclick = () => surveyCodeButtonPressed(0);
             } else if (i == 12) {
                 button.className = "button is-large is-rounded";
-                button.innerHTML = '<span class="icon is-small"><i class="fas fa-arrow-left"></i></span>';
+                button.innerHTML = '<span class="icon is-small"><i class="fa-solid fa-arrow-left"></i></span>';
                 button.onclick = () => surveyCodeButtonPressed(-1);
             }
             $(".numpad .buttons").appendChild(button);
@@ -728,7 +728,7 @@ function showSurveyCodeModal() {
     // Create or reset status dots that indicates how many digits have been pressed
     $$(".numpad .status span").removeElements();
     for (let i = 0; i < 4; i++) {
-        $(".numpad .status").insertAdjacentHTML("beforeend", '<span class="icon empty-dot"><i class="far fa-circle"></i></span>');
+        $(".numpad .status").insertAdjacentHTML("beforeend", '<span class="icon empty-dot"><i class="fa-regular fa-circle"></i></span>');
     }
 
     surveyCode = "";
@@ -740,12 +740,12 @@ function surveyCodeButtonPressed(value) {
         if (surveyCode.length >= 4) return;
         surveyCode += value;
         $(".numpad .status .empty-dot").remove();
-        $(".numpad .status").insertAdjacentHTML("afterbegin", '<span class="icon filled-dot"><i class="fas fa-circle"></i></span>');
+        $(".numpad .status").insertAdjacentHTML("afterbegin", '<span class="icon filled-dot"><i class="fa-solid fa-circle"></i></span>');
     } else {
         if (surveyCode.length <= 0) return;
         surveyCode = surveyCode.slice(0, -1);
         $(".numpad .status .filled-dot").remove();
-        $(".numpad .status").insertAdjacentHTML("beforeend", '<span class="icon empty-dot"><i class="far fa-circle"></i></span>');
+        $(".numpad .status").insertAdjacentHTML("beforeend", '<span class="icon empty-dot"><i class="fa-regular fa-circle"></i></span>');
     }
 
     $("#wrong-survey-code-hint").hide();
@@ -757,7 +757,7 @@ function surveyCodeButtonPressed(value) {
             surveyCode = "";
             $$(".numpad .status .filled-dot").forEach(dot => {
                 dot.remove();
-                $(".numpad .status").insertAdjacentHTML("beforeend", '<span class="icon empty-dot"><i class="far fa-circle"></i></span>');
+                $(".numpad .status").insertAdjacentHTML("beforeend", '<span class="icon empty-dot"><i class="fa-regular fa-circle"></i></span>');
             });
         }
     }
