@@ -763,7 +763,7 @@ function setIOListeners() {
             event.target.setRangeText("_", event.target.selectionStart, event.target.selectionEnd, "end");
         };
         // Do not allow an OID to start with a number which is required for evaluating formal expressions
-        if (!isNaN(event.key) && !event.target.selectionStart) event.preventDefault();
+        if (!isNaN(event.key) && !event.target.selectionStart && currentPath.last.element != ODMPath.elements.CODELISTITEM) event.preventDefault();
     });
 
     autocompleteHelper.enableAutocomplete($("#collection-condition"), autocompleteHelper.modes.CONDITION);
