@@ -677,6 +677,7 @@ async function handleURLSearchParameters() {
                             metadataWrapper.removeMetadata();
                             clinicaldataWrapper.removeClinicaldata();
                             mergeMetadataModels(models);
+                            setTitles();
                     }
                 });
             } else ioHelper.showMessage(languageHelper.getTranslation("Note"), languageHelper.getTranslation("forms-import-encrypted-hint"));
