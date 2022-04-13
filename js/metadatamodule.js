@@ -8,6 +8,12 @@ import * as languageHelper from "./helper/languagehelper.js";
 import * as htmlElements from "./helper/htmlelements.js";
 import * as autocompleteHelper from "./helper/autocompletehelper.js";
 
+const detailsPanelViewIdentifiers = {
+    FOUNDATIONAL: {button: 'foundational-option', panel: 'foundational-options'},
+    EXTENDED: {button: 'extended-option', panel: 'extended-options'},
+    DUPLICATE: {button: 'duplicate-option', panel: 'duplicate-options'}
+};
+
 const detailsPanelViews = {
     FOUNDATIONAL: 1,
     EXTENDED: 2,
@@ -402,6 +408,10 @@ export function reloadDetailsPanel() {
     ioHelper.dispatchGlobalEvent("MetadataPanelLoaded");
 }
 
+function switchToPanel() {
+
+}
+
 function fillItemRangeChecks() {
     const rangeChecks = metadataWrapper.getRangeChecksByItem(currentPath.itemOID);
     if (rangeChecks.length) $$("#range-check-inputs .range-check-input").removeElements();
@@ -695,27 +705,20 @@ window.sidebarOptionClicked = async function(event) {
     // Save the element if it has been updated and another sidebar option is selected
     if ($("#save-button").isHighlighted() && event.target.id != $(".sidebar-option.is-active").id) await saveElement();
 
+    switchToPanelView(Object.values(detailsPanelViewIdentifiers).find(v => v.button == event.target.id));
+}
+
+function switchToPanelView({button, ...view}) {
     $("#details-panel .sidebar-option.is-active")?.deactivate();
-    event.target.activate();
-
-    switch (event.target.id) {
-        case "foundational-option":
-            $("#foundational-options").show();
-            $("#extended-options").hide();
-            $("#duplicate-options").hide();
-            break;
-        case "extended-option":
-            $("#foundational-options").hide();
-            $("#extended-options").show();
-            $("#duplicate-options").hide();
-            break;
-        case "duplicate-option":
-            $("#foundational-options").hide();
-            $("#extended-options").hide();
-            $("#duplicate-options").show();
-    }
-
+    $(`#${button}`).activate();
+    showDetailsPanelView(view)
     reloadDetailsPanel();
+}
+
+function showDetailsPanelView({panel}) {
+
+    $(`#${panel}`).show();
+    Object.values(detailsPanelViewIdentifiers).filter(v => v.panel != panel).forEach(v => $(`#${v.panel}`).hide());
 }
 
 function handleItemDataType(itemOID, dataType) {
@@ -781,7 +784,7 @@ window.addStudyEvent = function(event) {
     currentPath.studyEventOID = metadataWrapper.createStudyEvent();
     loadStudyEvents();
     loadFormsByStudyEvent(true);
-    reloadDetailsPanel();
+    switchToPanelView(detailsPanelViewIdentifiers.FOUNDATIONAL);
     ioHelper.scrollParentToChild($(`#study-event-panel-blocks [oid="${currentPath.studyEventOID}"]`));
     if (!asyncEditMode) metadataWrapper.storeMetadata();
     event.target.blur();
@@ -794,7 +797,7 @@ window.addForm = function(event) {
     currentPath.formOID = metadataWrapper.createForm(currentPath.studyEventOID);
     loadFormsByStudyEvent();
     loadItemGroupsByForm(true);
-    reloadDetailsPanel();
+    switchToPanelView(detailsPanelViewIdentifiers.FOUNDATIONAL);
     ioHelper.scrollParentToChild($(`#form-panel-blocks [oid="${currentPath.formOID}"]`));
     if (!asyncEditMode) metadataWrapper.storeMetadata();
     event.target.blur();
@@ -804,7 +807,7 @@ window.addItemGroup = function(event) {
     currentPath.itemGroupOID = metadataWrapper.createItemGroup(currentPath.formOID);
     loadItemGroupsByForm();
     loadItemsByItemGroup(true);
-    reloadDetailsPanel();
+    switchToPanelView(detailsPanelViewIdentifiers.FOUNDATIONAL);
     ioHelper.scrollParentToChild($(`#item-group-panel-blocks [oid="${currentPath.itemGroupOID}"]`));
     if (!asyncEditMode) metadataWrapper.storeMetadata();
     event.target.blur();
@@ -814,7 +817,7 @@ window.addItem = function(event) {
     currentPath.itemOID = metadataWrapper.createItem(currentPath.itemGroupOID);
     loadItemsByItemGroup();
     loadCodeListItemsByItem(true);
-    reloadDetailsPanel();
+    switchToPanelView(detailsPanelViewIdentifiers.FOUNDATIONAL);
     ioHelper.scrollParentToChild($(`#item-panel-blocks [oid="${currentPath.itemOID}"]`));
     if (!asyncEditMode) metadataWrapper.storeMetadata();
     event.target.blur();
@@ -825,7 +828,7 @@ window.addCodeListItem = function(event) {
     if (codeListOID) {
         currentPath.codeListItem = metadataWrapper.addCodeListItem(codeListOID);
         loadCodeListItemsByItem();
-        reloadDetailsPanel();
+        switchToPanelView(detailsPanelViewIdentifiers.FOUNDATIONAL);
         ioHelper.scrollParentToChild($(`#code-list-item-panel-blocks [oid="${currentPath.codeListItem}"]`));
     }
     if (!asyncEditMode) metadataWrapper.storeMetadata();
