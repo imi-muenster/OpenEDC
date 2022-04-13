@@ -228,7 +228,7 @@ function loadCodeListItemsByItem(hideTree) {
     let codeListItems = metadataWrapper.getCodeListItemsByItem(currentPath.itemOID);
     for (let codeListItem of codeListItems) {
         let translatedDecode = codeListItem.getTranslatedDecode(languageHelper.getCurrentLocale());
-        let panelBlock = createPanelBlock(codeListItem.getCodedValue(), ODMPath.elements.CODELISTITEM, translatedDecode, codeListItem.getCodedValue(), null);
+        let panelBlock = createPanelBlock(codeListItem.getCodedValue(), ODMPath.elements.CODELISTITEM, translatedDecode, codeListItem.getCodedValue(), codeListItem.getCodedValue());
         panelBlock.onclick = codeListItemClicked;
         $("#code-list-item-panel-blocks").appendChild(panelBlock);
     }
