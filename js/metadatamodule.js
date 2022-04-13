@@ -408,10 +408,6 @@ export function reloadDetailsPanel() {
     ioHelper.dispatchGlobalEvent("MetadataPanelLoaded");
 }
 
-function switchToPanel() {
-
-}
-
 function fillItemRangeChecks() {
     const rangeChecks = metadataWrapper.getRangeChecksByItem(currentPath.itemOID);
     if (rangeChecks.length) $$("#range-check-inputs .range-check-input").removeElements();
