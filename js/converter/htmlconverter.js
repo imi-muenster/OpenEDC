@@ -134,7 +134,7 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
             //itemRow.appendChild(itemQuestion);
 
             const itemOptions = document.createElement('div');
-            itemOptions.classList = "column is-7 grid-even-columns has-text-align-center is-align-content-center";
+            itemOptions.classList = "field column is-7 grid-even-columns has-text-align-center is-align-content-center";
 
             for (let codeListItem of codeListItems) {
                 const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), "", itemDef.getAttribute("OID"), itemGroupOID);
