@@ -99,7 +99,7 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
         const codeListItems = $$(`CodeList[OID="${codeListOID}"] CodeListItem`);
 
         let likertOptionsDiv = document.createElement('div');
-        likertOptionsDiv.classList = "column is-12 columns";
+        likertOptionsDiv.classList = "column is-12 columns is-mobile-hidden";
 
         let likertOptionsHeader = document.createElement('div');
         likertOptionsHeader.classList = 'column is-7 is-offset-5 grid-even-columns has-text-weight-bold';
@@ -139,6 +139,10 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
             for (let codeListItem of codeListItems) {
                 const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
                 const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), translatedText, itemDef.getAttribute("OID"), itemGroupOID, false);
+                const span = document.createElement('span');
+                span.classList = "mobile-span";
+                span.innerText = translatedText;
+                radioInput.appendChild(span);
                 itemOptions.appendChild(radioInput);
             }
 
