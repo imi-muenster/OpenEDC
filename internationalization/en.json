@@ -208,6 +208,7 @@
     "miscellaneous-options": "Miscellaneous Options",
     "miscellaneous-options-hint": "In the following, different miscellaneous options are listed that you can activate by clicking on it. If you are connected to a server, the options are valid for all users.",
     "element-name-hint": "Allow editing the name of elements, according to the CDISC ODM standard. If disabled, the name is automatically set to the value of the ID.",
+    "show-as-likert-hint": "Show itemgroups as likert scale if possible. Itemgroups with an alias tag 'no-likert' and the value 'yes' are ignored.",
     "textarea-hint": "Render items with the datatype String as multi-line textareas instead of one-line inputs.",
     "survey-view-hint": "Automatically open the survey view on mobile devices when clicking on a study event.",
     "export-data": "Export Data",

@@ -535,6 +535,21 @@ a.panel-block:hover {
     color: gray;
 }
 
+.grid-even-columns {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 5px;
+}
+
+.has-overvlow-wrap  {
+    overflow-wrap: anywhere;
+}
+
+.has-text-align-center {
+    text-align: center;
+}
+
 [contenteditable] {
     -webkit-user-select: text;
     user-select: text;

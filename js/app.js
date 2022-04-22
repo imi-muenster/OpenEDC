@@ -336,6 +336,7 @@ window.showProjectModal = function() {
     if (subjectKeyModeRadio) subjectKeyModeRadio.checked = true;
 
     $("#survey-code-input").value = ioHelper.getSetting("surveyCode");
+    $("#show-as-likert").checked = ioHelper.getSetting("showLikertScale");
     $("#text-as-textarea-checkbox").checked = ioHelper.getSetting("textAsTextarea");
     $("#auto-survey-view-checkbox").checked = ioHelper.getSetting("autoSurveyView");
     $("#study-name-input").value = metadataWrapper.getStudyName();
@@ -470,6 +471,9 @@ window.miscOptionClicked = async function(event) {
     switch (event.target.id) {
         case "show-element-name":
             await ioHelper.setSetting("showElementName", event.target.checked);
+            break;
+        case "show-as-likert":
+            await ioHelper.setSetting("showLikertScale", event.target.checked);
             break;
         case "text-as-textarea-checkbox":
             await ioHelper.setSetting("textAsTextarea", event.target.checked);

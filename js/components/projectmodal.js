@@ -102,6 +102,10 @@ class ProjectModal extends HTMLElement {
                                         <span i18n="element-name-hint"></span>
                                     </label>
                                     <label class="checkbox is-block">
+                                        <input type="checkbox" id="show-as-likert" oninput="miscOptionClicked(event)">
+                                        <span i18n="show-as-likert-hint"></span>
+                                    </label>
+                                    <label class="checkbox is-block">
                                         <input type="checkbox" id="text-as-textarea-checkbox" oninput="miscOptionClicked(event)">
                                         <span i18n="textarea-hint"></span>
                                     </label>
