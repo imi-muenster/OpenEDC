@@ -137,7 +137,8 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
             itemOptions.classList = "field column is-7 grid-even-columns has-text-align-center is-align-content-center";
 
             for (let codeListItem of codeListItems) {
-                const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), "", itemDef.getAttribute("OID"), itemGroupOID);
+                const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
+                const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), translatedText, itemDef.getAttribute("OID"), itemGroupOID, false);
                 itemOptions.appendChild(radioInput);
             }
 
@@ -223,7 +224,7 @@ const getSelectInput = (codeListItems, itemOID, options) => {
     return selectContainer;
 }
 
-const getRadioInput = (value, translatedText, itemOID, itemGroupOID) => {
+const getRadioInput = (value, translatedText, itemOID, itemGroupOID, showtext = true) => {
     const radioContainer = document.createElement("label");
     radioContainer.className = "radio";
     const radio = document.createElement("input");
@@ -231,9 +232,11 @@ const getRadioInput = (value, translatedText, itemOID, itemGroupOID) => {
     radio.name = itemGroupOID + "-" + itemOID;
     radio.value = value;
     radio.setAttribute("item-oid", itemOID);
+    radioContainer.codedValue = value;
+    radioContainer.textValue = translatedText;
 
     radioContainer.appendChild(radio);
-    radioContainer.appendChild(document.createTextNode(" " + translatedText));
+    if(showtext) radioContainer.appendChild(document.createTextNode(" " + translatedText));
     return radioContainer;
 }
 
