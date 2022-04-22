@@ -770,6 +770,6 @@ function getCurrentMode() {
 
 function getCurrentState() {
     if ($("#start-modal").isActive()) return appStates.EMPTY;
-    else if ($("#login-modal").isActive()) return appStates.LOCKED;
+    else if ($("#login-modal") && $("#login-modal").isActive()) return appStates.LOCKED;
     else return appStates.UNLOCKED;
 }
