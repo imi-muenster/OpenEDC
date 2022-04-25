@@ -119,7 +119,8 @@ export async function getFormAsHTML(formOID, textAsTextarea = false, useNames = 
         yes: languageHelper.getTranslation("yes"),
         no: languageHelper.getTranslation("no"),
         textAsTextarea: textAsTextarea,
-        useNames: useNames
+        useNames: useNames,
+        showAsLikert: ioHelper.getSetting("showLikertScale")
     });
 }
 

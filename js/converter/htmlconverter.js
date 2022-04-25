@@ -9,43 +9,153 @@ export function getFormAsHTML(formOID, options) {
 
     for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
         const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
-        const itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`);
-
-        const itemGroupContent = document.createElement("div");
-        itemGroupContent.className = "item-group-content";
-        itemGroupContent.setAttribute("item-group-content-oid", itemGroupOID);
-
-        const itemGroupDescr = document.createElement("h2");
-        itemGroupDescr.className = "subtitle";
-        itemGroupDescr.innerHTML = processMarkdown(itemGroupDef.getTranslatedDescription(options.useNames ? null : options.locale, options.useNames));
-        itemGroupContent.appendChild(itemGroupDescr);
-
-        for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
-            const itemOID = itemRef.getAttribute("ItemOID");
-            const itemDef = $(`ItemDef[OID="${itemOID}"]`);
-
-            const itemField = document.createElement("div");
-            itemField.className = "item-field";
-            itemField.setAttribute("item-field-oid", itemOID);
-            itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
-
-            const itemQuestion = document.createElement("label");
-            itemQuestion.className = "label";
-            itemQuestion.innerHTML = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
-            itemQuestion.innerHTML += itemRef.getAttribute("Mandatory") == "Yes" ? " (*)" : "";
-            itemField.appendChild(itemQuestion);
-
-            const itemInput = getItemInput(itemDef, itemGroupOID, options);
-            itemField.appendChild(itemInput);
-            itemGroupContent.appendChild(itemField);
-        }
-        
-        const divider = document.createElement("hr");
-        itemGroupContent.appendChild(divider);
+        console.log(isLikertPossible(itemGroupOID));
+        let itemGroupContent;
+        if(options.showAsLikert && isLikertPossible(itemGroupOID)) itemGroupContent = getItemGroupAsLikertScale(itemGroupOID, options);
+        else itemGroupContent = getItemGroupDefault(itemGroupOID, options);
         formAsHTML.appendChild(itemGroupContent);
     }
 
     return formAsHTML;
+}
+
+function isLikertPossible(itemGroupOID){
+    let compareCodelistOID = null;
+    const aliasses = $$(`ItemGroupDef[OID="${itemGroupOID}"] Alias`);
+    console.log(aliasses);
+    for(let alias of aliasses) {
+        if(alias.getAttribute('Context') == 'no-likert' && alias.getAttribute('Name').toLowerCase() == 'yes') return false;
+    }
+    for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
+        const itemOID = itemRef.getAttribute("ItemOID");
+        const itemDef = $(`ItemDef[OID="${itemOID}"]`);
+        const codeListRef = itemDef.querySelector("CodeListRef");
+        if(!codeListRef) return false;
+        const codeListOID = codeListRef.getAttribute("CodeListOID");
+        if(compareCodelistOID != null && codeListOID != compareCodelistOID) return false;
+        compareCodelistOID = codeListOID;
+    }
+    return true;
+}
+
+function getItemGroupDefault(itemGroupOID, options) {
+    const itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`);
+
+    const itemGroupContent = document.createElement("div");
+    itemGroupContent.className = "item-group-content";
+    itemGroupContent.setAttribute("item-group-content-oid", itemGroupOID);
+
+    const itemGroupDescr = document.createElement("h2");
+    itemGroupDescr.className = "subtitle";
+    itemGroupDescr.innerHTML = processMarkdown(itemGroupDef.getTranslatedDescription(options.useNames ? null : options.locale, options.useNames));
+    itemGroupContent.appendChild(itemGroupDescr);
+
+    for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
+        const itemOID = itemRef.getAttribute("ItemOID");
+        const itemDef = $(`ItemDef[OID="${itemOID}"]`);
+
+        const itemField = document.createElement("div");
+        itemField.className = "item-field";
+        itemField.setAttribute("item-field-oid", itemOID);
+        itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
+
+        const itemQuestion = document.createElement("label");
+        itemQuestion.className = "label";
+        itemQuestion.innerHTML = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
+        itemQuestion.innerHTML += itemRef.getAttribute("Mandatory") == "Yes" ? " (*)" : "";
+        itemField.appendChild(itemQuestion);
+
+        const itemInput = getItemInput(itemDef, itemGroupOID, options);
+        itemField.appendChild(itemInput);
+        itemGroupContent.appendChild(itemField);
+    }
+    const divider = document.createElement("hr");
+    itemGroupContent.appendChild(divider);
+    return itemGroupContent;
+}
+
+function getItemGroupAsLikertScale(itemGroupOID, options) {
+    const itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`);
+
+    const itemGroupContent = document.createElement("div");
+    itemGroupContent.className = "item-group-content";
+    itemGroupContent.setAttribute("item-group-content-oid", itemGroupOID);
+
+    const itemGroupDescr = document.createElement("h2");
+    itemGroupDescr.className = "subtitle";
+    itemGroupDescr.innerHTML = processMarkdown(itemGroupDef.getTranslatedDescription(options.useNames ? null : options.locale, options.useNames));
+    itemGroupContent.appendChild(itemGroupDescr);
+
+    let itemRefs = $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`);
+    if(itemRefs.length > 0){
+        let likertContent = document.createElement('div');
+        likertContent.classList = "columns is-multiline is-gapless";
+
+        //Get codelist from first item
+        const itemOID = itemRefs[0].getAttribute("ItemOID");
+        const itemDef = $(`ItemDef[OID="${itemOID}"]`);
+        const codeListRef = itemDef.querySelector("CodeListRef");
+        const codeListOID = codeListRef.getAttribute("CodeListOID");
+        const codeListItems = $$(`CodeList[OID="${codeListOID}"] CodeListItem`);
+
+        let likertOptionsDiv = document.createElement('div');
+        likertOptionsDiv.classList = "column is-12 columns is-mobile-hidden";
+
+        let likertOptionsHeader = document.createElement('div');
+        likertOptionsHeader.classList = 'column is-7 is-offset-5 grid-even-columns has-text-weight-bold';
+        likertOptionsDiv.appendChild(likertOptionsHeader);
+        likertContent.appendChild(likertOptionsDiv);
+
+
+        for (let codeListItem of codeListItems) {
+            const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
+            let questionDiv = document.createElement('div');
+            questionDiv.classList = "has-overvlow-wrap has-text-align-center";
+            questionDiv.innerText = translatedText;
+            likertOptionsHeader.appendChild(questionDiv);
+        }
+
+        for (const itemRef of itemRefs) {
+            const itemOID = itemRef.getAttribute("ItemOID");
+            const itemDef = $(`ItemDef[OID="${itemOID}"]`);
+
+            //const itemRow = document.createElement('div');
+            //itemRow.classList = "column is-5";
+
+            const itemField = document.createElement("div");
+            itemField.className = "item-field column is-12 columns";
+            itemField.setAttribute("item-field-oid", itemOID);
+            itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
+
+            const itemQuestion = document.createElement("label");
+            itemQuestion.className = "label column is-5";
+            itemQuestion.innerHTML = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
+            itemQuestion.innerHTML += itemRef.getAttribute("Mandatory") == "Yes" ? " (*)" : "";
+            //itemRow.appendChild(itemQuestion);
+
+            const itemOptions = document.createElement('div');
+            itemOptions.classList = "field column is-7 grid-even-columns has-text-align-center is-align-content-center";
+
+            for (let codeListItem of codeListItems) {
+                const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
+                const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), translatedText, itemDef.getAttribute("OID"), itemGroupOID, false);
+                const span = document.createElement('span');
+                span.classList = "mobile-span";
+                span.innerText = translatedText;
+                radioInput.appendChild(span);
+                itemOptions.appendChild(radioInput);
+            }
+
+            itemField.appendChild(itemQuestion);
+            itemField.appendChild(itemOptions);
+            likertContent.appendChild(itemField);
+        }
+        itemGroupContent.appendChild(likertContent);
+    }
+
+    const divider = document.createElement("hr");
+    itemGroupContent.appendChild(divider);
+    return itemGroupContent;
 }
 
 function getItemInput(itemDef, itemGroupOID, options) {
@@ -118,7 +228,7 @@ const getSelectInput = (codeListItems, itemOID, options) => {
     return selectContainer;
 }
 
-const getRadioInput = (value, translatedText, itemOID, itemGroupOID) => {
+const getRadioInput = (value, translatedText, itemOID, itemGroupOID, showtext = true) => {
     const radioContainer = document.createElement("label");
     radioContainer.className = "radio";
     const radio = document.createElement("input");
@@ -126,9 +236,11 @@ const getRadioInput = (value, translatedText, itemOID, itemGroupOID) => {
     radio.name = itemGroupOID + "-" + itemOID;
     radio.value = value;
     radio.setAttribute("item-oid", itemOID);
+    radioContainer.codedValue = value;
+    radioContainer.textValue = translatedText;
 
     radioContainer.appendChild(radio);
-    radioContainer.appendChild(document.createTextNode(" " + translatedText));
+    if(showtext) radioContainer.appendChild(document.createTextNode(" " + translatedText));
     return radioContainer;
 }
 

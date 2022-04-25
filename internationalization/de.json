@@ -208,6 +208,7 @@
     "miscellaneous-options": "Zusatzoptionen",
     "miscellaneous-options-hint": "Im Folgenden sind verschiedene Zusatzoptionen aufgeführt, die Sie durch Anklicken aktivieren können. Wenn Sie mit einem Server verbunden sind, sind die Optionen für alle Benutzer gültig.",
     "element-name-hint": "Erlaube die Bearbeitung des Namens von Elementen, entsprechend des CDISC ODM Standards. Wenn ausgeschaltet, wird der Name automatisch auf den Wert der ID gesetzt.",
+    "show-as-likert-hint": "Stelle Itemgruppen als Likertskala dar, wenn möglich. Itemgruppen mit einem Alias-Tag 'no-likert' und dem Wert 'yes' werden ignoriert.",
     "textarea-hint": "Zeige Fragen mit dem Datentyp String als mehrzeilige statt einzeilige Textboxen.",
     "survey-view-hint": "Öffne die Umfrageansicht auf mobilen Geräten beim Klicken auf ein Ereignis automatisch.",
     "export-data": "Datenexport",
