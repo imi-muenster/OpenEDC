@@ -336,6 +336,7 @@ window.showProjectModal = function() {
     if (subjectKeyModeRadio) subjectKeyModeRadio.checked = true;
 
     $("#survey-code-input").value = ioHelper.getSetting("surveyCode");
+    $("#show-element-name").checked = ioHelper.getSetting("showElementName");
     $("#text-as-textarea-checkbox").checked = ioHelper.getSetting("textAsTextarea");
     $("#auto-survey-view-checkbox").checked = ioHelper.getSetting("autoSurveyView");
     $("#study-name-input").value = metadataWrapper.getStudyName();
