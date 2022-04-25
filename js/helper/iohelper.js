@@ -99,7 +99,7 @@ export async function init() {
     // Check if app is served by an OpenEDC Server instance
     // For development purposes, check for an ?server= query string parameter and use it instead of the current url
     const devServer = new URLSearchParams(window.location.search).get("server");
-    return await getServerStatus(devServer ? devServer : getBaseURL(), true).catch(() => console.log("No OpenEDC Server found. It seems that this is a standalone OpenEDC App."));
+    return await getServerStatus(devServer ? devServer : getBaseURL(), true).catch(() => Promise.resolve(serverStatus.SERVERNOTFOUND));
 }
 
 export async function getODM(fileName) {

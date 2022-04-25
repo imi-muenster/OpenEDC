@@ -10,6 +10,7 @@ import * as languageHelper from "./helper/languagehelper.js";
 import * as odmConverter from "./converter/odmconverter.js";
 import * as csvConverter from "./converter/csvconverter.js";
 import * as pluginRegistrar from "../plugins/registrar.js";
+import * as manifestHelper from "./helper/manifesthelper.js"
 
 const appVersion = "0.8.1";
 
@@ -34,6 +35,9 @@ ioHelper.addGlobalEventListener("DOMContentLoaded", async () => {
         window.location.replace(ioHelper.getBaseURL().replace("/index.html", ""));
     }
 
+    // Insert dynamic manifest link to address subfolders
+    manifestHelper.addManifest();
+
     // Initialize the language helper and localize the application
     await languageHelper.init();
     languageHelper.localize();
@@ -43,6 +47,7 @@ ioHelper.addGlobalEventListener("DOMContentLoaded", async () => {
         .then(serverStatus => {
             if (serverStatus == ioHelper.serverStatus.SERVERINITIALIZED) showLoginModal();
             else if (serverStatus == ioHelper.serverStatus.SERVERNOTINITIALIZED) showUninitializedHint();
+            else if (serverStatus == ioHelper.serverStatus.SERVERNOTFOUND) console.log("No OpenEDC Server found. It seems that this is a standalone OpenEDC App.");
         });
 
     // Initialize the application
