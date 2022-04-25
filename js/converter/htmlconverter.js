@@ -101,8 +101,12 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
         let likertOptionsDiv = document.createElement('div');
         likertOptionsDiv.classList = "column is-12 columns is-mobile-hidden";
 
+
+        let likertOptionsPlaceholder = document.createElement('div');
+        likertOptionsPlaceholder.classList = "column is-5";
         let likertOptionsHeader = document.createElement('div');
-        likertOptionsHeader.classList = 'column is-7 is-offset-5 grid-even-columns has-text-weight-bold';
+        likertOptionsHeader.classList = 'column is-7 grid-even-columns has-text-weight-bold';
+        likertOptionsDiv.appendChild(likertOptionsPlaceholder)
         likertOptionsDiv.appendChild(likertOptionsHeader);
         likertContent.appendChild(likertOptionsDiv);
 
