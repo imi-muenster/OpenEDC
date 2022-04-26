@@ -603,7 +603,7 @@ function checkMandatoryFields(formItemDataList) {
 
     let mandatoryFieldsAnswered = true;
     for (let mandatoryField of $$(".item-group-content:not(.is-hidden) .item-field[mandatory='Yes']:not(.is-hidden)")) {
-        if (!formItemDataList.find(formItemData => formItemData.itemGroupOID == mandatoryField.parentNode.getAttribute("item-group-content-oid") && formItemData.itemOID == mandatoryField.getAttribute("item-field-oid"))) {
+        if (!formItemDataList.find(formItemData => formItemData.itemGroupOID == mandatoryField.closest('.item-group-content').getAttribute("item-group-content-oid") && formItemData.itemOID == mandatoryField.getAttribute("item-field-oid"))) {
             if (!skipMandatoryCheck) mandatoryField.highlight();
             mandatoryFieldsAnswered = false;
         }
