@@ -15,11 +15,12 @@ class Repository {
 // Placeholder for the download URL
 const modelPlaceholder = "MODELPLACEHOLDER";
 const tokenPlaceholder = "TOKENPLACEHOLDER";
+const MDM_PORTAL_URL = "http://localhost:8080/api/v1";
 
 // A list of all supported metadata repositories
 // The model parameter name (e.g., modelIds) must be unique to identify the repository with given URL parameters
 const repositories = [
-    new Repository(1, "Portal of Medical Data Models", "modelIds", "userToken", `https://medical-data-models.org/api/v1/odmByToken?modelId=${modelPlaceholder}&userToken=${tokenPlaceholder}`)
+    new Repository(1, "Portal of Medical Data Models", "modelIds", "userToken", `${MDM_PORTAL_URL}/odmByToken?modelId=${modelPlaceholder}&userToken=${tokenPlaceholder}`)
 ];
 
 // Download and return all models
@@ -48,6 +49,19 @@ export const getModels = async urlParams => {
     }
     
     return Promise.resolve(models.length ? models : null);
+}
+
+export const getModelbyId = async id => {
+    const response = await fetch(`${MDM_PORTAL_URL}/odmFree?modelId=${id}`).catch(() => {
+        throw new Error('load-from-mdm-error');
+    });
+
+    if (!response.ok) {
+        throw new Error('load-from-mdm-exceeded');
+    }
+
+    const odmXMLString = await response.text();
+    return prepareODM({id:1}, id, odmXMLString);
 }
 
 // Depending on the repository, prepare the downloaded ODM for further processing
