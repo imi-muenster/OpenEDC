@@ -142,6 +142,13 @@ class ProjectModal extends HTMLElement {
                                     </div>
                                 </div>
                             </div>
+                            <div class="notification is-link is-light">
+                                <h1 class="title is-4" i18n="example-data"></h1>
+                                <p class="mb-5" i18n="example-data-hint"></p>
+                                <div class="buttons are-small">
+                                    <button class="button is-link" onclick="createExampleData()" i18n="create-example-data"></button>
+                                </div>
+                            </div>
                             <div class="notification is-danger is-light">
                                 <h1 class="title is-4" i18n="remove-data"></h1>
                                 <p class="mb-5" i18n="remove-data-hint"></p>
