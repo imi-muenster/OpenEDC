@@ -15,7 +15,7 @@ class Repository {
 // Placeholder for the download URL
 const modelPlaceholder = "MODELPLACEHOLDER";
 const tokenPlaceholder = "TOKENPLACEHOLDER";
-const MDM_PORTAL_URL = "http://localhost:8080/api/v1";
+const MDM_PORTAL_URL = "https://medical-data-models.org/api/v1";
 
 // A list of all supported metadata repositories
 // The model parameter name (e.g., modelIds) must be unique to identify the repository with given URL parameters
