@@ -340,7 +340,6 @@ window.importFromMDMPortal = async function(mergeStatus) {
     const id = $('#load-from-mdm-input').value;
     $('#mdm-modal').remove();
     let odmXMLString = await repositoryHelper.getModelbyId(id).catch((e) => {
-        console.log(e)
         ioHelper.showToast(languageHelper.getTranslation(e), 5000, ioHelper.interactionTypes.DANGER)
     });
     
