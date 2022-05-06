@@ -340,19 +340,8 @@ window.importFromMDMPortal = async function(mergeStatus) {
     const id = $('#load-from-mdm-input').value;
     $('#mdm-modal').remove();
     let odmXMLString = await repositoryHelper.getModelbyId(id).catch((e) => {
-        console.log(e)
         ioHelper.showToast(languageHelper.getTranslation(e), 5000, ioHelper.interactionTypes.DANGER)
     });
-    
-    /* const response = await fetch(`http://127.0.0.1:8080/api/v1/odmFree?modelId=${id}`).catch(() => {
-            ioHelper.showToast(languageHelper.getTranslation("load-from-mdm-error"), 5000, ioHelper.interactionTypes.DANGER);
-            throw new Error();
-    });
-
-    if (!response.ok) {
-        ioHelper.showToast(languageHelper.getTranslation("load-from-mdm-exceeded"), 5000, ioHelper.interactionTypes.DANGER);
-        return;
-    } */
     
     odmXMLString = validateODM(odmXMLString);
     if (odmXMLString) {

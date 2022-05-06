@@ -9,7 +9,6 @@ export function getFormAsHTML(formOID, options) {
 
     for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
         const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
-        console.log(isLikertPossible(itemGroupOID));
         let itemGroupContent;
         if(options.showAsLikert && isLikertPossible(itemGroupOID)) itemGroupContent = getItemGroupAsLikertScale(itemGroupOID, options);
         else itemGroupContent = getItemGroupDefault(itemGroupOID, options);
@@ -22,7 +21,6 @@ export function getFormAsHTML(formOID, options) {
 function isLikertPossible(itemGroupOID){
     let compareCodelistOID = null;
     const aliasses = $$(`ItemGroupDef[OID="${itemGroupOID}"] Alias`);
-    console.log(aliasses);
     if(metadataWrapper.getSettingStatus('no-likert', itemGroupOID)) return false;
     
     for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
