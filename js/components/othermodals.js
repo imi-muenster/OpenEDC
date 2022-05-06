@@ -292,7 +292,11 @@ class MDMModal extends HTMLElement {
                 </div>
             </div>
         `;
-    }
+
+        this.querySelector(".modal-background").onclick = () => {
+            this.remove();
+        };
+    }  
 }
 
 window.customElements.define("start-modal", StartModal);
