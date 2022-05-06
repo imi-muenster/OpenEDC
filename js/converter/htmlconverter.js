@@ -22,7 +22,6 @@ export function getFormAsHTML(formOID, options) {
 function isLikertPossible(itemGroupOID){
     let compareCodelistOID = null;
     const aliasses = $$(`ItemGroupDef[OID="${itemGroupOID}"] Alias`);
-    console.log(aliasses);
     for(let alias of aliasses) {
         if(alias.getAttribute('Context') == 'no-likert' && alias.getAttribute('Name').toLowerCase() == 'yes') return false;
     }
