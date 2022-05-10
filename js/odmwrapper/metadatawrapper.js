@@ -1053,14 +1053,12 @@ export async function mergeMetadata(odmXMLString) {
         console.log(Object.keys(replaceOIDs));
         Object.keys(replaceOIDs).forEach(oldOID => {
             conditionDefs.forEach(c => {
-                //console.log(c.querySelector("FormalExpression").textContent.replace(new RegExp(oldOID, "g", replaceOIDs[oldOID])));
                 c.querySelector("FormalExpression").textContent = c.querySelector("FormalExpression").textContent.replace(new RegExp(oldOID, "g"), replaceOIDs[oldOID]);
             });
             methodDefs.forEach(m => {
                 m.querySelector("FormalExpression").textContent = m.querySelector("FormalExpression").textContent.replace(new RegExp(oldOID, "g"), replaceOIDs[oldOID]);
             });
         });
-        
 
         // Remove OpenEDC data status code list if present (used to interpret the flag of clinical data entries; will be created on download again)
         // TODO: This is similar to importMetadata() and should be abstracted, e.g., in validateODM()
