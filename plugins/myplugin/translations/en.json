@@ -1,0 +1,10 @@
+{
+    "test-setting": "Test Setting boolean english",
+    "test-description": "This is a boolean test description",
+
+    "test-setting2": "Test Setting string english",
+    "test-description2": "This is a string test description",
+
+    "test-setting3": "Test Setting callback english",
+    "test-description3": "This is a callback test description"
+}

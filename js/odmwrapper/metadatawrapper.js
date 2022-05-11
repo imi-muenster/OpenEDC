@@ -3,6 +3,7 @@ import * as metadataTemplates from "../odmtemplates/metadatatemplates.js";
 import * as htmlConverter from "../converter/htmlconverter.js";
 import * as languageHelper from "../helper/languagehelper.js";
 import * as ioHelper from "../helper/iohelper.js";
+import settings from "../../settings.json" assert { type: "json" };
 
 class MetadataFile {
     constructor(modifiedDate) {
@@ -18,6 +19,31 @@ class MetadataFile {
         return ioHelper.odmFileNames.metadata + ioHelper.fileNameSeparator + this.modifiedDate.getTime();
     }
 }
+
+class OpenEDCSetting {
+    constructor(context, {key, i18n, description, type, callback, scope}){
+        this.context = context;
+        this.key = key;
+        this.i18n = i18n;
+        this.description = description;
+        this.type = type;
+        this.callback = callback;
+        this.scope = scope;
+    }
+
+    static parse(context, jsonString) {
+        const data = JSON.parse(jsonString);
+        return new OpenEDCSetting(context, data.key, data.i18n, data.description, data.type, data.callback, data.scope)
+    }
+
+    isInScope(scope){
+        return this.scope.find(s => s.toLowerCase() == scope.toLowerCase()) || this.scope.find(s => s.toLowerCase() == 'all')
+    }
+
+}
+export let loadedSettings = new Map();
+export const OPENEDC_SETTINGS_ALIAS_CONTEXT = 'openedc-settings';
+export const SETTINGS_CONTEXT = "OpenEDC";
 
 const $ = query => metadata.querySelector(query);
 const $$ = query => metadata.querySelectorAll(query);
@@ -1058,4 +1084,58 @@ export async function mergeMetadata(odmXMLString) {
     }
 
     await storeMetadata();
+}
+
+export function loadPossibleOpenEDCSettings() {
+    const data = settings;
+    loadSettings(SETTINGS_CONTEXT, data);
+    
+}
+
+export function loadSettings(context, data) {
+    loadedSettings.set(context, []);
+    data.forEach(d => loadedSettings.get(context).push(new OpenEDCSetting(context, d)))
+    console.log(loadedSettings)
+}
+
+export function getCurrentElementSettings(path) {
+    const aliasses = getElementAliases(path);
+    const alias = [...aliasses].find(a => a.getAttribute('Context') == OPENEDC_SETTINGS_ALIAS_CONTEXT);
+    if(alias) return JSON.parse(alias.getAttribute('Name'));
+    return {};
+
+}
+
+export function getCurrentElementSettingsByOID(oid) {
+    const aliasses = $$(`[OID="${oid}"] Alias`);
+    const alias = [...aliasses].find(a => a.getAttribute('Context') == OPENEDC_SETTINGS_ALIAS_CONTEXT);
+    if(alias) return JSON.parse(alias.getAttribute('Name'));
+    return {}
+}
+
+export function getSettingStatus(context, option, path) {
+    const settings = getCurrentElementSettings(path);
+    if(!settings[context] || !settings[context][option]) return false;
+    return settings[context][option];
+}
+
+export function getSettingStatusByOID(context, option, oid) {
+    const settings = getCurrentElementSettingsByOID(oid);
+    console.log(settings, oid);
+    if(!settings[context] || !settings[context][option]) return false;
+    return settings[context][option];
+}
+
+export function setCurrentElementSettings(path, settings) {
+    const aliasses = getElementAliases(path);
+    const alias = [...aliasses].find(a => a.getAttribute('Context') == OPENEDC_SETTINGS_ALIAS_CONTEXT);
+    if(alias) alias.setAttribute('Name', JSON.stringify(settings));
+    else setElementAlias(path, OPENEDC_SETTINGS_ALIAS_CONTEXT, JSON.stringify(settings));
+}
+
+export function setCurrentElementSettingsByOID(oid, settings) {
+    const aliasses = $$(`[OID="${oid}"] Alias`);
+    const alias = [...aliasses].find(a => a.getAttribute('Context') == OPENEDC_SETTINGS_ALIAS_CONTEXT);
+    if(alias) alias.setAttribute('Name', JSON.stringify(settings));
+    else setElementAlias(path, OPENEDC_SETTINGS_ALIAS_CONTEXT, JSON.stringify(settings));
 }

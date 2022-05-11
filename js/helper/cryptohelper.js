@@ -304,7 +304,7 @@ const pbkdf2DeriveKey = async (passwordAsBytes, salt, options) => {
         false,
         ["deriveKey"]
     );
-
+ 
     // Derive the salted AES key
     return await window.crypto.subtle.deriveKey(
         {

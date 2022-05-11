@@ -460,6 +460,26 @@ window.addEmptyAliasInput = function(disabled) {
     if (!disabled && !ioHelper.isMobile()) input.scrollIntoView();
 }
 
+window.showSettingsEditor = function() {
+    const currentElementType = currentPath.last.element;
+    let settingsModal = document.createElement('settings-modal');
+    settingsModal.setHeading(languageHelper.getTranslation('edit-settings'));
+    settingsModal.setMessage("Dies ist eine Message");
+    settingsModal.setPossibleSettings(metadataWrapper.loadedSettings);
+    settingsModal.setCurrentElementType(currentElementType);
+    settingsModal.setCurrentSettings(metadataWrapper.getCurrentElementSettings(currentPath));
+    settingsModal.setCloseText("Speichern und schließen");
+    settingsModal.setCloseCallback(async (settings) => { 
+        metadataWrapper.setCurrentElementSettings(currentPath, settings); 
+        if(!asyncEditMode) await metadataWrapper.storeMetadata();
+        reloadDetailsPanel();
+    });
+    settingsModal.setSize("is-wide");
+
+    document.body.appendChild(settingsModal);
+    languageHelper.localize();
+}
+
 window.saveElement = async function() {
     if (getCurrentDetailsView() == detailsPanelViews.FOUNDATIONAL) await saveDetailsFoundational();
     else if (getCurrentDetailsView() == detailsPanelViews.EXTENDED) saveDetailsExtended();

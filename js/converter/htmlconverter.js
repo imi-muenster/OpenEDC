@@ -21,11 +21,7 @@ export function getFormAsHTML(formOID, options) {
 
 function isLikertPossible(itemGroupOID){
     let compareCodelistOID = null;
-    const aliasses = $$(`ItemGroupDef[OID="${itemGroupOID}"] Alias`);
-    console.log(aliasses);
-    for(let alias of aliasses) {
-        if(alias.getAttribute('Context') == 'no-likert' && alias.getAttribute('Name').toLowerCase() == 'yes') return false;
-    }
+    if(metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-likert', itemGroupOID)) return false;
     for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
         const itemOID = itemRef.getAttribute("ItemOID");
         const itemDef = $(`ItemDef[OID="${itemOID}"]`);
@@ -35,6 +31,7 @@ function isLikertPossible(itemGroupOID){
         if(compareCodelistOID != null && codeListOID != compareCodelistOID) return false;
         compareCodelistOID = codeListOID;
     }
+    console.log("show as likert")
     return true;
 }
 

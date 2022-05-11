@@ -259,9 +259,156 @@ class MessageModal extends HTMLElement {
     }
 }
 
+class SettingsModal extends HTMLElement {
+    setHeading(heading) { this.heading = heading; }
+    setMessage(message) { this.message = message; }
+    setPossibleSettings(settings) { this.settings = settings; }
+    setCurrentElementType(elementType) { this.elementType = elementType; }
+    setCurrentSettings(currentSettings) { this.currentSettings = currentSettings }
+    setCloseText(closeText) { this.closeText = closeText; }
+    setCloseCallback(closeCallback) { this.closeCallback = closeCallback; }
+    setSize(size) { this.size = size; }
+
+    connectedCallback() {
+        this.innerHTML = `
+            <div class="modal is-active" id="message-modal">
+                <div class="modal-background"></div>
+                <div class="modal-content ${this.size}">
+                    <div class="box has-text-centered">
+                        <h2 class="subtitle">${this.heading}</h2>
+                        <div class="mb-5">${this.message}</div>
+                        <div class="box has-text-left" id="element-settings">
+                        </div>
+                        <div class="buttons is-centered"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        console.log(this.currentSettings);
+        const elementSettings = this.querySelector('#element-settings');
+        this.settings.forEach((settingsArray, name) => {
+            const settingsToBeShown = settingsArray.filter(setting => setting.isInScope(this.elementType));
+            if(settingsToBeShown.length > 0) {
+                if(!this.currentSettings[name]) this.currentSettings[name] = {};
+                let contextDiv = document.createElement('div');
+                contextDiv.classList = 'is-link is-light notification';
+                let h = document.createElement("h1");
+                h.classList = 'title is-4';
+                h.innerText = name;
+                contextDiv.appendChild(h);
+
+                settingsToBeShown.forEach(setting => {
+                    let settingDiv = document.createElement('div');
+                    settingDiv.classList = 'field';
+                    let label = document.createElement('label');
+                    label.classList = 'label'
+                    if(typeof setting.i18n != 'undefined') label.setAttribute('i18n', setting.i18n);
+                    else label.innerText = setting.key;
+                    settingDiv.appendChild(label);
+
+                    const currentValue = this.currentSettings[name][setting.key];
+                    switch(setting.type) {
+                        case 'boolean': {
+                            let checkBoxLabel = document.createElement('label');
+                            checkBoxLabel.classList = 'checkbox is-block';
+                            let input = document.createElement('input');
+                            input.type = 'checkbox';
+                            input.classList = 'mr-2'
+                            if(currentValue) input.checked = true;
+                            input.onchange = () => {this.currentSettings[name][setting.key] = input.checked; console.log(this.currentSettings)}
+                            let span = document.createElement('span');
+                            span.setAttribute('i18n', typeof setting.description != 'undefined' ? setting.description : 'no-description')
+                            checkBoxLabel.appendChild(input);
+                            checkBoxLabel.appendChild(span);
+                            settingDiv.appendChild(checkBoxLabel);
+                            break;
+                        }
+                        case 'string': {
+                            let fieldDiv = document.createElement('div');
+                            fieldDiv.classList = 'field has-addons';
+                            let div = document.createElement('div');
+                            div.classList = 'control is-expanded';
+                            fieldDiv.appendChild(div);
+                            let input = document.createElement('input');
+                            input.type = 'text';
+                            input.classList = 'input is-small'
+                            if(currentValue) input.value = currentValue;
+                            input.oninput = () => {this.currentSettings[name][setting.key] = input.value; console.log(this.currentSettings)}
+                            input.setAttribute('i18n-ph', typeof setting.i18n != 'undefined' ? setting.i18n : 'no-name')
+                            div.appendChild(input);
+                            //let controlDiv = document.createElement('div');
+                            //controlDiv.classList = 'control';
+                            //fieldDiv.appendChild(controlDiv)
+                            //let a = document.createElement('a');
+                            //a.classList = 'button is-small is-link';
+                            //a.setAttribute('i18n', 'save') 
+                            //controlDiv.appendChild(a);
+                            settingDiv.appendChild(fieldDiv);
+                            break;
+                        } 
+                        case 'callback': {
+                            let fieldDiv = document.createElement('div');
+                            fieldDiv.classList = 'field has-addons';
+                            let div = document.createElement('div');
+                            div.classList = 'control is-expanded';
+                            fieldDiv.appendChild(div);
+                            let input = document.createElement('input');
+                            input.type = 'text';
+                            input.classList = 'input is-small'
+                            if(currentValue) input.value = currentValue;
+                            input.setAttribute('i18n-ph', typeof setting.i18n != 'undefined' ? setting.i18n : 'no-name')
+                            input.disabled = true;
+                            div.appendChild(input);
+                            let controlDiv = document.createElement('div');
+                            controlDiv.classList = 'control';
+                            fieldDiv.appendChild(controlDiv)
+                            let a = document.createElement('a');
+                            a.classList = 'button is-small is-link';
+                            a.setAttribute('i18n', 'assign-value');
+                            console.log(setting.callback);
+                            a.onclick = () => { 
+                                const newValue = window[setting.callback]();
+                                input.value = newValue;
+                                this.currentSettings[name][setting.key] = newValue;;
+                            }
+                            controlDiv.appendChild(a);
+                            settingDiv.appendChild(fieldDiv);
+                            break;
+                        }  
+                    }
+                    contextDiv.appendChild(settingDiv);
+                });
+                elementSettings.appendChild(contextDiv);
+            }
+        });
+        
+        // Add close button
+        let button = document.createElement("button");
+        button.classList = this.callbacks ? "button is-small" : "button is-link is-small";
+        button.textContent = this.closeText;
+        button.onclick = () => {
+            this.remove();
+            if (this.closeCallback) this.closeCallback(this.currentSettings);
+        };
+        this.querySelector(".buttons").insertAdjacentElement("beforeend", button);
+
+        // Add event handler for clicking on the modal background
+        this.querySelector(".modal-background").onclick = () => {
+            this.remove();
+            if (this.closeCallback) this.closeCallback(this.currentSettings); 
+        };
+    }
+
+    saveSettings() {
+
+    }
+}
+
 window.customElements.define("start-modal", StartModal);
 window.customElements.define("login-modal", LoginModal);
 window.customElements.define("about-modal", AboutModal);
 window.customElements.define("subject-modal", SubjectModal);
 window.customElements.define("survey-code-modal", SurveyCodeModal);
 window.customElements.define("message-modal", MessageModal);
+window.customElements.define("settings-modal", SettingsModal);

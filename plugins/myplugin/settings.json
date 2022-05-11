@@ -1,0 +1,30 @@
+[
+    {
+        "key": "test-setting",
+        "i18n": "test-setting",
+        "description": "test-description",
+        "type": "boolean",
+        "scope": [
+            "itemgroup"
+        ]
+    },
+    {
+        "key": "test-setting2",
+        "i18n": "test-setting2",
+        "description": "test-description2",
+        "type": "string",
+        "scope": [
+            "itemgroup", "item"
+        ]
+    },
+    {
+        "key": "test-setting3",
+        "i18n": "test-setting3",
+        "description": "test-description3",
+        "type": "callback",
+        "callback": "loadMypluginValue",
+        "scope": [
+            "itemgroup", "item"
+        ]
+    }
+]   
