@@ -378,5 +378,7 @@
     "edit-settings": "Settings",
     "no-description": "No description",
     "no-name": "No name",
-    "assign-value": "Assign value"
+    "assign-value": "Assign value",
+    "no-survey": "Hide in survey view",
+    "no-survey-description": "If you check this checkbox, the element will not be shown in the survey view."
 }

@@ -467,6 +467,7 @@ window.showSettingsEditor = function() {
     settingsModal.setMessage("Dies ist eine Message");
     settingsModal.setPossibleSettings(metadataWrapper.loadedSettings);
     settingsModal.setCurrentElementType(currentElementType);
+    settingsModal.setCurrentElementOID(currentPath.last.value)
     settingsModal.setCurrentSettings(metadataWrapper.getCurrentElementSettings(currentPath));
     settingsModal.setCloseText("Speichern und schließen");
     settingsModal.setCloseCallback(async (settings) => { 

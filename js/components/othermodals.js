@@ -264,6 +264,7 @@ class SettingsModal extends HTMLElement {
     setMessage(message) { this.message = message; }
     setPossibleSettings(settings) { this.settings = settings; }
     setCurrentElementType(elementType) { this.elementType = elementType; }
+    setCurrentElementOID(currentOID) { this.currentOID = currentOID; }
     setCurrentSettings(currentSettings) { this.currentSettings = currentSettings }
     setCloseText(closeText) { this.closeText = closeText; }
     setCloseCallback(closeCallback) { this.closeCallback = closeCallback; }
@@ -337,13 +338,6 @@ class SettingsModal extends HTMLElement {
                             input.oninput = () => {this.currentSettings[name][setting.key] = input.value; console.log(this.currentSettings)}
                             input.setAttribute('i18n-ph', typeof setting.i18n != 'undefined' ? setting.i18n : 'no-name')
                             div.appendChild(input);
-                            //let controlDiv = document.createElement('div');
-                            //controlDiv.classList = 'control';
-                            //fieldDiv.appendChild(controlDiv)
-                            //let a = document.createElement('a');
-                            //a.classList = 'button is-small is-link';
-                            //a.setAttribute('i18n', 'save') 
-                            //controlDiv.appendChild(a);
                             settingDiv.appendChild(fieldDiv);
                             break;
                         } 
@@ -366,12 +360,12 @@ class SettingsModal extends HTMLElement {
                             let a = document.createElement('a');
                             a.classList = 'button is-small is-link';
                             a.setAttribute('i18n', 'assign-value');
-                            console.log(setting.callback);
-                            a.onclick = () => { 
-                                const newValue = window[setting.callback]();
-                                input.value = newValue;
-                                this.currentSettings[name][setting.key] = newValue;;
-                            }
+                            a.onclick = () => window[setting.callback].apply(window, [this.currentOID, (newValue) => { 
+                                input.value = newValue; 
+                                this.currentSettings[name][setting.key] = newValue; 
+                                console.log(newValue) 
+                            }]);
+                            input.onchange = () => { this.currentSettings[name][setting.key] = input.value; console.log(input.value) }
                             controlDiv.appendChild(a);
                             settingDiv.appendChild(fieldDiv);
                             break;

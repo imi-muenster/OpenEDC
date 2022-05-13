@@ -5,7 +5,7 @@
 // New translations can be registered with, for example, languageHelper.registerTranslationFile("en", new URL("./translations/en.json", import.meta.url))
 
 const enabledPlugins = [
-    {name: "My Plugin", entryFile: "./myplugin/myplugin.js", settings: "./myplugin/settings.json"}
+    //{name: "My Plugin", entryFile: "./myplugin/myplugin.js", settings: "./myplugin/settings.json"}
 ];
 
 export const enablePlugins = (loadPluginSettings) => {

@@ -37,9 +37,10 @@ function isLikertPossible(itemGroupOID){
 
 function getItemGroupDefault(itemGroupOID, options) {
     const itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`);
+    const showItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemGroupOID);
 
     const itemGroupContent = document.createElement("div");
-    itemGroupContent.className = "item-group-content";
+    itemGroupContent.className = `item-group-content ${showItemGroup ? 'is-hidden-survey-view' : ''}`;
     itemGroupContent.setAttribute("item-group-content-oid", itemGroupOID);
 
     const itemGroupDescr = document.createElement("h2");
@@ -50,9 +51,10 @@ function getItemGroupDefault(itemGroupOID, options) {
     for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
         const itemOID = itemRef.getAttribute("ItemOID");
         const itemDef = $(`ItemDef[OID="${itemOID}"]`);
+        const showItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemOID);
 
         const itemField = document.createElement("div");
-        itemField.className = "item-field";
+        itemField.className = `item-field ${showItemGroup ? 'is-hidden-survey-view' : ''}`;
         itemField.setAttribute("item-field-oid", itemOID);
         itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
 
@@ -73,9 +75,10 @@ function getItemGroupDefault(itemGroupOID, options) {
 
 function getItemGroupAsLikertScale(itemGroupOID, options) {
     const itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`);
+    const showItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemGroupOID);
 
     const itemGroupContent = document.createElement("div");
-    itemGroupContent.className = "item-group-content";
+    itemGroupContent.className = `item-group-content ${showItemGroup ? 'is-hidden-survey-view' : ''}`;
     itemGroupContent.setAttribute("item-group-content-oid", itemGroupOID);
 
     const itemGroupDescr = document.createElement("h2");
@@ -119,6 +122,7 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
         for (const itemRef of itemRefs) {
             const itemOID = itemRef.getAttribute("ItemOID");
             const itemDef = $(`ItemDef[OID="${itemOID}"]`);
+            const showItem = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemOID);
 
             //const itemRow = document.createElement('div');
             //itemRow.classList = "column is-5";
@@ -129,7 +133,7 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
             itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
 
             const itemQuestion = document.createElement("label");
-            itemQuestion.className = "label column is-5";
+            itemField.className = `item-field column is-12 columns ${showItem ? 'is-hidden-survey-view' : ''}`;
             itemQuestion.innerHTML = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
             itemQuestion.innerHTML += itemRef.getAttribute("Mandatory") == "Yes" ? " (*)" : "";
             //itemRow.appendChild(itemQuestion);

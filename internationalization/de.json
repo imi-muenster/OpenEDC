@@ -378,5 +378,7 @@
     "edit-settings": "Einstellungen",
     "no-description": "Keine Beschreibung vorhanden",
     "no-name": "Kein name vorhanden",
-    "assign-value": "Wert zuweisen"
+    "assign-value": "Wert zuweisen",
+    "no-survey": "In Umfrageansicht ausblenden",
+    "no-survey-description": "Falls sie diese Checkbox anwählen, wird das Element in der Umfrageansicht ausgeblendet."
 }

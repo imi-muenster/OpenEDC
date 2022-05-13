@@ -11,6 +11,7 @@
     {
         "key": "no-survey",
         "i18n": "no-survey",
+        "description": "no-survey-description",
         "type": "boolean",
         "scope": [
             "itemgroup", "item"
