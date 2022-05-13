@@ -21,6 +21,8 @@ let cachedFormDataIsAuditRecord = false;
 let deferredFunction = null;
 let surveyCode = null;
 
+const exampleStrings = ["kurzer String", "Dies ist eine längere Antwort. Deshalb steht hier etwas mehr. Er beinhaltet außerdem Umlaute.", "ein weiterer Beispielstring", "Liste: Medikament 1, Medikament 2, Medikament 3"]
+
 export async function init() {
     createSiteFilterSelect();
     createSortTypeSelect();
@@ -178,12 +180,134 @@ async function loadSubjectData(subjectKey) {
         });
 
     $("#subject-panel-blocks a.is-active")?.deactivate();
+    console.log(currentSubjectKey)
     if (currentSubjectKey) $(`#subject-panel-blocks [oid="${currentSubjectKey}"]`).activate();
     if (currentSubjectKey) ioHelper.scrollParentToChild($(`#subject-panel-blocks [oid="${currentSubjectKey}"]`));
     $("#subject-info-button").disabled = currentSubjectKey ? false : true;
     if (!ioHelper.userHasRight(ioHelper.userRights.MANAGESUBJECTS)) $("#subject-info-button").disabled = true;
 
     await reloadTree();
+}
+
+window.createRandomSubjects = async function() {
+    let amount = $('#example-data-input').value;
+    if(!amount || amount == 0) {
+        ioHelper.showToast(languageHelper.getTranslation('incorrect-amount'), 4000, ioHelper.interactionTypes.WARNING);
+        return;
+    }
+    for(let i = 0; i < amount; ++i) {
+        try{
+            const subjectKey = `Random User ${i + 1}`;
+            await clinicaldataWrapper.addSubject(subjectKey);
+            console.log("after store")
+            loadSubjectKeys();
+            skipDataHasChangedCheck = true;
+            await loadSubjectData(subjectKey)
+            await createExampleData(subjectKey);
+            loadSubjectKeys();
+        }
+        catch(error) {
+            if(error == clinicaldataWrapper.errors.SUBJECTKEYEXISTENT || error == clinicaldataWrapper.errors.SUBJECTKEYEXISTENTOTHERSITE) amount++;
+            else console.log(error);
+        }
+    }
+}
+
+async function createExampleData(subjectKey) {
+
+    expressionHelper.setVariables({});
+
+    let minInt = 0;
+    let maxInt = 100;
+
+    for(let seOID of metadataWrapper.getStudyEventOIDs()) {
+        for(let f of metadataWrapper.getFormsByStudyEvent(seOID)) {
+            const formOID = f.getAttribute('OID');
+            let formItemDataList = [];
+
+            for(let ig of metadataWrapper.getItemGroupsByForm(formOID)) {
+                const itemGroupOID = ig.getAttribute('OID');
+                for (let i of metadataWrapper.getItemsByItemGroup(itemGroupOID)) {
+                    const itemOID = i.getAttribute('OID');
+                    const path = new ODMPath(seOID, formOID, itemGroupOID, itemOID);
+
+                    //handles conditions
+                    let condition = metadataWrapper.getElementCondition(ODMPath.elements.ITEM, path);
+                    if(condition) {
+                        let formalExpression = condition.getFormalExpression();
+                        let expression = expressionHelper.parse(formalExpression, path);
+                        const included = expressionHelper.evaluate(expression, "condition");
+                        console.log("included", included)
+                        if(!included) continue;
+                    }
+                   
+                    const dataType = i.getAttribute('DataType');
+                    const codelistItems = metadataWrapper.getCodeListItemsByItem(itemOID);
+
+                    //considers range checks when assigning values
+                    const rangechecks = [...metadataWrapper.getRangeChecksByItem(itemOID)].map(rc => { 
+                        return {comparator: rc.getAttribute('Comparator'), value: rc.querySelector('CheckValue').textContent}
+                    }).map(rc => {
+                        console.log(rc)
+                        if (rc.comparator == "GT") return {comparator: "GE", value: dataType == 'integer' ? (parseInt(rc.value) + 1) : (parseFloat(rc.value) + 0.0001)}
+                        if (rc.comparator == "LT") return {comparator: "LE", value: dataType == 'integer' ? (parseInt(rc.value) - 1) : (parseFloat(rc.value) - 0.0001)}
+                        return rc;
+                    });
+                    if(rangechecks.length > 0) {
+                        console.log(rangechecks)
+                        minInt = Math.max([...rangechecks.filter(rc => rc.comparator == 'GE').map(rc => rc.value)]);
+                        maxInt = Math.min([...rangechecks.filter(rc => rc.comparator == 'LE').map(rc => rc.value)]);
+                        console.log("rangechecks", minInt, maxInt);
+                    }
+                    let value;
+                    switch (dataType) {
+                        case "integer": 
+                            if(codelistItems.length > 0) value = `${codelistItems[getRandomNumber(0, codelistItems.length - 1, 'integer')].getAttribute('CodedValue')}`;
+                            else value = `${getRandomNumber(minInt, maxInt, 'integer')}`;
+                            break;
+                        case "boolean":
+                            value = `${getRandomNumber(0,1,'integer')}`;
+                            break;
+                        case "string":
+                        case "text": 
+                            if(codelistItems.length > 0) value = `${codelistItems[getRandomNumber(0, codelistItems.length - 1, 'integer')].getAttribute('CodedValue')}`;
+                            else value = `${exampleStrings[getRandomNumber(0, exampleStrings.length - 1, 'integer')]}`
+                            break;
+                        case "datetime": 
+                            value = new Calendar().today.localDateTimeISOString;
+                            break;
+                        case "date":
+                            value = new Calendar().today.localDateISOString;
+                            break;
+                        case "time": 
+                            value = new Calendar().today.localTimeISOString;
+                            break;
+                        case "double":
+                        case "float":
+                            if(codelistItems.length > 0) value = `${codelistItems[getRandomNumber(0, codelistItems.length - 1, 'integer')].getAttribute('CodedValue')}`;
+                            else value = `${Math.floor(getRandomNumber(minInt, maxInt, 'float')*100)/100}`;
+                            console.log(value);
+                            break;
+                        default:
+                            break;
+                    }
+                    if(value) {
+                        formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value));
+                        expressionHelper.setVariable(path.toString(), value);
+                    }
+                }
+            }
+            await clinicaldataWrapper.storeSubjectFormData(seOID, formOID, formItemDataList, clinicaldataWrapper.dataStatusTypes.COMPLETE );
+            await saveFormData();
+            await loadTree(seOID, formOID);
+        }
+    }
+
+}
+
+function getRandomNumber(min, max, type){
+    if(type == 'integer') return Math.floor(Math.random() * (max - min + 1)) + min;
+    if(type == 'float') return Math.random() * (max - min) + min;
 }
 
 export async function reloadTree() {
@@ -370,8 +494,8 @@ function uncheckRadioItem(event) {
 }
 
 function showItemAuditTrail(event) {
-    const itemGroupOID = event.target.parentNode.parentNode.getAttribute("item-group-content-oid");
-    const itemOID = event.target.parentNode.getAttribute("item-field-oid");
+    const itemGroupOID = event.target.closest('.item-group-content').getAttribute("item-group-content-oid");
+    const itemOID = event.target.closest('.item-field').getAttribute("item-field-oid");
     const auditRecords = clinicaldataWrapper.getAuditRecords({
         studyEventOID: currentPath.studyEventOID,
         formOID: currentPath.formOID,

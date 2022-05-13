@@ -20,7 +20,6 @@ export function getFormAsHTML(formOID, options) {
 
 function isLikertPossible(itemGroupOID){
     let compareCodelistOID = null;
-    const aliasses = $$(`ItemGroupDef[OID="${itemGroupOID}"] Alias`);
     if(metadataWrapper.getSettingStatus('no-likert', itemGroupOID)) return false;
     
     for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
