@@ -132,7 +132,6 @@ function addSubject(subjectKey, siteOID) {
 }
 
 export function loadSubjectKeys() {
-    console.log("Load subject keys")
     $$("#subject-panel-blocks a").removeElements();
 
     const selectedSite = admindataWrapper.getSiteOIDByName($("#filter-site-select-inner").value);
@@ -140,7 +139,6 @@ export function loadSubjectKeys() {
     const subjects = clinicaldataWrapper.getSubjects(selectedSite, sortOrder);
     subjects.length ? $("#no-subjects-hint").hide() : $("#no-subjects-hint").show();
 
-    console.log(subjects)
     for (let subject of subjects) {
         const siteSubtitle = subject.siteOID && !selectedSite ? admindataWrapper.getSiteNameByOID(subject.siteOID) : null;
         let panelBlock = htmlElements.getClinicaldataPanelBlock(subject.uniqueKey, subject.key, null, siteSubtitle, subject.status, subject.hasConflict);
@@ -685,7 +683,7 @@ async function saveFormData() {
     if (isFormValidated()) dataStatus = clinicaldataWrapper.dataStatusTypes.VALIDATED;
     
     // Store data
-    await clinicaldataWrapper.storeSubjectFormData(clinicaldataWrapper.subject, currentPath.studyEventOID, currentPath.formOID, formItemDataList, dataStatus);
+    await clinicaldataWrapper.storeSubjectFormData(currentPath.studyEventOID, currentPath.formOID, formItemDataList, dataStatus);
 
     // When mandatory fields were not answered show a warning only once
     if (!skipMandatoryCheck && !mandatoryFieldsAnswered) {

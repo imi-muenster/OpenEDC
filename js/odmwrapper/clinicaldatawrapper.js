@@ -129,7 +129,7 @@ export const errors = {
 }
 
 let subjects = [];
-export let subject = null;
+let subject = null;
 let subjectData = null;
 let clinicaldataFile = null;
 
@@ -318,7 +318,7 @@ export async function removeClinicaldata() {
     }
 }
 
-export async function storeSubjectFormData(subject, studyEventOID, formOID, formItemDataList, dataStatus) {
+export async function storeSubjectFormData(studyEventOID, formOID, formItemDataList, dataStatus) {
     if (!subject) return;
 
     const currentDataStatus = getDataStatusForForm(studyEventOID, formOID);

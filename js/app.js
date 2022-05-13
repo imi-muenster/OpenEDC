@@ -614,7 +614,6 @@ window.removeClinicaldata = async function() {
     window.location.reload();
 }
 
-
 // IO or event listeners that are valid for the entire app and cannot be assigned to either the metadatamodule or clinicaldatamodule
 export function setIOListeners() {
     // Toggle buttons between metadata, clinical data, and reports module
