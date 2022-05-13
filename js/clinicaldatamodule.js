@@ -217,6 +217,8 @@ window.createRandomSubjects = async function() {
 
 async function createExampleData(subjectKey) {
 
+    expressionHelper.setVariables({});
+
     let minInt = 0;
     let maxInt = 100;
 
@@ -229,18 +231,35 @@ async function createExampleData(subjectKey) {
                 const itemGroupOID = ig.getAttribute('OID');
                 for (let i of metadataWrapper.getItemsByItemGroup(itemGroupOID)) {
                     const itemOID = i.getAttribute('OID');
+                    const path = new ODMPath(seOID, formOID, itemGroupOID, itemOID);
+
+                    //handles conditions
+                    let condition = metadataWrapper.getElementCondition(ODMPath.elements.ITEM, path);
+                    if(condition) {
+                        let formalExpression = condition.getFormalExpression();
+                        let expression = expressionHelper.parse(formalExpression, path);
+                        const included = expressionHelper.evaluate(expression, "condition");
+                        console.log("included", included)
+                        if(!included) continue;
+                    }
+                   
                     const dataType = i.getAttribute('DataType');
                     const codelistItems = metadataWrapper.getCodeListItemsByItem(itemOID);
+
+                    //considers range checks when assigning values
                     const rangechecks = [...metadataWrapper.getRangeChecksByItem(itemOID)].map(rc => { 
                         return {comparator: rc.getAttribute('Comparator'), value: rc.querySelector('CheckValue').textContent}
                     }).map(rc => {
-                        if (rc.comparator == "GT") return {comparator: "GE", value: dataType == 'integer' ? rc.value + 1 : rc.value + 0.0001}
-                        if (rc.comparator == "LT") return {comparator: "LE", value: dataType == 'integer' ? rc.value - 1 : rc.value - 0.0001}
+                        console.log(rc)
+                        if (rc.comparator == "GT") return {comparator: "GE", value: dataType == 'integer' ? (parseInt(rc.value) + 1) : (parseFloat(rc.value) + 0.0001)}
+                        if (rc.comparator == "LT") return {comparator: "LE", value: dataType == 'integer' ? (parseInt(rc.value) - 1) : (parseFloat(rc.value) - 0.0001)}
                         return rc;
                     });
                     if(rangechecks.length > 0) {
+                        console.log(rangechecks)
                         minInt = Math.max([...rangechecks.filter(rc => rc.comparator == 'GE').map(rc => rc.value)]);
                         maxInt = Math.min([...rangechecks.filter(rc => rc.comparator == 'LE').map(rc => rc.value)]);
+                        console.log("rangechecks", minInt, maxInt);
                     }
                     let value;
                     switch (dataType) {
@@ -269,14 +288,19 @@ async function createExampleData(subjectKey) {
                         case "float":
                             if(codelistItems.length > 0) value = `${codelistItems[getRandomNumber(0, codelistItems.length - 1, 'integer')].getAttribute('CodedValue')}`;
                             else value = `${Math.floor(getRandomNumber(minInt, maxInt, 'float')*100)/100}`;
+                            console.log(value);
                             break;
                         default:
                             break;
                     }
-                    if(value) formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value));
+                    if(value) {
+                        formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value));
+                        expressionHelper.setVariable(path.toString(), value);
+                    }
                 }
             }
             await clinicaldataWrapper.storeSubjectFormData(subjectKey, seOID, formOID, formItemDataList, clinicaldataWrapper.dataStatusTypes.COMPLETE );
+            await saveFormData();
             await loadTree(seOID, formOID);
         }
     }
