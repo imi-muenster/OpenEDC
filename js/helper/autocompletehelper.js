@@ -149,7 +149,7 @@ const elementSelected = element => {
     switch (currentPart) {
         case enabledParts.ITEM:
             const contextPath = ODMPath.parseAbsolute(currentInput.getAttribute("context-path"));
-            newValue = ODMPath.parseAbsolute(element.value).getItemRelative(contextPath).toString();
+            newValue = ODMPath.parseAbsolute(element.value).last.value; //ODMPath.parseAbsolute(element.value).getItemRelative(contextPath).toString();
             break;
         case enabledParts.VALUE:
             newValue = addQuotes(element.value);

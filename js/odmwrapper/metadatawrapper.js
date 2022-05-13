@@ -1088,3 +1088,36 @@ export function getSettingStatus(key, oid) {
         return settings.includes(key);
     }
 }
+
+export function getAbsolutePath(oid) {
+    let finished = false;
+    let currentOID = oid;
+    let oids = [currentOID];
+    while(!finished) {
+        try {
+            currentOID = getParentOID(currentOID);
+            oids.push(currentOID);
+        }
+        catch(error) {
+            finished = true;
+            console.log(error)
+        }    
+    }
+    return new ODMPath(...oids.reverse());
+}
+
+function getParentOID(oid) {
+    console.log(oid);
+    const element = getElementDefByOID(oid);
+    const type = element.tagName;
+    console.log(type);
+    switch(type) {
+        case 'ItemDef':
+            return $(`[ItemOID="${oid}"]`).parentNode.getAttribute('OID');
+        case 'ItemGroupDef':
+            return $(`[ItemGroupOID="${oid}"]`).parentNode.getAttribute('OID');
+        case 'FormDef':
+            return $(`[FormOID="${oid}"]`).parentNode.getAttribute('OID');
+    }
+    throw new Error('no valid type');
+}

@@ -1,5 +1,6 @@
 import ODMPath from "../odmwrapper/odmpath.js";
 import { Parser } from "../../lib/expr-eval.js";
+import * as metadataWrapper from "../odmwrapper/metadatawrapper.js"
 
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
@@ -39,10 +40,22 @@ export function parse(formalExpression, referencePath) {
     try {
         // Expr-eval does not support dots in variables names which are therefore replaced with underscores
         let expression = getParser().parse(escapePaths(normalizeTokens(formalExpression)));
-        if (referencePath) expression.variables().forEach(variable => {
-            const absolutePath = ODMPath.parseRelative(unescapePaths(variable)).getItemAbsolute(referencePath);
-            expression = expression.substitute(variable, escapePaths(absolutePath.toString()));
-        });
+        if (referencePath) {
+            expression.variables().forEach(variable => {
+                const absolutePath = ODMPath.parseRelative(unescapePaths(variable)).getItemAbsolute(referencePath);
+                expression = expression.substitute(variable, escapePaths(absolutePath.toString()));
+            });
+        }
+        else {
+            expression.variables().forEach(variable => {
+                console.log(variable);
+                const absolutePath = metadataWrapper.getAbsolutePath(unescapePaths(variable));
+                console.log(absolutePath)
+                const path = escapePaths(absolutePath.toString());
+                console.log(path)
+                expression = expression.substitute(variable, path);
+            });
+        }
         return expression;
     } catch (error) {
         // Error while parsing the formal expressions
