@@ -1078,3 +1078,13 @@ export async function mergeMetadata(odmXMLString) {
 
     await storeMetadata();
 }
+
+export function getSettingStatus(key, oid) {
+    const aliasses = $$(`[OID="${oid}"] Alias`);
+    for(let alias of aliasses) {
+        if(!alias.getAttribute('Context') == 'openedc-settings')
+            continue;
+        const settings = alias.getAttribute('Name').trim().toLowerCase().split(",").map(s => s.trim());
+        return settings.includes(key);
+    }
+}

@@ -118,27 +118,34 @@ class ProjectModal extends HTMLElement {
                             <div class="notification is-link is-light">
                                 <h1 class="title is-4" i18n="export-data"></h1>
                                 <p class="mb-5" i18n="export-data-hint"></p>
-                                <div class="buttons are-small">
-                                    <button class="button is-link" onclick="exportODM()" i18n="export-project"></button>
-                                    <button class="button" onclick="exportODMMetadata()" i18n="export-metadata"></button>
-                                    <button class="button" onclick="exportCSV()" i18n="export-clinicaldata"></button>
+                                <div class="columns is-centered is-multiline">
+                                    <button class="button is-link column is-6 p-1 is-small" onclick="exportODM()" i18n="export-project"></button>
+                                    <button class="button column is-6 p-1 is-small" onclick="exportODMMetadata()" i18n="export-metadata"></button>
+                                    <button class="button column is-6 p-1 is-small" onclick="exportCSV()" i18n="export-clinicaldata"></button>
                                 </div>
                             </div>
                             <div class="notification is-link is-light">
                                 <h1 class="title is-4" i18n="import-data"></h1>
                                 <p class="mb-5" i18n="import-data-hint"></p>
-                                <div class="buttons">
-                                    <div class="file" id="odm-import-metadata">
-                                        <label class="file-label">
-                                            <input class="file-input" type="file" accept=".xml,text/xml" onchange="importODMMetadata()" multiple>
-                                            <span class="file-cta button is-link is-small" i18n="import-metadata"></span>
-                                        </label>
+                                <div class="columns is-centered is-multiline">
+                                    <div class="column is-6 p-1">
+                                        <div class="file" id="odm-import-metadata">
+                                            <label class="file-label">
+                                                <input class="file-input" type="file" accept=".xml,text/xml" onchange="importODMMetadata()" multiple>
+                                                <span class="file-cta button is-link is-small" i18n="import-metadata"></span>
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div class="file is-hidden" id="odm-import-clinicaldata">
-                                        <label class="file-label">
-                                            <input class="file-input" type="file" accept=".xml,text/xml" onchange="importODMClinicaldata()" multiple>
-                                            <span class="file-cta button is-link is-small" i18n="import-clinicaldata"></span>
-                                        </label>
+                                    <div class="column is-6 p-1">
+                                        <button class="button is-fullwidth is-small is-link" onclick="openMDMLoadDialog(true)" i18n="load-from-mdm"></button>
+                                    </div>
+                                    <div class="column is-6 p-1">
+                                        <div class="file is-hidden" id="odm-import-clinicaldata">
+                                            <label class="file-label">
+                                                <input class="file-input" type="file" accept=".xml,text/xml" onchange="importODMClinicaldata()" multiple>
+                                                <span class="file-cta button is-link is-small" i18n="import-clinicaldata"></span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
