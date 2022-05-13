@@ -10,7 +10,8 @@ import * as languageHelper from "./helper/languagehelper.js";
 import * as odmConverter from "./converter/odmconverter.js";
 import * as csvConverter from "./converter/csvconverter.js";
 import * as pluginRegistrar from "../plugins/registrar.js";
-import * as manifestHelper from "./helper/manifesthelper.js"
+import * as manifestHelper from "./helper/manifesthelper.js";
+import * as repositoryHelper from "./helper/repositoryhelper.js";
 
 const appVersion = "0.8.1";
 
@@ -324,6 +325,37 @@ window.loadExample = async function() {
 
     // Show the exemplary project help message
     if (!ioHelper.isMobile()) ioHelper.showToast(languageHelper.getTranslation("exemplary-project-hint"), 30000);
+}
+
+window.openMDMLoadDialog = async function(mergeStatus) {
+    let mdmModal = document.createElement('mdm-modal');
+    mdmModal.setMergeStatus(mergeStatus);
+    if (!$("#mdm-modal")) document.body.appendChild(mdmModal);
+    $('#mdm-modal').activate();
+    languageHelper.localize();
+}
+
+window.importFromMDMPortal = async function(mergeStatus) {
+
+    const id = $('#load-from-mdm-input').value;
+    $('#mdm-modal').remove();
+    let odmXMLString = await repositoryHelper.getModelbyId(id).catch((e) => {
+        ioHelper.showToast(languageHelper.getTranslation(e), 5000, ioHelper.interactionTypes.DANGER)
+    });
+    
+    odmXMLString = validateODM(odmXMLString);
+    if (odmXMLString) {
+        if(mergeStatus) {
+            mergeMetadataModels([odmXMLString]);
+            hideProjectModal();
+        }
+        else {
+            metadataWrapper.importMetadata(odmXMLString);
+            admindataWrapper.importAdmindata(odmXMLString);
+            await clinicaldataWrapper.importClinicaldata(odmXMLString);
+            startApp();
+        }
+    }
 }
 
 window.showProjectModal = function() {
