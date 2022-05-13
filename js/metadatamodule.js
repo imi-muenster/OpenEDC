@@ -484,6 +484,9 @@ window.showSettingsEditor = function() {
 window.saveElement = async function() {
     if (getCurrentDetailsView() == detailsPanelViews.FOUNDATIONAL) await saveDetailsFoundational();
     else if (getCurrentDetailsView() == detailsPanelViews.EXTENDED) saveDetailsExtended();
+    document.dispatchEvent(new CustomEvent("SaveElementPressed", {detail: { activeView: getCurrentDetailsView()}}));
+    if (ioHelper.hasServerURL() && !asyncEditMode && (admindataWrapper.getUsers().length > 1 || clinicaldataWrapper.getSubjects().length > 1) && $("#store-metadata-async-button")) 
+        $("#store-metadata-async-button").show();
 }
 
 async function saveDetailsFoundational() {

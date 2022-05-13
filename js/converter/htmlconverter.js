@@ -9,7 +9,6 @@ export function getFormAsHTML(formOID, options) {
 
     for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
         const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
-        console.log(isLikertPossible(itemGroupOID));
         let itemGroupContent;
         if(options.showAsLikert && isLikertPossible(itemGroupOID)) itemGroupContent = getItemGroupAsLikertScale(itemGroupOID, options);
         else itemGroupContent = getItemGroupDefault(itemGroupOID, options);
@@ -22,6 +21,7 @@ export function getFormAsHTML(formOID, options) {
 function isLikertPossible(itemGroupOID){
     let compareCodelistOID = null;
     if(metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-likert', itemGroupOID)) return false;
+
     for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
         const itemOID = itemRef.getAttribute("ItemOID");
         const itemDef = $(`ItemDef[OID="${itemOID}"]`);
@@ -39,6 +39,7 @@ function getItemGroupDefault(itemGroupOID, options) {
     const itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`);
     const showItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemGroupOID);
 
+
     const itemGroupContent = document.createElement("div");
     itemGroupContent.className = `item-group-content ${showItemGroup ? 'is-hidden-survey-view' : ''}`;
     itemGroupContent.setAttribute("item-group-content-oid", itemGroupOID);
@@ -52,6 +53,7 @@ function getItemGroupDefault(itemGroupOID, options) {
         const itemOID = itemRef.getAttribute("ItemOID");
         const itemDef = $(`ItemDef[OID="${itemOID}"]`);
         const showItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemOID);
+
 
         const itemField = document.createElement("div");
         itemField.className = `item-field ${showItemGroup ? 'is-hidden-survey-view' : ''}`;
@@ -128,7 +130,7 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
             //itemRow.classList = "column is-5";
 
             const itemField = document.createElement("div");
-            itemField.className = "item-field column is-12 columns";
+            itemField.className = `item-field column is-12 columns ${showItemGroup ? 'is-hidden-survey-view' : ''}`;
             itemField.setAttribute("item-field-oid", itemOID);
             itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
 

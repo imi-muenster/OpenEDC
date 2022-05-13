@@ -19,15 +19,24 @@ class StartModal extends HTMLElement {
                             <p class="mb-5" i18n-html="about-text-1"></p>
                             <p class="mb-5" i18n-html="about-text-2"></p>
                             <p class="mb-5" i18n-html="start-text"></p>
-                            <div class="buttons is-centered">
-                                <button class="button" onclick="newProject()" i18n="new-project"></button>
-                                <div class="file" id="open-odm-button">
-                                    <label class="file-label">
-                                        <input class="file-input" type="file" accept=".xml,text/xml" name="odm-xml" onchange="openODM()">
-                                        <span class="file-cta button" i18n="open"></span>
-                                    </label>
+                            <div class="columns is-centered is-multiline">
+                                <div class="column is-6 p-1">
+                                    <button class="button is-fullwidth" onclick="newProject()" i18n="new-project"></button>
                                 </div>
-                                <button class="button is-link" onclick="loadExample()" i18n="example"></button>
+                                <div class="column is-6 p-1">
+                                    <div class="file is-fullwidth" id="open-odm-button">
+                                        <label class="file-label">
+                                            <input class="file-input" type="file" accept=".xml,text/xml" name="odm-xml" onchange="openODM()">
+                                            <span class="file-cta button is-fullwidth" i18n="open"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="column is-6 p-1">
+                                    <button class="button is-fullwidth" onclick="openMDMLoadDialog(false)" i18n="load-from-mdm"></button>
+                                </div>
+                                <div class="column is-6 p-1">
+                                    <button class="button is-link is-fullwidth" onclick="loadExample()" i18n="example"></button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -258,7 +267,6 @@ class MessageModal extends HTMLElement {
         };
     }
 }
-
 class SettingsModal extends HTMLElement {
     setHeading(heading) { this.heading = heading; }
     setMessage(message) { this.message = message; }
@@ -285,7 +293,6 @@ class SettingsModal extends HTMLElement {
                 </div>
             </div>
         `;
-
         console.log(this.currentSettings);
         const elementSettings = this.querySelector('#element-settings');
         this.settings.forEach((settingsArray, name) => {
@@ -399,6 +406,36 @@ class SettingsModal extends HTMLElement {
     }
 }
 
+class MDMModal extends HTMLElement {
+    setMergeStatus(mergeStatus) { this.mergeStatus = mergeStatus; }
+    connectedCallback() {
+        this.innerHTML = `
+            <div class="modal" id="mdm-modal">
+                <div class="modal-background"></div>
+                <div class="modal-content is-medium is-fullheight-mobile">
+                    <div class="box has-text-centered">
+                        <h2 class="subtitle" i18n="load-from-mdm-heading"></h2>
+                        <p i18n="load-from-mdm-text"></p>
+                        <label class="label has-text-left mt-3" i18n="load-from-mdm-label"></label>
+                        <div class="field has-addons">
+                                <div class="control is-expanded">
+                                    <input class="input is-link" type="text" autocomplete="off" i18n-ph="load-from-mdm-input" term" autocomplete-mode="1" id="load-from-mdm-input">
+                                </div>
+                                <div class="control">
+                                    <a class="button is-link" id="load-from-mdm-confirm" i18n="confirm" onclick="importFromMDMPortal(${this.mergeStatus})"></a>
+                                </div>
+                            </div>
+                        <p class="has-text-danger is-hidden" id="wrong-survey-code-hint" i18n="wrong-survey-code-hint"></p>
+                    </div>
+                </div>
+            </div>
+        `;
+        this.querySelector(".modal-background").onclick = () => {
+            this.remove();
+        };
+    }  
+}
+
 window.customElements.define("start-modal", StartModal);
 window.customElements.define("login-modal", LoginModal);
 window.customElements.define("about-modal", AboutModal);
@@ -406,3 +443,4 @@ window.customElements.define("subject-modal", SubjectModal);
 window.customElements.define("survey-code-modal", SurveyCodeModal);
 window.customElements.define("message-modal", MessageModal);
 window.customElements.define("settings-modal", SettingsModal);
+window.customElements.define("mdm-modal", MDMModal);
