@@ -192,20 +192,26 @@ async function loadSubjectData(subjectKey) {
 }
 
 window.createRandomSubjects = async function() {
-    const amount = $('#example-data-input').value;
+    let amount = $('#example-data-input').value;
     if(!amount || amount == 0) {
         ioHelper.showToast(languageHelper.getTranslation('incorrect-amount'), 4000, ioHelper.interactionTypes.WARNING);
         return;
     }
     for(let i = 0; i < amount; ++i) {
-        const subjectKey = `Random User ${i + 1}`;
-        await clinicaldataWrapper.addSubject(subjectKey);
-        console.log("after store")
-        loadSubjectKeys();
-        skipDataHasChangedCheck = true;
-        await loadSubjectData(subjectKey)
-        await createExampleData(subjectKey);
-        loadSubjectKeys();
+        try{
+            const subjectKey = `Random User ${i + 1}`;
+            await clinicaldataWrapper.addSubject(subjectKey);
+            console.log("after store")
+            loadSubjectKeys();
+            skipDataHasChangedCheck = true;
+            await loadSubjectData(subjectKey)
+            await createExampleData(subjectKey);
+            loadSubjectKeys();
+        }
+        catch(error) {
+            //user already exists, increase index
+            amount++;
+        }
     }
 }
 
