@@ -207,8 +207,8 @@ window.createRandomSubjects = async function() {
             loadSubjectKeys();
         }
         catch(error) {
-            //user already exists, increase index
-            amount++;
+            if(error == clinicaldataWrapper.errors.SUBJECTKEYEXISTENT || error == clinicaldataWrapper.errors.SUBJECTKEYEXISTENTOTHERSITE) amount++;
+            else console.log(error);
         }
     }
 }
@@ -297,7 +297,7 @@ async function createExampleData(subjectKey) {
                     }
                 }
             }
-            await clinicaldataWrapper.storeSubjectFormData(subjectKey, seOID, formOID, formItemDataList, clinicaldataWrapper.dataStatusTypes.COMPLETE );
+            await clinicaldataWrapper.storeSubjectFormData(seOID, formOID, formItemDataList, clinicaldataWrapper.dataStatusTypes.COMPLETE );
             await saveFormData();
             await loadTree(seOID, formOID);
         }
