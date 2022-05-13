@@ -212,7 +212,7 @@
     "textarea-hint": "Render items with the datatype String as multi-line textareas instead of one-line inputs.",
     "survey-view-hint": "Automatically open the survey view on mobile devices when clicking on a study event.",
     "export-data": "Export Data",
-    "export-data-hint": "These options lets you download the project in CDISC ODM-XML or CSV format. You can either download all data (including the metadata and data from all subjects including the entire audit trail), or only the metadata or clinicaldata. Please note that only the first option creates a backup of your project.",
+    "export-data-hint": "These options let you download the project in CDISC ODM-XML or CSV format. You can either download all data (including the metadata and data from all subjects including the entire audit trail), or only the metadata or clinicaldata. Please note that only the first option creates a backup of your project.",
     "export-project": "Export Project (ODM)",
     "export-metadata": "Export Metadata (ODM)",
     "export-clinicaldata": "Export Clinical Data (CSV)",
