@@ -31,14 +31,12 @@ function isLikertPossible(itemGroupOID){
         if(compareCodelistOID != null && codeListOID != compareCodelistOID) return false;
         compareCodelistOID = codeListOID;
     }
-    console.log("show as likert")
     return true;
 }
 
 function getItemGroupDefault(itemGroupOID, options) {
     const itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`);
     const showItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemGroupOID);
-
 
     const itemGroupContent = document.createElement("div");
     itemGroupContent.className = `item-group-content ${showItemGroup ? 'is-hidden-survey-view' : ''}`;
@@ -53,7 +51,6 @@ function getItemGroupDefault(itemGroupOID, options) {
         const itemOID = itemRef.getAttribute("ItemOID");
         const itemDef = $(`ItemDef[OID="${itemOID}"]`);
         const showItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemOID);
-
 
         const itemField = document.createElement("div");
         itemField.className = `item-field ${showItemGroup ? 'is-hidden-survey-view' : ''}`;
@@ -103,7 +100,6 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
         let likertOptionsDiv = document.createElement('div');
         likertOptionsDiv.classList = "column is-12 columns is-mobile-hidden";
 
-
         let likertOptionsPlaceholder = document.createElement('div');
         likertOptionsPlaceholder.classList = "column is-5";
         let likertOptionsHeader = document.createElement('div');
@@ -111,7 +107,6 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
         likertOptionsDiv.appendChild(likertOptionsPlaceholder)
         likertOptionsDiv.appendChild(likertOptionsHeader);
         likertContent.appendChild(likertOptionsDiv);
-
 
         for (let codeListItem of codeListItems) {
             const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
