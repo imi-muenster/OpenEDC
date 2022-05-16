@@ -66,6 +66,7 @@ export async function storeAdmindata() {
     await ioHelper.setODM(admindataFile.fileName, admindata);
 
     if (previousFileName && previousFileName != admindataFile.fileName) ioHelper.removeODM(previousFileName);
+    ioHelper.dispatchGlobalEvent('AdmindataStored');
 }
 
 export function getLastUpdate() {

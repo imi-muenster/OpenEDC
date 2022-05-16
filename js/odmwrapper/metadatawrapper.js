@@ -94,6 +94,7 @@ export async function storeMetadata() {
     await ioHelper.setODM(metadataFile.fileName, metadata);
 
     if (previousFileName && previousFileName != metadataFile.fileName) ioHelper.removeODM(previousFileName);
+    ioHelper.dispatchGlobalEvent('MetadataStored');
 }
 
 export function getSerializedMetadata() {
