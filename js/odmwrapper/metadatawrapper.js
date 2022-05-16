@@ -321,6 +321,9 @@ export function getElementsWithExpression(studyEventOID, formOID) {
 
     return elementsWithExpression;
 }
+export function getItemDefsForMethodOID(methodOID) {
+    return [...$$('ItemRef')].filter(itemDef => itemDef.getAttribute('MethodOID') == methodOID).map(itemRef => getElementDefByOID(itemRef.getAttribute('ItemOID')));
+}
 
 function addElementWithExpression(elementList, elementType, elementPath, expressionOID, expressionType) {
     const expressionElement = expressionType == expressionTypes.CONDITION ? $(`ConditionDef[OID="${expressionOID}"]`) : $(`MethodDef[OID="${expressionOID}"]`);
