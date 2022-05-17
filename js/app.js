@@ -43,6 +43,8 @@ ioHelper.addGlobalEventListener("DOMContentLoaded", async () => {
     await languageHelper.init();
     languageHelper.localize();
 
+    metadataWrapper.loadPossibleOpenEDCSettings();
+
     // Check if this app might be served from an OpenEDC Server instance and then show the login modal accordingly
     await ioHelper.init()
         .then(serverStatus => {
@@ -119,7 +121,7 @@ const startApp = async () => {
     checkAppVersion();
     subscribeToServerUpdates();
     reportsModule.init();
-    pluginRegistrar.enablePlugins();
+    pluginRegistrar.enablePlugins(metadataWrapper.loadSettings);
 }
 
 const setTitles = () => {

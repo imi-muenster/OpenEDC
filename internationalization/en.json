@@ -209,6 +209,8 @@
     "miscellaneous-options-hint": "In the following, different miscellaneous options are listed that you can activate by clicking on it. If you are connected to a server, the options are valid for all users.",
     "element-name-hint": "Allow editing the name of elements, according to the CDISC ODM standard. If disabled, the name is automatically set to the value of the ID.",
     "show-as-likert-hint": "Show itemgroups as likert scale if possible. Itemgroups with an alias tag 'no-likert' and the value 'yes' are ignored.",
+    "no-likert": "No likert scale",
+    "no-likert-description": "If you check this checkbox, the itemgroup is not shown in likert form even with the project options set to likert scale.",
     "textarea-hint": "Render items with the datatype String as multi-line textareas instead of one-line inputs.",
     "survey-view-hint": "Automatically open the survey view on mobile devices when clicking on a study event.",
     "export-data": "Export Data",
@@ -383,5 +385,11 @@
     "new-project-hint": "<strong>You created your new project</strong><br><br>Start by adding your first event with a click on the <i>Add</i> button below the <i>Events</i> title.<br><br>Events refer to points in time or incidents during your study for which you want to collect data. This could be, for example, <i>Baseline</i> and <i>Follow-up</i> or <i>Patient-reported data</i> and <i>Routine data</i>. It is fine if your study consists of only one event.",
     "first-event-hint": "<strong>You added your first event</strong><br><br>You can now add a description to your event. Please note that this description is dependent on the language that you have currently selected.<br><br>You can change the language at any time to add new translations to your project which lets you create a multilingual study.",
     "first-event-edited-hint": "<strong>You added your first description</strong><br><br>You can now continue by adding a form to the event. Then you can add a group to the form and then items to that group. When you have created your first few items, you can click on <i>Capture Data</i> to see the form in action.<br><br>Go to <i>Project Options</i> to see more options for your project.<br><br>Great luck with your study!",
-    "exemplary-project-hint": "<strong>Exemplary project opened</strong><br><br>You can now start by creating a new test patient in the <i>Subjects</i> column. If you click on an <i>Event</i>, you will see the associated <i>Forms</i> to the right. Clicking on a form allows you to enter <i>Data</i> for the currently selected subject.<br><br>You can customize the structure of the forms by clicking on the <i>Design Forms</i> button in the upper right corner. If you want to close the example, click on <i>Close Example<i/>."
+    "exemplary-project-hint": "<strong>Exemplary project opened</strong><br><br>You can now start by creating a new test patient in the <i>Subjects</i> column. If you click on an <i>Event</i>, you will see the associated <i>Forms</i> to the right. Clicking on a form allows you to enter <i>Data</i> for the currently selected subject.<br><br>You can customize the structure of the forms by clicking on the <i>Design Forms</i> button in the upper right corner. If you want to close the example, click on <i>Close Example<i/>.",
+    "edit-settings": "Settings",
+    "no-description": "No description",
+    "no-name": "No name",
+    "assign-value": "Assign value",
+    "no-survey": "Hide in survey view",
+    "no-survey-description": "If you check this checkbox, the element will not be shown in the survey view."
 }

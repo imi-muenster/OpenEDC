@@ -1,0 +1,20 @@
+[
+    {
+        "key": "no-likert",
+        "i18n": "no-likert",
+        "description": "no-likert-description",
+        "type": "boolean",
+        "scope": [
+            "itemgroup"
+        ]
+    },
+    {
+        "key": "no-survey",
+        "i18n": "no-survey",
+        "description": "no-survey-description",
+        "type": "boolean",
+        "scope": [
+            "itemgroup", "item"
+        ]
+    }
+]   

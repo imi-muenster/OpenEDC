@@ -79,7 +79,8 @@ class MetadataSection extends HTMLElement {
                                             </div>
                                         </div>
                                         <div class="field">
-                                            <label class="label" i18n="alias-names"></label>
+                                            <label class="label is-inline-block" i18n="alias-names"></label>
+                                            <a class="button is-small is-link is-pulled-right" i18n="edit-settings" onclick="showSettingsEditor()"></a>
                                             <div id="alias-inputs"></div>
                                             <button class="button is-small is-pulled-right mt-2" id="add-alias-button" onclick="addEmptyAliasInput()" i18n="add"></button>
                                         </div>
