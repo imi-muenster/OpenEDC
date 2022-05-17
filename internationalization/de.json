@@ -387,6 +387,7 @@
     "first-event-edited-hint": "<strong>Sie haben Ihre erste Beschreibung hinzugefügt</strong><br><br>Sie können nun fortfahren, indem Sie dem Ereignis ein Formular hinzufügen. Dann können Sie dem Formular eine Gruppe und dann Fragen zu dieser Gruppe hinzufügen. Wenn Sie Ihre ersten Fragen erstellt haben, können Sie auf <i>Datenerfassung</i> klicken, um das Formular in Aktion zu sehen.<br><br>Gehen Sie zu den <i>Projektoptionen</i>, um weitere Einstellungen für Ihr Projekt zu sehen.<br><br>Viel Erfolg mit Ihrer Studie!",
     "exemplary-project-hint": "<strong>Beispielprojekt geöffnet</strong><br><br>In der Spalte <i>Probanden</i> können Sie nun zum Beispiel einen neuen Testpatienten anlegen. Wenn Sie auf ein <i>Ereignis</i> klicken, sehen Sie rechts davon die zugehörigen <i>Formulare</i>. Mit einem Klick auf ein Formular können Sie <i>Daten</i> für den aktuell ausgewählten Probanden eingeben.<br><br>Über den Knopf <i>Formularentwurf</i> oben rechts können Sie die Struktur der Formulare anpassen. Wenn Sie das Beispiel schließen möchten, klicken Sie einfach auf <i>Beispiel schließen<i/>.",
     "edit-settings": "Einstellungen",
+    "edit-settings-text": "In dieser Ansicht können Einstellungen für einzelne Elemente vorgenommen werden.",
     "no-description": "Keine Beschreibung vorhanden",
     "no-name": "Kein name vorhanden",
     "assign-value": "Wert zuweisen",

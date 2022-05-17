@@ -464,7 +464,7 @@ window.showSettingsEditor = function() {
     const currentElementType = currentPath.last.element;
     let settingsModal = document.createElement('settings-modal');
     settingsModal.setHeading(languageHelper.getTranslation('edit-settings'));
-    settingsModal.setMessage("Dies ist eine Message");
+    settingsModal.setMessage(languageHelper.getTranslation('edit-settings-text'));
     settingsModal.setPossibleSettings(metadataWrapper.loadedSettings);
     settingsModal.setCurrentElementType(currentElementType);
     settingsModal.setCurrentElementOID(currentPath.last.value)
