@@ -149,6 +149,18 @@ class ProjectModal extends HTMLElement {
                                     </div>
                                 </div>
                             </div>
+                            <div class="notification is-link is-light">
+                                <h1 class="title is-4" i18n="example-data"></h1>
+                                <p class="mb-5" i18n="example-data-hint"></p>
+                                <div class="field has-addons">
+                                    <div class="control is-expanded">
+                                        <input class="input is-link" type="text" autocomplete="off" i18n-ph="amount" autocomplete-mode="1" id="example-data-input">
+                                    </div>
+                                    <div class="control">
+                                        <a class="button is-link" id="example-data-create-button" i18n="create" onclick="createRandomSubjects()"></a>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="notification is-danger is-light">
                                 <h1 class="title is-4" i18n="remove-data"></h1>
                                 <p class="mb-5" i18n="remove-data-hint"></p>

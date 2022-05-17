@@ -120,6 +120,7 @@ export async function storeMetadata() {
     await ioHelper.setODM(metadataFile.fileName, metadata);
 
     if (previousFileName && previousFileName != metadataFile.fileName) ioHelper.removeODM(previousFileName);
+    ioHelper.dispatchGlobalEvent('MetadataStored');
 }
 
 export function getSerializedMetadata() {
@@ -345,6 +346,9 @@ export function getElementsWithExpression(studyEventOID, formOID) {
     }
 
     return elementsWithExpression;
+}
+export function getItemDefsForMethodOID(methodOID) {
+    return [...$$('ItemRef')].filter(itemDef => itemDef.getAttribute('MethodOID') == methodOID).map(itemRef => getElementDefByOID(itemRef.getAttribute('ItemOID')));
 }
 
 function addElementWithExpression(elementList, elementType, elementPath, expressionOID, expressionType) {
@@ -1063,9 +1067,28 @@ export async function mergeMetadata(odmXMLString) {
             }
         });
 
-        // Replace all OIDs that need to be replaced
-        Object.keys(replaceOIDs).reverse().forEach(oldOID => odmXMLString = odmXMLString.replace(new RegExp(`OID="${oldOID}"`, "g"), `OID="${replaceOIDs[oldOID]}"`));
+        // Replace all OIDs that need to be replaced. Also consider ConditionDefs and MethodDefs
+        
+        Object.keys(replaceOIDs).reverse().forEach(oldOID => {
+            odmXMLString = odmXMLString.replace(new RegExp(`OID="${oldOID}"`, "g"), `OID="${replaceOIDs[oldOID]}"`)
+        });
+
+        // Replace old OIDs by new OIDs in every conditionDef and methodDef
+
+
         const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
+        let conditionDefs = odm.querySelectorAll("ConditionDef");
+        let methodDefs = odm.querySelectorAll("MethodDef");
+        console.log(replaceOIDs);
+        console.log(Object.keys(replaceOIDs));
+        Object.keys(replaceOIDs).forEach(oldOID => {
+            conditionDefs.forEach(c => {
+                c.querySelector("FormalExpression").textContent = c.querySelector("FormalExpression").textContent.replace(new RegExp(oldOID, "g"), replaceOIDs[oldOID]);
+            });
+            methodDefs.forEach(m => {
+                m.querySelector("FormalExpression").textContent = m.querySelector("FormalExpression").textContent.replace(new RegExp(oldOID, "g"), replaceOIDs[oldOID]);
+            });
+        });
 
         // Remove OpenEDC data status code list if present (used to interpret the flag of clinical data entries; will be created on download again)
         // TODO: This is similar to importMetadata() and should be abstracted, e.g., in validateODM()
