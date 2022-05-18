@@ -3,7 +3,6 @@ import * as metadataTemplates from "../odmtemplates/metadatatemplates.js";
 import * as htmlConverter from "../converter/htmlconverter.js";
 import * as languageHelper from "../helper/languagehelper.js";
 import * as ioHelper from "../helper/iohelper.js";
-import settings from "../../settings.json" assert { type: "json" };
 
 class MetadataFile {
     constructor(modifiedDate) {
@@ -1110,9 +1109,9 @@ export async function mergeMetadata(odmXMLString) {
 }
 
 export function loadPossibleOpenEDCSettings() {
-    const data = settings;
-    loadSettings(SETTINGS_CONTEXT, data);
-    
+    fetch('./settings.json')
+    .then(response => response.json())
+    .then(data => loadSettings(SETTINGS_CONTEXT, data))
 }
 
 export function loadSettings(context, data) {

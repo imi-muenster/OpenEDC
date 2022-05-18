@@ -5,7 +5,7 @@
 // New translations can be registered with, for example, languageHelper.registerTranslationFile("en", new URL("./translations/en.json", import.meta.url))
 
 const enabledPlugins = [
-    //{name: "My Plugin", entryFile: "./myplugin/myplugin.js", settings: "./myplugin/settings.json"}
+    {name: "My Plugin", entryFile: "./myplugin/myplugin.js", settings: "/plugins//myplugin/settings.json"}
 ];
 
 export const enablePlugins = (loadPluginSettings) => {
@@ -14,9 +14,11 @@ export const enablePlugins = (loadPluginSettings) => {
             .then(plugin => plugin.default())
             .catch(error => console.log(error));
         if(enabledPlugin.settings){
-            import(enabledPlugin.settings, { assert: { type: "json" } })
-                .then(settings => loadPluginSettings(enabledPlugin.name, settings.default))
-                .catch(error => console.log(error));
+            fetch(enabledPlugin.settings)
+            .then(response => response.json())
+            .then(settings => loadPluginSettings(enabledPlugin.name, settings))
+            .catch(error => console.log(error));
         }
     }
 }
+
