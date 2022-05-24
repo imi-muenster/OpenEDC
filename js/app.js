@@ -13,7 +13,7 @@ import * as pluginRegistrar from "../plugins/registrar.js";
 import * as manifestHelper from "./helper/manifesthelper.js";
 import * as repositoryHelper from "./helper/repositoryhelper.js";
 
-const appVersion = "0.8.1";
+const appVersion = "0.8.2";
 
 const appModes = {
     METADATA: "metadata",
@@ -68,7 +68,7 @@ ioHelper.addGlobalEventListener("DOMContentLoaded", async () => {
 
     // Register service worker for offline capabilities
     const developmentOrigins = ["localhost", "127.0.0.1", "dev.openedc.org"];
-    const enableServiceWorker = !developmentOrigins.some(origin => window.location.origin.includes(origin));
+    const enableServiceWorker = false //!developmentOrigins.some(origin => window.location.origin.includes(origin));
     if (enableServiceWorker && window.navigator.serviceWorker) {
         window.navigator.serviceWorker.register("./serviceworker.js");
     }
@@ -520,6 +520,10 @@ window.miscOptionClicked = async function(event) {
             break;
         case "auto-survey-view-checkbox":
             await ioHelper.setSetting("autoSurveyView", event.target.checked);
+            break;
+        case "check-new-version-automatically":
+            await ioHelper.setSetting("autoUpdates", event.target.checked);
+            break;
     }
 
     reloadApp();
@@ -691,14 +695,91 @@ function addModalsToDOM() {
     }
 }
 
-function checkAppVersion() {
-    ioHelper.getAppVersion()
-        .then(version => {
-            if (version != appVersion) ioHelper.showToast(languageHelper.getTranslation("app-outdated-hint"), 10000, ioHelper.interactionTypes.WARNING);
+window.checkForNewVersion = async () => {
+    const newVersion = await checkAppVersion();
+    console.log(newVersion)
+    if(newVersion) {
+        $('#new-version-info').innerText = "new version detected";
+        $('#new-version-info').classList.add('has-text-success');
+        $('#new-version-info').classList.remove('has-text-danger');
+        $('#update-version-button').disabled = false;
+    } else {
+        $('#new-version-info').innerText = "no new version detected";
+        $('#new-version-info').classList.add('has-text-danger');
+        $('#new-version-info').classList.remove('has-text-success');
+    }
+}
+
+window.updateToNewVersion = async() => {
+    console.log('Update')
+    if(window.navigator.serviceWorker) {
+        window.navigator.serviceWorker.addEventListener('message', event => {
+            console.log("cache invalidated");
+            window.location.reload();
         })
-        .catch(() => {
-            if (ioHelper.hasServerURL()) ioHelper.showToast(languageHelper.getTranslation("app-offline-hint"), 10000, ioHelper.interactionTypes.WARNING);
-        });
+
+        console.log('in active serviceworker')
+        window.navigator.serviceWorker.ready.then(registration => registration.active.postMessage('Hi there'))
+    }
+}
+
+async function checkAppVersion() {
+    try{
+        console.log("checking new version");
+        const version = await ioHelper.getAppVersion();
+        console.log(version);
+        if (version != appVersion) {
+            ioHelper.showToast(languageHelper.getTranslation("app-outdated-hint"), 10000, ioHelper.interactionTypes.WARNING, [{i18n: 'update', callback: updateToNewVersion}]);
+            return true;
+        }
+        return false;
+    }
+    catch(error) {
+        if (ioHelper.hasServerURL()) ioHelper.showToast(languageHelper.getTranslation("app-offline-hint"), 10000, ioHelper.interactionTypes.WARNING);
+        return false;
+    };
+}
+
+window.showNotifications = async(e) => {
+    console.log('show notifications');
+    
+    e.preventDefault();
+    let div = document.createElement('div');
+    div.classList = 'container__menu'
+    document.body.append(div);
+    const rect = document.querySelector('#notification-icon').getBoundingClientRect();
+
+    // Set the position for menu
+    div.style.top = `${rect.top + 40}px`;
+    div.style.left = `${rect.left}px`;
+
+    // Show the menu
+    div.classList.remove('container__menu--hidden');
+
+    let triangle = document.createElement('div');
+    triangle.classList = 'triangle';
+    div.appendChild(triangle)
+
+    let ul = document.createElement('ul');
+    ul.classList = 'no-bullets';
+    div.appendChild(ul);
+
+    let listElement1 = document.createElement('div');
+    listElement1.innerText = "er11dd1";
+    listElement1.classList = 'div-underline';
+    ul.appendChild(listElement1)
+
+
+
+    let listElement2 = document.createElement('div');
+    listElement2.innerText = "gwgwgw";
+    ul.appendChild(listElement2)
+
+
+
+    //jq(menu).css({'top':e.pageY,'left':e.pageX, 'position':'absolute', 'border':'1px solid darkblue', 'z-index': 50});
+    return false;
+    
 }
 
 async function handleURLSearchParameters() {

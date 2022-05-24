@@ -27,6 +27,9 @@ class NavigationBar extends HTMLElement {
                         <a class="navbar-item" id="about-button" onclick="showAboutModal()" i18n="about"></a>
                     </div>
                     <div class="navbar-end">
+                        <div class="navbar-item" id="notification-item">
+                            <i class="fa-solid fa-bell has-text-link has-hover" onclick="showNotifications(event)" id="notification-icon"></i>
+                        </div>
                         <div class="navbar-item">
                             <div class="buttons">
                                 <button class="button is-hidden" id="store-metadata-async-button" onclick="storeMetadataAsync()" i18n="save-forms"></button>

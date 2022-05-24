@@ -559,19 +559,38 @@ export function showMessage(heading, message, callbacks, callbackType, closeText
     if (!$("#message-modal")) document.body.appendChild(messageModal);
 }
 
-export function showToast(message, duration, toastType) {
+export function showToast(message, duration, toastType, buttons) {
     const toast = document.createElement("div");
-    toast.className = "notification is-toast";
+    toast.classList = "notification is-toast";
     toast.classList.add(toastType ?? interactionTypes.SUCCESS);
     toast.innerHTML = message;
 
+    console.log("show toast")
+    console.log(buttons)
+    if(buttons) {
+        let div = document.createElement('div');
+        div.classList = 'buttons mt-2';
+        console.log(buttons)
+        buttons.forEach(({i18n, callback, options}) => {
+            let button = document.createElement('button');
+            button.classList = "button";
+            button.classList.add(options?.size ? options.size : 'is-small')
+            button.classList.add(options?.width ? options.width : 'is-fullwidth')
+            button.classList.add(options?.color ? `is-${options.color}` : 'is-link')
+            button.innerText = languageHelper.getTranslation(i18n);
+            button.onclick = () => callback();
+            div.append(button)
+        })
+        toast.appendChild(div)
+    }
+ 
     const closeButton = document.createElement("button");
     closeButton.className = isMobile() ? "delete is-medium" : "delete";
     closeButton.onclick = () => fadeOutToast(toast);
     toast.insertAdjacentElement("afterbegin", closeButton);
 
     fadeInToast(toast);
-    if (duration) setTimeout(() => fadeOutToast(toast), duration);
+    if (duration) setTimeout(() => fadeOutToast(toast), 1000000);
 }
 
 function fadeInToast(toast) {

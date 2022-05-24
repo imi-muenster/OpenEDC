@@ -1,4 +1,4 @@
-const staticCacheName = "static-cache-0.8.1";
+const staticCacheName = "static-cache-0.8.2";
 const odmCacheName = "odm-cache";
 const dynamicCacheName = "dynamic-cache";
 const messageQueueName = "message-queue";
@@ -26,6 +26,7 @@ const cacheFirstURLs = staticURLs.concat(odmURLs);
 
 // Cache base url
 self.addEventListener("install", installEvent => {
+    self.skipWaiting();
     installEvent.waitUntil(
         caches.open(staticCacheName).then(cache => {
             return cache.add(new Request("./", { cache: "reload" }));
@@ -44,6 +45,20 @@ self.addEventListener("activate", activateEvent => {
         })
     );
 });
+
+addEventListener("message", (activateEvent) => {
+    console.log('recieved message')
+    activateEvent.waitUntil(
+        caches.keys().then(async keys => {
+            await Promise.all(keys
+                .filter(key => key != staticCacheName && key != odmCacheName && key != dynamicCacheName && key != messageQueueName)
+                .map(key => caches.delete(key))
+            )
+            activateEvent.source.postMessage("Deleting cache done");
+        })
+    );
+})
+
 
 // Cache and return static and dynamic assets
 self.addEventListener("fetch", fetchEvent => {

@@ -161,6 +161,19 @@ class ProjectModal extends HTMLElement {
                                     </div>
                                 </div>
                             </div>
+                            <div class="notification is-link is-light">
+                                <h1 class="title is-4" i18n="new-version"></h1>
+                                <p class="mb-2" i18n="new-version-hint"></p>
+                                <p class="mb-2" id="new-version-info"></p>
+                                <label class="checkbox is-block">
+                                    <input class="mb-5" type="checkbox" id="check-new-version-automatically" oninput="miscOptionClicked(event)">
+                                    <span i18n="check-updates-automatically"></span>
+                                </label>
+                                <div class="buttons are-small">
+                                    <button class="button is-link" onclick="checkForNewVersion()" i18n="check"></button>
+                                    <button class="button is-link" onclick="updateToNewVersion()" i18n="update" id="update-version-button" disabled></button>
+                                </div>
+                            </div>
                             <div class="notification is-danger is-light">
                                 <h1 class="title is-4" i18n="remove-data"></h1>
                                 <p class="mb-5" i18n="remove-data-hint"></p>

@@ -392,5 +392,10 @@
     "no-name": "No name",
     "assign-value": "Assign value",
     "no-survey": "Hide in survey view",
-    "no-survey-description": "If you check this checkbox, the element will not be shown in the survey view."
+    "no-survey-description": "If you check this checkbox, the element will not be shown in the survey view.",
+    "new-version": "New Version",
+    "new-version-hint": "Checks whether a new version is available.",
+    "check": "Check",
+    "check-updates-automatically": "Automatically check for updates periodically",
+    "update": "Update"
 }

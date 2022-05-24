@@ -392,5 +392,10 @@
     "no-name": "Kein name vorhanden",
     "assign-value": "Wert zuweisen",
     "no-survey": "In Umfrageansicht ausblenden",
-    "no-survey-description": "Falls sie diese Checkbox anwählen, wird das Element in der Umfrageansicht ausgeblendet."
+    "no-survey-description": "Falls sie diese Checkbox anwählen, wird das Element in der Umfrageansicht ausgeblendet.",
+    "new-version": "Neue Version",
+    "new-version-hint": "Überprüft, ob eine neue Version verfügbar ist.",
+    "check": "Überprüfen",
+    "check-updates-automatically": "Automatisch periodisch auf neue Version prüfen",
+    "update": "Update"
 }

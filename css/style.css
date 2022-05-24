@@ -559,6 +559,66 @@ a.panel-block:hover {
     display: none;
 }
 
+i.has-hover {
+    color: var(--link-color);
+}
+
+i.has-hover:hover {
+    transform: scale(1.2);
+}
+
+i.has-hover:active {
+    box-shadow: 0 1px var(--link-active-color);
+    transform: translateY(1px);
+}
+
+.container__menu {
+    position: absolute;
+    width: 400px;
+    list-style-type: none;
+    margin: 0px !important;
+    padding: 5px;
+    border: 1px solid #cbd5e0;
+    border-radius: 0.25rem;
+    background-color: white;
+    border-color: var(--link-color);
+    z-index: 50;
+}
+
+.container__menu:after, .container__menu:before {
+	bottom: 100%;
+	left: 25px;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.container__menu:after {
+	
+	border-bottom-color: white;
+	border-width: 15px;
+	margin-left: -15px;
+}
+.container__menu:before {
+	
+	border-bottom-color: var(--link-color);
+	border-width: 16px;
+	margin-left: -16px;
+}
+
+.no-bullets {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.div-underline {
+    border-bottom: 1px solid var(--link-color);
+}
+
 @media only screen and (max-width: 1024px) {
     #app-mode-button .dropdown-menu {
         top: auto;
