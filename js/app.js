@@ -724,6 +724,10 @@ window.updateToNewVersion = async() => {
         console.log('in active serviceworker')
         window.navigator.serviceWorker.ready.then(registration => registration.active.postMessage('Hi there'))
     }
+    await notificationHelper.removeFilteredNotifications([{identifier: 'title', value: 'update'}]);
+    if($('#notification-div') && !$('#notification-div.container__menu--hidden')) {
+        showNotifications();
+    }
 }
 
 async function checkVersionAndShowNotification() {
