@@ -609,6 +609,10 @@ i.has-hover:active {
 	margin-left: -16px;
 }
 
+.container__menu--hidden {
+    display: none;
+}
+
 .no-bullets {
     list-style-type: none;
     margin: 0;
@@ -617,6 +621,10 @@ i.has-hover:active {
 
 .div-underline {
     border-bottom: 1px solid var(--link-color);
+}
+
+.notification-close:hover {
+    background-color: var(--link-light-hover-color);
 }
 
 @media only screen and (max-width: 1024px) {
