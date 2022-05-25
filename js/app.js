@@ -12,6 +12,8 @@ import * as csvConverter from "./converter/csvconverter.js";
 import * as pluginRegistrar from "../plugins/registrar.js";
 import * as manifestHelper from "./helper/manifesthelper.js";
 import * as repositoryHelper from "./helper/repositoryhelper.js";
+import * as notificationHelper from "./helper/notificationhelper.js"
+import * as htmlElements from "./helper/htmlelements.js"
 
 const appVersion = "0.8.2";
 
@@ -118,7 +120,8 @@ const startApp = async () => {
     if (getCurrentMode() == appModes.METADATA) metadataModule.reloadDetailsPanel();
 
     // After all, check app version, subscribe to server updates, and enable plugins
-    checkAppVersion();
+    checkVersionAndShowNotification();
+    setCheckAppVersionInterval();
     subscribeToServerUpdates();
     reportsModule.init();
     pluginRegistrar.enablePlugins(metadataWrapper.loadSettings);
@@ -723,11 +726,9 @@ window.updateToNewVersion = async() => {
     }
 }
 
-async function checkAppVersion() {
+async function checkVersionAndShowNotification() {
     try{
-        console.log("checking new version");
-        const version = await ioHelper.getAppVersion();
-        console.log(version);
+        const version = await checkAppVersion();
         if (version != appVersion) {
             ioHelper.showToast(languageHelper.getTranslation("app-outdated-hint"), 10000, ioHelper.interactionTypes.WARNING, [{i18n: 'update', callback: updateToNewVersion}]);
             return true;
@@ -740,47 +741,78 @@ async function checkAppVersion() {
     };
 }
 
+async function checkAppVersion() {
+    try{
+        const version = await ioHelper.getAppVersion();
+        return version != appVersion;
+    }
+    catch(error) {
+        throw error;
+    };
+}
+
+async function setCheckAppVersionInterval() {
+    setInterval(async () => {
+        const newVersion = await checkAppVersion();
+        if(newVersion) {
+            let notifications = await notificationHelper.getFilteredNotifications([{identifier: 'isSystem', value: true}, {identifier: 'title', value: 'update'}]);
+            console.log(notifications);
+            if(notifications.length == 0) {
+                let notification = new notificationHelper.OpenEDCNotification(
+                    "System", "New Version", "Es ist eine neue Version verfügbar. Dieser Text kann auch länger sein.", true,
+                    [new notificationHelper.OpenEDCNotificationAction('update', 'updateToNewVersion', 'button')],
+                    'fa-wrench');
+                notificationHelper.addNotification(notification);
+            }
+        }
+    }, 10000);
+}
+
 window.showNotifications = async(e) => {
     console.log('show notifications');
+    if(e) e.preventDefault();
+    const notifications = await notificationHelper.getNotifications();
+
+    let div;
+    if($('#notification-div')) {
+        div = $('#notification-div');
+        div.removeChild(div.querySelector('ul'));
+    } else {
+        div = document.createElement('div');
+        div.classList = 'container__menu'
+        div.id = 'notification-div'
+        document.body.append(div);
+        const rect = document.querySelector('#notification-icon').getBoundingClientRect();
     
-    e.preventDefault();
-    let div = document.createElement('div');
-    div.classList = 'container__menu'
-    document.body.append(div);
-    const rect = document.querySelector('#notification-icon').getBoundingClientRect();
+        // Set the position for menu
+        div.style.top = `${rect.top + 40}px`;
+        div.style.left = `${rect.left}px`;
 
-    // Set the position for menu
-    div.style.top = `${rect.top + 40}px`;
-    div.style.left = `${rect.left}px`;
-
+        let triangle = document.createElement('div');
+        triangle.classList = 'triangle';
+        div.appendChild(triangle);     
+    }
+    div.appendChild(htmlElements.getNotificationList(notifications));
+    document.addEventListener('click', (e) => closeNotificationsClickHandler(e));
+    
     // Show the menu
     div.classList.remove('container__menu--hidden');
 
-    let triangle = document.createElement('div');
-    triangle.classList = 'triangle';
-    div.appendChild(triangle)
-
-    let ul = document.createElement('ul');
-    ul.classList = 'no-bullets';
-    div.appendChild(ul);
-
-    let listElement1 = document.createElement('div');
-    listElement1.innerText = "er11dd1";
-    listElement1.classList = 'div-underline';
-    ul.appendChild(listElement1)
-
-
-
-    let listElement2 = document.createElement('div');
-    listElement2.innerText = "gwgwgw";
-    ul.appendChild(listElement2)
-
-
-
     //jq(menu).css({'top':e.pageY,'left':e.pageX, 'position':'absolute', 'border':'1px solid darkblue', 'z-index': 50});
-    return false;
-    
+    return false; 
 }
+
+function closeNotificationsClickHandler(e) {
+    let notificationsDiv = document.querySelector('#notification-div');
+    const isClickedOutside = !notificationsDiv.contains(e.target);
+    if (isClickedOutside) {
+        // Hide the menu
+        notificationsDiv.classList.add('container__menu--hidden');
+
+        // Remove the event handler
+        document.removeEventListener('click', closeNotificationsClickHandler);
+    }
+} 
 
 async function handleURLSearchParameters() {
     const urlParams = new URLSearchParams(window.location.search);

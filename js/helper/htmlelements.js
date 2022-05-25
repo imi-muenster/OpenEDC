@@ -7,6 +7,7 @@
 //
 
 import * as languageHelper from "./languagehelper.js";
+import * as notificationHelper from "./notificationhelper.js"
 
 const rangeCheckComparators = ["", "LT", "LE", "GT", "GE", "EQ", "NE"];
 const rangeCheckComparatorsDisplay = ["--", "<", "<=", ">", ">=", "=", "!="];
@@ -229,4 +230,110 @@ export function getAuditRecord(auditRecord) {
             ${auditRecord.formOID ? "<button class='button is-small mt-4'>" + languageHelper.getTranslation("view-data") + "</button>" : ""}
         </div>
     `, "text/html").body.firstChild;
+}
+
+export function getNotificationList(notifications) {
+
+    let ul = document.createElement('ul');
+    ul.classList = 'no-bullets';
+    if(notifications.length > 0) {
+        notifications.forEach(notification => {
+            let li = document.createElement('li');
+            let div = document.createElement('div');
+            div.classList = 'm-1 has-background-link-light'
+    
+            let columnsDiv = document.createElement('div');
+            columnsDiv.classList = 'columns m-0';
+            div.appendChild(columnsDiv);
+    
+            //Icon Column
+            let iconColumn = document.createElement('div');
+            iconColumn.classList = 'column is-2 has-text-centered';
+            let iconContainer = document.createElement('span');
+            iconContainer.classList = 'icon is-medium mt-2';
+            let icon = document.createElement('i');
+            icon.classList = `fa-solid fa-2x has-text-link-dark ${notification.icon && typeof notification.icon != 'undefined' && notification.icon != '' ? notification.icon : 'fa-circle-info'}`;
+            iconContainer.appendChild(icon);
+            iconColumn.appendChild(iconContainer);
+            columnsDiv.appendChild(iconColumn);
+    
+            //Content Column
+            let contentColumn = document.createElement('div');
+            contentColumn.classList = 'column is-9';
+    
+            let creatorDiv = document.createElement('div');
+            contentColumn.appendChild(creatorDiv);
+            let creator = document.createElement('span');
+            creator.classList = `is-inline-block ${notification.isSystem ? 'has-text-success' : ''}`
+            creator.innerText = notification.creator;
+            creatorDiv.appendChild(creator);
+    
+            let date = document.createElement('span');
+            date.classList = 'is-pulled-right';
+            const creationDate = new Date(notification.creationDate);
+            if(isToday(creationDate)) date.innerText = creationDate.toLocaleTimeString();
+            else date.innerText = creationDate.toLocaleDateString();
+            creatorDiv.appendChild(date);
+    
+            let title = document.createElement('h2')
+            title.classList = 'title is-6 mb-2';
+            title.innerText = notification.title;
+            contentColumn.appendChild(title);
+    
+            let text = document.createElement('p');
+            text.innerText = notification.message;
+            contentColumn.appendChild(text);
+            columnsDiv.appendChild(contentColumn);
+
+            if(notification.actions) {
+                let buttonsDiv = document.createElement('div');
+                buttonsDiv.classList = 'buttons';
+                notification.actions.forEach(action => {
+                    let button = document.createElement('button');
+                    button.classList = 'button is-link is-small is-fullwidth';
+                    button.onclick = () => window[action.callback]();
+                    button.innerText = languageHelper.getTranslation(action.name);
+                    button.value = languageHelper.getTranslation(action.name);
+                    buttonsDiv.appendChild(button);
+                });
+                contentColumn.appendChild(buttonsDiv);
+                
+            }
+           
+            //close column
+            let closeColumn = document.createElement('div');
+            closeColumn.classList = 'column is-1 is-flex is-align-items-center notification-close';
+            closeColumn.onclick = async () => { await notificationHelper.removeNotification(notification.id); showNotifications(); };
+            let closeSpan = document.createElement('span');
+            closeSpan.classList = 'icon';
+            let closeIcon = document.createElement('i');
+            closeIcon.classList = `fa-solid fa-close has-text-link-dark`;
+            closeSpan.appendChild(closeIcon);
+            closeColumn.appendChild(closeSpan);
+            columnsDiv.appendChild(closeColumn);
+    
+            li.appendChild(div);
+            ul.appendChild(li);
+        })
+    }
+    else {
+        let li = document.createElement('li');
+        
+        let div = document.createElement('div');
+        div.classList = 'm-1 has-background-link-light'
+        let noNots = document.createElement('span');
+        noNots.innerText = "No new notifications available";
+        div.appendChild(noNots);
+        li.appendChild(div);
+        ul.append(li);
+    }
+
+    return ul;
+}
+
+const isToday = (someDate) => {
+    const today = new Date()
+    return someDate.getDate() == today.getDate() &&
+        someDate.getMonth() == today.getMonth() &&
+        someDate.getFullYear() == today.getFullYear()
 }
