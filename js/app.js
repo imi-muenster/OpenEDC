@@ -70,7 +70,7 @@ ioHelper.addGlobalEventListener("DOMContentLoaded", async () => {
 
     // Register service worker for offline capabilities
     const developmentOrigins = ["localhost", "127.0.0.1", "dev.openedc.org"];
-    const enableServiceWorker = false //!developmentOrigins.some(origin => window.location.origin.includes(origin));
+    const enableServiceWorker = true //!developmentOrigins.some(origin => window.location.origin.includes(origin));
     if (enableServiceWorker && window.navigator.serviceWorker) {
         window.navigator.serviceWorker.register("./serviceworker.js");
     }
@@ -732,8 +732,7 @@ window.updateToNewVersion = async() => {
 
 async function checkVersionAndShowNotification() {
     try{
-        const version = await checkAppVersion();
-        if (version != appVersion) {
+        if(newVersion) {
             ioHelper.showToast(languageHelper.getTranslation("app-outdated-hint"), 10000, ioHelper.interactionTypes.WARNING, [{i18n: 'update', callback: updateToNewVersion}]);
             return true;
         }

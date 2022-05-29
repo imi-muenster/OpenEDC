@@ -559,15 +559,15 @@ a.panel-block:hover {
     display: none;
 }
 
-i.has-hover {
+div.has-hover {
     color: var(--link-color);
 }
 
-i.has-hover:hover {
+div.has-hover:hover {
     transform: scale(1.2);
 }
 
-i.has-hover:active {
+div.has-hover:active {
     box-shadow: 0 1px var(--link-active-color);
     transform: translateY(1px);
 }
@@ -626,6 +626,27 @@ i.has-hover:active {
 .notification-close:hover {
     background-color: var(--link-light-hover-color);
 }
+
+/* Define what each icon button should look like */
+.button-with-badge {
+    color: white;
+    display: inline-block; /* Inline elements with width and height. TL;DR they make the icon buttons stack from left-to-right instead of top-to-bottom */
+    position: relative; /* All 'absolute'ly positioned elements are relative to this one */
+    padding: 2px 5px; /* Add some padding so it looks nice */
+  }
+
+.button-badge {
+    background-color: #fa3e3e;
+    border-radius: 50%;
+    color: white;
+   
+    padding: 0px 4px;
+    font-size: 8px;
+    
+    position: absolute; /* Position the badge within the relatively positioned button */
+    top: 0;
+    right: 0;
+  }
 
 @media only screen and (max-width: 1024px) {
     #app-mode-button .dropdown-menu {

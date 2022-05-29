@@ -28,7 +28,10 @@ class NavigationBar extends HTMLElement {
                     </div>
                     <div class="navbar-end">
                         <div class="navbar-item" id="notification-item">
-                            <i class="fa-solid fa-bell has-text-link has-hover" onclick="showNotifications(event)" id="notification-icon"></i>
+                            <div class="button-with-badge has-hover" onclick="showNotifications(event)" id="notification-icon">
+                                <i class="fa-solid fa-bell fa-lg has-text-link"></i>
+                                <span class="button-badge">2</span>
+                            </div>
                         </div>
                         <div class="navbar-item">
                             <div class="buttons">
