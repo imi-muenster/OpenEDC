@@ -298,7 +298,7 @@ async function createExampleData(subjectKey) {
                 }
             }
             await clinicaldataWrapper.storeSubjectFormData(seOID, formOID, formItemDataList, clinicaldataWrapper.dataStatusTypes.COMPLETE );
-            await saveFormData();
+            skipDataHasChangedCheck = true;
             await loadTree(seOID, formOID);
         }
     }
