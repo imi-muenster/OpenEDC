@@ -80,7 +80,8 @@ export const userRights = {
     EDITMETADATA: "edit-metadata",
     MANAGESUBJECTS: "manage-subjects",
     VALIDATEFORMS: "validate-forms",
-    ADDSUBJECTDATA: "add-subject-data"
+    ADDSUBJECTDATA: "add-subject-data",
+    EXPORTDATA: "allow-export-data"
 };
 
 const $ = query => document.querySelector(query);
