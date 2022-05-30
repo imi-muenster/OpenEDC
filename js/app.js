@@ -15,7 +15,7 @@ import * as repositoryHelper from "./helper/repositoryhelper.js";
 import * as notificationHelper from "./helper/notificationhelper.js"
 import * as htmlElements from "./helper/htmlelements.js"
 
-const appVersion = "0.8.1";
+const appVersion = "0.8.2";
 
 const appModes = {
     METADATA: "metadata",
@@ -70,7 +70,7 @@ ioHelper.addGlobalEventListener("DOMContentLoaded", async () => {
 
     // Register service worker for offline capabilities
     const developmentOrigins = ["localhost", "127.0.0.1", "dev.openedc.org"];
-    const enableServiceWorker = true //!developmentOrigins.some(origin => window.location.origin.includes(origin));
+    const enableServiceWorker = false //!developmentOrigins.some(origin => window.location.origin.includes(origin));
     if (enableServiceWorker && window.navigator.serviceWorker) {
         window.navigator.serviceWorker.register("./serviceworker.js");
     }
@@ -792,7 +792,7 @@ async function setCheckAppVersionInterval() {
             console.log(notifications);
             if(notifications.length == 0) {
                 let notification = new notificationHelper.OpenEDCNotification(
-                    "System", "New Version", "Es ist eine neue Version verfügbar. Dieser Text kann auch länger sein.", true,
+                    "System", "New Version", "Es ist eine neue Version verfügbar.", true,
                     [new notificationHelper.OpenEDCNotificationAction('update', 'updateToNewVersion', 'button')],
                     'fa-wrench', null);
                 await notificationHelper.addNotification(notification, notificationHelper.notification_scopes.local);
@@ -839,8 +839,8 @@ window.showNotifications = async(e) => {
         const rect = document.querySelector('#notification-icon').getBoundingClientRect();
     
         // Set the position for menu
-        div.style.top = `${rect.top + 40}px`;
-        div.style.left = `${rect.left}px`;
+        div.style.top = `${rect.top + 45}px`;
+        div.style.left = `${rect.left -11}px`;
 
         let triangle = document.createElement('div');
         triangle.classList = 'triangle';
