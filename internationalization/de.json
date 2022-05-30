@@ -257,6 +257,7 @@
     "manage-subjects": "Probanden verwalten",
     "validate-forms": "Formulare validieren",
     "add-subject-data": "Klinische Daten hinzufügen",
+    "allow-export-data": "Daten exportieren",
 
     "version": "Version",
     "about-text-1": "Mit dieser <a target='_blank' href='https://github.com/imi-muenster/OpenEDC'>open-source</a> Anwendung können Sie sichere medizinische Forschungsprojekte basierend auf dem <a target='_blank' href='https://www.cdisc.org/standards/data-exchange/odm'>CDISC ODM-XML</a> Standard entwerfen und durchführen.",
@@ -392,5 +393,6 @@
     "no-name": "Kein name vorhanden",
     "assign-value": "Wert zuweisen",
     "no-survey": "In Umfrageansicht ausblenden",
-    "no-survey-description": "Falls sie diese Checkbox anwählen, wird das Element in der Umfrageansicht ausgeblendet."
+    "no-survey-description": "Falls sie diese Checkbox anwählen, wird das Element in der Umfrageansicht ausgeblendet.",
+    "export-not-allowed": "Sie sind nicht berechtigt, Daten zu exportieren."
 }

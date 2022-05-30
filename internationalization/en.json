@@ -257,6 +257,7 @@
     "manage-subjects": "Manage Subjects",
     "validate-forms": "Validate Forms",
     "add-subject-data": "Add Subject Data",
+    "allow-export-data": "Export Data",
 
     "version": "Version",
     "about-text-1": "This <a target='_blank' href='https://github.com/imi-muenster/OpenEDC'>open-source</a> electronic data capture (EDC) system lets you design and conduct secure medical research studies based on the <a target='_blank' href='https://www.cdisc.org/standards/data-exchange/odm'>CDISC ODM-XML</a> standard.",
@@ -392,5 +393,6 @@
     "no-name": "No name",
     "assign-value": "Assign value",
     "no-survey": "Hide in survey view",
-    "no-survey-description": "If you check this checkbox, the element will not be shown in the survey view."
+    "no-survey-description": "If you check this checkbox, the element will not be shown in the survey view.",
+    "export-not-allowed": "You are not allowed to export data."
 }
