@@ -1143,7 +1143,6 @@ export function getSettingStatus(context, option, path) {
 
 export function getSettingStatusByOID(context, option, oid) {
     const settings = getCurrentElementSettingsByOID(oid);
-    console.log(settings, oid);
     if(!settings[context] || !settings[context][option]) return false;
     return settings[context][option];
 }
