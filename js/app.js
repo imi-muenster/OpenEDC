@@ -248,6 +248,9 @@ function adjustUIToUser() {
             $("#add-subject-input").disabled = true;
             $$(".subject-key-mode-element .button").forEach(button => button.disabled = true);
         }
+        if (!ioHelper.userHasRight(ioHelper.userRights.EXPORTDATA) && !ioHelper.userHasRight(ioHelper.userRights.PROJECTOPTIONS)) {
+            $("#export-modal-button").hide();
+        }
         if (ioHelper.getLoggedInUser().site) {
             $("#filter-site-select-inner").value = admindataWrapper.getSiteNameByOID(ioHelper.getLoggedInUser().site);
             $("#filter-site-select-inner").disabled = true;
@@ -361,6 +364,14 @@ window.importFromMDMPortal = async function(mergeStatus) {
             startApp();
         }
     }
+}
+
+window.showExportDataModal = function() {
+    $('#export-modal').activate();
+}
+
+window.hideExportModal = function() {
+    $('#export-modal').deactivate();
 }
 
 window.showProjectModal = function() {
@@ -587,6 +598,11 @@ window.hideAboutModal = function() {
 }
 
 window.exportODM = async function() {
+    const isAllowed = await ioHelper.userHasRight(ioHelper.userRights.EXPORTDATA);
+    if(!isAllowed) {
+        ioHelper.showToast(languageHelper.getTranslation('export-not-allowed'), 4000, ioHelper.interactionTypes.DANGER);
+        return;
+    }
     let odm = metadataWrapper.prepareDownload(clinicaldataWrapper.dataStatusTypes);
 
     let admindata = admindataWrapper.getAdmindata(metadataWrapper.getStudyOID());
@@ -598,12 +614,22 @@ window.exportODM = async function() {
     ioHelper.download(metadataWrapper.getStudyName(), "xml", new XMLSerializer().serializeToString(odm));
 }
 
-window.exportODMMetadata = function() {
+window.exportODMMetadata = async function() {
+    const isAllowed = await ioHelper.userHasRight(ioHelper.userRights.EXPORTDATA);
+    if(!isAllowed) {
+        ioHelper.showToast(languageHelper.getTranslation('export-not-allowed'), 4000, ioHelper.interactionTypes.DANGER);
+        return;
+    }
     const odm = metadataWrapper.prepareDownload();
     ioHelper.download(metadataWrapper.getStudyName()+"_metadata", "xml", new XMLSerializer().serializeToString(odm));
 }
 
 window.exportCSV = async function() {
+    const isAllowed = await ioHelper.userHasRight(ioHelper.userRights.EXPORTDATA);
+    if(!isAllowed) {
+        ioHelper.showToast(languageHelper.getTranslation('export-not-allowed'), 4000, ioHelper.interactionTypes.DANGER);
+        return;
+    }
     ioHelper.download(metadataWrapper.getStudyName()+"_clinicaldata", "csv", await csvConverter.getCSVString());
 }
 
@@ -692,7 +718,7 @@ function enableMode(mode) {
 
 function addModalsToDOM() {
     // TODO: This could be improved in the future by importing the modal js module files dynamically in the respective files
-    const modalNames = ["project", "about", "subject", "survey-code"];
+    const modalNames = ["project", "about", "subject", "survey-code", "export"];
     for (let modalName of modalNames) {
         document.body.appendChild(document.createElement(modalName + "-modal"));
     }

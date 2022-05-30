@@ -257,6 +257,7 @@
     "manage-subjects": "Probanden verwalten",
     "validate-forms": "Formulare validieren",
     "add-subject-data": "Klinische Daten hinzufügen",
+    "allow-export-data": "Daten exportieren",
 
     "version": "Version",
     "about-text-1": "Mit dieser <a target='_blank' href='https://github.com/imi-muenster/OpenEDC'>open-source</a> Anwendung können Sie sichere medizinische Forschungsprojekte basierend auf dem <a target='_blank' href='https://www.cdisc.org/standards/data-exchange/odm'>CDISC ODM-XML</a> Standard entwerfen und durchführen.",
@@ -397,5 +398,6 @@
     "new-version-hint": "Überprüft, ob eine neue Version verfügbar ist.",
     "check": "Überprüfen",
     "check-updates-automatically": "Automatisch periodisch auf neue Version prüfen",
-    "update": "Update"
+    "update": "Update",
+    "export-not-allowed": "Sie sind nicht berechtigt, Daten zu exportieren."
 }
