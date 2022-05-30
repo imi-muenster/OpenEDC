@@ -245,7 +245,7 @@ function adjustUIToUser() {
             $("#add-subject-input").disabled = true;
             $$(".subject-key-mode-element .button").forEach(button => button.disabled = true);
         }
-        if (!ioHelper.userHasRight(ioHelper.userRights.EXPORTDATA)) {
+        if (!ioHelper.userHasRight(ioHelper.userRights.EXPORTDATA) && !ioHelper.userHasRight(ioHelper.userRights.PROJECTOPTIONS)) {
             $("#export-modal-button").hide();
         }
         if (ioHelper.getLoggedInUser().site) {
