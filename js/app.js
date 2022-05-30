@@ -764,7 +764,7 @@ async function setCheckAppVersionInterval() {
                 let notification = new notificationHelper.OpenEDCNotification(
                     "System", "New Version", "Es ist eine neue Version verfügbar. Dieser Text kann auch länger sein.", true,
                     [new notificationHelper.OpenEDCNotificationAction('update', 'updateToNewVersion', 'button')],
-                    'fa-wrench');
+                    'fa-wrench', notificationHelper.notification_scopes.local, null);
                 notificationHelper.addNotification(notification);
             }
         }

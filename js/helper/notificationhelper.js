@@ -1,6 +1,6 @@
 import * as ioHelper from "./iohelper.js"
 export class OpenEDCNotification {
-    constructor(creator, title, message, isSystem, actions, icon, expirationDate) {
+    constructor(creator, title, message, isSystem, actions, icon, scope, expirationDate) {
         this.id = window.crypto.randomUUID();
         this.creationDate = new Date().toISOString();
         this.creator = creator;
@@ -9,7 +9,9 @@ export class OpenEDCNotification {
         this.isSystem = isSystem;
         this.actions = actions;
         this.icon = icon;
+        this.scope = scope;
         this.expirationDate = expirationDate;
+        this.status = notification_status.new;
     }
 }
 
@@ -19,6 +21,17 @@ export class OpenEDCNotificationAction {
         this.callback = callback;
         this.type = type;
     }
+}
+
+const notification_status = {
+    new: 'new',
+    read: 'read',
+    deleted: 'deleted'
+}
+
+export const notification_scopes = {
+    local: 'local',
+    instance: 'instance'
 }
 
 const SETTINGS_NAME = 'notifications';
