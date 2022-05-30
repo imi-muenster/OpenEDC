@@ -175,8 +175,7 @@ export function getLastUpdate() {
 export async function getClinicalData(studyOID, metadataVersionOID) {
     let clinicalData = clinicaldataTemplates.getClinicalData(studyOID, metadataVersionOID);
 
-    subjects = sortSubjects(subjects, sortOrderTypes.CREATEDDATE);
-    for (let subject of subjects) {
+    for (let subject of getSubjects(admindataWrapper.getCurrentUserSiteOID(), sortOrderTypes.CREATEDDATE)) {
         clinicalData.appendChild(await loadStoredSubjectData(subject.fileName));
     }
 
