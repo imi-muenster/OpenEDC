@@ -246,7 +246,7 @@ function adjustUIToUser() {
             $$(".subject-key-mode-element .button").forEach(button => button.disabled = true);
         }
         if (!ioHelper.userHasRight(ioHelper.userRights.EXPORTDATA)) {
-            $("#export-modal").hide();
+            $("#export-modal-button").hide();
         }
         if (ioHelper.getLoggedInUser().site) {
             $("#filter-site-select-inner").value = admindataWrapper.getSiteNameByOID(ioHelper.getLoggedInUser().site);
