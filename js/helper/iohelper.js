@@ -170,6 +170,7 @@ async function getData(fileName, fileType) {
 }
 
 async function setData(fileName, content, fileType) {
+    console.log('set data')
     if (serverURL) {
         await fetch(getURLForFileName(fileName, fileType), {
             method: "PUT",

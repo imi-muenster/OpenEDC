@@ -15,7 +15,7 @@ import * as repositoryHelper from "./helper/repositoryhelper.js";
 import * as notificationHelper from "./helper/notificationhelper.js"
 import * as htmlElements from "./helper/htmlelements.js"
 
-const appVersion = "0.8.2";
+const appVersion = "0.8.1";
 
 const appModes = {
     METADATA: "metadata",
@@ -122,6 +122,7 @@ const startApp = async () => {
     // After all, check app version, subscribe to server updates, and enable plugins
     checkVersionAndShowNotification();
     setCheckAppVersionInterval();
+    setCheckForNewNotifications();
     subscribeToServerUpdates();
     reportsModule.init();
     pluginRegistrar.enablePlugins(metadataWrapper.loadSettings);
@@ -750,13 +751,14 @@ window.updateToNewVersion = async() => {
         console.log('in active serviceworker')
         window.navigator.serviceWorker.ready.then(registration => registration.active.postMessage('Hi there'))
     }
-    await notificationHelper.removeFilteredNotifications([{identifier: 'title', value: 'update'}]);
+    await notificationHelper.setFilteredNotificationDeleted([{identifier: 'title', value: 'update'}]);
     if($('#notification-div') && !$('#notification-div.container__menu--hidden')) {
         showNotifications();
     }
 }
 
 async function checkVersionAndShowNotification() {
+    const newVersion = await checkAppVersion();
     try{
         if(newVersion) {
             ioHelper.showToast(languageHelper.getTranslation("app-outdated-hint"), 10000, ioHelper.interactionTypes.WARNING, [{i18n: 'update', callback: updateToNewVersion}]);
@@ -784,24 +786,47 @@ async function setCheckAppVersionInterval() {
     setInterval(async () => {
         const newVersion = await checkAppVersion();
         if(newVersion) {
-            let notifications = await notificationHelper.getFilteredNotifications([{identifier: 'isSystem', value: true}, {identifier: 'title', value: 'update'}]);
+            let notifications = await notificationHelper.getFilteredNotifications(
+                [{identifier: 'isSystem', value: true}, {identifier: 'title', value: 'New Version'}, {identifier: 'status', value: notificationHelper.notification_status.deleted, inverse: true}],
+                notificationHelper.notification_scopes.local);
             console.log(notifications);
             if(notifications.length == 0) {
                 let notification = new notificationHelper.OpenEDCNotification(
                     "System", "New Version", "Es ist eine neue Version verfügbar. Dieser Text kann auch länger sein.", true,
                     [new notificationHelper.OpenEDCNotificationAction('update', 'updateToNewVersion', 'button')],
-                    'fa-wrench', notificationHelper.notification_scopes.local, null);
-                notificationHelper.addNotification(notification);
+                    'fa-wrench', null);
+                await notificationHelper.addNotification(notification, notificationHelper.notification_scopes.local);
             }
         }
     }, 10000);
 }
 
+async function setCheckForNewNotifications(){
+    setInterval(async () => {
+        const newNotifications = await notificationHelper.getFilteredNotifications([{identifier: 'status', value: notificationHelper.notification_status.new}], notificationHelper.notification_scopes.all);
+        console.log(newNotifications);
+        if(newNotifications.length > 0) {
+            if($('#notification-badge')){
+                $('#notification-badge').show();
+                $('#notification-badge').innerText = newNotifications.length;
+            }
+        }
+        else {
+            if($('#notification-badge')){
+                $('#notification-badge').hide();
+                $('#notification-badge').innerText = 0;
+            }
+        }
+    }, 5000);
+}
+
 window.showNotifications = async(e) => {
     console.log('show notifications');
-    if(e) e.preventDefault();
-    const notifications = await notificationHelper.getNotifications();
-
+    if(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const notifications = await notificationHelper.getActiveNotifications(notificationHelper.notification_scopes.local);
     let div;
     if($('#notification-div')) {
         div = $('#notification-div');
@@ -819,27 +844,35 @@ window.showNotifications = async(e) => {
 
         let triangle = document.createElement('div');
         triangle.classList = 'triangle';
-        div.appendChild(triangle);     
+        div.appendChild(triangle);   
+        document.addEventListener('click', (event) => closeNotificationsClickHandler(event));  
     }
     div.appendChild(htmlElements.getNotificationList(notifications));
-    document.addEventListener('click', (e) => closeNotificationsClickHandler(e));
     
+    console.log('remove hidden')
     // Show the menu
+    console.log(div);
     div.classList.remove('container__menu--hidden');
 
-    //jq(menu).css({'top':e.pageY,'left':e.pageX, 'position':'absolute', 'border':'1px solid darkblue', 'z-index': 50});
-    return false; 
+    notifications.forEach(notification => notificationHelper.setStatusNotification(notification.id, notificationHelper.notification_status.read));
+    if($('#notification-badge')){
+        $('#notification-badge').hide();
+        $('#notification-badge').innerText = 0;
+    }
 }
 
 function closeNotificationsClickHandler(e) {
+    e.stopPropagation();
     let notificationsDiv = document.querySelector('#notification-div');
     const isClickedOutside = !notificationsDiv.contains(e.target);
+    console.log(isClickedOutside);
     if (isClickedOutside) {
         // Hide the menu
+        console.log('add hidden')
         notificationsDiv.classList.add('container__menu--hidden');
 
         // Remove the event handler
-        document.removeEventListener('click', closeNotificationsClickHandler);
+        //document.removeEventListener('click', closeNotificationsClickHandler);
     }
 } 
 

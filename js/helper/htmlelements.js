@@ -233,6 +233,7 @@ export function getAuditRecord(auditRecord) {
 }
 
 export function getNotificationList(notifications) {
+    console.log('get list', notifications)
 
     let ul = document.createElement('ul');
     ul.classList = 'no-bullets';
@@ -267,6 +268,10 @@ export function getNotificationList(notifications) {
             creator.classList = `is-inline-block ${notification.isSystem ? 'has-text-success' : ''}`
             creator.innerText = notification.creator;
             creatorDiv.appendChild(creator);
+            let scope = document.createElement('span');
+            scope.classList = 'is-inline-block ml-1';
+            scope.innerText = `(${notification.scope})`;
+            creatorDiv.appendChild(scope);
     
             let date = document.createElement('span');
             date.classList = 'is-pulled-right';
@@ -303,7 +308,7 @@ export function getNotificationList(notifications) {
             //close column
             let closeColumn = document.createElement('div');
             closeColumn.classList = 'column is-1 is-flex is-align-items-center notification-close';
-            closeColumn.onclick = async () => { await notificationHelper.removeNotification(notification.id); showNotifications(); };
+            closeColumn.onclick = async () => { await notificationHelper.setStatusNotification(notification.id, notificationHelper.notification_status.deleted); showNotifications(); };
             let closeSpan = document.createElement('span');
             closeSpan.classList = 'icon';
             let closeIcon = document.createElement('i');

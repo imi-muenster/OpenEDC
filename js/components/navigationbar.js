@@ -25,14 +25,14 @@ class NavigationBar extends HTMLElement {
                             <div class="navbar-dropdown has-border-shadow is-hidden-touch" id="language-dropdown"></div>
                         </div>
                         <a class="navbar-item" id="about-button" onclick="showAboutModal()" i18n="about"></a>
-                    </div>
-                    <div class="navbar-end">
                         <div class="navbar-item" id="notification-item">
                             <div class="button-with-badge has-hover" onclick="showNotifications(event)" id="notification-icon">
                                 <i class="fa-solid fa-bell fa-lg has-text-link"></i>
-                                <span class="button-badge">2</span>
+                                <span class="button-badge is-hidden" id="notification-badge">0</span>
                             </div>
                         </div>
+                    </div>
+                    <div class="navbar-end">
                         <div class="navbar-item">
                             <div class="buttons">
                                 <button class="button is-hidden" id="store-metadata-async-button" onclick="storeMetadataAsync()" i18n="save-forms"></button>

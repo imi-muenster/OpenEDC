@@ -578,10 +578,9 @@ div.has-hover:active {
     list-style-type: none;
     margin: 0px !important;
     padding: 5px;
-    border: 1px solid #cbd5e0;
+    border: 2px solid var(--link-color);
     border-radius: 0.25rem;
     background-color: white;
-    border-color: var(--link-color);
     z-index: 50;
 }
 
@@ -599,12 +598,12 @@ div.has-hover:active {
 .container__menu:after {
 	
 	border-bottom-color: white;
-	border-width: 15px;
-	margin-left: -15px;
+	border-width: 14px;
+	margin-left: -14px;
 }
 .container__menu:before {
 	
-	border-bottom-color: var(--link-color);
+	border-bottom: 2px solid var(--link-color);
 	border-width: 16px;
 	margin-left: -16px;
 }
