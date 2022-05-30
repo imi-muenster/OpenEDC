@@ -298,7 +298,7 @@ export async function storeSubject() {
 
     // This mechanism helps to prevent possible data loss when multiple users edit the same subject data at the same time (especially important for the offline mode)
     // If the previousFileName cannot be removed, the system keeps multiple current versions of the subject data and the user is notified that conflicting data exists
-    if (previousFileName != subject.fileName) ioHelper.removeODM(previousFileName);
+    if (previousFileName != subject.fileName) await ioHelper.removeODM(previousFileName);
     ioHelper.dispatchGlobalEvent('SubjectStored', {uniqueKey: subject.uniqueKey});
 }
 
