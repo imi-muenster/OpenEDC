@@ -1,7 +1,7 @@
 import * as ioHelper from "./iohelper.js"
 export class OpenEDCNotification {
     constructor(creator, title, message, identifier, isSystem, actions, icon, expirationDate) {
-        this.id = window.crypto.randomUUID();
+        this.id = generateUniqSerial();
         this.creationDate = new Date().toISOString();
         this.creator = creator;
         this.title = title;
@@ -12,6 +12,13 @@ export class OpenEDCNotification {
         this.icon = icon;
         this.expirationDate = expirationDate;
         this.status = notification_status.new;
+    }
+
+    generateUniqSerial() {  
+        return 'xxxx-xxxx-xxx-xxxx'.replace(/[x]/g, (c) => {  
+            const r = Math.floor(Math.random() * 16);  
+            return r.toString(16);  
+      });  
     }
 }
 
