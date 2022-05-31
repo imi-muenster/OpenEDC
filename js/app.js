@@ -816,16 +816,17 @@ function setOrStopCheckInterval(checked) {
 async function setCheckForNewNotifications(){
     setInterval(async () => {
         const newNotifications = await notificationHelper.getFilteredNotifications([{variableName: 'status', value: notificationHelper.notification_status.new}], notificationHelper.notification_scopes.all);
-        if(newNotifications.length > 0) {
-            if($('#notification-badge')){
-                $('#notification-badge').show();
-                $('#notification-badge').innerText = newNotifications.length;
+        const badgeId = `notification-badge${ioHelper.isMobile() ? '-mobile' : ''}`;
+        if(newNotifications.length > 0) {     
+            if($(`#${badgeId}`)){
+                $(`#${badgeId}`).show();
+                $(`#${badgeId}`).innerText = newNotifications.length;
             }
         }
         else {
-            if($('#notification-badge')){
-                $('#notification-badge').hide();
-                $('#notification-badge').innerText = 0;
+            if($(`#${badgeId}`)){
+                $(`#${badgeId}`).hide();
+                $(`#${badgeId}`).innerText = 0;
             }
         }
     }, 5000);
@@ -847,17 +848,18 @@ window.showNotifications = async(e) => {
         div.classList = 'container__menu'
         div.id = 'notification-div'
         document.body.append(div);
-        const rect = document.querySelector('#notification-icon').getBoundingClientRect();
-    
-        // Set the position for menu
-        div.style.top = `${rect.top + 45}px`;
-        div.style.left = `${rect.left -11}px`;
 
         let triangle = document.createElement('div');
         triangle.classList = 'triangle';
         div.appendChild(triangle);   
         document.addEventListener('click', (event) => closeNotificationsClickHandler(event));  
     }
+    const iconId = `notification-icon${ioHelper.isMobile() ? '-mobile' : ''}`;
+    const rect = document.querySelector(`#${iconId}`).getBoundingClientRect();
+
+    // Set the position for menu
+    div.style.top = `${rect.top + 45}px`;
+    div.style.left = `${rect.left -11}px`;
     div.appendChild(htmlElements.getNotificationList(notifications));
     
     console.log('remove hidden')
@@ -866,9 +868,10 @@ window.showNotifications = async(e) => {
     div.classList.remove('container__menu--hidden');
 
     notifications.forEach(notification => notificationHelper.setStatusNotification(notification.id, notificationHelper.notification_status.read));
-    if($('#notification-badge')){
-        $('#notification-badge').hide();
-        $('#notification-badge').innerText = 0;
+    const badgeId = `notification-badge${ioHelper.isMobile() ? '-mobile' : ''}`;
+    if($(`#${badgeId}`)){
+        $(`#${badgeId}`).hide();
+        $(`#${badgeId}`).innerText = 0;
     }
 }
 

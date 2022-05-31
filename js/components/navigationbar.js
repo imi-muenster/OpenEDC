@@ -6,6 +6,12 @@ class NavigationBar extends HTMLElement {
                     <div class="navbar-item">
                         <h1 class="subtitle" id="study-title"></h1>
                     </div>
+                    <div class="navbar-item is-hidden-desktop" id="notification-item-mobile">
+                        <div class="button-with-badge has-hover" onclick="showNotifications(event)" id="notification-icon-mobile">
+                            <i class="fa-solid fa-bell fa-lg has-text-link"></i>
+                            <span class="button-badge is-hidden" id="notification-badge-mobile">0</span>
+                        </div>
+                    </div>
                     <a class="navbar-item is-hidden" id="mobile-back-button" onclick="backOnMobile()">
                         <span class="icon">
                             <i class="fa-solid fa-chevron-left"></i>
@@ -25,7 +31,7 @@ class NavigationBar extends HTMLElement {
                             <div class="navbar-dropdown has-border-shadow is-hidden-touch" id="language-dropdown"></div>
                         </div>
                         <a class="navbar-item" id="about-button" onclick="showAboutModal()" i18n="about"></a>
-                        <div class="navbar-item" id="notification-item">
+                        <div class="navbar-item is-hidden-touch" id="notification-item">
                             <div class="button-with-badge has-hover" onclick="showNotifications(event)" id="notification-icon">
                                 <i class="fa-solid fa-bell fa-lg has-text-link"></i>
                                 <span class="button-badge is-hidden" id="notification-badge">0</span>
