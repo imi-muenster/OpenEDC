@@ -1,11 +1,12 @@
 import * as ioHelper from "./iohelper.js"
 export class OpenEDCNotification {
-    constructor(creator, title, message, isSystem, actions, icon, expirationDate) {
+    constructor(creator, title, message, identifier, isSystem, actions, icon, expirationDate) {
         this.id = window.crypto.randomUUID();
         this.creationDate = new Date().toISOString();
         this.creator = creator;
         this.title = title;
         this.message = message;
+        this.identifier = identifier;
         this.isSystem = isSystem;
         this.actions = actions;
         this.icon = icon;
@@ -83,15 +84,12 @@ export async function getFilteredNotifications(filterOptions, scope) {
         notifications = notifications.concat(instanceNotifications);
 
     }
-    console.log(notifications);
 
     if(!notifications || typeof notifications == 'undefined' || notifications == '') notifications = [];
     return notifications.filter(notification => {
         for(let i = 0; i < [...filterOptions].length; i++) {
-            console.log(filterOptions);
-            console.log(notification);
-            if(filterOptions[i].inverse && notification[filterOptions[i].identifier] == filterOptions[i].value) return false;
-            if(!filterOptions[i].inverse && notification[filterOptions[i].identifier] != filterOptions[i].value) return false;
+            if(filterOptions[i].inverse && notification[filterOptions[i].variableName] == filterOptions[i].value) return false;
+            if(!filterOptions[i].inverse && notification[filterOptions[i].variableName] != filterOptions[i].value) return false;
         }
         return true;
     });
@@ -107,6 +105,7 @@ export async function setStatusNotification(id, status, scope) {
 
     if(scope && (scope.instance || scope.all) || !scope) {
         let notifications = await ioHelper.getJSON(SETTINGS_NAME);
+        if(!notifications || typeof notifications == 'undefined' || notifications == '') notifications = [];
         const index = notifications.findIndex(notification => notification.id == id);
         if(index >= 0) notifications[index].status = status;
         ioHelper.setJSON(SETTINGS_NAME, notifications);
@@ -142,6 +141,7 @@ export async function removeNotification(id, scope) {
     }
     if(scope && (scope.instance || scope.all) || !scope){
         let notifications = await ioHelper.getJSON(SETTINGS_NAME);
+        if(!notifications || typeof notifications == 'undefined' || notifications == '') notifications = [];
         const index = notifications.findIndex(notification => notification.id == id);
         if(index >= 0) notifications.splice(index,1);
         ioHelper.setJSON(SETTINGS_NAME, notifications);

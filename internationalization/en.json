@@ -396,6 +396,7 @@
     "no-survey-description": "If you check this checkbox, the element will not be shown in the survey view.",
     "new-version": "New Version",
     "new-version-hint": "Checks whether a new version is available.",
+    "new-version-notification": "A new version is available. An update is recommended.",
     "check": "Check",
     "check-updates-automatically": "Automatically check for updates periodically",
     "update": "Update",

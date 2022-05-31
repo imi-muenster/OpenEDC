@@ -29,6 +29,8 @@ const appStates = {
     UNLOCKED: "unlocked"
 }
 
+let versionCheckInterval;
+
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
@@ -394,6 +396,7 @@ window.showProjectModal = function() {
     $("#show-element-name").checked = ioHelper.getSetting("showElementName");
     $("#text-as-textarea-checkbox").checked = ioHelper.getSetting("textAsTextarea");
     $("#auto-survey-view-checkbox").checked = ioHelper.getSetting("autoSurveyView");
+    $("#check-new-version-automatically").checked = ioHelper.getSetting("autoUpdates");
     $("#study-name-input").value = metadataWrapper.getStudyName();
     $("#study-description-textarea").value = metadataWrapper.getStudyDescription();
     $("#protocol-name-input").value = metadataWrapper.getProtocolName();
@@ -538,6 +541,7 @@ window.miscOptionClicked = async function(event) {
             break;
         case "check-new-version-automatically":
             await ioHelper.setSetting("autoUpdates", event.target.checked);
+            setOrStopCheckInterval(event.target.checked);
             break;
     }
 
@@ -751,7 +755,7 @@ window.updateToNewVersion = async() => {
         console.log('in active serviceworker')
         window.navigator.serviceWorker.ready.then(registration => registration.active.postMessage('Hi there'))
     }
-    await notificationHelper.setFilteredNotificationDeleted([{identifier: 'title', value: 'update'}]);
+    await notificationHelper.setStatusFilteredNotification([{variableName: 'title', value: 'update'}], notificationHelper.notification_status.deleted, notificationHelper.notification_scopes.local);
     if($('#notification-div') && !$('#notification-div.container__menu--hidden')) {
         showNotifications();
     }
@@ -782,17 +786,20 @@ async function checkAppVersion() {
     };
 }
 
-async function setCheckAppVersionInterval() {
-    setInterval(async () => {
+async function setCheckAppVersionInterval(skipCheck) {
+    const checkUpdates = await ioHelper.getSetting("autoUpdates");
+    if(!skipCheck && (!checkUpdates || typeof checkUpdates == 'undefined' || checkUpdates === '')) return;
+
+    versionCheckInterval = setInterval(async () => {
         const newVersion = await checkAppVersion();
         if(newVersion) {
             let notifications = await notificationHelper.getFilteredNotifications(
-                [{identifier: 'isSystem', value: true}, {identifier: 'title', value: 'New Version'}, {identifier: 'status', value: notificationHelper.notification_status.deleted, inverse: true}],
+                [{variableName: 'isSystem', value: true}, {variableName: 'identifier', value: 'new-version-info'}, {variableName: 'status', value: notificationHelper.notification_status.deleted, inverse: true}],
                 notificationHelper.notification_scopes.local);
             console.log(notifications);
             if(notifications.length == 0) {
                 let notification = new notificationHelper.OpenEDCNotification(
-                    "System", "New Version", "Es ist eine neue Version verfügbar.", true,
+                    "System", languageHelper.getTranslation('new-version'), languageHelper.getTranslation('new-version-notification'), 'new-version-info', true,
                     [new notificationHelper.OpenEDCNotificationAction('update', 'updateToNewVersion', 'button')],
                     'fa-wrench', null);
                 await notificationHelper.addNotification(notification, notificationHelper.notification_scopes.local);
@@ -801,10 +808,14 @@ async function setCheckAppVersionInterval() {
     }, 10000);
 }
 
+function setOrStopCheckInterval(checked) {
+    if(checked) setCheckAppVersionInterval(true);
+    else clearInterval(versionCheckInterval);
+}
+
 async function setCheckForNewNotifications(){
     setInterval(async () => {
-        const newNotifications = await notificationHelper.getFilteredNotifications([{identifier: 'status', value: notificationHelper.notification_status.new}], notificationHelper.notification_scopes.all);
-        console.log(newNotifications);
+        const newNotifications = await notificationHelper.getFilteredNotifications([{variableName: 'status', value: notificationHelper.notification_status.new}], notificationHelper.notification_scopes.all);
         if(newNotifications.length > 0) {
             if($('#notification-badge')){
                 $('#notification-badge').show();

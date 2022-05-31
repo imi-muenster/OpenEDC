@@ -396,6 +396,7 @@
     "no-survey-description": "Falls sie diese Checkbox anwählen, wird das Element in der Umfrageansicht ausgeblendet.",
     "new-version": "Neue Version",
     "new-version-hint": "Überprüft, ob eine neue Version verfügbar ist.",
+    "new-version-notification": "Es ist eine neue Version verfügbar. Ein Update wird empfohlen.",
     "check": "Überprüfen",
     "check-updates-automatically": "Automatisch periodisch auf neue Version prüfen",
     "update": "Update",
