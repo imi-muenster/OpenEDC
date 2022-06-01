@@ -754,7 +754,7 @@ async function handleURLSearchParameters() {
                             mergeMetadataModels(models);
                             setTitles();
                     }
-                });
+                }, null, null, null, null, true);
             } else ioHelper.showMessage(languageHelper.getTranslation("Note"), languageHelper.getTranslation("forms-import-encrypted-hint"));
         })
         .catch(error => ioHelper.showMessage(languageHelper.getTranslation("Error"), languageHelper.getTranslation("forms-import-error")));

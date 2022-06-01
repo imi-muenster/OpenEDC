@@ -221,6 +221,7 @@ class MessageModal extends HTMLElement {
     setCloseText(closeText) { this.closeText = closeText; }
     setCloseCallback(closeCallback) { this.closeCallback = closeCallback; }
     setSize(size) { this.size = size; }
+    setIsSticky(isSticky) {this.isSticky = isSticky}
 
     connectedCallback() {
         this.innerHTML = `
@@ -261,10 +262,12 @@ class MessageModal extends HTMLElement {
         this.querySelector(".buttons").insertAdjacentElement("beforeend", button);
 
         // Add event handler for clicking on the modal background
-        this.querySelector(".modal-background").onclick = () => {
-            this.remove();
-            if (this.closeCallback) this.closeCallback(); 
-        };
+        if(!this.isSticky) {
+            this.querySelector(".modal-background").onclick = () => {
+                this.remove();
+                if (this.closeCallback) this.closeCallback(); 
+            };
+        }
     }
 }
 class SettingsModal extends HTMLElement {
