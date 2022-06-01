@@ -1006,7 +1006,13 @@ window.saveSubjectInfo = function() {
         });
 }
 
-window.removeSubject = async function() {
+window.showRemoveSubjectModal = async function() {
+    ioHelper.showMessage(languageHelper.getTranslation('remove-subject'), languageHelper.getTranslation("remove-subject-hint"), {
+        [languageHelper.getTranslation("yes")]: () => removeSubject(),
+    })
+}
+
+async function removeSubject() {
     await clinicaldataWrapper.removeSubject();
     currentSubjectKey = null;
     

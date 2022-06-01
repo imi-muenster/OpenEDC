@@ -180,7 +180,7 @@ class SubjectModal extends HTMLElement {
                             </div>
                             <div class="text-divider mb-5" i18n="audit-trail"></div>
                             <div id="audit-records"></div>
-                            <button class="button is-danger is-small" onclick="removeSubject()" i18n="remove-subject"></button>
+                            <button class="button is-danger is-small" onclick="showRemoveSubjectModal()" i18n="remove-subject"></button>
                         </div>
                     </div>
                 </div>

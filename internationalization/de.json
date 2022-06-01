@@ -299,6 +299,7 @@
     "removed": "Gelöscht",
     "view-data": "Daten ansehen",
     "remove-subject": "Proband löschen",
+    "remove-subject-hint": "Möchten Sie den Proband sicher löschen?",
     "audit-trail-for-item": "Audit Trail für Element",
     "value": "Wert",
     "values": "Werte",
