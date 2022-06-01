@@ -557,7 +557,7 @@ export function showMessage(heading, message, callbacks, callbackType, closeText
     messageModal.setCloseText(closeText ? closeText : (callbacks ? languageHelper.getTranslation("close") : languageHelper.getTranslation("okay")));
     messageModal.setCloseCallback(closeCallback);
     messageModal.setSize(isExtended ? "is-medium" : "is-small");
-    messageModal.setIsSticky(isSticky ? isSticky : false)
+    messageModal.setIsSticky(isSticky ?? false)
     
     if (!$("#message-modal")) document.body.appendChild(messageModal);
 }
