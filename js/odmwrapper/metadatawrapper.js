@@ -440,9 +440,14 @@ export function getItems() {
 }
 
 export function getItemPaths(options) {
+    return getItemPathsForStudyEvents(null, options);
+}
+
+export function getItemPathsForStudyEvents(sOIDs, options) {
     const itemPaths = [];
     for (const studyEventRef of $$(`Protocol StudyEventRef`)) {
         const studyEventOID = studyEventRef.getAttribute("StudyEventOID");
+        if(sOIDs && !sOIDs.includes(studyEventOID)) continue;
         if (options && options.includeStudyEvents) itemPaths.push(new ODMPath(studyEventOID, formOID, itemGroup));
         for (const formRef of $$(`StudyEventDef[OID="${studyEventOID}"] FormRef`)) {
             const formOID = formRef.getAttribute("FormOID");
@@ -461,7 +466,6 @@ export function getItemPaths(options) {
             }
         }
     }
-
     return itemPaths;
 }
 

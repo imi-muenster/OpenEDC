@@ -218,6 +218,7 @@
     "export-project": "Export Project (ODM)",
     "export-metadata": "Export Metadata (ODM)",
     "export-clinicaldata": "Export Clinical Data (CSV)",
+    "export-clinicaldata-zip": "Export Clinical Data as zip (CSV)",
     "import-data": "Import Data",
     "import-data-hint": "With this option you can import metadata from a CDISC ODM-XML file. Events and forms will then be added. If you want to import an entire project with clinical data, first remove all current data with the option below.",
     "import-metadata": "Import Metadata (ODM)",
