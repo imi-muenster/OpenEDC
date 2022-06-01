@@ -151,6 +151,7 @@ export async function getFormAsHTML(formOID, textAsTextarea = false, useNames = 
 }
 
 export function prepareDownload(dataStatusTypes) {
+    removeEmptyAliasses();
     let odmCopy = new DOMParser().parseFromString(getSerializedMetadata(), "text/xml");
 
     odmCopy.querySelector("ODM").setAttribute("FileOID", getStudyName());
@@ -164,6 +165,12 @@ export function prepareDownload(dataStatusTypes) {
     }
     
     return odmCopy;
+}
+
+function removeEmptyAliasses() {
+    [...$$('Alias')]
+    .filter(alias => !alias.getAttribute('Context') || alias.getAttribute('Context') === '' || !alias.getAttribute('Name') || alias.getAttribute('Name') === '')
+    .forEach(filteredAlias => filteredAlias.parentNode.removeChild(filteredAlias));
 }
 
 export function getDataStatusCodeList(statusTypes) {
