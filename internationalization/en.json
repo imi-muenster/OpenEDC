@@ -299,6 +299,7 @@
     "removed": "Removed",
     "view-data": "View Data",
     "remove-subject": "Remove Subject",
+    "remove-subject-hint": "Are you sure, you want to delete this subject?",
     "audit-trail-for-item": "Audit Trail for Item",
     "value": "Value",
     "values": "Values",
