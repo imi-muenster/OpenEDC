@@ -91,6 +91,7 @@ let decryptionKey = null;
 let serverURL = null;
 let settings = null;
 let eventListeners = [];
+let jsZipLoaded = false;
 
 export const fileNameSeparator = "__";
 
@@ -614,6 +615,22 @@ export function download(filename, extension, content) {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+}
+
+export async function downloadAsZip(filename, contentFiles) {
+    if(!jsZipLoaded) {
+        await import("../../lib/jszip.min.js");
+        jsZipLoaded = true;
+    }
+    
+    const zip = new JSZip();
+    contentFiles.forEach(({filename, extension, content}) => {
+        zip.file(`${filename}.${extension}`, content);
+    });
+    zip.generateAsync({type: 'blob'}).then(zipFile => {
+        saveAs(zipFile, `${filename}.zip`);
+      });
+   
 }
 
 export async function getFileContent(file) {

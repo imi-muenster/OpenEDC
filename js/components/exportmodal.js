@@ -16,6 +16,7 @@ class ExportModal extends HTMLElement {
                             <button class="button is-link column is-6 p-1 is-small" onclick="exportODM()" i18n="export-project"></button>
                             <button class="button column is-6 p-1 is-small" onclick="exportODMMetadata()" i18n="export-metadata"></button>
                             <button class="button column is-6 p-1 is-small" onclick="exportCSV()" i18n="export-clinicaldata"></button>
+                            <button class="button column is-6 p-1 is-small" onclick="exportCSVZip()" i18n="export-clinicaldata-zip"></button>
                         </div>
                     </div>
                 </div>

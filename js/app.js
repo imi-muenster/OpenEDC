@@ -591,11 +591,9 @@ window.hideAboutModal = function() {
 }
 
 window.exportODM = async function() {
-    const isAllowed = await ioHelper.userHasRight(ioHelper.userRights.EXPORTDATA);
-    if(!isAllowed) {
-        ioHelper.showToast(languageHelper.getTranslation('export-not-allowed'), 4000, ioHelper.interactionTypes.DANGER);
-        return;
-    }
+    
+    if(! await checkDownloadIsAllowed()) return;
+
     let odm = metadataWrapper.prepareDownload(clinicaldataWrapper.dataStatusTypes);
 
     let admindata = admindataWrapper.getAdmindata(metadataWrapper.getStudyOID());
@@ -608,22 +606,29 @@ window.exportODM = async function() {
 }
 
 window.exportODMMetadata = async function() {
-    const isAllowed = await ioHelper.userHasRight(ioHelper.userRights.EXPORTDATA);
-    if(!isAllowed) {
-        ioHelper.showToast(languageHelper.getTranslation('export-not-allowed'), 4000, ioHelper.interactionTypes.DANGER);
-        return;
-    }
+     if(! await checkDownloadIsAllowed()) return;
     const odm = metadataWrapper.prepareDownload();
     ioHelper.download(metadataWrapper.getStudyName()+"_metadata", "xml", new XMLSerializer().serializeToString(odm));
 }
 
 window.exportCSV = async function() {
+    if(! await checkDownloadIsAllowed()) return;
+    ioHelper.download(metadataWrapper.getStudyName()+"_clinicaldata", "csv", await csvConverter.getCSVString());
+}
+
+window.exportCSVZip = async function() {
+    if(! await checkDownloadIsAllowed()) return;
+
+    ioHelper.downloadAsZip(metadataWrapper.getStudyName()+"_clinicaldata", await csvConverter.getSeparatedCSVFiles())
+}
+
+async function checkDownloadIsAllowed() {
     const isAllowed = await ioHelper.userHasRight(ioHelper.userRights.EXPORTDATA);
     if(!isAllowed) {
         ioHelper.showToast(languageHelper.getTranslation('export-not-allowed'), 4000, ioHelper.interactionTypes.DANGER);
-        return;
+        return false;
     }
-    ioHelper.download(metadataWrapper.getStudyName()+"_clinicaldata", "csv", await csvConverter.getCSVString());
+    return true;
 }
 
 window.removeAllData = async function() {
