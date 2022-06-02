@@ -1,7 +1,7 @@
 import * as ioHelper from "./iohelper.js"
 export class OpenEDCNotification {
     constructor(creator, title, message, identifier, isSystem, actions, icon, expirationDate) {
-        this.id = generateUniqSerial();
+        this.id = this.generateUniqSerial();
         this.creationDate = new Date().toISOString();
         this.creator = creator;
         this.title = title;

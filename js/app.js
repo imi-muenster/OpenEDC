@@ -796,7 +796,6 @@ async function setCheckAppVersionInterval(skipCheck) {
             let notifications = await notificationHelper.getFilteredNotifications(
                 [{variableName: 'isSystem', value: true}, {variableName: 'identifier', value: 'new-version-info'}, {variableName: 'status', value: notificationHelper.notification_status.deleted, inverse: true}],
                 notificationHelper.notification_scopes.local);
-            console.log(notifications);
             if(notifications.length == 0) {
                 let notification = new notificationHelper.OpenEDCNotification(
                     "System", languageHelper.getTranslation('new-version'), languageHelper.getTranslation('new-version-notification'), 'new-version-info', true,
