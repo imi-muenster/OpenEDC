@@ -51,7 +51,7 @@ addEventListener("message", (activateEvent) => {
     activateEvent.waitUntil(
         caches.keys().then(async keys => {
             await Promise.all(keys
-                .filter(key => key != staticCacheName && key != odmCacheName && key != dynamicCacheName && key != messageQueueName)
+                .filter(key => key != odmCacheName && key != dynamicCacheName && key != messageQueueName)
                 .map(key => caches.delete(key))
             )
             activateEvent.source.postMessage("Deleting cache done");
