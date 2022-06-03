@@ -469,7 +469,7 @@ window.showSettingsEditor = function() {
     settingsModal.setCurrentElementType(currentElementType);
     settingsModal.setCurrentElementOID(currentPath.last.value)
     settingsModal.setCurrentSettings(metadataWrapper.getCurrentElementSettings(currentPath));
-    settingsModal.setCloseText("Speichern und schließen");
+    settingsModal.setCloseText(languageHelper.getTranslation("save-and-close"));
     settingsModal.setCloseCallback(async (settings) => { 
         metadataWrapper.setCurrentElementSettings(currentPath, settings); 
         if(!asyncEditMode) await metadataWrapper.storeMetadata();

@@ -396,5 +396,6 @@
     "assign-value": "Assign value",
     "no-survey": "Hide in survey view",
     "no-survey-description": "If you check this checkbox, the element will not be shown in the survey view.",
-    "export-not-allowed": "You are not allowed to export data."
+    "export-not-allowed": "You are not allowed to export data.",
+    "save-and-close": "save and close"
 }
