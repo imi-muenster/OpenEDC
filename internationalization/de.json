@@ -396,5 +396,6 @@
     "assign-value": "Wert zuweisen",
     "no-survey": "In Umfrageansicht ausblenden",
     "no-survey-description": "Falls sie diese Checkbox anwählen, wird das Element in der Umfrageansicht ausgeblendet.",
-    "export-not-allowed": "Sie sind nicht berechtigt, Daten zu exportieren."
+    "export-not-allowed": "Sie sind nicht berechtigt, Daten zu exportieren.",
+    "save-and-close": "Speichern und schließen"
 }
