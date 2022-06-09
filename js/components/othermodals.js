@@ -400,12 +400,7 @@ class SettingsModal extends HTMLElement {
         // Add event handler for clicking on the modal background
         this.querySelector(".modal-background").onclick = () => {
             this.remove();
-            if (this.closeCallback) this.closeCallback(this.currentSettings); 
         };
-    }
-
-    saveSettings() {
-
     }
 }
 

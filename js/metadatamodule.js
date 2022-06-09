@@ -485,8 +485,8 @@ window.saveElement = async function() {
     if (getCurrentDetailsView() == detailsPanelViews.FOUNDATIONAL) await saveDetailsFoundational();
     else if (getCurrentDetailsView() == detailsPanelViews.EXTENDED) saveDetailsExtended();
     document.dispatchEvent(new CustomEvent("SaveElementPressed", {detail: { activeView: getCurrentDetailsView()}}));
-    if (ioHelper.hasServerURL() && !asyncEditMode && (admindataWrapper.getUsers().length > 1 || clinicaldataWrapper.getSubjects().length > 1) && $("#store-metadata-async-button")) 
-        $("#store-metadata-async-button").show();
+    if (ioHelper.hasServerURL() && asyncEditMode && (admindataWrapper.getUsers().length > 1 || clinicaldataWrapper.getSubjects().length > 1) && $("#store-metadata-async-button")) 
+        $("#store-metadata-async-button").disabled = false;
 }
 
 async function saveDetailsFoundational() {
@@ -1046,6 +1046,7 @@ function enableAsyncEditMode() {
 
     ioHelper.showToast(languageHelper.getTranslation("edit-mode-enabled-hint"), 5000);
     $("#store-metadata-async-button").show();
+    $("#store-metadata-async-button").disabled = true;
 
     viewOnlyMode = false;
     reloadTree();
@@ -1063,8 +1064,7 @@ window.storeMetadataAsync = function() {
         {
             [languageHelper.getTranslation("save")]: async () => {
                 await metadataWrapper.storeMetadata();
-                asyncEditMode = false;
-                $("#store-metadata-async-button").hide();
+                $("#store-metadata-async-button").disabled = true;
                 ioHelper.showToast(languageHelper.getTranslation("forms-saved-hint"), 5000);
             }
         }
