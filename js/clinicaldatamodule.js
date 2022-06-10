@@ -166,7 +166,7 @@ function subjectClicked(subjectKey) {
 
 async function loadSubjectData(subjectKey) {
     // Automatically select the first study event if there is only one (present here as well mainly because of mobile auto survey view function)
-    if (!currentPath.studyEventOID && metadataWrapper.getStudyEvents().length == 1) currentPath.studyEventOID = metadataWrapper.getStudyEvents()[0].getOID();
+    if (!currentPath.studyEventOID && eventsAreHidden()) currentPath.studyEventOID = metadataWrapper.getStudyEvents()[0].getOID();
 
     await clinicaldataWrapper.loadSubject(subjectKey)
         .then(subject => {
@@ -310,9 +310,14 @@ function getRandomNumber(min, max, type){
     if(type == 'float') return Math.random() * (max - min) + min;
 }
 
+function eventsAreHidden() {
+    return metadataWrapper.getStudyEvents().length === 1
+        && metadataWrapper.getStudyEventRepeating(metadataWrapper.getStudyEvents()[0].getOID()) != metadataWrapper.repeatingTypes.YES;
+}
+
 export async function reloadTree() {
     // Hide the study event column if there is only one event
-    if (metadataWrapper.getStudyEvents().length == 1) {
+    if (eventsAreHidden()) {
         $("#clinicaldata-study-events-column").hide();
         currentPath.studyEventOID = metadataWrapper.getStudyEvents()[0].getOID();
     } else $("#clinicaldata-study-events-column").show();
@@ -360,7 +365,7 @@ async function loadTree(studyEventOID, formOID, studyEventRepeatKey) {
     }
 
     adjustMobileUI();
-    if (!currentPath.studyEventOID && !currentPath.formOID && metadataWrapper.getStudyEvents().length == 1) backOnMobile();
+    if (!currentPath.studyEventOID && !currentPath.formOID && eventsAreHidden()) backOnMobile();
     if (currentPath.studyEventOID) await loadFormsByStudyEvent();
 }
 
@@ -820,7 +825,7 @@ function hideSurveyView() {
     $(".navbar").show();
     $("html").classList.add("has-navbar-fixed-top");
     $("#subjects-column").show();
-    if (metadataWrapper.getStudyEvents().length > 1) $("#clinicaldata-study-events-column").show();
+    if (!eventsAreHidden()) $("#clinicaldata-study-events-column").show();
     $("#clinicaldata-forms-column").show();
     $("#clinicaldata-column .panel").classList.remove("is-shadowless");
     $("#clinicaldata-column .panel-heading").show();
@@ -1058,7 +1063,7 @@ window.backOnMobile = function() {
 
     if (currentSubjectKey && currentPath.studyEventOID && currentPath.formOID) {
         loadTree(currentPath.studyEventOID, null, currentPath.studyEventRepeatKey);
-    } else if (currentSubjectKey && currentPath.studyEventOID && metadataWrapper.getStudyEvents().length > 1) {
+    } else if (currentSubjectKey && currentPath.studyEventOID && !eventsAreHidden()) {
         loadTree(null, null);
     } else {
         $("#clinicaldata-study-events-column").classList.add("is-hidden-touch");
@@ -1074,7 +1079,7 @@ export function adjustMobileUI(forceHideBackButton) {
     if (!ioHelper.isMobile()) return;
     
     // Hide or show navbar back button
-    if (!forceHideBackButton && (currentSubjectKey || currentPath.formOID || (currentPath.studyEventOID && metadataWrapper.getStudyEvents().length > 1))) {
+    if (!forceHideBackButton && (currentSubjectKey || currentPath.formOID || (currentPath.studyEventOID && !eventsAreHidden()))) {
         $("#study-title").parentNode.classList.add("is-hidden-touch");
         $("#mobile-back-button").show();
         $("#mobile-back-button").classList.add("is-hidden-desktop");

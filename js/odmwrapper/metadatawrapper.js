@@ -440,7 +440,7 @@ export function getItemMethod(path) {
 
 export function getStudyEventRepeating(studyEventOID) {
     // Ad hoc implementation, improve for OpenEDC 2.0
-    return $(`StudyEventDef[OID="${studyEventOID}"]`).getAttribute("Repeating") ?? repeatingTypes.NO;
+    return $(`StudyEventDef[OID="${studyEventOID}"]`)?.getAttribute("Repeating") ?? repeatingTypes.NO;
 }
 
 export function setStudyEventRepeating(studyEventOID, repeating) {
