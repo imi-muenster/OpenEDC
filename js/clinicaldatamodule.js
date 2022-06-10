@@ -322,6 +322,15 @@ export async function reloadTree() {
         currentPath.studyEventOID = metadataWrapper.getStudyEvents()[0].getOID();
     } else $("#clinicaldata-study-events-column").show();
 
+    // Ad hoc implementation, improve for OpenEDC 2.0 – react to changes in metadata repeatable settings
+    if (metadataWrapper.getStudyEventRepeating(currentPath.studyEventOID) === metadataWrapper.repeatingTypes.YES
+        && !currentPath.studyEventRepeatKey) {
+            currentPath.studyEventRepeatKey = 1;
+    } else if (metadataWrapper.getStudyEventRepeating(currentPath.studyEventOID) === metadataWrapper.repeatingTypes.NO
+        && currentPath.studyEventRepeatKey) {
+            currentPath.studyEventRepeatKey = null;
+    }
+
     skipDataHasChangedCheck = true;
     await loadTree(currentPath.studyEventOID, currentPath.formOID, currentPath.studyEventRepeatKey);
 }
