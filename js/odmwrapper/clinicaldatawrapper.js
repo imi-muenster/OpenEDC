@@ -324,7 +324,7 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
     const currentDataStatus = getDataStatusForForm(studyEventOID, formOID, studyEventRepeatKey);
 
     // Do not store data if neither the formdata nor the data status changed
-    const formDataDifference = getFormDataDifference(formItemDataList, studyEventOID, formOID);
+    const formDataDifference = getFormDataDifference(formItemDataList, studyEventOID, formOID, studyEventRepeatKey);
     if (currentDataStatus == dataStatus && formDataDifference.length == 0) return;
 
     // Do not store data if connected to server and user has no rights to store data
@@ -399,12 +399,12 @@ function getFormItemDataList(formDataElements) {
 }
 
 // TODO: Can this be performance improved?
-export function getFormDataDifference(formItemDataList, studyEventOID, formOID) {
+export function getFormDataDifference(formItemDataList, studyEventOID, formOID, studyEventRepeatKey) {
     console.log("Check which data items have changed ...");
 
     // First, add or edit item data that was entered
     const formDataDifference = [];
-    const currentItemDataList = getSubjectFormData(studyEventOID, formOID);
+    const currentItemDataList = getSubjectFormData(studyEventOID, formOID, studyEventRepeatKey);
     for (const formItemData of formItemDataList) {
         const currentItemData = currentItemDataList.find(entry => entry.itemGroupOID == formItemData.itemGroupOID && entry.itemOID == formItemData.itemOID);
         if (!currentItemData || currentItemData.value != formItemData.value) formDataDifference.push(formItemData);
@@ -569,7 +569,7 @@ export function getDataStatusForStudyEvent(studyEventOID, repeatKey) {
 }
 
 export function getDataStatusForForm(studyEventOID, formOID, studyEventRepeatKey) {
-    const formDataElement = getFormDataElements(studyEventOID, formOID).getLastElement();
+    const formDataElement = getFormDataElements(studyEventOID, formOID, studyEventRepeatKey).getLastElement();
     if (!formDataElement) return dataStatusTypes.EMPTY;
 
     // Return complete even if there is no flag to support versions before 0.1.5 and imported data from other systems without a flag

@@ -318,7 +318,7 @@ export async function reloadTree() {
     } else $("#clinicaldata-study-events-column").show();
 
     skipDataHasChangedCheck = true;
-    await loadTree(currentPath.studyEventOID, currentPath.formOID);
+    await loadTree(currentPath.studyEventOID, currentPath.formOID, currentPath.studyEventRepeatKey);
 }
 
 // TODO: Loads entire tree if according elements are passed, implement this analogously for metadatamodule
@@ -351,7 +351,7 @@ async function loadTree(studyEventOID, formOID, studyEventRepeatKey) {
 
             // Always render one empty, additional study event
             const nextRepeatKey = parseInt(repeatKeys.length ? repeatKeys.at(-1) : 0) + 1;
-            const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataWrapper.dataStatusTypes.EMPTY;
+            const dataStatus = clinicaldataWrapper.dataStatusTypes.EMPTY;
             renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, nextRepeatKey);
         } else {
             const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataWrapper.dataStatusTypes.EMPTY;
@@ -385,7 +385,7 @@ async function loadFormsByStudyEvent() {
     for (let formDef of formDefs) {
         const formOID = formDef.getOID();
         const translatedDescription = formDef.getTranslatedDescription(languageHelper.getCurrentLocale());
-        const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForForm(currentPath.studyEventOID, formOID) : clinicaldataWrapper.dataStatusTypes.EMPTY;
+        const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForForm(currentPath.studyEventOID, formOID, currentPath.studyEventRepeatKey) : clinicaldataWrapper.dataStatusTypes.EMPTY;
         let panelBlock = htmlElements.getClinicaldataPanelBlock(formOID, translatedDescription, formDef.getName(), null, dataStatus);
         panelBlock.onclick = () => loadTree(currentPath.studyEventOID, formOID, currentPath.studyEventRepeatKey);
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
@@ -613,7 +613,7 @@ function loadFormClinicaldata() {
     showErrors(metadataNotFoundErrors, hiddenFieldWithValueErrors);
 
     // Adjust the form lock button and hint
-    if (clinicaldataWrapper.getDataStatusForForm(currentPath.studyEventOID, currentPath.formOID) == clinicaldataWrapper.dataStatusTypes.VALIDATED) showValidatedFormHint();
+    if (clinicaldataWrapper.getDataStatusForForm(currentPath.studyEventOID, currentPath.formOID, currentPath.studyEventRepeatKey) == clinicaldataWrapper.dataStatusTypes.VALIDATED) showValidatedFormHint();
 }
 
 // TODO: Localize error messages
@@ -649,7 +649,7 @@ window.loadNextFormData = async function() {
     let nextFormOID = getNextFormOID(currentPath.formOID);
     skipDataHasChangedCheck = true;
     if (nextFormOID) {
-        loadTree(currentPath.studyEventOID, nextFormOID);
+        loadTree(currentPath.studyEventOID, nextFormOID, currentPath.studyEventRepeatKey);
     } else {
         closeFormData();
     }
@@ -664,7 +664,7 @@ window.loadPreviousFormData = async function() {
     let previousFormOID = getPreviousFormOID(currentPath.formOID);
     if (previousFormOID) {
         skipDataHasChangedCheck = true;
-        loadTree(currentPath.studyEventOID, previousFormOID);
+        loadTree(currentPath.studyEventOID, previousFormOID, currentPath.studyEventRepeatKey);
     }
 
     loadSubjectKeys();
@@ -799,7 +799,7 @@ window.cancelFormOrSurveyEntry = function(closeSurvey) {
         skipDataHasChangedCheck = true;
     }
 
-    loadTree(currentPath.studyEventOID, null);
+    loadTree(currentPath.studyEventOID, null, currentPath.studyEventRepeatKey);
 }
 
 window.showSurveyView = function() {
@@ -964,7 +964,7 @@ export function surveyViewIsActive() {
 }
 
 function dataHasChanged() {
-    return !skipDataHasChangedCheck && currentSubjectKey && currentPath.studyEventOID && currentPath.formOID && clinicaldataWrapper.getFormDataDifference(getFormData(), currentPath.studyEventOID, currentPath.formOID).length;
+    return !skipDataHasChangedCheck && currentSubjectKey && currentPath.studyEventOID && currentPath.formOID && clinicaldataWrapper.getFormDataDifference(getFormData(), currentPath.studyEventOID, currentPath.formOID, currentPath.studyEventRepeatKey).length;
 }
 
 window.showSubjectInfo = function() {
@@ -1005,7 +1005,7 @@ async function showAuditRecordFormData(studyEventOID, formOID, date) {
     if (!cachedFormData) return;
 
     cachedFormDataIsAuditRecord = true;
-    await loadTree(studyEventOID, formOID);
+    await loadTree(studyEventOID, formOID, currentPath.studyEventRepeatKey);
 
     hideSubjectInfo();
 }
@@ -1057,7 +1057,7 @@ window.backOnMobile = function() {
     if (!ioHelper.isMobile()) return;
 
     if (currentSubjectKey && currentPath.studyEventOID && currentPath.formOID) {
-        loadTree(currentPath.studyEventOID, null);
+        loadTree(currentPath.studyEventOID, null, currentPath.studyEventRepeatKey);
     } else if (currentSubjectKey && currentPath.studyEventOID && metadataWrapper.getStudyEvents().length > 1) {
         loadTree(null, null);
     } else {
