@@ -10,8 +10,8 @@ export const getSubjectData = subjectKey => template(`
     </SubjectData>
 `);
 
-export const getStudyEventData = studyEventOID => template(`
-    <StudyEventData StudyEventOID="${studyEventOID}">
+export const getStudyEventData = (studyEventOID, studyEventRepeatKey) => template(`
+    <StudyEventData StudyEventOID="${studyEventOID}" ${studyEventRepeatKey ? `StudyEventRepeatKey="${studyEventRepeatKey}"` : ""}>
     </StudyEventData>
 `);
 

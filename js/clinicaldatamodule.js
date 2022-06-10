@@ -350,7 +350,7 @@ async function loadTree(studyEventOID, formOID, studyEventRepeatKey) {
             }
 
             // Always render one empty, additional study event
-            const nextRepeatKey = (repeatKeys.length ? repeatKeys.at(-1) : 0) + 1;
+            const nextRepeatKey = parseInt(repeatKeys.length ? repeatKeys.at(-1) : 0) + 1;
             const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataWrapper.dataStatusTypes.EMPTY;
             renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, nextRepeatKey);
         } else {
@@ -387,7 +387,7 @@ async function loadFormsByStudyEvent() {
         const translatedDescription = formDef.getTranslatedDescription(languageHelper.getCurrentLocale());
         const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForForm(currentPath.studyEventOID, formOID) : clinicaldataWrapper.dataStatusTypes.EMPTY;
         let panelBlock = htmlElements.getClinicaldataPanelBlock(formOID, translatedDescription, formDef.getName(), null, dataStatus);
-        panelBlock.onclick = () => loadTree(currentPath.studyEventOID, formOID);
+        panelBlock.onclick = () => loadTree(currentPath.studyEventOID, formOID, currentPath.studyEventRepeatKey);
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
     }
 
@@ -574,7 +574,7 @@ function loadFormClinicaldata() {
     let metadataNotFoundErrors = [];
     let hiddenFieldWithValueErrors = [];
 
-    let formItemDataList = cachedFormData || clinicaldataWrapper.getSubjectFormData(currentPath.studyEventOID, currentPath.formOID);
+    let formItemDataList = cachedFormData || clinicaldataWrapper.getSubjectFormData(currentPath.studyEventOID, currentPath.formOID, currentPath.studyEventRepeatKey);
     for (let formItemData of formItemDataList) {
         if (!formItemData.value) continue;
 
@@ -714,7 +714,7 @@ async function saveFormData() {
     if (isFormValidated()) dataStatus = clinicaldataWrapper.dataStatusTypes.VALIDATED;
     
     // Store data
-    await clinicaldataWrapper.storeSubjectFormData(currentPath.studyEventOID, currentPath.formOID, formItemDataList, dataStatus);
+    await clinicaldataWrapper.storeSubjectFormData(currentPath.studyEventOID, currentPath.formOID, formItemDataList, dataStatus, currentPath.studyEventRepeatKey);
 
     // When mandatory fields were not answered show a warning only once
     if (!skipMandatoryCheck && !mandatoryFieldsAnswered) {

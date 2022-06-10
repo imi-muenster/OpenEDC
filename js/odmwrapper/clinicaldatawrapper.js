@@ -318,10 +318,10 @@ export async function removeClinicaldata() {
     }
 }
 
-export async function storeSubjectFormData(studyEventOID, formOID, formItemDataList, dataStatus) {
+export async function storeSubjectFormData(studyEventOID, formOID, formItemDataList, dataStatus, studyEventRepeatKey) {
     if (!subject) return;
 
-    const currentDataStatus = getDataStatusForForm(studyEventOID, formOID);
+    const currentDataStatus = getDataStatusForForm(studyEventOID, formOID, studyEventRepeatKey);
 
     // Do not store data if neither the formdata nor the data status changed
     const formDataDifference = getFormDataDifference(formItemDataList, studyEventOID, formOID);
@@ -353,7 +353,13 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
     }
     if (itemGroupData) formData.appendChild(itemGroupData);
 
-    let studyEventData = $(`StudyEventData[StudyEventOID="${studyEventOID}"]`) || clinicaldataTemplates.getStudyEventData(studyEventOID);
+    let studyEventData = null;
+    if (studyEventRepeatKey) {
+        studyEventData = $(`StudyEventData[StudyEventOID="${studyEventOID}"][StudyEventRepeatKey="${studyEventRepeatKey}"]`) || clinicaldataTemplates.getStudyEventData(studyEventOID, studyEventRepeatKey);
+    } else {
+        studyEventData = $(`StudyEventData[StudyEventOID="${studyEventOID}"]`) || clinicaldataTemplates.getStudyEventData(studyEventOID);
+    }
+
     formData.setAttribute("TransactionType", studyEventData.querySelector(`FormData[FormOID="${formOID}"]`) ? "Update" : "Insert");
     studyEventData.appendChild(formData);
     subjectData.appendChild(studyEventData);
@@ -370,8 +376,8 @@ function getFormDataElements(studyEventOID, formOID, studyEventRepeatKey) {
 }
 
 // TODO: Can this be performance improved? (e.g., caching formItemDataList for getFormDataDifference())
-export function getSubjectFormData(studyEventOID, formOID) {
-    return !subject ? [] : getFormItemDataList(getFormDataElements(studyEventOID, formOID));
+export function getSubjectFormData(studyEventOID, formOID, studyEventRepeatKey) {
+    return !subject ? [] : getFormItemDataList(getFormDataElements(studyEventOID, formOID, studyEventRepeatKey));
 }
 
 function getFormItemDataList(formDataElements) {
@@ -553,7 +559,7 @@ export function getStudyEventRepeatKeys(studyEventOID) {
 }
 
 export function getDataStatusForStudyEvent(studyEventOID, repeatKey) {
-    const dataStates = metadataWrapper.getFormOIDsByStudyEvent(studyEventOID).map(formOID => getDataStatusForForm(studyEventOID, formOID));
+    const dataStates = metadataWrapper.getFormOIDsByStudyEvent(studyEventOID).map(formOID => getDataStatusForForm(studyEventOID, formOID, repeatKey));
 
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED)) return dataStatusTypes.VALIDATED;
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
@@ -562,7 +568,7 @@ export function getDataStatusForStudyEvent(studyEventOID, repeatKey) {
     return dataStatusTypes.EMPTY;
 }
 
-export function getDataStatusForForm(studyEventOID, formOID) {
+export function getDataStatusForForm(studyEventOID, formOID, studyEventRepeatKey) {
     const formDataElement = getFormDataElements(studyEventOID, formOID).getLastElement();
     if (!formDataElement) return dataStatusTypes.EMPTY;
 
