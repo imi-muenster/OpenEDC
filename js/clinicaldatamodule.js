@@ -322,12 +322,15 @@ export async function reloadTree() {
 }
 
 // TODO: Loads entire tree if according elements are passed, implement this analogously for metadatamodule
-async function loadTree(studyEventOID, formOID) {
+async function loadTree(studyEventOID, formOID, studyEventRepeatKey) {
     // Check if the data has changed / new data has been entered and show a prompt first
     if (safeCloseClinicaldata(() => loadTree(studyEventOID, formOID))) return;
 
     currentPath.studyEventOID = studyEventOID;
     currentPath.formOID = formOID;
+
+    // Ad hoc implementation, improve for OpenEDC 2.0
+    currentPath.studyEventRepeatKey = studyEventRepeatKey;
 
     $$("#clinicaldata-study-event-panel-blocks a").removeElements();
     $$("#clinicaldata-form-panel-blocks a").removeElements();
@@ -340,9 +343,16 @@ async function loadTree(studyEventOID, formOID) {
         // Ad hoc implementation, improve for OpenEDC 2.0
         const repeating = metadataWrapper.getStudyEventRepeating(studyEventOID) === metadataWrapper.repeatingTypes.YES;
         if (repeating) {
-            // TODO: Calculate repeat instance
+            const repeatKeys = clinicaldataWrapper.getStudyEventRepeatKeys(studyEventOID);
+            for (const repeatKey of repeatKeys) {
+                const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent(studyEventOID, repeatKey) : clinicaldataWrapper.dataStatusTypes.EMPTY;
+                renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, repeatKey);
+            }
+
+            // Always render one empty, additional study event
+            const nextRepeatKey = (repeatKeys.length ? repeatKeys.at(-1) : 0) + 1;
             const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataWrapper.dataStatusTypes.EMPTY;
-            renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, true, 1);
+            renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, nextRepeatKey);
         } else {
             const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataWrapper.dataStatusTypes.EMPTY;
             renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus);
@@ -354,16 +364,22 @@ async function loadTree(studyEventOID, formOID) {
     if (currentPath.studyEventOID) await loadFormsByStudyEvent();
 }
 
-function renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, repeating, repeatInstance) {
-    const repetitionText = repeating ? `${languageHelper.getTranslation("repetition")}: ${repeatInstance}`: null;
-    const panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedDescription, name, repetitionText, dataStatus);
-    panelBlock.onclick = () => loadTree(studyEventOID, null);
+function renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, repeatKey) {
+    const repetitionText = repeatKey ? `${languageHelper.getTranslation("repetition")}: ${repeatKey}`: null;
+    const panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedDescription, name, repetitionText, dataStatus, false, repeatKey);
+    panelBlock.onclick = () => loadTree(studyEventOID, null, repeatKey);
     $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
 }
 
 async function loadFormsByStudyEvent() {
     $("#clinicaldata-study-event-panel-blocks a.is-active")?.deactivate();
-    $(`#clinicaldata-study-event-panel-blocks [oid="${currentPath.studyEventOID}"]`).activate();
+
+    // Ad hoc implementation, improve for OpenEDC 2.0
+    if (currentPath.studyEventRepeatKey) {
+        $(`#clinicaldata-study-event-panel-blocks [oid="${currentPath.studyEventOID}"][study-event-repeat-key="${currentPath.studyEventRepeatKey}"]`).activate();
+    } else {
+        $(`#clinicaldata-study-event-panel-blocks [oid="${currentPath.studyEventOID}"]`).activate();
+    }
 
     const formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
     for (let formDef of formDefs) {

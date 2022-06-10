@@ -361,8 +361,12 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
     await storeSubject();
 }
 
-function getFormDataElements(studyEventOID, formOID) {
-    return $$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`);
+function getFormDataElements(studyEventOID, formOID, studyEventRepeatKey) {
+    if (studyEventRepeatKey) {
+        return $$(`StudyEventData[StudyEventOID="${studyEventOID}"][StudyEventRepeatKey="${studyEventRepeatKey}"] FormData[FormOID="${formOID}"]`);
+    } else {
+        return $$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`);
+    }
 }
 
 // TODO: Can this be performance improved? (e.g., caching formItemDataList for getFormDataDifference())
@@ -544,7 +548,11 @@ export function getDataStatus() {
     return dataStatusTypes.EMPTY;
 }
 
-export function getDataStatusForStudyEvent(studyEventOID) {
+export function getStudyEventRepeatKeys(studyEventOID) {
+    return Array.from(subjectData?.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"]`) ?? []).map(event => event.getAttribute("StudyEventRepeatKey"));
+}
+
+export function getDataStatusForStudyEvent(studyEventOID, repeatKey) {
     const dataStates = metadataWrapper.getFormOIDsByStudyEvent(studyEventOID).map(formOID => getDataStatusForForm(studyEventOID, formOID));
 
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED)) return dataStatusTypes.VALIDATED;
