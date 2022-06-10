@@ -81,6 +81,11 @@ function createDatatypeMandatorySelect() {
     const translatedMandatoryTypes = Object.values(metadataWrapper.mandatoryTypes).map(option => languageHelper.getTranslation(option.toLowerCase()));
     const mandatoryTypeSelect = htmlElements.getSelect("mandatory-select", true, true, Object.values(metadataWrapper.mandatoryTypes), null, translatedMandatoryTypes, true);
     if (!$("#mandatory-select-outer")) $("#mandatory-label").insertAdjacentElement("afterend", mandatoryTypeSelect);
+
+    // For now, add repeating types here -- improve for OpenEDC 2.0
+    const translatedRepeatingTypes = Object.values(metadataWrapper.repeatingTypes).map(option => languageHelper.getTranslation(option.toLowerCase()));
+    const repeatingTypeSelect = htmlElements.getSelect("repeating-select", true, true, Object.values(metadataWrapper.repeatingTypes), null, translatedRepeatingTypes, true);
+    if (!$("#repeating-select-outer")) $("#repeating-label").insertAdjacentElement("afterend", repeatingTypeSelect);
 }
 
 function hideStudyEvents(hideTree) {
@@ -278,10 +283,11 @@ function resetDetailsPanel() {
     ioHelper.getSetting("showElementName") ? $("#name-input").parentNode.show() : $("#name-input").parentNode.hide();
 
     // Extended
-    [$("#measurement-unit"), $("#collection-condition"), $("#item-method"), $("#add-range-check-button"), $("#add-alias-button")].disableElements();
+    [$("#measurement-unit"), $("#collection-condition"), $("#item-method"), $("#add-range-check-button"), $("#add-alias-button"), $("#repeating-select-inner")].disableElements();
     [$("#measurement-unit"), $("#collection-condition"), $("#item-method")].emptyInputs();
     $$("#range-check-inputs .range-check-input").removeElements();
     $$("#alias-inputs .alias-input").removeElements();
+    $("#repeating-select-inner").value = "No";
     addEmptyRangeCheckInput(true);
     addEmptyAliasInput(true);
 
@@ -349,6 +355,10 @@ function fillDetailsPanelExtended() {
 
     const condition = metadataWrapper.getElementCondition(currentPath.last.element, currentPath);
     switch (currentPath.last.element) {
+        case ODMPath.elements.STUDYEVENT:
+            $("#repeating-select-inner").value = metadataWrapper.getStudyEventRepeating(currentPath.last.value);
+            $("#repeating-select-inner").disabled = false;
+            break;
         case ODMPath.elements.ITEMGROUP:
             $("#collection-condition").value = condition ? condition.getFormalExpression() : "";
             $("#collection-condition").disabled = false;
@@ -556,6 +566,9 @@ async function setCodeListItemCodedValue(codedValue) {
 
 function saveDetailsExtended() {
     switch (currentPath.last.element) {
+        case ODMPath.elements.STUDYEVENT:
+            saveRepeating();
+            break;
         case ODMPath.elements.ITEMGROUP:
             if (saveConditionPreCheck()) return;
             break;
@@ -568,6 +581,11 @@ function saveDetailsExtended() {
     
     saveAliases();
     reloadAndStoreMetadata();
+}
+
+function saveRepeating() {
+    // Ad hoc implementation, improve for OpenEDC 2.0
+    metadataWrapper.setStudyEventRepeating(currentPath.last.value, $("#repeating-select-inner").value);
 }
 
 function saveConditionPreCheck() {

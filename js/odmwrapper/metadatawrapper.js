@@ -72,6 +72,11 @@ export const mandatoryTypes = {
     NO: "No"
 }
 
+export const repeatingTypes = {
+    YES: "Yes",
+    NO: "No"
+}
+
 export const dataStatusCodeListOID = "OpenEDC.DataStatus";
 
 let metadata = null;
@@ -431,6 +436,15 @@ export function getItemMethod(path) {
         let oid = methodRef.getAttribute("MethodOID");
         return $(`MethodDef[OID="${oid}"]`);
     }
+}
+
+export function getStudyEventRepeating(studyEventOID) {
+    // Ad hoc implementation, improve for OpenEDC 2.0
+    return $(`StudyEventDef[OID="${studyEventOID}"]`).getAttribute("Repeating") ?? repeatingTypes.NO;
+}
+
+export function setStudyEventRepeating(studyEventOID, repeating) {
+    $(`StudyEventDef[OID="${studyEventOID}"]`).setAttribute("Repeating", repeating);
 }
 
 export function getItemMeasurementUnit(itemOID) {
