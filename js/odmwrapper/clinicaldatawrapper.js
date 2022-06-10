@@ -555,7 +555,7 @@ export function getDataStatus() {
 }
 
 export function getStudyEventRepeatKeys(studyEventOID) {
-    return Array.from(subjectData?.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"]`) ?? []).map(event => event.getAttribute("StudyEventRepeatKey"));
+    return Array.from(subjectData?.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"]`) ?? []).map(event => parseInt(event.getAttribute("StudyEventRepeatKey")));
 }
 
 export function getDataStatusForStudyEvent(studyEventOID, repeatKey) {

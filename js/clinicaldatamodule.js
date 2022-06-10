@@ -343,7 +343,7 @@ async function loadTree(studyEventOID, formOID, studyEventRepeatKey) {
         // Ad hoc implementation, improve for OpenEDC 2.0
         const repeating = metadataWrapper.getStudyEventRepeating(studyEventOID) === metadataWrapper.repeatingTypes.YES;
         if (repeating) {
-            const repeatKeys = clinicaldataWrapper.getStudyEventRepeatKeys(studyEventOID);
+            const repeatKeys = clinicaldataWrapper.getStudyEventRepeatKeys(studyEventOID).sort((a, b) => a - b);
             for (const repeatKey of repeatKeys) {
                 const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent(studyEventOID, repeatKey) : clinicaldataWrapper.dataStatusTypes.EMPTY;
                 renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, repeatKey);
@@ -365,7 +365,7 @@ async function loadTree(studyEventOID, formOID, studyEventRepeatKey) {
 }
 
 function renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, repeatKey) {
-    const repetitionText = repeatKey ? `${languageHelper.getTranslation("repetition")}: ${repeatKey}`: null;
+    const repetitionText = repeatKey ? `${repeatKey}. ${languageHelper.getTranslation("repetition")}`: null;
     const panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedDescription, name, repetitionText, dataStatus, false, repeatKey);
     panelBlock.onclick = () => loadTree(studyEventOID, null, repeatKey);
     $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
