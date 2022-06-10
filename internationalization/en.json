@@ -57,6 +57,7 @@
     "context": "Context",
     "calculation": "Calculation",
     "repeating": "Repeating",
+    "repetition": "Repetition",
     "existing-references": "Existing References",
     "element-no-references-hint": "The current element is not reused at other locations.",
     "element-multiple-references-hint": "The current element is used at the following locations. If you edit it, it will be edited there as well.",

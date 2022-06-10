@@ -335,15 +335,30 @@ async function loadTree(studyEventOID, formOID) {
     for (let studyEventDef of metadataWrapper.getStudyEvents()) {
         const studyEventOID = studyEventDef.getOID();
         const translatedDescription = studyEventDef.getTranslatedDescription(languageHelper.getCurrentLocale());
-        const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataWrapper.dataStatusTypes.EMPTY;
-        let panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedDescription, studyEventDef.getName(), null, dataStatus);
-        panelBlock.onclick = () => loadTree(studyEventOID, null);
-        $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
+        const name = studyEventDef.getName();
+
+        // Ad hoc implementation, improve for OpenEDC 2.0
+        const repeating = metadataWrapper.getStudyEventRepeating(studyEventOID) === metadataWrapper.repeatingTypes.YES;
+        if (repeating) {
+            // TODO: Calculate repeat instance
+            const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataWrapper.dataStatusTypes.EMPTY;
+            renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, true, 1);
+        } else {
+            const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataWrapper.dataStatusTypes.EMPTY;
+            renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus);
+        }
     }
 
     adjustMobileUI();
     if (!currentPath.studyEventOID && !currentPath.formOID && metadataWrapper.getStudyEvents().length == 1) backOnMobile();
     if (currentPath.studyEventOID) await loadFormsByStudyEvent();
+}
+
+function renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, repeating, repeatInstance) {
+    const repetitionText = repeating ? `${languageHelper.getTranslation("repetition")}: ${repeatInstance}`: null;
+    const panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedDescription, name, repetitionText, dataStatus);
+    panelBlock.onclick = () => loadTree(studyEventOID, null);
+    $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
 }
 
 async function loadFormsByStudyEvent() {

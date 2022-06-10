@@ -57,6 +57,7 @@
     "context": "Kontext",
     "calculation": "Berechnung",
     "repeating": "Wiederholend",
+    "repetition": "Wiederholung",
     "existing-references": "Existierende Verweise",
     "element-no-references-hint": "Das aktuelle Element wird nicht an anderen Stellen wiederverwendet.",
     "element-multiple-references-hint": "Das aktuelle Element wird an folgenden Stellen verwendet. Wenn Sie es bearbeiten, wird es dort ebenfalls bearbeitet.",
