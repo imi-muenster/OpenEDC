@@ -4,6 +4,7 @@ import * as metadataWrapper from "./metadatawrapper.js";
 import * as admindataWrapper from "./admindatawrapper.js";
 import * as languageHelper from "../helper/languagehelper.js";
 import * as ioHelper from "../helper/iohelper.js";
+import { currentSubjectKey } from "../clinicaldatamodule.js";
 
 class ClinicaldataFile {
     constructor(modifiedDate) {
@@ -554,8 +555,10 @@ export function getDataStatus() {
     return dataStatusTypes.EMPTY;
 }
 
-export function getStudyEventRepeatKeys(studyEventOID) {
-    return Array.from(subjectData?.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"]`) ?? []).map(event => parseInt(event.getAttribute("StudyEventRepeatKey")));
+export async function getStudyEventRepeatKeys(studyEventOID, subjectKey) {
+    let data = subjectData;
+    if(subjectKey !== currentSubjectKey) data = await loadStoredSubjectData(getSubject(subjectKey).fileName);
+    return Array.from(data?.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"]`) ?? []).map(event => parseInt(event.getAttribute("StudyEventRepeatKey")));
 }
 
 export function getDataStatusForStudyEvent(studyEventOID, repeatKey) {
@@ -626,15 +629,26 @@ export function getCurrentData(options) {
 
 function formatSubjectData(subjectODMData, options) {
     const subjectData = {};
-    for (const itemData of subjectODMData.querySelectorAll("ItemData")) {
-        const studyEventOID = itemData.parentNode.parentNode.parentNode.getAttribute("StudyEventOID");
-        const formOID = itemData.parentNode.parentNode.getAttribute("FormOID");
-        const itemGroupOID = itemData.parentNode.getAttribute("ItemGroupOID");
+    let subjectItemData = subjectODMData.querySelectorAll("ItemData");
+
+    //filter for the correct studyEventRepeatKey
+    if(options.studyEventRepeatKey){
+        subjectItemData = [...subjectItemData].filter(itemData => {
+            return !itemData.closest('StudyEventData').getAttribute("StudyEventRepeatKey") ||
+            itemData.closest('StudyEventData').getAttribute("StudyEventRepeatKey") == options.studyEventRepeatKey;
+        });
+    }
+        
+    for (const itemData of subjectItemData) {   
+        const studyEventOID = itemData.closest('StudyEventData').getAttribute("StudyEventOID");
+        const formOID = itemData.closest('FormData').getAttribute("FormOID");
+        const itemGroupOID = itemData.closest('ItemGroupData').getAttribute("ItemGroupOID");
         const itemOID = itemData.getAttribute("ItemOID");
         const path = new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID);
+        const repeatKey = itemData.closest('StudyEventData').getAttribute('StudyEventRepeatKey');
 
         const value = itemData.getAttribute("Value");
-        if (value && value != "") subjectData[path.toString()] = value;
+        if (value && value != "") subjectData[path.toString() + (!options.studyEventRepeatKey && repeatKey ? `-${repeatKey}` : '')] = value;
         else delete subjectData[path.toString()];
     }
     if (options && options.includeInfo) {

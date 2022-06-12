@@ -180,7 +180,6 @@ async function loadSubjectData(subjectKey) {
         });
 
     $("#subject-panel-blocks a.is-active")?.deactivate();
-    console.log(currentSubjectKey)
     if (currentSubjectKey) $(`#subject-panel-blocks [oid="${currentSubjectKey}"]`).activate();
     if (currentSubjectKey) ioHelper.scrollParentToChild($(`#subject-panel-blocks [oid="${currentSubjectKey}"]`));
     $("#subject-info-button").disabled = currentSubjectKey ? false : true;
@@ -357,7 +356,8 @@ async function loadTree(studyEventOID, formOID, studyEventRepeatKey) {
         // Ad hoc implementation, improve for OpenEDC 2.0
         const repeating = metadataWrapper.getStudyEventRepeating(studyEventOID) === metadataWrapper.repeatingTypes.YES;
         if (repeating) {
-            const repeatKeys = clinicaldataWrapper.getStudyEventRepeatKeys(studyEventOID).sort((a, b) => a - b);
+            let repeatKeys = await clinicaldataWrapper.getStudyEventRepeatKeys(studyEventOID, currentSubjectKey);
+            repeatKeys = repeatKeys.sort((a, b) => a - b);
             for (const repeatKey of repeatKeys) {
                 const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent(studyEventOID, repeatKey) : clinicaldataWrapper.dataStatusTypes.EMPTY;
                 renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, repeatKey);
@@ -491,7 +491,7 @@ async function loadFormMetadata() {
 // Must be in place before clinical data is added to the form's input elements
 function addDynamicFormLogicPre() {
     // Add real-time logic to process items with conditions and methods
-    const variables = clinicaldataWrapper.getCurrentData(currentSubjectKey);
+    const variables = clinicaldataWrapper.getCurrentData({studyEventRepeatKey: currentPath.studyEventRepeatKey});
     if (cachedFormData) cachedFormData.forEach(entry => {
         const cachedFormDataPath = new ODMPath(currentPath.studyEventOID, currentPath.formOID, entry.itemGroupOID, entry.itemOID);
         variables[cachedFormDataPath.toString()] = entry.value;
