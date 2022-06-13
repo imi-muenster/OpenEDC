@@ -662,3 +662,11 @@ function formatSubjectData(subjectODMData, options) {
 
     return subjectData;
 }
+
+export function setStudyEventRepeating(studyEventOID, repeating) {
+    console.log(studyEventOID, repeating);
+    console.log(subjectData);
+    console.log(subjects);
+    console.log([...$$(`StudyEventData[StudyEventOID="${studyEventOID}"]`)]);
+    [...$$(`StudyEventData[StudyEventOID="${studyEventOID}"]`)].forEach(studyEventData => studyEventData.setAttribute("StudyEventRepeatKey", repeating))
+}

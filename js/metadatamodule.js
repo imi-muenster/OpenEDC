@@ -586,6 +586,7 @@ function saveDetailsExtended() {
 function saveRepeating() {
     // Ad hoc implementation, improve for OpenEDC 2.0
     metadataWrapper.setStudyEventRepeating(currentPath.last.value, $("#repeating-select-inner").value);
+    //clinicaldataWrapper.setStudyEventRepeating(currentPath.last.value, $("#repeating-select-inner").value);
 }
 
 function saveConditionPreCheck() {
