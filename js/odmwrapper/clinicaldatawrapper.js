@@ -5,6 +5,7 @@ import * as admindataWrapper from "./admindatawrapper.js";
 import * as languageHelper from "../helper/languagehelper.js";
 import * as ioHelper from "../helper/iohelper.js";
 import { currentSubjectKey } from "../clinicaldatamodule.js";
+import { promisifyRequest } from "../helper/indexeddbhelper.js";
 
 class ClinicaldataFile {
     constructor(modifiedDate) {
@@ -282,6 +283,11 @@ export async function loadSubject(subjectKey) {
     else subjectData = null;
     
     return subject;
+}
+
+async function loadSubjectData(subjectKey) {
+    subject = subjects.find(subject => subject.uniqueKey == subjectKey.toLowerCase());
+    if (subject) return await loadStoredSubjectData(subject.fileName);
 }
 
 export async function storeSubject() {
@@ -663,10 +669,32 @@ function formatSubjectData(subjectODMData, options) {
     return subjectData;
 }
 
-export function setStudyEventRepeating(studyEventOID, repeating) {
+export async function setStudyEventRepeating(studyEventOID, repeating) {
     console.log(studyEventOID, repeating);
     console.log(subjectData);
     console.log(subjects);
-    console.log([...$$(`StudyEventData[StudyEventOID="${studyEventOID}"]`)]);
-    [...$$(`StudyEventData[StudyEventOID="${studyEventOID}"]`)].forEach(studyEventData => studyEventData.setAttribute("StudyEventRepeatKey", repeating))
+    //console.log([...$$(`StudyEventData[StudyEventOID="${studyEventOID}"]`)]);
+    console.log(subjects);
+    let subjectsToLoad = [];
+    subjects.forEach(subject => subjectsToLoad.push(loadSubjectData(subject.key)));
+    await Promise.all(subjectsToLoad).then(async subjectsData => {
+        console.log(subjects);
+        console.log(checkSubjectsHaveRepeatKey(studyEventOID, subjects));
+        if(!repeating && checkSubjectsHaveRepeatKey(studyEventOID, subjects)) return false;
+        if(!repeating) return true;
+        
+        //at this point we know, we want to set repeating to "yes"
+        let updatedSubjects = [];
+        subjectsData.forEach(subjectData => {
+        });
+    });
+    //[...$$(`StudyEventData[StudyEventOID="${studyEventOID}"]`)].forEach(studyEventData => studyEventData.setAttribute("StudyEventRepeatKey", repeating))
+}
+
+export function checkSubjectsHaveRepeatKey(studyEventOID, subjectsData) {
+    for(let subjectData of subjectsData){
+        console.log(subjectData)
+        if(subjectData.querySelector(`StudyEventData[StudyEventOID="${studyEventOID}"`)?.getAttribute("StudyEventRepeatKey")) return true;
+    }
+    return false;
 }
