@@ -447,6 +447,10 @@ export function setStudyEventRepeating(studyEventOID, repeating) {
     $(`StudyEventDef[OID="${studyEventOID}"]`).setAttribute("Repeating", repeating);
 }
 
+export function isStudyEventRepeating(studyEventOID) {
+    return $(`StudyEventDef[OID="${studyEventOID}"]`).getAttribute('Repeating') && $(`StudyEventDef[OID="${studyEventOID}"]`).getAttribute('Repeating') == "Yes";
+}
+
 export function getItemMeasurementUnit(itemOID) {
     let measurementUnitRef = $(`ItemDef[OID="${itemOID}"] MeasurementUnitRef`);
 
