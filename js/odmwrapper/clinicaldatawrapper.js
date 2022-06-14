@@ -558,7 +558,7 @@ export function getDataStatus() {
 export async function getStudyEventRepeatKeys(studyEventOID, subjectKey) {
     let data = subjectData;
     if(subjectKey !== currentSubjectKey) data = await loadStoredSubjectData(getSubject(subjectKey).fileName);
-    return Array.from(data?.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"]`) ?? []).map(event => parseInt(event.getAttribute("StudyEventRepeatKey")));
+    return Array.from(data?.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"]`) ?? []).map(event => parseInt(event.getAttribute("StudyEventRepeatKey"))).sort((a,b) => a-b);
 }
 
 export function getDataStatusForStudyEvent(studyEventOID, repeatKey) {
