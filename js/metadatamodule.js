@@ -85,7 +85,19 @@ function createDatatypeMandatorySelect() {
     // For now, add repeating types here -- improve for OpenEDC 2.0
     const translatedRepeatingTypes = Object.values(metadataWrapper.repeatingTypes).map(option => languageHelper.getTranslation(option.toLowerCase()));
     const repeatingTypeSelect = htmlElements.getSelect("repeating-select", true, true, Object.values(metadataWrapper.repeatingTypes), null, translatedRepeatingTypes, true);
-    if (!$("#repeating-select-outer")) $("#repeating-label").insertAdjacentElement("afterend", repeatingTypeSelect);
+    if (!$("#repeating-select-outer")) {
+        $("#repeating-label").insertAdjacentElement("afterend", repeatingTypeSelect);
+        let repeatStatus;
+        $("#repeating-select-inner").onfocus = () => repeatStatus = $("#repeating-select-inner").value;
+        $("#repeating-select-inner").onchange = () => checkRepeatChangePermissions(repeatStatus);
+    }
+}
+
+function checkRepeatChangePermissions(repeatStatus) {
+    if(admindataWrapper.getCurrentUserSiteOID()) {
+        ioHelper.showMessage(languageHelper.getTranslation('no-permission'), languageHelper.getTranslation('no-permission-repeating-text'));
+        $("#repeating-select-inner").value = repeatStatus;
+    }
 }
 
 function hideStudyEvents(hideTree) {
@@ -493,7 +505,7 @@ window.showSettingsEditor = function() {
 
 window.saveElement = async function() {
     if (getCurrentDetailsView() == detailsPanelViews.FOUNDATIONAL) await saveDetailsFoundational();
-    else if (getCurrentDetailsView() == detailsPanelViews.EXTENDED) saveDetailsExtended();
+    else if (getCurrentDetailsView() == detailsPanelViews.EXTENDED) await saveDetailsExtended();
     document.dispatchEvent(new CustomEvent("SaveElementPressed", {detail: { activeView: getCurrentDetailsView()}}));
     if (ioHelper.hasServerURL() && asyncEditMode && (admindataWrapper.getUsers().length > 1 || clinicaldataWrapper.getSubjects().length > 1) && $("#store-metadata-async-button")) 
         $("#store-metadata-async-button").disabled = false;
@@ -564,10 +576,10 @@ async function setCodeListItemCodedValue(codedValue) {
     }
 }
 
-function saveDetailsExtended() {
+async function saveDetailsExtended() {
     switch (currentPath.last.element) {
         case ODMPath.elements.STUDYEVENT:
-            saveRepeating();
+            await saveRepeating();
             break;
         case ODMPath.elements.ITEMGROUP:
             if (saveConditionPreCheck()) return;
@@ -583,10 +595,19 @@ function saveDetailsExtended() {
     reloadAndStoreMetadata();
 }
 
-function saveRepeating() {
+async function saveRepeating() {
+    console.log(admindataWrapper.getCurrentUserSiteOID());
+    if(admindataWrapper.getCurrentUserSiteOID()) return;
     // Ad hoc implementation, improve for OpenEDC 2.0
-    if(clinicaldataWrapper.setStudyEventRepeating(currentPath.last.value, $("#repeating-select-inner").value))
-        metadataWrapper.setStudyEventRepeating(currentPath.last.value, $("#repeating-select-inner").value);
+    //metadataWrapper.setStudyEventRepeating(currentPath.last.value, $("#repeating-select-inner").value);
+    const resolved = await clinicaldataWrapper.setStudyEventDataRepeating(currentPath.last.value, $("#repeating-select-inner").value === "Yes");
+    console.log(resolved);
+    console.log(currentPath.last.value, $("#repeating-select-inner").value)
+    if(resolved) metadataWrapper.setStudyEventRepeating(currentPath.last.value, $("#repeating-select-inner").value);
+    else {
+        const subjectKeys = await clinicaldataWrapper.getSubjectsHavingDataForElement(currentPath.last.element, currentPath);
+        ioHelper.showMessage(languageHelper.getTranslation('cannot-be-changed-repeating'), languageHelper.getTranslation('cannot-be-changed-repeating-text') + subjectKeys.join(", ") + "</strong>")
+    }
 }
 
 function saveConditionPreCheck() {

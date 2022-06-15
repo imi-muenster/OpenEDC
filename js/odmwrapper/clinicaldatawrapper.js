@@ -290,22 +290,28 @@ async function loadSubjectData(subjectKey) {
     if (subject) return await loadStoredSubjectData(subject.fileName);
 }
 
-export async function storeSubject() {
-    if (!subject) return;
+export async function storeSubject(subjectToStore, subjectDataToStore) {
+    if(!subjectToStore || !subjectDataToStore) {
+        subjectToStore = subject;
+        subjectDataToStore = subjectData;
+    }
+    if (!subjectToStore) return;
     console.log("Store subject ...");
 
-    const previousFileName = subject.fileName;
+    const previousFileName = subjectToStore.fileName;
     const modifiedDate = new Date();
 
-    subject.status = getDataStatus();
-    subject.modifiedDate = modifiedDate;
+    console.log("before datastatus")
+    subjectToStore.status = await getDataStatus(subjectToStore.uniqueKey, subjectDataToStore);
+    console.log(subjectToStore.status)
+    subjectToStore.modifiedDate = modifiedDate;
     clinicaldataFile = new ClinicaldataFile(modifiedDate);
-    await ioHelper.setODM(subject.fileName, subjectData);
+    await ioHelper.setODM(subjectToStore.fileName, subjectDataToStore);
 
     // This mechanism helps to prevent possible data loss when multiple users edit the same subject data at the same time (especially important for the offline mode)
     // If the previousFileName cannot be removed, the system keeps multiple current versions of the subject data and the user is notified that conflicting data exists
-    if (previousFileName != subject.fileName) await ioHelper.removeODM(previousFileName);
-    ioHelper.dispatchGlobalEvent('SubjectStored', {uniqueKey: subject.uniqueKey});
+    if (previousFileName != subjectToStore.fileName) await ioHelper.removeODM(previousFileName);
+    ioHelper.dispatchGlobalEvent('SubjectStored', {uniqueKey: subjectToStore.uniqueKey});
 }
 
 export function clearSubject() {
@@ -328,7 +334,7 @@ export async function removeClinicaldata() {
 export async function storeSubjectFormData(studyEventOID, formOID, formItemDataList, dataStatus, studyEventRepeatKey) {
     if (!subject) return;
 
-    const currentDataStatus = getDataStatusForForm(studyEventOID, formOID, studyEventRepeatKey);
+    const currentDataStatus = getDataStatusForForm({studyEventOID, formOID, studyEventRepeatKey});
 
     // Do not store data if neither the formdata nor the data status changed
     const formDataDifference = getFormDataDifference(formItemDataList, studyEventOID, formOID, studyEventRepeatKey);
@@ -374,17 +380,18 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
     await storeSubject();
 }
 
-function getFormDataElements(studyEventOID, formOID, studyEventRepeatKey) {
+function getFormDataElements({studyEventOID, formOID, studyEventRepeatKey, subjectDataToCheck}) {
+    if(!subjectDataToCheck) subjectDataToCheck = subjectData;
     if (studyEventRepeatKey) {
-        return $$(`StudyEventData[StudyEventOID="${studyEventOID}"][StudyEventRepeatKey="${studyEventRepeatKey}"] FormData[FormOID="${formOID}"]`);
+        return subjectDataToCheck.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"][StudyEventRepeatKey="${studyEventRepeatKey}"] FormData[FormOID="${formOID}"]`);
     } else {
-        return $$(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`);
+        return  subjectDataToCheck.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"] FormData[FormOID="${formOID}"]`);
     }
 }
 
 // TODO: Can this be performance improved? (e.g., caching formItemDataList for getFormDataDifference())
 export function getSubjectFormData(studyEventOID, formOID, studyEventRepeatKey) {
-    return !subject ? [] : getFormItemDataList(getFormDataElements(studyEventOID, formOID, studyEventRepeatKey));
+    return !subject ? [] : getFormItemDataList(getFormDataElements({studyEventOID, formOID, studyEventRepeatKey}));
 }
 
 function getFormItemDataList(formDataElements) {
@@ -551,8 +558,17 @@ export function getAutoNumberedSubjectKey() {
     return subjectKey.toString();
 }
 
-export function getDataStatus() {
-    const dataStates = metadataWrapper.getStudyEventOIDs().map(studyEventOID => getDataStatusForStudyEvent(studyEventOID));
+export async function getDataStatus(subjectKey, subjectDataToCheck) {
+    const studyEventOIDs = metadataWrapper.getStudyEventOIDs();
+    if(!subjectDataToCheck) subjectDataToCheck = subjectData;
+    let dataStates = [];
+    for await (const studyEventOID of studyEventOIDs) {
+        if(metadataWrapper.isStudyEventRepeating(studyEventOID))
+            dataStates = dataStates.concat((await getStudyEventRepeatKeys(studyEventOID, subjectKey ? subjectKey : subject.uniqueKey)).map(repeatKey => getDataStatusForStudyEvent({studyEventOID, repeatKey, subjectDataToCheck})));
+        else
+            dataStates.push(getDataStatusForStudyEvent({studyEventOID, subjectDataToCheck}));
+    }
+    console.log(dataStates);
 
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED)) return dataStatusTypes.VALIDATED;
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
@@ -562,13 +578,16 @@ export function getDataStatus() {
 }
 
 export async function getStudyEventRepeatKeys(studyEventOID, subjectKey) {
+    if(!subjectKey) return [];
     let data = subjectData;
-    if(subjectKey !== currentSubjectKey) data = await loadStoredSubjectData(getSubject(subjectKey).fileName);
+    if(subjectKey !== subject.uniqueKey) data = await loadStoredSubjectData(getSubject(subjectKey).fileName);
     return Array.from(data?.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"]`) ?? []).map(event => parseInt(event.getAttribute("StudyEventRepeatKey"))).sort((a,b) => a-b);
 }
 
-export function getDataStatusForStudyEvent(studyEventOID, repeatKey) {
-    const dataStates = metadataWrapper.getFormOIDsByStudyEvent(studyEventOID).map(formOID => getDataStatusForForm(studyEventOID, formOID, repeatKey));
+export function getDataStatusForStudyEvent({studyEventOID, studyEventRepeatKey, subjectDataToCheck}) {
+    console.log(studyEventOID, studyEventRepeatKey);
+    console.log(subjectDataToCheck)
+    const dataStates = metadataWrapper.getFormOIDsByStudyEvent(studyEventOID).map(formOID => getDataStatusForForm({studyEventOID, formOID, studyEventRepeatKey, subjectDataToCheck}));
 
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED)) return dataStatusTypes.VALIDATED;
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
@@ -577,8 +596,10 @@ export function getDataStatusForStudyEvent(studyEventOID, repeatKey) {
     return dataStatusTypes.EMPTY;
 }
 
-export function getDataStatusForForm(studyEventOID, formOID, studyEventRepeatKey) {
-    const formDataElement = getFormDataElements(studyEventOID, formOID, studyEventRepeatKey).getLastElement();
+export function getDataStatusForForm({studyEventOID, formOID, studyEventRepeatKey, subjectDataToCheck}) {
+    console.log(subjectDataToCheck);
+    if(!subjectDataToCheck) subjectDataToCheck = subjectData;
+    const formDataElement = getFormDataElements({studyEventOID, formOID, studyEventRepeatKey, subjectDataToCheck}).getLastElement();
     if (!formDataElement) return dataStatusTypes.EMPTY;
 
     // Return complete even if there is no flag to support versions before 0.1.5 and imported data from other systems without a flag
@@ -669,31 +690,43 @@ function formatSubjectData(subjectODMData, options) {
     return subjectData;
 }
 
-export async function setStudyEventRepeating(studyEventOID, repeating) {
+export async function setStudyEventDataRepeating(studyEventOID, repeating) {
+    if(repeating === metadataWrapper.isStudyEventRepeating(studyEventOID)) return;
     console.log(studyEventOID, repeating);
-    console.log(subjectData);
-    console.log(subjects);
+    //console.log(subjectData);
+    //console.log(subjects);
     //console.log([...$$(`StudyEventData[StudyEventOID="${studyEventOID}"]`)]);
-    console.log(subjects);
-    let subjectsToLoad = [];
-    subjects.forEach(subject => subjectsToLoad.push(loadSubjectData(subject.key)));
-    await Promise.all(subjectsToLoad).then(async subjectsData => {
-        console.log(subjects);
-        console.log(checkSubjectsHaveRepeatKey(studyEventOID, subjects));
-        if(!repeating && checkSubjectsHaveRepeatKey(studyEventOID, subjects)) return false;
+    //console.log(subjects);
+    let subjectsToLoad = subjects.map(async subject => {
+        return new Promise(async resolve => {
+            resolve({
+                subject,
+                subjectData: await loadSubjectData(subject.key)
+            });
+        });
+    });
+    return await Promise.all(subjectsToLoad).then(async loadedSubjects => {
+        console.log(repeating)
+        //console.log(loadedSubjects);
+        console.log(checkSubjectsHaveRepeatKey(studyEventOID, loadedSubjects.map(loadedSubject => loadedSubject.subjectData)));
+        if(!repeating && checkSubjectsHaveRepeatKey(studyEventOID, loadedSubjects.map(loadedSubject => loadedSubject.subjectData))) return false;
         if(!repeating) return true;
         
         //at this point we know, we want to set repeating to "yes"
-        let updatedSubjects = [];
-        subjectsData.forEach(subjectData => {
-        });
+        for await (let loadedSubject of loadedSubjects) {
+            //we only need to update subjects, that already have an entry for the given studyevent
+            //there can only be one studyEventData entry at this point
+            loadedSubject.subjectData.querySelector(`StudyEventData[StudyEventOID="${studyEventOID}"]`)?.setAttribute("StudyEventRepeatKey", "1");
+            await storeSubject(loadedSubject.subject, loadedSubject.subjectData);
+        };
+        return true;
     });
     //[...$$(`StudyEventData[StudyEventOID="${studyEventOID}"]`)].forEach(studyEventData => studyEventData.setAttribute("StudyEventRepeatKey", repeating))
 }
 
 export function checkSubjectsHaveRepeatKey(studyEventOID, subjectsData) {
     for(let subjectData of subjectsData){
-        console.log(subjectData)
+        //console.log(subjectData)
         if(subjectData.querySelector(`StudyEventData[StudyEventOID="${studyEventOID}"`)?.getAttribute("StudyEventRepeatKey")) return true;
     }
     return false;

@@ -328,6 +328,9 @@
     "element-not-moved-error": "Das Element konnte nicht verschoben werden, da ihm klinische Daten zugeordnet sind. Sie können versuchen, das Element zu entfernen, um eine Liste der Probanden anzuzeigen, die Daten für dieses Element enthalten.",
     "cannot-be-removed": "Kann nicht gelöscht werden",
     "cannot-be-removed-text": "<p>Sie können dieses Element derzeit nicht entfernen, da ihm klinische Daten für die folgenden Probanden zugeordnet sind:</p><br><strong>",
+    "cannot-be-changed-repeating": "Kann nicht geändert werden",
+    "cannot-be-changed-repeating-text": "<p>Sie können den 'Wiederholend' Status dieses Element derzeit nicht ändern, da ihm klinische Daten für die folgenden Probanden zugeordnet sind:</p><br><strong>",
+    "no-permission-repeating-text": "Sie sind einem Standort zugewiesen. Nur Nutzer ohne zugewiesenen Standort können dieses Feld ändern.",
     "subject-not-loaded-title": "Proband konnte nicht geladen werden",
     "subject-not-loaded-error": "Der ausgewählte Proband konnte nicht geladen werden. Sie sind entweder offline und öffnen den Datensatz zum ersten Mal oder jemand hat den Datensatz gerade erst bearbeitet.<br><br>Bitte warten Sie ein paar Sekunden und versuchen Sie es erneut.",
     "subject-edited-error": "Ihr aktuell geöffneter Proband wurde von einem anderen Benutzer bearbeitet. Wir empfehlen Ihnen, den Probanden neu zu laden, um Datenkonflikte zu vermeiden. Wenn Sie wesentliche Änderungen vorgenommen haben, können Sie Ihre Änderungen speichern und den Konflikt zu einem späteren Zeitpunkt lösen.",
@@ -399,5 +402,6 @@
     "no-survey": "In Umfrageansicht ausblenden",
     "no-survey-description": "Falls sie diese Checkbox anwählen, wird das Element in der Umfrageansicht ausgeblendet.",
     "export-not-allowed": "Sie sind nicht berechtigt, Daten zu exportieren.",
-    "save-and-close": "Speichern und schließen"
+    "save-and-close": "Speichern und schließen",
+    "no-permission": "Nicht erlaubt"
 }

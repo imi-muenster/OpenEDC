@@ -328,6 +328,9 @@
     "element-not-moved-error": "The element could not be moved since there is clinical data assigned to it. You can try to remove the element to see a list of subjects that contain data for this element.",
     "cannot-be-removed": "Cannot be removed",
     "cannot-be-removed-text": "<p>You cannot currently remove this element since it has clinical data assigned for the following subjects:</p><br><strong>",
+    "cannot-be-changed-repeating": "Cannot be changed",
+    "cannot-be-changed-repeating-text": "<p>You cannot change the 'Repeating' status of this element, since it has clinical data assigned for the following subjects:</p><br><strong>",
+    "no-permission-repeating-text": "You are assigned a site. Only users without an assigned site are allowed to change this field.",
     "subject-not-loaded-title": "Subject could not be loaded",
     "subject-not-loaded-error": "The selected subject could not be loaded. Your are either offline and open the subject for the first time or someone just recently edited the subject.<br><br>Please wait a few seconds and try again.",
     "subject-edited-error": "Your currently opened subject has been edited by another user. We suggest that you reload the subject to prevent data conflicts. If you have made substantial changes, you can also save your changes and resolve the conflict later on.",
@@ -399,5 +402,6 @@
     "no-survey": "Hide in survey view",
     "no-survey-description": "If you check this checkbox, the element will not be shown in the survey view.",
     "export-not-allowed": "You are not allowed to export data.",
-    "save-and-close": "save and close"
+    "save-and-close": "save and close",
+    "no-permission": "No Permission"
 }

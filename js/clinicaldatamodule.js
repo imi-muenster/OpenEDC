@@ -359,7 +359,8 @@ async function loadTree(studyEventOID, formOID, studyEventRepeatKey) {
             let repeatKeys = await clinicaldataWrapper.getStudyEventRepeatKeys(studyEventOID, currentSubjectKey);
             repeatKeys = repeatKeys.sort((a, b) => a - b);
             for (const repeatKey of repeatKeys) {
-                const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent(studyEventOID, repeatKey) : clinicaldataWrapper.dataStatusTypes.EMPTY;
+                console.log("load tree ", repeatKey)
+                const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent({studyEventOID, repeatKey}) : clinicaldataWrapper.dataStatusTypes.EMPTY;
                 renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, repeatKey);
             }
 
@@ -368,7 +369,7 @@ async function loadTree(studyEventOID, formOID, studyEventRepeatKey) {
             const dataStatus = clinicaldataWrapper.dataStatusTypes.EMPTY;
             renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, nextRepeatKey);
         } else {
-            const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataWrapper.dataStatusTypes.EMPTY;
+            const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent({studyEventOID}) : clinicaldataWrapper.dataStatusTypes.EMPTY;
             renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus);
         }
     }
@@ -390,7 +391,10 @@ async function loadFormsByStudyEvent() {
 
     // Ad hoc implementation, improve for OpenEDC 2.0
     if (currentPath.studyEventRepeatKey) {
-        $(`#clinicaldata-study-event-panel-blocks [oid="${currentPath.studyEventOID}"][study-event-repeat-key="${currentPath.studyEventRepeatKey}"]`).activate();
+        const studyEvent = $(`#clinicaldata-study-event-panel-blocks [oid="${currentPath.studyEventOID}"][study-event-repeat-key="${currentPath.studyEventRepeatKey}"]`)
+        //this means there is no repetition x for the chosen subject
+        if(!studyEvent) return;
+        studyEvent.activate();
     } else {
         $(`#clinicaldata-study-event-panel-blocks [oid="${currentPath.studyEventOID}"]`).activate();
     }
@@ -399,7 +403,7 @@ async function loadFormsByStudyEvent() {
     for (let formDef of formDefs) {
         const formOID = formDef.getOID();
         const translatedDescription = formDef.getTranslatedDescription(languageHelper.getCurrentLocale());
-        const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForForm(currentPath.studyEventOID, formOID, currentPath.studyEventRepeatKey) : clinicaldataWrapper.dataStatusTypes.EMPTY;
+        const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForForm({studyEventOID: currentPath.studyEventOID, formOID, studyEventRepeatKey: currentPath.studyEventRepeatKey}) : clinicaldataWrapper.dataStatusTypes.EMPTY;
         let panelBlock = htmlElements.getClinicaldataPanelBlock(formOID, translatedDescription, formDef.getName(), null, dataStatus);
         panelBlock.onclick = () => loadTree(currentPath.studyEventOID, formOID, currentPath.studyEventRepeatKey);
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
@@ -627,7 +631,7 @@ function loadFormClinicaldata() {
     showErrors(metadataNotFoundErrors, hiddenFieldWithValueErrors);
 
     // Adjust the form lock button and hint
-    if (clinicaldataWrapper.getDataStatusForForm(currentPath.studyEventOID, currentPath.formOID, currentPath.studyEventRepeatKey) == clinicaldataWrapper.dataStatusTypes.VALIDATED) showValidatedFormHint();
+    if (clinicaldataWrapper.getDataStatusForForm({studyEventOID: currentPath.studyEventOID, formOID: currentPath.formOID, studyEventRepeatKey:currentPath.studyEventRepeatKey}) == clinicaldataWrapper.dataStatusTypes.VALIDATED) showValidatedFormHint();
 }
 
 // TODO: Localize error messages
