@@ -50,6 +50,7 @@ function setEditMode() {
     if (ioHelper.hasServerURL() && !asyncEditMode && (admindataWrapper.getUsers().length > 1 || clinicaldataWrapper.getSubjects().length > 1)) {
         viewOnlyMode = true;
         asyncEditMode = true;
+        clinicaldataWrapper.clearPendingStudyEventRepeatChanges();
         ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("metadata-edit-mode-question"),
             {
                 [languageHelper.getTranslation("view-only-mode")]: () => asyncEditMode = false
@@ -596,11 +597,22 @@ async function saveDetailsExtended() {
 }
 
 async function saveRepeating() {
-    console.log(admindataWrapper.getCurrentUserSiteOID());
     if(admindataWrapper.getCurrentUserSiteOID()) return;
     // Ad hoc implementation, improve for OpenEDC 2.0
-    //metadataWrapper.setStudyEventRepeating(currentPath.last.value, $("#repeating-select-inner").value);
-    const resolved = await clinicaldataWrapper.setStudyEventDataRepeating(currentPath.last.value, $("#repeating-select-inner").value === "Yes");
+    let resolved;
+    if(!asyncEditMode) {
+        // without async mode, we can just change the StudyEventRepeatingKey of every affected subject right away
+        resolved = await clinicaldataWrapper.setStudyEventDataRepeating({studyEventOID: currentPath.last.value, boolRepeating: $("#repeating-select-inner").value === "Yes"});
+    }
+    else {
+        // with async mode enabled we only have to check, whether a change is theoretically possible...
+        resolved = await clinicaldataWrapper.checkStudyEventDataRepeating({studyEventOID: currentPath.last.value, boolRepeating: $("#repeating-select-inner").value === "Yes"})
+        if(resolved) {
+            // ...and then remember the studyeventoid to be set to repeating, if the change is possible
+            clinicaldataWrapper.addPendingStudyEventRepeatChange({studyEventOID: currentPath.last.value, boolRepeating: $("#repeating-select-inner").value === "Yes"});
+        }
+    }
+        
     console.log(resolved);
     console.log(currentPath.last.value, $("#repeating-select-inner").value)
     if(resolved) metadataWrapper.setStudyEventRepeating(currentPath.last.value, $("#repeating-select-inner").value);
@@ -1103,6 +1115,7 @@ window.storeMetadataAsync = function() {
     ioHelper.showMessage(languageHelper.getTranslation("please-confirm"), languageHelper.getTranslation("save-forms-question"),
         {
             [languageHelper.getTranslation("save")]: async () => {
+                await clinicaldataWrapper.resolvePendingChanges();
                 await metadataWrapper.storeMetadata();
                 $("#store-metadata-async-button").disabled = true;
                 ioHelper.showToast(languageHelper.getTranslation("forms-saved-hint"), 5000);

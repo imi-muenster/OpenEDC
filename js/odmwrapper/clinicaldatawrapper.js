@@ -134,6 +134,7 @@ let subjects = [];
 let subject = null;
 let subjectData = null;
 let clinicaldataFile = null;
+let pendingStudyEventsOIDsRepeating = [];
 
 export async function importClinicaldata(odmXMLString) {
     // For performance reasons of IndexedDB, store serialized clinical data in bulk
@@ -690,13 +691,8 @@ function formatSubjectData(subjectODMData, options) {
     return subjectData;
 }
 
-export async function setStudyEventDataRepeating(studyEventOID, repeating) {
-    if(repeating === metadataWrapper.isStudyEventRepeating(studyEventOID)) return;
-    console.log(studyEventOID, repeating);
-    //console.log(subjectData);
-    //console.log(subjects);
-    //console.log([...$$(`StudyEventData[StudyEventOID="${studyEventOID}"]`)]);
-    //console.log(subjects);
+export async function checkStudyEventDataRepeating({studyEventOID, boolRepeating}){
+    if(boolRepeating === metadataWrapper.isStudyEventRepeating(studyEventOID)) return false;
     let subjectsToLoad = subjects.map(async subject => {
         return new Promise(async resolve => {
             resolve({
@@ -706,11 +702,24 @@ export async function setStudyEventDataRepeating(studyEventOID, repeating) {
         });
     });
     return await Promise.all(subjectsToLoad).then(async loadedSubjects => {
-        console.log(repeating)
-        //console.log(loadedSubjects);
-        console.log(checkSubjectsHaveRepeatKey(studyEventOID, loadedSubjects.map(loadedSubject => loadedSubject.subjectData)));
-        if(!repeating && checkSubjectsHaveRepeatKey(studyEventOID, loadedSubjects.map(loadedSubject => loadedSubject.subjectData))) return false;
-        if(!repeating) return true;
+        if(!boolRepeating && checkSubjectsHaveRepeatKey(studyEventOID, loadedSubjects.map(loadedSubject => loadedSubject.subjectData))) return false;
+        return true;
+    });
+}
+
+export async function setStudyEventDataRepeating({studyEventOID, boolRepeating}) {
+    if(boolRepeating === metadataWrapper.isStudyEventRepeating(studyEventOID)) return false;
+    let subjectsToLoad = subjects.map(async subject => {
+        return new Promise(async resolve => {
+            resolve({
+                subject,
+                subjectData: await loadSubjectData(subject.key)
+            });
+        });
+    });
+    return await Promise.all(subjectsToLoad).then(async loadedSubjects => {
+        if(!boolRepeating && checkSubjectsHaveRepeatKey(studyEventOID, loadedSubjects.map(loadedSubject => loadedSubject.subjectData))) return false;
+        if(!boolRepeating) return true;
         
         //at this point we know, we want to set repeating to "yes"
         for await (let loadedSubject of loadedSubjects) {
@@ -721,7 +730,6 @@ export async function setStudyEventDataRepeating(studyEventOID, repeating) {
         };
         return true;
     });
-    //[...$$(`StudyEventData[StudyEventOID="${studyEventOID}"]`)].forEach(studyEventData => studyEventData.setAttribute("StudyEventRepeatKey", repeating))
 }
 
 export function checkSubjectsHaveRepeatKey(studyEventOID, subjectsData) {
@@ -730,4 +738,19 @@ export function checkSubjectsHaveRepeatKey(studyEventOID, subjectsData) {
         if(subjectData.querySelector(`StudyEventData[StudyEventOID="${studyEventOID}"`)?.getAttribute("StudyEventRepeatKey")) return true;
     }
     return false;
+}
+
+export function addPendingStudyEventRepeatChange(pendingChange) {
+    pendingStudyEventsOIDsRepeating.push(pendingChange);
+}
+
+export function clearPendingStudyEventRepeatChanges() {
+    pendingStudyEventsOIDsRepeating = [];
+}
+
+export async function resolvePendingChanges() {
+    for await (let change of pendingStudyEventsOIDsRepeating) {
+        if(!await setStudyEventDataRepeating(change)) return false;
+    }
+    return true;
 }

@@ -127,6 +127,7 @@ export async function storeMetadata() {
     ioHelper.dispatchGlobalEvent('MetadataStored');
 }
 
+
 export function getSerializedMetadata() {
     return new XMLSerializer().serializeToString(metadata);
 }
