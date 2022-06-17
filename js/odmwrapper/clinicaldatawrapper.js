@@ -749,8 +749,9 @@ export function clearPendingStudyEventRepeatChanges() {
 }
 
 export async function resolvePendingChanges() {
+    console.log("resolve pending changes");
     for await (let change of pendingStudyEventsOIDsRepeating) {
-        if(!await setStudyEventDataRepeating(change)) return false;
+        if(!await setStudyEventDataRepeating(change, true)) return false;
     }
     return true;
 }

@@ -512,7 +512,7 @@ window.saveElement = async function() {
         $("#store-metadata-async-button").disabled = false;
 }
 
-async function saveDetailsFoundational() {
+export async function saveDetailsFoundational() {
     switch (currentPath.last.element) {
         case ODMPath.elements.STUDYEVENT:
             showFirstEventEditedHelp();
@@ -577,7 +577,7 @@ async function setCodeListItemCodedValue(codedValue) {
     }
 }
 
-async function saveDetailsExtended() {
+export async function saveDetailsExtended() {
     switch (currentPath.last.element) {
         case ODMPath.elements.STUDYEVENT:
             await saveRepeating();

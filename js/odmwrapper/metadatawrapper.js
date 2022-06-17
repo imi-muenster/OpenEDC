@@ -1132,7 +1132,7 @@ export async function mergeMetadata(odmXMLString) {
         odm.querySelectorAll("ItemDef").forEach(itemDef => insertElementDef(itemDef));
         odm.querySelectorAll("CodeList").forEach(codeList => insertElementDef(codeList));
         odm.querySelectorAll("ConditionDef").forEach(conditionDef => insertElementDef(conditionDef));
-        odm.querySelectorAll("MethodDef").forEach(conditionDef => insertElementDef(conditionDef));
+        odm.querySelectorAll("MethodDef").forEach(methodDef => insertElementDef(methodDef));
     }
 
     await storeMetadata();
