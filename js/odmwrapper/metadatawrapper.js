@@ -540,10 +540,15 @@ export function setItemQuestion(itemOID, question) {
     } else if (translatedText && !question) {
         translatedText.remove();
         if (!$(`[OID="${itemOID}"] Question TranslatedText`)) $(`[OID="${itemOID}"] Question`).remove();
-    } else if (translatedText == null && question) {
+    } else if (!translatedText && question) {
         let itemQuestion = $(`ItemDef[OID="${itemOID}"] Question`);
         if (!itemQuestion) {
-            $(`[OID="${itemOID}"]`).insertAdjacentElement("afterbegin", metadataTemplates.getQuestion());
+            //if description exists, it has to be inserted after description, otherwise as first element
+            let itemDescription = $(`ItemDef[OID="${itemOID}"] Description`);
+            if(itemDescription)
+                itemDescription.insertAdjacentElement("afterend", metadataTemplates.getQuestion());
+            else
+                $(`[OID="${itemOID}"]`).insertAdjacentElement("afterbegin", metadataTemplates.getQuestion());
         }
         $(`ItemDef[OID="${itemOID}"] Question`).appendChild(metadataTemplates.getTranslatedText(question, languageHelper.getCurrentLocale()));
     }
