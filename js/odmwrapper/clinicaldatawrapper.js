@@ -707,8 +707,11 @@ export async function checkStudyEventDataRepeating({studyEventOID, boolRepeating
     });
 }
 
-export async function setStudyEventDataRepeating({studyEventOID, boolRepeating}) {
-    if(boolRepeating === metadataWrapper.isStudyEventRepeating(studyEventOID)) return false;
+export async function setStudyEventDataRepeating({studyEventOID, boolRepeating}, skipAlreadyChangedCheck) {
+    console.log({studyEventOID, boolRepeating});
+    const alreadyChanged = boolRepeating === metadataWrapper.isStudyEventRepeating(studyEventOID);
+    if(alreadyChanged && !skipAlreadyChangedCheck) return false;
+    
     let subjectsToLoad = subjects.map(async subject => {
         return new Promise(async resolve => {
             resolve({
