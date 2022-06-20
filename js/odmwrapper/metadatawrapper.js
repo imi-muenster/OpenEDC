@@ -964,7 +964,7 @@ export function copyStudyEvent(studyEventOID, deepCopy) {
     return {newStudyEventOID};
 }
 
-export function copyForm(formOID, deepCopy, studyEventOID, replacedOIDs) {
+export function copyForm(formOID, deepCopy, studyEventOID, replacedOIDs = {}) {
     let newFormOID = generateUniqueOID("F.");
 
     if (studyEventOID) {
@@ -978,7 +978,6 @@ export function copyForm(formOID, deepCopy, studyEventOID, replacedOIDs) {
     formDef.insertAdjacentElement("afterend", formDefClone);
 
     if (deepCopy) {
-        if(!replacedOIDs) replacedOIDs = {};
         replacedOIDs[formOID] = newFormOID;
         let itemGroupRefs = formDefClone.querySelectorAll(`ItemGroupRef`);
         for (let itemGroupRef of itemGroupRefs) {
@@ -987,11 +986,10 @@ export function copyForm(formOID, deepCopy, studyEventOID, replacedOIDs) {
             replacedOIDs = info.replacedOIDs;
         }
     }
-    //console.log(replacedOIDs);
     return {newFormOID, replacedOIDs};
 }
 
-export function copyItemGroup(itemGroupOID, deepCopy, formOID, replacedOIDs) {
+export function copyItemGroup(itemGroupOID, deepCopy, formOID, replacedOIDs = {}) {
     let newItemGroupOID = generateUniqueOID("IG.");
 
     if (formOID) {
@@ -1005,7 +1003,6 @@ export function copyItemGroup(itemGroupOID, deepCopy, formOID, replacedOIDs) {
     itemGroupDef.insertAdjacentElement("afterend", itemGroupDefClone);
 
     if (deepCopy) {
-        if(!replacedOIDs) replacedOIDs = {};
         replacedOIDs[itemGroupOID] = newItemGroupOID;
         let itemRefs = itemGroupDefClone.querySelectorAll(`ItemRef`);
         for (let itemRef of itemRefs) {
@@ -1024,11 +1021,10 @@ export function copyItemGroup(itemGroupOID, deepCopy, formOID, replacedOIDs) {
             replacedOIDs = info.replacedOIDs;
         }
     }
-    //console.log(replacedOIDs);
     return {newItemGroupOID, replacedOIDs};
 }
 
-export function copyItem(itemOID, deepCopy, itemGroupOID, replacedOIDs) {
+export function copyItem(itemOID, deepCopy, itemGroupOID, replacedOIDs = {}) {
     let newItemOID = generateUniqueOID("I.");
 
     if (itemGroupOID) {
@@ -1053,7 +1049,6 @@ export function copyItem(itemOID, deepCopy, itemGroupOID, replacedOIDs) {
     itemDef.insertAdjacentElement("afterend", itemDefClone);
 
     if (deepCopy) {
-        if(!replacedOIDs) replacedOIDs = {};
         replacedOIDs[itemOID]  =newItemOID;
         let codeListRef = itemDefClone.querySelector("CodeListRef");
         if (codeListRef) {
@@ -1061,7 +1056,6 @@ export function copyItem(itemOID, deepCopy, itemGroupOID, replacedOIDs) {
             codeListRef.setAttribute("CodeListOID", newCodeListOID);
         }
     }
-    //console.log(replacedOIDs);
     return {newItemOID, replacedOIDs};
 }
 
