@@ -1,4 +1,5 @@
 import * as metadataWrapper from "../odmwrapper/metadatawrapper.js";
+import * as autocompletehelperSelect from "../helper/autocompletehelperselect.js"
 
 const $ = query => metadataWrapper.getMetadata().querySelector(query);
 const $$ = query => metadataWrapper.getMetadata().querySelectorAll(query);
@@ -22,6 +23,7 @@ function isLikertPossible(itemGroupOID){
     let compareCodelistOID = null;
     if(metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-likert', itemGroupOID)) return false;
 
+    let codelistChecked = false;
     for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
         const itemOID = itemRef.getAttribute("ItemOID");
         const itemDef = $(`ItemDef[OID="${itemOID}"]`);
@@ -30,6 +32,10 @@ function isLikertPossible(itemGroupOID){
         const codeListOID = codeListRef.getAttribute("CodeListOID");
         if(compareCodelistOID != null && codeListOID != compareCodelistOID) return false;
         compareCodelistOID = codeListOID;
+        if(!codelistChecked) {
+            if(metadataWrapper.getCodeListItemsByItem(itemOID).length > 5) return false
+            codelistChecked = true;
+        }
     }
     return true;
 }
@@ -170,6 +176,14 @@ function getItemInput(itemDef, itemGroupOID, options) {
         const codeListOID = codeListRef.getAttribute("CodeListOID");
         const codeListItems = $$(`CodeList[OID="${codeListOID}"] CodeListItem`);
         if (codeListItems.length >= 10) {
+            let input = document.createElement('input');
+            input.classList = 'input';
+            input.type = 'text';
+            input.autocomplete = 'off';
+            inputContainer.appendChild(input);
+            input.setAttribute("item-oid", itemDef.getAttribute('OID'));
+            input.onfocus = () => autocompletehelperSelect.enableAutocomplete(input, autocompletehelperSelect.modes.CODELIST, {itemOID: itemDef.getAttribute('OID')});
+        }else if (codeListItems.length >= 5) {
             const selectInput = getSelectInput(codeListItems, itemDef.getAttribute("OID"), options);
             inputContainer.appendChild(selectInput);
         } else {

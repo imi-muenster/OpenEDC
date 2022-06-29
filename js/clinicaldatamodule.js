@@ -604,6 +604,14 @@ function loadFormClinicaldata() {
 
         switch (inputElement.getAttribute("type")) {
             case "text":
+                let codeListOID;
+                if((codeListOID = metadataWrapper.getCodeListOIDByItem(formItemData.itemOID))) {
+                    inputElement.value = metadataWrapper.getCodeListItem(codeListOID, formItemData.value)?.getTranslatedDecode(languageHelper.getCurrentLocale());
+                }
+                else if (!inputElement.readOnly) {
+                    inputElement.value = formItemData.value;
+                }
+                break;
             case "date":
             case "time":
             case "datetime-local":
@@ -749,8 +757,9 @@ function getFormData() {
     for (const itemGroupContent of $$("#clinicaldata-content .item-group-content")) {
         const itemGroupOID = itemGroupContent.getAttribute("item-group-content-oid");
         for (const inputElement of itemGroupContent.querySelectorAll("[item-oid]")) {
-            const value = inputElement.value;
+            const value = !inputElement.getAttribute('data-value') ? inputElement.value : inputElement.getAttribute('data-value');
             const itemOID = inputElement.getAttribute("item-oid");
+            console.log(itemGroupOID, itemOID, inputElement.getAttribute('data-value'));
             switch (inputElement.getAttribute("type")) {
                 case "text":
                 case "date":
