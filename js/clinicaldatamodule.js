@@ -607,6 +607,7 @@ function loadFormClinicaldata() {
                 let codeListOID;
                 if((codeListOID = metadataWrapper.getCodeListOIDByItem(formItemData.itemOID))) {
                     inputElement.value = metadataWrapper.getCodeListItem(codeListOID, formItemData.value)?.getTranslatedDecode(languageHelper.getCurrentLocale());
+                    inputElement.setAttribute('data-value', formItemData.value);
                 }
                 else if (!inputElement.readOnly) {
                     inputElement.value = formItemData.value;
