@@ -175,7 +175,7 @@ function getItemInput(itemDef, itemGroupOID, options) {
     if (codeListRef) {
         const codeListOID = codeListRef.getAttribute("CodeListOID");
         const codeListItems = $$(`CodeList[OID="${codeListOID}"] CodeListItem`);
-        if (codeListItems.length >= 10) {
+        if (codeListItems.length > 10) {
             let input = document.createElement('input');
             input.classList = 'input';
             input.type = 'text';
@@ -183,7 +183,7 @@ function getItemInput(itemDef, itemGroupOID, options) {
             inputContainer.appendChild(input);
             input.setAttribute("item-oid", itemDef.getAttribute('OID'));
             input.onfocus = () => autocompletehelperSelect.enableAutocomplete(input, autocompletehelperSelect.modes.CODELIST, {itemOID: itemDef.getAttribute('OID')});
-        }else if (codeListItems.length >= 5) {
+        }else if (codeListItems.length > 5) {
             const selectInput = getSelectInput(codeListItems, itemDef.getAttribute("OID"), options);
             inputContainer.appendChild(selectInput);
         } else {
