@@ -14,7 +14,7 @@ class AutocompleteElement {
     }
 
     get label() {
-        return this._label ? `${this._label} (${this._value})` : this._value;
+        return this._label ? `${this._label} (${this._value})` : this._value.toString();
     }
 }
 
@@ -22,14 +22,6 @@ export const modes = {
     ITEMWITHCODELIST: 1,
     ITEM: 2,
     CODELIST: 3
-}
-
-
-// TODO: Rename item, which can also be a measurement unit
-const availableParts = {
-    ITEM: 1,
-    COMPARATOR: 2,
-    VALUE: 3
 }
 
 let currentMode;
@@ -80,7 +72,10 @@ const inputEventListener = event => {
     list.className = "autocomplete-list";
 
     setElements();
+    console.log("before match")
     const matchingElements = elements.filter(element => valueTokens.every(token => element.label.toLowerCase().includes(token)));
+    console.log(valueTokens)
+    console.log(matchingElements);
     for (const element of matchingElements) {
         const option = document.createElement("div");
         option.className = "autocomplete-option";
