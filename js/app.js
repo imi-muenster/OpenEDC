@@ -15,7 +15,7 @@ import * as repositoryHelper from "./helper/repositoryhelper.js";
 
 const appVersion = "0.8.1";
 
-const appModes = {
+export const appModes = {
     METADATA: "metadata",
     CLINICALDATA: "clinicaldata",
     REPORTS: "reports"
@@ -55,13 +55,11 @@ ioHelper.addGlobalEventListener("DOMContentLoaded", async () => {
 
     // Initialize the application
     await metadataWrapper.loadStoredMetadata()
-        .then(() => {
-            startApp();
-        })
         .catch(error => {
             if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND && !ioHelper.hasServerURL()) showStartModal();
             else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionKeyModal();
         });
+    await startApp();
 
     // Handle URL search / query parameters (e.g., for metadata repository integration)
     handleURLSearchParameters();
@@ -672,7 +670,7 @@ export function setIOListeners() {
     $("#language-navbar-item").addEventListener("mouseleave", () => $("#language-navbar-item").deactivate());
 }
 
-function enableMode(mode) {
+export function enableMode(mode) {
     if (clinicaldataModule.safeCloseClinicaldata(() => enableMode(mode))) return;
 
     $("#metadata-section").hide();
@@ -738,11 +736,10 @@ async function handleURLSearchParameters() {
 
     // Get models from metadata repositories and merge them
     const repositoryHelper = await import("./helper/repositoryhelper.js");
-    repositoryHelper.getModels(urlParams)
+    await repositoryHelper.getModels(urlParams)
         .then(models => {
             if (!models) return;
-            window.history.replaceState(null, appVersion, ioHelper.getBaseURL());
-            
+             
             if (getCurrentState() == appStates.EMPTY) mergeMetadataModels(models);
             else if (getCurrentState() == appStates.UNLOCKED) {
                 ioHelper.showMessage(languageHelper.getTranslation("import-forms"), languageHelper.getTranslation("import-forms-merge-hint"),
@@ -758,6 +755,8 @@ async function handleURLSearchParameters() {
             } else ioHelper.showMessage(languageHelper.getTranslation("Note"), languageHelper.getTranslation("forms-import-encrypted-hint"));
         })
         .catch(error => ioHelper.showMessage(languageHelper.getTranslation("Error"), languageHelper.getTranslation("forms-import-error")));
+    repositoryHelper.preloadPage(urlParams);
+    window.history.replaceState(null, appVersion, ioHelper.getBaseURL());
 }
 
 function mergeMetadataModels(models) {
