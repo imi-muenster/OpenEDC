@@ -811,7 +811,7 @@ async function subscribeToServerUpdates() {
     const lastHintShowed = {};
 
     setInterval(async () => {
-        if (clinicaldataModule.surveyViewIsActive()) return;
+        if (clinicaldataModule.surveyViewIsActive() || pauseUpdateCheck) return;
         const lastUpdate = await ioHelper.getLastServerUpdate();
 
         // Test whether the metadata was updated
