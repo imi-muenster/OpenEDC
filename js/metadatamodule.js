@@ -1063,7 +1063,7 @@ window.storeMetadataAsync = function() {
     ioHelper.showMessage(languageHelper.getTranslation("please-confirm"), languageHelper.getTranslation("save-forms-question"),
         {
             [languageHelper.getTranslation("save")]: async () => {
-                ioHelper.showToast(languageHelper.getTranslation("forms-saving-hint"), 5000);
+                ioHelper.showToast(languageHelper.getTranslation("forms-saving-hint"), 60000, ioHelper.interactionTypes.WARNING, true);
                 $("#store-metadata-async-button").disabled = true;
                 await metadataWrapper.storeMetadata();
                 ioHelper.showToast(languageHelper.getTranslation("forms-saved-hint"), 5000);

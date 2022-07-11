@@ -562,15 +562,24 @@ export function showMessage(heading, message, callbacks, callbackType, closeText
     if (!$("#message-modal")) document.body.appendChild(messageModal);
 }
 
-export function showToast(message, duration, toastType) {
+export function showToast(message, duration, toastType, showLoadingBar) {
     const toast = document.createElement("div");
     toast.className = "notification is-toast";
     toast.classList.add(toastType ?? interactionTypes.SUCCESS);
-    toast.innerHTML = message;
+    let span = document.createElement('span');
+    span.innerText = message;
+    toast.appendChild(span);
 
     const closeButton = document.createElement("button");
     closeButton.className = isMobile() ? "delete is-medium" : "delete";
     closeButton.onclick = () => fadeOutToast(toast);
+
+    if(showLoadingBar){
+        let loadingBar = document.createElement('progress');
+        loadingBar.classList = 'progress is-small is-link mt-2';
+        loadingBar.setAttribute('max', 100);
+        toast.appendChild(loadingBar);
+    }
     toast.insertAdjacentElement("afterbegin", closeButton);
 
     fadeInToast(toast);
