@@ -3,6 +3,7 @@ import * as metadataTemplates from "../odmtemplates/metadatatemplates.js";
 import * as htmlConverter from "../converter/htmlconverter.js";
 import * as languageHelper from "../helper/languagehelper.js";
 import * as ioHelper from "../helper/iohelper.js";
+import * as app from "../app.js"
 
 class MetadataFile {
     constructor(modifiedDate) {
@@ -113,6 +114,7 @@ export async function loadStoredMetadata() {
 }
 
 export async function storeMetadata() {
+    app.setPauseUpdateCheck(true);
     const previousFileName = metadataFile?.fileName;
 
     metadataFile = new MetadataFile();
@@ -120,6 +122,7 @@ export async function storeMetadata() {
 
     if (previousFileName && previousFileName != metadataFile.fileName) ioHelper.removeODM(previousFileName);
     ioHelper.dispatchGlobalEvent('MetadataStored');
+    app.setPauseUpdateCheck(false)
 }
 
 export function getSerializedMetadata() {

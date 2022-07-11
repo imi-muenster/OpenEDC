@@ -370,6 +370,7 @@
     "edit-mode-enabled-hint": "The editing mode has been successfully enabled. Please remember to click on <i>Save Forms</i> after you made all changes.",
     "save-forms": "Save Forms",
     "save-forms-question": "Do you want to save all changes that you made to the forms?",
+    "forms-saving-hint": "Changes are being applied. Please wait.",
     "forms-saved-hint": "All changes were successfully saved.",
 
     "metadata-not-found-error": "One or multiple items in the clinical data could not be found in the metadata. This means that your clinical data and metadata might be out of sync or an imported ODM file is (partially) broken. You can find a list of all clinical data items that could not be found in the metadata below.",

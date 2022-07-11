@@ -27,6 +27,8 @@ const appStates = {
     UNLOCKED: "unlocked"
 }
 
+let pauseUpdateCheck = false;
+
 const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
@@ -834,6 +836,10 @@ async function subscribeToServerUpdates() {
 
     // Finally, remove expired ODM cache entries
     ioHelper.disposeExpiredCaches();
+}
+
+export function setPauseUpdateCheck(pause) {
+    pauseUpdateCheck = pause;
 }
 
 function getCurrentMode() {

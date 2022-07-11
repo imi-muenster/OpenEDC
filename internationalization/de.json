@@ -370,6 +370,7 @@
     "edit-mode-enabled-hint": "Der Bearbeitungsmodus wurde erfolgreich aktiviert. Bitte denken Sie daran, auf <i>Formulare Speichern</i> zu klicken, nachdem Sie alle Änderungen vorgenommen haben.",
     "save-forms": "Formulare Speichern",
     "save-forms-question": "Möchten Sie alle Änderungen speichern, die Sie an den Formularen vorgenommen haben?",
+    "forms-saving-hint": "Änderungen werden gespeichert. Bitte warten.",
     "forms-saved-hint": "Alle Änderungen wurden erfolgreich gespeichert.",
 
     "metadata-not-found-error": "Ein oder mehrere Elemente in den klinischen Daten konnten nicht in den Metadaten gefunden werden. Dies bedeutet, dass Ihre klinischen Daten und Metadaten möglicherweise nicht synchron sind oder eine importierte ODM-Datei (teilweise) defekt ist. Im Folgenden finden Sie eine Liste aller klinischen Datenelemente, die nicht in den Metadaten gefunden werden konnten.",
