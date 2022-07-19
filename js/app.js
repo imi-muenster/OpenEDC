@@ -452,7 +452,7 @@ window.connectToServer = function() {
                 case ioHelper.serverStatus.SERVERINITIALIZED:
                     ioHelper.showMessage(languageHelper.getTranslation("note"), languageHelper.getTranslation("server-initialized-hint"),
                         {
-                            [languageHelper.getTranslation("open-server")]: () => window.location.href = "https://" + serverURL
+                            [languageHelper.getTranslation("open-server")]: () => window.location.href = serverURL
                         }
                     );
             }
