@@ -165,7 +165,7 @@ function computeMethod(method, elementOID) {
     
     console.log(computedValue)
     const element = metadataWrapper.getElementDefByOID(elementOID)
-    if(element.getAttribute('DataType') == 'text') {
+    if(element.getAttribute('DataType') == 'text' || element.getAttribute('DataType') == 'string') {
         return computedValue;
     }
     return !isNaN(computedValue) && isFinite(computedValue) ? Math.round(computedValue * 100) / 100 : null;
