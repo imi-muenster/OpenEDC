@@ -893,6 +893,7 @@ function removeElement() {
     }
 
     reloadAndStoreMetadata();
+    enableSaveFormsButton();
     ioHelper.showToast(languageHelper.getTranslation("element-removed"), 2500);
 }
 
