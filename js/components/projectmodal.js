@@ -218,7 +218,7 @@ class ProjectModal extends HTMLElement {
                                     </div>
                                     <div class="buttons are-small mt-5">
                                         <button class="button is-link" id="user-save-button" onclick="saveUser()" i18n="save"></button>
-                                        <button class="button is-danger" id="user-remove-button" onclick="removeUser()" i18n="remove"></button>
+                                        <button class="button is-danger" id="user-remove-button" onclick="showRemoveUserModal()" i18n="remove"></button>
                                     </div>
                                 </div>
                             </div>
