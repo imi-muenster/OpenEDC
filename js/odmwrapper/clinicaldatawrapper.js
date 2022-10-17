@@ -218,8 +218,8 @@ export async function loadSubjects() {
     }
 
     // Evaluate whether data conflicts are present (i.e., multiple users edited the same subject at the same time)
-    const dateFilter = $("#date-filter-subject-select-inner")?.value;
-    subjects = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY_AZ, dateFilter ?? dateFilterTypes.LAST_7_DAYS);
+    //const dateFilter = $("#date-filter-subject-select-inner")?.value;
+    subjects = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY_AZ, dateFilterTypes.ALL);
     for (let i = 0; i < subjects.length-1; i++) {
         if (subjects[i].key == subjects[i+1].key) {
             subjects[i].hasConflict = true;
@@ -269,7 +269,6 @@ export function getSubjects(siteOID, sortOrder, dateFilter = null) {
 function sortSubjects(subjects, sortOrder, dateFilter = null) {
     if(dateFilter) {
         const today = new Date();
-        console.log(dateFilter)
         switch (dateFilter) {
             case dateFilterTypes.TODAY:
                 subjects = subjects.filter(subject => today.toDateString() === new Date(subject.createdDate).toDateString());
