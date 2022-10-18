@@ -6,6 +6,8 @@ const $$ = query => metadataWrapper.getMetadata().querySelectorAll(query);
 export function getFormAsHTML(formOID, options) {
     const formAsHTML = document.createElement("div");
     formAsHTML.id = "odm-html-content";
+    const hideForm = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', formOID);
+    if(hideForm) formAsHTML.classList = 'is-hidden-survey-view'
 
     for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
         const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");

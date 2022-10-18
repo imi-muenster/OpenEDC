@@ -375,7 +375,8 @@ async function loadFormsByStudyEvent() {
 
     // Automatically start the survey view when activated in project options and the current device is a smartphone or tablet
     if (ioHelper.getSetting("autoSurveyView") && ioHelper.isMobile() && currentSubjectKey && formDefs.length && !currentPath.formOID) {
-        currentPath.formOID = formDefs[0].getOID();
+        currentPath.formOID = getNextFormOID();//  formDefs[0].getOID();
+        console.log(currentPath.formOID)
         showSurveyView();
         adjustMobileUI();
     }
@@ -444,6 +445,10 @@ async function loadFormMetadata() {
 
     // Add the empty form
     let form = await metadataWrapper.getFormAsHTML(currentPath.formOID, ioHelper.getSetting("textAsTextarea"));
+    const hideForm = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', currentPath.formOID);
+    if(hideForm) $("#survey-view-button button").disabled = true;
+    else  $("#survey-view-button button").disabled = false;
+
     $("#odm-html-content")?.remove();
     $("#clinicaldata-content").appendChild(form);
 
@@ -654,8 +659,26 @@ window.loadPreviousFormData = async function() {
 
 function getNextFormOID(previousFormOID) {
     let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
-    for (let i = 0; i < formDefs.length-1; i++) {
-        if (formDefs[i].getOID() == previousFormOID) return formDefs[i+1].getOID();
+    if(formDefs.length && !previousFormOID) {
+        previousFormOID = formDefs[0].getOID();
+        const hideForm = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', previousFormOID);
+        if(!hideForm) return previousFormOID;
+    }
+    let keepSearching = true;
+    let nextFormOID;
+    while(keepSearching) {
+        for (let i = 0; i < formDefs.length-1; i++) {
+            if (formDefs[i].getOID() == previousFormOID) nextFormOID = formDefs[i+1].getOID();
+        }
+        if(!nextFormOID) {
+            return nextFormOID;
+        }
+        const hideForm = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', nextFormOID);
+        if(!hideForm) {
+           return nextFormOID;
+        }
+        previousFormOID = nextFormOID;
+        nextFormOID = null;
     }
 }
 
