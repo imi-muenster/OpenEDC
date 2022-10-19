@@ -600,7 +600,7 @@ export async function getDataStatus(subjectKey, subjectDataToCheck) {
     let dataStates = [];
     for await (const studyEventOID of studyEventOIDs) {
         if(metadataWrapper.isStudyEventRepeating(studyEventOID))
-            dataStates = dataStates.concat((await getStudyEventRepeatKeys(studyEventOID, subjectKey ? subjectKey : subject.uniqueKey)).map(repeatKey => getDataStatusForStudyEvent({studyEventOID, repeatKey, subjectDataToCheck})));
+            dataStates = dataStates.concat((await getStudyEventRepeatKeys(studyEventOID, subjectKey ? subjectKey : subject.uniqueKey, subjectDataToCheck)).map(repeatKey => getDataStatusForStudyEvent({studyEventOID, repeatKey, subjectDataToCheck})));
         else
             dataStates.push(getDataStatusForStudyEvent({studyEventOID, subjectDataToCheck}));
     }
@@ -613,10 +613,11 @@ export async function getDataStatus(subjectKey, subjectDataToCheck) {
     return dataStatusTypes.EMPTY;
 }
 
-export async function getStudyEventRepeatKeys(studyEventOID, subjectKey) {
+export async function getStudyEventRepeatKeys(studyEventOID, subjectKey, subjectDataToCheck) {
     if(!subjectKey) return [];
-    let data = subjectData;
-    if(subjectKey !== subject.uniqueKey) data = await loadStoredSubjectData(getSubject(subjectKey).fileName);
+    let data = subjectDataToCheck;
+    if(!data) data = subjectData;
+    if(subject && !subjectDataToCheck && subjectKey !== subject.uniqueKey)  data = await loadStoredSubjectData(getSubject(subjectKey).fileName);
     return Array.from(data?.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"]`) ?? []).map(event => parseInt(event.getAttribute("StudyEventRepeatKey"))).sort((a,b) => a-b);
 }
 
