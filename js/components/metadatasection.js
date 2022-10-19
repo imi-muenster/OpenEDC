@@ -105,6 +105,9 @@ class MetadataSection extends HTMLElement {
                                                 <input class="input" type="text" id="item-method" autocomplete="off" i18n-ph="formal-expression">
                                             </div>
                                         </div>
+                                        <div class="field">
+                                            <label class="label" id="repeating-label" i18n="repeating"></label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

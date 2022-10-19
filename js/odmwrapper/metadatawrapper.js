@@ -72,6 +72,11 @@ export const mandatoryTypes = {
     NO: "No"
 }
 
+export const repeatingTypes = {
+    YES: "Yes",
+    NO: "No"
+}
+
 export const dataStatusCodeListOID = "OpenEDC.DataStatus";
 
 let metadata = null;
@@ -121,6 +126,7 @@ export async function storeMetadata() {
     if (previousFileName && previousFileName != metadataFile.fileName) ioHelper.removeODM(previousFileName);
     ioHelper.dispatchGlobalEvent('MetadataStored');
 }
+
 
 export function getSerializedMetadata() {
     return new XMLSerializer().serializeToString(metadata);
@@ -431,6 +437,19 @@ export function getItemMethod(path) {
         let oid = methodRef.getAttribute("MethodOID");
         return $(`MethodDef[OID="${oid}"]`);
     }
+}
+
+export function getStudyEventRepeating(studyEventOID) {
+    // Ad hoc implementation, improve for OpenEDC 2.0
+    return $(`StudyEventDef[OID="${studyEventOID}"]`)?.getAttribute("Repeating") ?? repeatingTypes.NO;
+}
+
+export function setStudyEventRepeating(studyEventOID, repeating) {
+    $(`StudyEventDef[OID="${studyEventOID}"]`).setAttribute("Repeating", repeating);
+}
+
+export function isStudyEventRepeating(studyEventOID) {
+    return $(`StudyEventDef[OID="${studyEventOID}"]`).getAttribute('Repeating') && $(`StudyEventDef[OID="${studyEventOID}"]`).getAttribute('Repeating') == "Yes";
 }
 
 export function getItemMeasurementUnit(itemOID) {
@@ -1174,7 +1193,7 @@ export async function mergeMetadata(odmXMLString) {
         odm.querySelectorAll("ItemDef").forEach(itemDef => insertElementDef(itemDef));
         odm.querySelectorAll("CodeList").forEach(codeList => insertElementDef(codeList));
         odm.querySelectorAll("ConditionDef").forEach(conditionDef => insertElementDef(conditionDef));
-        odm.querySelectorAll("MethodDef").forEach(conditionDef => insertElementDef(conditionDef));
+        odm.querySelectorAll("MethodDef").forEach(methodDef => insertElementDef(methodDef));
     }
 
     await storeMetadata();
