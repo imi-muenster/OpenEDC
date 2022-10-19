@@ -1,3 +1,4 @@
+import * as app from "../app.js"
 class Repository {
     constructor(id, name, modelParameterName, tokenParameterName, downloadURL) {
         this.id = id;
@@ -20,7 +21,7 @@ const MDM_PORTAL_URL = "https://medical-data-models.org/api/v1";
 // A list of all supported metadata repositories
 // The model parameter name (e.g., modelIds) must be unique to identify the repository with given URL parameters
 const repositories = [
-    new Repository(1, "Portal of Medical Data Models", "modelIds", "userToken", `${MDM_PORTAL_URL}/odmByToken?modelId=${modelPlaceholder}&userToken=${tokenPlaceholder}`)
+    new Repository(1, "Portal of Medical Data Models", "modelIds", "userToken", `${MDM_PORTAL_URL}/odmFree?modelId=${modelPlaceholder}`)
 ];
 
 // Download and return all models
@@ -82,4 +83,20 @@ const prepareODM = (repository, modelParameter, odmXMLString) => {
     }
 
     return odmXMLString;
+}
+
+export function preloadPage(urlParams){
+    for (const [parameterName, parameterValue] of urlParams) {
+        console.log(parameterName, parameterValue)
+        if(parameterName === "page") {
+            switch(parameterValue) {
+                case "data":
+                    return;
+                case "edit":
+                    console.log("in edit")
+                    app.enableMode(app.appModes.METADATA);
+                    break;
+            }
+        }
+    }
 }

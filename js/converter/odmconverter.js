@@ -44,12 +44,16 @@ export function validateImport(odmXMLString) {
         if (attributeValue.match(/^\d/)) attributeValue = "E" + attributeValue;
         element.setAttribute(attribute, attributeValue.replace(/(\w)-(?=\w)/g, "$1_"));
     }));
-    odm.querySelectorAll("FormalExpression").forEach(expression => {
-        let expressionValue = expression.textContent;
-        if (expressionValue.match(/^\d/)) expressionValue = "E" + expressionValue;
-        expression.textContent = expressionValue.replace(/(\w)-(?=\w)/g, "$1_");
-    });
 
+    let oidList = {};
+    [...odm.querySelectorAll('[OID]')].forEach(element => oidList[element.getAttribute('OID')] = element.getAttribute('OID').replace(/(\w)-(?=\w)/g, "$1_"));
+    Object.keys(oidList).forEach(oldOID => {
+        odm.querySelectorAll("FormalExpression").forEach(expression => {
+            let expressionValue = expression.textContent;
+            if (expressionValue.match(/^\d/)) expressionValue = "E" + expressionValue;
+            expression.textContent = expressionValue.replace(new RegExp(oldOID, "g"), oidList[oldOID]);
+        });
+    });
     // Add an audit record if no one is present
     const creationDate = new Date();
     const userOID = admindataWrapper.getCurrentUserOID();

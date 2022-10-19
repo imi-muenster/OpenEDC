@@ -110,8 +110,17 @@ const $ = query => subjectData.querySelector(query);
 const $$ = query => subjectData.querySelectorAll(query);
 
 export const sortOrderTypes = {
-    CREATEDDATE: "creation-date",
-    ALPHANUMERICALLY: "alphanumerical"
+    CREATEDDATE_ASC: "creation-date-asc",
+    CREATEDDATE_DESC: "creation-date-desc",
+    ALPHANUMERICALLY_AZ: "alphanumerical-asc",
+    ALPHANUMERICALLY_ZA: "alphanumerical-desc"
+};
+
+export const dateFilterTypes = {
+    TODAY: "today",
+    LAST_7_DAYS: "last-7-days",
+    LAST_30_DAYS: "last-30-days",
+    ALL: "all"
 };
 
 export const dataStatusTypes = {
@@ -178,7 +187,7 @@ export function getLastUpdate() {
 export async function getClinicalData(studyOID, metadataVersionOID) {
     let clinicalData = clinicaldataTemplates.getClinicalData(studyOID, metadataVersionOID);
 
-    for (let subject of getSubjects(admindataWrapper.getCurrentUserSiteOID(), sortOrderTypes.CREATEDDATE)) {
+    for (let subject of getSubjects(admindataWrapper.getCurrentUserSiteOID(), sortOrderTypes.CREATEDDATE_ASC)) {
         clinicalData.appendChild(await loadStoredSubjectData(subject.fileName));
     }
 
@@ -212,7 +221,8 @@ export async function loadSubjects() {
     }
 
     // Evaluate whether data conflicts are present (i.e., multiple users edited the same subject at the same time)
-    subjects = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY);
+    //const dateFilter = $("#date-filter-subject-select-inner")?.value;
+    subjects = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY_AZ, dateFilterTypes.ALL);
     for (let i = 0; i < subjects.length-1; i++) {
         if (subjects[i].key == subjects[i+1].key) {
             subjects[i].hasConflict = true;
@@ -252,23 +262,48 @@ export async function addSubject(subjectKey, siteOID) {
     return Promise.resolve();
 }
 
-export function getSubjects(siteOID, sortOrder) {
+export function getSubjects(siteOID, sortOrder, dateFilter = null) {
     let filteredSubjects = siteOID ? subjects.filter(subject => subject.siteOID == siteOID) : subjects;
-    filteredSubjects = sortOrder ? sortSubjects(filteredSubjects, sortOrder) : filteredSubjects;
+    filteredSubjects = (sortOrder || dateFilter ? sortSubjects(filteredSubjects, sortOrder, dateFilter) : filteredSubjects);
 
     return filteredSubjects;
 }
 
-function sortSubjects(subjects, sortOrder) {
-    switch (sortOrder) {
-        case sortOrderTypes.CREATEDDATE:
-            subjects.sort((a, b) => a.createdDate > b.createdDate ? 1 : (a.createdDate < b.createdDate ? -1 : 0));
-            break;
-        case sortOrderTypes.ALPHANUMERICALLY:
-            if (ioHelper.getSetting("subjectKeyMode") == ioHelper.subjectKeyModes.AUTO) subjects.sort((a, b) => a.keyInt > b.keyInt ? 1 : (a.keyInt < b.keyInt ? -1 : 0));
-            else subjects.sort((a, b) => a.key > b.key ? 1 : (a.key < b.key ? -1 : 0));
+function sortSubjects(subjects, sortOrder, dateFilter = null) {
+    if(dateFilter) {
+        const today = new Date();
+        switch (dateFilter) {
+            case dateFilterTypes.TODAY:
+                subjects = subjects.filter(subject => today.toDateString() === new Date(subject.createdDate).toDateString());
+                break;
+            case dateFilterTypes.LAST_7_DAYS:
+                subjects = subjects.filter(subject => today.getTime() - new Date(subject.createdDate).getTime() < 24*3600*1000);
+                break;
+            case dateFilterTypes.LAST_30_DAYS:
+                subjects = subjects.filter(subject => today.getTime() - new Date(subject.createdDate).getTime() < 30*24*3600*1000);
+                break
+            case dateFilterTypes.ALL:
+                break
+        }
     }
-
+    if(sortOrder) {
+        switch (sortOrder) {
+            case sortOrderTypes.CREATEDDATE_ASC:
+                subjects.sort((a, b) => a.createdDate > b.createdDate ? 1 : (a.createdDate < b.createdDate ? -1 : 0));
+                break;
+            case sortOrderTypes.CREATEDDATE_DESC:
+                subjects.sort((a, b) => a.createdDate < b.createdDate ? 1 : (a.createdDate > b.createdDate ? -1 : 0));
+                break;
+            case sortOrderTypes.ALPHANUMERICALLY_AZ:
+                if (ioHelper.getSetting("subjectKeyMode") == ioHelper.subjectKeyModes.AUTO) subjects.sort((a, b) => a.keyInt > b.keyInt ? 1 : (a.keyInt < b.keyInt ? -1 : 0));
+                else subjects.sort((a, b) => a.key > b.key ? 1 : (a.key < b.key ? -1 : 0));
+                break
+            case sortOrderTypes.ALPHANUMERICALLY_ZA:
+                if (ioHelper.getSetting("subjectKeyMode") == ioHelper.subjectKeyModes.AUTO) subjects.sort((a, b) => a.keyInt < b.keyInt ? 1 : (a.keyInt > b.keyInt ? -1 : 0));
+                else subjects.sort((a, b) => a.key < b.key ? 1 : (a.key > b.key ? -1 : 0));
+                break
+        }
+    }
     return subjects;
 }
 
@@ -552,7 +587,7 @@ export function getAutoNumberedSubjectKey() {
     // TODO: Performance should be improved in the future. Sorting is expensive and needs to be reduced
     // TODO: Moreover, when connected to a server, the server should be consulted to generate the next auto-numbered key
     // TODO: Alternatively, load the subject list from the server before the auto-numbered key is generated (for the manual mode as well)
-    const subjectsWithIntKeys = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY).filter(subject => subject.keyInt);
+    const subjectsWithIntKeys = sortSubjects(subjects, sortOrderTypes.ALPHANUMERICALLY_AZ).filter(subject => subject.keyInt);
     const highestNumber = subjectsWithIntKeys.length ? subjectsWithIntKeys[subjectsWithIntKeys.length - 1].key : 0;
     const subjectKey = parseInt(highestNumber) + 1;
 

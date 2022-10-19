@@ -26,6 +26,7 @@ const exampleStrings = ["kurzer String", "Dies ist eine längere Antwort. Deshal
 export async function init() {
     createSiteFilterSelect();
     createSortTypeSelect();
+    createDateFilterSelect();
     
     await clinicaldataWrapper.loadSubjects();
     setIOListeners();
@@ -65,6 +66,17 @@ function createSortTypeSelect() {
         loadSubjectKeys();
         inputEvent.target.blur();
     };
+}
+
+function createDateFilterSelect() {
+    const translatedDateFilterTypes = Object.values(clinicaldataWrapper.dateFilterTypes).map(filterType => languageHelper.getTranslation(filterType));
+    $("#date-filter-subject-select-outer")?.remove();
+    $("#date-filter-subject-control").appendChild(htmlElements.getSelect("date-filter-subject-select", true, true, Object.values(clinicaldataWrapper.dateFilterTypes), null, translatedDateFilterTypes, true));
+    $("#date-filter-subject-select-inner").oninput = inputEvent => {
+        loadSubjectKeys();
+        inputEvent.target.blur();
+    };
+    $("#date-filter-subject-select-inner").value = clinicaldataWrapper.dateFilterTypes.LAST_7_DAYS;
 }
 
 window.addSubjectManual = function() {
@@ -136,7 +148,8 @@ export function loadSubjectKeys() {
 
     const selectedSite = admindataWrapper.getSiteOIDByName($("#filter-site-select-inner").value);
     const sortOrder = $("#sort-subject-select-inner").value;
-    const subjects = clinicaldataWrapper.getSubjects(selectedSite, sortOrder);
+    const dateFilter = $("#date-filter-subject-select-inner").value;
+    const subjects = clinicaldataWrapper.getSubjects(selectedSite, sortOrder, dateFilter);
     subjects.length ? $("#no-subjects-hint").hide() : $("#no-subjects-hint").show();
 
     for (let subject of subjects) {

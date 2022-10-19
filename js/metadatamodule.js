@@ -859,6 +859,7 @@ window.addStudyEvent = function(event) {
     switchToPanelView(detailsPanelViewIdentifiers.FOUNDATIONAL);
     ioHelper.scrollParentToChild($(`#study-event-panel-blocks [oid="${currentPath.studyEventOID}"]`));
     if (!asyncEditMode) metadataWrapper.storeMetadata();
+    enableSaveFormsButton();
     event.target.blur();
 
     // Show the first study event help message
@@ -872,6 +873,7 @@ window.addForm = function(event) {
     switchToPanelView(detailsPanelViewIdentifiers.FOUNDATIONAL);
     ioHelper.scrollParentToChild($(`#form-panel-blocks [oid="${currentPath.formOID}"]`));
     if (!asyncEditMode) metadataWrapper.storeMetadata();
+    enableSaveFormsButton();
     event.target.blur();
 }
 
@@ -882,6 +884,7 @@ window.addItemGroup = function(event) {
     switchToPanelView(detailsPanelViewIdentifiers.FOUNDATIONAL);
     ioHelper.scrollParentToChild($(`#item-group-panel-blocks [oid="${currentPath.itemGroupOID}"]`));
     if (!asyncEditMode) metadataWrapper.storeMetadata();
+    enableSaveFormsButton();
     event.target.blur();
 }
 
@@ -892,6 +895,7 @@ window.addItem = function(event) {
     switchToPanelView(detailsPanelViewIdentifiers.FOUNDATIONAL);
     ioHelper.scrollParentToChild($(`#item-panel-blocks [oid="${currentPath.itemOID}"]`));
     if (!asyncEditMode) metadataWrapper.storeMetadata();
+    enableSaveFormsButton();
     event.target.blur();
 }
 
@@ -904,7 +908,13 @@ window.addCodeListItem = function(event) {
         ioHelper.scrollParentToChild($(`#code-list-item-panel-blocks [oid="${currentPath.codeListItem}"]`));
     }
     if (!asyncEditMode) metadataWrapper.storeMetadata();
+    enableSaveFormsButton();
     event.target.blur();
+}
+
+function enableSaveFormsButton() {
+    if (ioHelper.hasServerURL() && asyncEditMode && (admindataWrapper.getUsers().length > 1 || clinicaldataWrapper.getSubjects().length > 1) && $("#store-metadata-async-button")) 
+        $("#store-metadata-async-button").disabled = false;
 }
 
 function removeElement() {
@@ -935,6 +945,7 @@ function removeElement() {
     }
 
     reloadAndStoreMetadata();
+    enableSaveFormsButton();
     ioHelper.showToast(languageHelper.getTranslation("element-removed"), 2500);
 }
 

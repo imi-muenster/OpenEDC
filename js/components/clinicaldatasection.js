@@ -54,6 +54,15 @@ class ClinicaldataSection extends HTMLElement {
                                 </div>
                             </div>
                             <div class="panel-block has-no-padding-bottom has-no-border-bottom">
+                                <div class="field is-fullwidth">
+                                    <div class="control has-icons-left is-fullwidth" id="date-filter-subject-control">
+                                        <div class="icon">
+                                            <i class="fa-solid fa-filter"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-block has-no-padding-bottom has-no-border-bottom">
                                 <div class="control has-icons-left">
                                     <input class="input" id="search-subject-input" type="text" i18n-ph="search">
                                     <span class="icon is-left">

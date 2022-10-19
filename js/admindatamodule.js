@@ -132,6 +132,18 @@ window.saveUser = async function() {
     loadUsers();
 }
 
+window.showRemoveUserModal = function() {
+    const userOID = $("#users-options .panel a.is-active").getOID();
+    console.log(userOID);
+    if(ioHelper.getLoggedInUser().oid === userOID) {
+        ioHelper.showMessage(languageHelper.getTranslation("no-self-delete"), languageHelper.getTranslation("no-self-delete-text"));
+        return;
+    }
+    ioHelper.showMessage(languageHelper.getTranslation('remove-user'), languageHelper.getTranslation("remove-user-hint"), {
+        [languageHelper.getTranslation("yes")]: () => removeUser(),
+    })
+}
+
 window.removeUser = function() {
     const userOID = $("#users-options .panel a.is-active").getOID();
     if (!userOID) return;
