@@ -367,11 +367,13 @@ function fillDetailsPanelExtended() {
     [$("#alias-inputs .alias-context"), $("#alias-inputs .alias-name"), $("#add-alias-button")].enableElements();
 
     const condition = metadataWrapper.getElementCondition(currentPath.last.element, currentPath);
+    console.log(condition)
     switch (currentPath.last.element) {
         case ODMPath.elements.STUDYEVENT:
             $("#repeating-select-inner").value = metadataWrapper.getStudyEventRepeating(currentPath.last.value);
             $("#repeating-select-inner").disabled = false;
             break;
+        case ODMPath.elements.FORM:
         case ODMPath.elements.ITEMGROUP:
             $("#collection-condition").value = condition ? condition.getFormalExpression() : "";
             $("#collection-condition").disabled = false;
@@ -582,6 +584,7 @@ export async function saveDetailsExtended() {
         case ODMPath.elements.STUDYEVENT:
             await saveRepeating();
             break;
+        case ODMPath.elements.FORM:
         case ODMPath.elements.ITEMGROUP:
             if (saveConditionPreCheck()) return;
             break;
@@ -627,6 +630,7 @@ function saveConditionPreCheck() {
     const currentCondition = metadataWrapper.getElementCondition(currentPath.last.element, currentPath);
     if (formalExpression && currentCondition && formalExpression == currentCondition.getFormalExpression()) return;
     if (formalExpressionContainsError(formalExpression)) return true;
+    if (formalExpressionContainsLogicErrors(formalExpression, currentPath)) return true;
 
     const currentElementRef = metadataWrapper.getElementRefByOID(currentPath.last.element, currentPath);
     if (currentCondition) {
@@ -771,6 +775,36 @@ function formalExpressionContainsError(formalExpression) {
         ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("formal-expression-error"));
         return true;
     }
+}
+function formalExpressionContainsLogicErrors(formalExpression, elementPath) {
+    if(!formalExpression) return false;
+    const parsedExpression = expressionHelper.parse(formalExpression);
+    let iVars = parsedExpression.tokens.filter(token => token.type == "IVAR").concat(parsedExpression.tokens.filter(token => token.type == "IEXPR").flatMap(token => token.value.filter(tokenValue => tokenValue.type == "IVAR")));
+    let itemOIDs = [];
+    switch(elementPath.last.element) {
+        case ODMPath.elements.ITEM:
+            return false;
+        case ODMPath.elements.ITEMGROUP:
+            itemOIDs = metadataWrapper.getItemsByItemGroup(elementPath.last.value).map(item => item.getAttribute('OID'));
+            for(let iVar of iVars) {
+                if(itemOIDs.indexOf(iVar.value) >= 0) {
+                    ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("formal-expression-logic-error"));
+                    return true;
+                }
+            }
+            break;
+        case ODMPath.elements.FORM:
+            itemOIDs = metadataWrapper.getItemGroupsByForm(elementPath.last.value).flatMap(itemGroup => metadataWrapper.getItemsByItemGroup(itemGroup.getAttribute("OID"))).map(item => item.getAttribute('OID'));
+            for(let iVar of iVars) {
+                let iVarPath = ODMPath.parseRelative(expressionHelper.unescapePaths(iVar.value));
+                if(!iVarPath.formOID || iVarPath.formOID === elementPath.last.value) {
+                    ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("formal-expression-logic-error"));
+                    return true;
+                }
+            }
+            break;
+    }
+    return false;  
 }
 
 window.sidebarOptionClicked = async function(event) {

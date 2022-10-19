@@ -519,7 +519,9 @@ function addDynamicFormLogicPre() {
         variables[cachedFormDataPath.toString()] = entry.value;
     });
     expressionHelper.setVariables(variables);
-    expressionHelper.process(metadataWrapper.getElementsWithExpression(currentPath.studyEventOID, currentPath.formOID));
+    const expressions = metadataWrapper.getElementsWithExpressionIncludeForms(currentPath.studyEventOID, currentPath.formOID);
+    console.log(expressions);
+    expressionHelper.process(expressions);
 }
 
 // Added after the form has been rendered for performance purposes
