@@ -179,7 +179,7 @@ function subjectClicked(subjectKey) {
 
 async function loadSubjectData(subjectKey) {
     // Automatically select the first study event if there is only one (present here as well mainly because of mobile auto survey view function)
-    if (!currentPath.studyEventOID && metadataWrapper.getStudyEvents().length == 1) currentPath.studyEventOID = metadataWrapper.getStudyEvents()[0].getOID();
+    if (!currentPath.studyEventOID && eventsAreHidden()) currentPath.studyEventOID = metadataWrapper.getStudyEvents()[0].getOID();
 
     await clinicaldataWrapper.loadSubject(subjectKey)
         .then(subject => {
@@ -193,7 +193,6 @@ async function loadSubjectData(subjectKey) {
         });
 
     $("#subject-panel-blocks a.is-active")?.deactivate();
-    console.log(currentSubjectKey)
     if (currentSubjectKey) $(`#subject-panel-blocks [oid="${currentSubjectKey}"]`).activate();
     if (currentSubjectKey) ioHelper.scrollParentToChild($(`#subject-panel-blocks [oid="${currentSubjectKey}"]`));
     $("#subject-info-button").disabled = currentSubjectKey ? false : true;
@@ -323,24 +322,41 @@ function getRandomNumber(min, max, type){
     if(type == 'float') return Math.random() * (max - min) + min;
 }
 
+function eventsAreHidden() {
+    return metadataWrapper.getStudyEvents().length === 1
+        && metadataWrapper.getStudyEventRepeating(metadataWrapper.getStudyEvents()[0].getOID()) != metadataWrapper.repeatingTypes.YES;
+}
+
 export async function reloadTree() {
     // Hide the study event column if there is only one event
-    if (metadataWrapper.getStudyEvents().length == 1) {
+    if (eventsAreHidden()) {
         $("#clinicaldata-study-events-column").hide();
         currentPath.studyEventOID = metadataWrapper.getStudyEvents()[0].getOID();
     } else $("#clinicaldata-study-events-column").show();
 
+    // Ad hoc implementation, improve for OpenEDC 2.0 – react to changes in metadata repeatable settings
+    if (metadataWrapper.getStudyEventRepeating(currentPath.studyEventOID) === metadataWrapper.repeatingTypes.YES
+        && !currentPath.studyEventRepeatKey) {
+            currentPath.studyEventRepeatKey = 1;
+    } else if (metadataWrapper.getStudyEventRepeating(currentPath.studyEventOID) === metadataWrapper.repeatingTypes.NO
+        && currentPath.studyEventRepeatKey) {
+            currentPath.studyEventRepeatKey = null;
+    }
+
     skipDataHasChangedCheck = true;
-    await loadTree(currentPath.studyEventOID, currentPath.formOID);
+    await loadTree(currentPath.studyEventOID, currentPath.formOID, currentPath.studyEventRepeatKey);
 }
 
 // TODO: Loads entire tree if according elements are passed, implement this analogously for metadatamodule
-async function loadTree(studyEventOID, formOID) {
+async function loadTree(studyEventOID, formOID, studyEventRepeatKey) {
     // Check if the data has changed / new data has been entered and show a prompt first
     if (safeCloseClinicaldata(() => loadTree(studyEventOID, formOID))) return;
 
     currentPath.studyEventOID = studyEventOID;
     currentPath.formOID = formOID;
+
+    // Ad hoc implementation, improve for OpenEDC 2.0
+    currentPath.studyEventRepeatKey = studyEventRepeatKey;
 
     $$("#clinicaldata-study-event-panel-blocks a").removeElements();
     $$("#clinicaldata-form-panel-blocks a").removeElements();
@@ -348,28 +364,61 @@ async function loadTree(studyEventOID, formOID) {
     for (let studyEventDef of metadataWrapper.getStudyEvents()) {
         const studyEventOID = studyEventDef.getOID();
         const translatedDescription = studyEventDef.getTranslatedDescription(languageHelper.getCurrentLocale());
-        const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent(studyEventOID) : clinicaldataWrapper.dataStatusTypes.EMPTY;
-        let panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedDescription, studyEventDef.getName(), null, dataStatus);
-        panelBlock.onclick = () => loadTree(studyEventOID, null);
-        $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
+        const name = studyEventDef.getName();
+
+        // Ad hoc implementation, improve for OpenEDC 2.0
+        const repeating = metadataWrapper.getStudyEventRepeating(studyEventOID) === metadataWrapper.repeatingTypes.YES;
+        if (repeating) {
+            let repeatKeys = await clinicaldataWrapper.getStudyEventRepeatKeys(studyEventOID, currentSubjectKey);
+            repeatKeys = repeatKeys.sort((a, b) => a - b);
+            for (const repeatKey of repeatKeys) {
+                console.log("load tree ", repeatKey)
+                const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent({studyEventOID, repeatKey}) : clinicaldataWrapper.dataStatusTypes.EMPTY;
+                renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, repeatKey);
+            }
+
+            // Always render one empty, additional study event
+            const nextRepeatKey = parseInt(repeatKeys.length ? repeatKeys.at(-1) : 0) + 1;
+            const dataStatus = clinicaldataWrapper.dataStatusTypes.EMPTY;
+            renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, nextRepeatKey);
+        } else {
+            const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent({studyEventOID}) : clinicaldataWrapper.dataStatusTypes.EMPTY;
+            renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus);
+        }
     }
 
     adjustMobileUI();
-    if (!currentPath.studyEventOID && !currentPath.formOID && metadataWrapper.getStudyEvents().length == 1) backOnMobile();
+    if (!currentPath.studyEventOID && !currentPath.formOID && eventsAreHidden()) backOnMobile();
     if (currentPath.studyEventOID) await loadFormsByStudyEvent();
+}
+
+function renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, repeatKey) {
+    const repetitionText = repeatKey ? `${repeatKey}. ${languageHelper.getTranslation("repetition")}`: null;
+    const panelBlock = htmlElements.getClinicaldataPanelBlock(studyEventOID, translatedDescription, name, repetitionText, dataStatus, false, repeatKey);
+    panelBlock.onclick = () => loadTree(studyEventOID, null, repeatKey);
+    $("#clinicaldata-study-event-panel-blocks").appendChild(panelBlock);
 }
 
 async function loadFormsByStudyEvent() {
     $("#clinicaldata-study-event-panel-blocks a.is-active")?.deactivate();
-    $(`#clinicaldata-study-event-panel-blocks [oid="${currentPath.studyEventOID}"]`).activate();
+
+    // Ad hoc implementation, improve for OpenEDC 2.0
+    if (currentPath.studyEventRepeatKey) {
+        const studyEvent = $(`#clinicaldata-study-event-panel-blocks [oid="${currentPath.studyEventOID}"][study-event-repeat-key="${currentPath.studyEventRepeatKey}"]`)
+        //this means there is no repetition x for the chosen subject
+        if(!studyEvent) return;
+        studyEvent.activate();
+    } else {
+        $(`#clinicaldata-study-event-panel-blocks [oid="${currentPath.studyEventOID}"]`).activate();
+    }
 
     const formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
     for (let formDef of formDefs) {
         const formOID = formDef.getOID();
         const translatedDescription = formDef.getTranslatedDescription(languageHelper.getCurrentLocale());
-        const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForForm(currentPath.studyEventOID, formOID) : clinicaldataWrapper.dataStatusTypes.EMPTY;
+        const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForForm({studyEventOID: currentPath.studyEventOID, formOID, studyEventRepeatKey: currentPath.studyEventRepeatKey}) : clinicaldataWrapper.dataStatusTypes.EMPTY;
         let panelBlock = htmlElements.getClinicaldataPanelBlock(formOID, translatedDescription, formDef.getName(), null, dataStatus);
-        panelBlock.onclick = () => loadTree(currentPath.studyEventOID, formOID);
+        panelBlock.onclick = () => loadTree(currentPath.studyEventOID, formOID, currentPath.studyEventRepeatKey);
         $("#clinicaldata-form-panel-blocks").appendChild(panelBlock);
     }
 
@@ -464,7 +513,7 @@ async function loadFormMetadata() {
 // Must be in place before clinical data is added to the form's input elements
 function addDynamicFormLogicPre() {
     // Add real-time logic to process items with conditions and methods
-    const variables = clinicaldataWrapper.getCurrentData(currentSubjectKey);
+    const variables = clinicaldataWrapper.getCurrentData({studyEventRepeatKey: currentPath.studyEventRepeatKey});
     if (cachedFormData) cachedFormData.forEach(entry => {
         const cachedFormDataPath = new ODMPath(currentPath.studyEventOID, currentPath.formOID, entry.itemGroupOID, entry.itemOID);
         variables[cachedFormDataPath.toString()] = entry.value;
@@ -561,7 +610,7 @@ function loadFormClinicaldata() {
     let metadataNotFoundErrors = [];
     let hiddenFieldWithValueErrors = [];
 
-    let formItemDataList = cachedFormData || clinicaldataWrapper.getSubjectFormData(currentPath.studyEventOID, currentPath.formOID);
+    let formItemDataList = cachedFormData || clinicaldataWrapper.getSubjectFormData(currentPath.studyEventOID, currentPath.formOID, currentPath.studyEventRepeatKey);
     for (let formItemData of formItemDataList) {
         if (!formItemData.value) continue;
 
@@ -600,7 +649,7 @@ function loadFormClinicaldata() {
     showErrors(metadataNotFoundErrors, hiddenFieldWithValueErrors);
 
     // Adjust the form lock button and hint
-    if (clinicaldataWrapper.getDataStatusForForm(currentPath.studyEventOID, currentPath.formOID) == clinicaldataWrapper.dataStatusTypes.VALIDATED) showValidatedFormHint();
+    if (clinicaldataWrapper.getDataStatusForForm({studyEventOID: currentPath.studyEventOID, formOID: currentPath.formOID, studyEventRepeatKey:currentPath.studyEventRepeatKey}) == clinicaldataWrapper.dataStatusTypes.VALIDATED) showValidatedFormHint();
 }
 
 // TODO: Localize error messages
@@ -636,7 +685,7 @@ window.loadNextFormData = async function() {
     let nextFormOID = getNextFormOID(currentPath.formOID);
     skipDataHasChangedCheck = true;
     if (nextFormOID) {
-        loadTree(currentPath.studyEventOID, nextFormOID);
+        loadTree(currentPath.studyEventOID, nextFormOID, currentPath.studyEventRepeatKey);
     } else {
         closeFormData();
     }
@@ -651,7 +700,7 @@ window.loadPreviousFormData = async function() {
     let previousFormOID = getPreviousFormOID(currentPath.formOID);
     if (previousFormOID) {
         skipDataHasChangedCheck = true;
-        loadTree(currentPath.studyEventOID, previousFormOID);
+        loadTree(currentPath.studyEventOID, previousFormOID, currentPath.studyEventRepeatKey);
     }
 
     loadSubjectKeys();
@@ -736,7 +785,7 @@ async function saveFormData() {
     if (isFormValidated()) dataStatus = clinicaldataWrapper.dataStatusTypes.VALIDATED;
     
     // Store data
-    await clinicaldataWrapper.storeSubjectFormData(currentPath.studyEventOID, currentPath.formOID, formItemDataList, dataStatus);
+    await clinicaldataWrapper.storeSubjectFormData(currentPath.studyEventOID, currentPath.formOID, formItemDataList, dataStatus, currentPath.studyEventRepeatKey);
 
     // When mandatory fields were not answered show a warning only once
     if (!skipMandatoryCheck && !mandatoryFieldsAnswered) {
@@ -821,7 +870,7 @@ window.cancelFormOrSurveyEntry = function(closeSurvey) {
         skipDataHasChangedCheck = true;
     }
 
-    loadTree(currentPath.studyEventOID, null);
+    loadTree(currentPath.studyEventOID, null, currentPath.studyEventRepeatKey);
 }
 
 window.showSurveyView = function() {
@@ -843,7 +892,7 @@ function hideSurveyView() {
     $(".navbar").show();
     $("html").classList.add("has-navbar-fixed-top");
     $("#subjects-column").show();
-    if (metadataWrapper.getStudyEvents().length > 1) $("#clinicaldata-study-events-column").show();
+    if (!eventsAreHidden()) $("#clinicaldata-study-events-column").show();
     $("#clinicaldata-forms-column").show();
     $("#clinicaldata-column .panel").classList.remove("is-shadowless");
     $("#clinicaldata-column .panel-heading").show();
@@ -997,7 +1046,7 @@ export function surveyViewIsActive() {
 }
 
 function dataHasChanged() {
-    return !skipDataHasChangedCheck && currentSubjectKey && currentPath.studyEventOID && currentPath.formOID && clinicaldataWrapper.getFormDataDifference(getFormData(), currentPath.studyEventOID, currentPath.formOID).length;
+    return !skipDataHasChangedCheck && currentSubjectKey && currentPath.studyEventOID && currentPath.formOID && clinicaldataWrapper.getFormDataDifference(getFormData(), currentPath.studyEventOID, currentPath.formOID, currentPath.studyEventRepeatKey).length;
 }
 
 window.showSubjectInfo = function() {
@@ -1038,7 +1087,7 @@ async function showAuditRecordFormData(studyEventOID, formOID, date) {
     if (!cachedFormData) return;
 
     cachedFormDataIsAuditRecord = true;
-    await loadTree(studyEventOID, formOID);
+    await loadTree(studyEventOID, formOID, currentPath.studyEventRepeatKey);
 
     hideSubjectInfo();
 }
@@ -1090,8 +1139,8 @@ window.backOnMobile = function() {
     if (!ioHelper.isMobile()) return;
 
     if (currentSubjectKey && currentPath.studyEventOID && currentPath.formOID) {
-        loadTree(currentPath.studyEventOID, null);
-    } else if (currentSubjectKey && currentPath.studyEventOID && metadataWrapper.getStudyEvents().length > 1) {
+        loadTree(currentPath.studyEventOID, null, currentPath.studyEventRepeatKey);
+    } else if (currentSubjectKey && currentPath.studyEventOID && !eventsAreHidden()) {
         loadTree(null, null);
     } else {
         $("#clinicaldata-study-events-column").classList.add("is-hidden-touch");
@@ -1107,7 +1156,7 @@ export function adjustMobileUI(forceHideBackButton) {
     if (!ioHelper.isMobile()) return;
     
     // Hide or show navbar back button
-    if (!forceHideBackButton && (currentSubjectKey || currentPath.formOID || (currentPath.studyEventOID && metadataWrapper.getStudyEvents().length > 1))) {
+    if (!forceHideBackButton && (currentSubjectKey || currentPath.formOID || (currentPath.studyEventOID && !eventsAreHidden()))) {
         $("#study-title").parentNode.classList.add("is-hidden-touch");
         $("#mobile-back-button").show();
         $("#mobile-back-button").classList.add("is-hidden-desktop");

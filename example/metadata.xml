@@ -60,7 +60,7 @@
                 <FormRef FormOID="F.3" Mandatory="No"/>
                 <FormRef FormOID="F.4" Mandatory="No"/>
             </StudyEventDef>
-            <StudyEventDef OID="SE.3" Name="Follow-up (T2)" Repeating="No" Type="Common">
+            <StudyEventDef OID="SE.3" Name="Follow-up (T2)" Repeating="Yes" Type="Common">
                 <Description>
                     <TranslatedText xml:lang="en">Follow-up (T2)</TranslatedText>
                     <TranslatedText xml:lang="de">Folgebefragung (T2)</TranslatedText>

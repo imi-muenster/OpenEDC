@@ -53,10 +53,11 @@ export function getMetadataPanelBlock(elementOID, elementType, titleText, fallba
     return panelBlock;
 }
 
-export function getClinicaldataPanelBlock(elementOID, titleText, fallbackText, subtitleText, dataStatus, hasConflict) {
+export function getClinicaldataPanelBlock(elementOID, titleText, fallbackText, subtitleText, dataStatus, hasConflict, studyEventRepeatKey) {
     let panelBlock = document.createElement("a");
     panelBlock.className = "panel-block";
     panelBlock.setAttribute("oid", elementOID);
+    if (studyEventRepeatKey) panelBlock.setAttribute("study-event-repeat-key", studyEventRepeatKey);
 
     if (dataStatus) {
         let dot = document.createElement("span");
