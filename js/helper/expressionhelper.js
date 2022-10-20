@@ -83,9 +83,7 @@ function processCondition(condition) {
     conditionalElement.hide();
 
     // If the expression evaluates to true, show condition element
-    let bool = evaluate(condition.expression, condition.expressionType);
-    console.log(bool)
-    if (bool) conditionalElement.show();
+    if (evaluate(condition.expression, condition.expressionType)) conditionalElement.show();
     
     // Add event listeners to respond to inputs to the determinant items
     for (const variable of condition.expression.variables()) {
