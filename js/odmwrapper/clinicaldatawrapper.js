@@ -159,7 +159,6 @@ export async function importClinicaldata(odmXMLString) {
         subjectFileNameList.push(subject.fileName);
         subjectDataList.push(xmlSerializer.serializeToString(subjectData));
     }
-
     if (subjectDataList.length) await ioHelper.setODMBulk(subjectFileNameList, subjectDataList);
 }
 
@@ -337,9 +336,7 @@ export async function storeSubject(subjectToStore, subjectDataToStore) {
     const previousFileName = subjectToStore.fileName;
     const modifiedDate = new Date();
 
-    console.log("before datastatus")
     subjectToStore.status = await getDataStatus(subjectToStore.uniqueKey, subjectDataToStore);
-    console.log(subjectToStore.status)
     subjectToStore.modifiedDate = modifiedDate;
     clinicaldataFile = new ClinicaldataFile(modifiedDate);
     await ioHelper.setODM(subjectToStore.fileName, subjectDataToStore);
@@ -599,13 +596,14 @@ export async function getDataStatus(subjectKey, subjectDataToCheck) {
     if(!subjectDataToCheck) subjectDataToCheck = subjectData;
     let dataStates = [];
     for await (const studyEventOID of studyEventOIDs) {
-        if(metadataWrapper.isStudyEventRepeating(studyEventOID))
-            dataStates = dataStates.concat((await getStudyEventRepeatKeys(studyEventOID, subjectKey ? subjectKey : subject.uniqueKey, subjectDataToCheck)).map(repeatKey => getDataStatusForStudyEvent({studyEventOID, repeatKey, subjectDataToCheck})));
+        if(metadataWrapper.isStudyEventRepeating(studyEventOID)) {
+            let keys = await getStudyEventRepeatKeys(studyEventOID, subjectKey ? subjectKey : subject.uniqueKey, subjectDataToCheck);
+            let states = keys.map(studyEventRepeatKey => getDataStatusForStudyEvent({studyEventOID, studyEventRepeatKey, subjectDataToCheck}));
+            dataStates = dataStates.concat(states);
+        }   
         else
             dataStates.push(getDataStatusForStudyEvent({studyEventOID, subjectDataToCheck}));
     }
-    console.log(dataStates);
-
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED)) return dataStatusTypes.VALIDATED;
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
     if (dataStates.some(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE || item == dataStatusTypes.INCOMPLETE)) return dataStatusTypes.INCOMPLETE;
@@ -617,15 +615,16 @@ export async function getStudyEventRepeatKeys(studyEventOID, subjectKey, subject
     if(!subjectKey) return [];
     let data = subjectDataToCheck;
     if(!data) data = subjectData;
+    if(!data && subjectKey) {
+        data = await loadStoredSubjectData(getSubject(subjectKey).fileName);
+        subjectData = data;
+    }
     if(subject && !subjectDataToCheck && subjectKey !== subject.uniqueKey)  data = await loadStoredSubjectData(getSubject(subjectKey).fileName);
     return Array.from(data?.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"]`) ?? []).map(event => parseInt(event.getAttribute("StudyEventRepeatKey"))).sort((a,b) => a-b);
 }
 
 export function getDataStatusForStudyEvent({studyEventOID, studyEventRepeatKey, subjectDataToCheck}) {
-    console.log(studyEventOID, studyEventRepeatKey);
-    console.log(subjectDataToCheck)
     const dataStates = metadataWrapper.getFormOIDsByStudyEvent(studyEventOID).map(formOID => getDataStatusForForm({studyEventOID, formOID, studyEventRepeatKey, subjectDataToCheck}));
-
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED)) return dataStatusTypes.VALIDATED;
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
     if (dataStates.some(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE || item == dataStatusTypes.INCOMPLETE)) return dataStatusTypes.INCOMPLETE;
@@ -634,7 +633,6 @@ export function getDataStatusForStudyEvent({studyEventOID, studyEventRepeatKey, 
 }
 
 export function getDataStatusForForm({studyEventOID, formOID, studyEventRepeatKey, subjectDataToCheck}) {
-    console.log(subjectDataToCheck);
     if(!subjectDataToCheck) subjectDataToCheck = subjectData;
     const formDataElement = getFormDataElements({studyEventOID, formOID, studyEventRepeatKey, subjectDataToCheck}).getLastElement();
     if (!formDataElement) return dataStatusTypes.EMPTY;
@@ -744,7 +742,6 @@ export async function checkStudyEventDataRepeating({studyEventOID, boolRepeating
 }
 
 export async function setStudyEventDataRepeating({studyEventOID, boolRepeating}, skipAlreadyChangedCheck) {
-    console.log({studyEventOID, boolRepeating});
     const alreadyChanged = boolRepeating === metadataWrapper.isStudyEventRepeating(studyEventOID);
     if(alreadyChanged && !skipAlreadyChangedCheck) return false;
     
@@ -773,7 +770,6 @@ export async function setStudyEventDataRepeating({studyEventOID, boolRepeating},
 
 export function checkSubjectsHaveRepeatKey(studyEventOID, subjectsData) {
     for(let subjectData of subjectsData){
-        //console.log(subjectData)
         if(subjectData.querySelector(`StudyEventData[StudyEventOID="${studyEventOID}"`)?.getAttribute("StudyEventRepeatKey")) return true;
     }
     return false;
