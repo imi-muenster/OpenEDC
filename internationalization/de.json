@@ -62,6 +62,7 @@
     "element-no-references-hint": "Das aktuelle Element wird nicht an anderen Stellen wiederverwendet.",
     "element-multiple-references-hint": "Das aktuelle Element wird an folgenden Stellen verwendet. Wenn Sie es bearbeiten, wird es dort ebenfalls bearbeitet.",
     "formal-expression-error": "Ihr eingegebener formaler Ausdruck enthält einen Fehler. Bitte überprüfen Sie Ihre Eingabe.",
+    "formal-expression-logic-error": "Ihr eingegebener formaler Ausdruck enthält Bedingungen seiner Kinder. Dies wird zu Fehlern führen.",
     "new-duplication": "Neue Duplikation",
     "reference": "Verweis",
     "shallow-copy": "Flache Kopie",
