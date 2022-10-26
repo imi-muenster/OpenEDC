@@ -62,6 +62,7 @@
     "element-no-references-hint": "The current element is not reused at other locations.",
     "element-multiple-references-hint": "The current element is used at the following locations. If you edit it, it will be edited there as well.",
     "formal-expression-error": "Your entered formal expression contains an error. Please revise your input.",
+    "formal-expression-logic-error": "Your entered formal expressions contains conditions based on its children. This will lead to errors.",
     "new-duplication": "New Duplication",
     "reference": "Reference",
     "shallow-copy": "Shallow Copy",

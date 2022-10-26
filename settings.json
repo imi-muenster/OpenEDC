@@ -14,7 +14,7 @@
         "description": "no-survey-description",
         "type": "boolean",
         "scope": [
-            "itemgroup", "item"
+            "form", "itemgroup", "item"
         ]
     }
 ]   

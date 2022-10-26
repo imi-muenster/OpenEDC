@@ -51,6 +51,8 @@ export function parse(formalExpression, referencePath) {
 }
 
 export function evaluate(expression, expressionType) {
+    console.log(expression, expressionType);
+    console.log(conditionVariables);
     try {
         if (expressionType == "condition") return expression.evaluate(conditionVariables);
         else if (expressionType == "method") return expression.evaluate(methodVariables);
@@ -67,8 +69,17 @@ function getParser() {
 function processCondition(condition) {
     // Select conditional item group or item and hide it
     let conditionalElement;
-    if (condition.elementType == "itemgroup") conditionalElement = $(`#clinicaldata-content [item-group-content-oid="${condition.elementPath.itemGroupOID}"]`);
-    else if (condition.elementType == "item") conditionalElement = $(`#clinicaldata-content [item-field-oid="${condition.elementPath.itemOID}"]`);
+    switch(condition.elementType) {
+        case ODMPath.elements.FORM:
+            conditionalElement = $(`#odm-html-content`);
+            break;
+        case ODMPath.elements.ITEMGROUP: 
+            conditionalElement = $(`#clinicaldata-content [item-group-content-oid="${condition.elementPath.itemGroupOID}"]`);
+            break;
+        case ODMPath.elements.ITEM:
+            conditionalElement = $(`#clinicaldata-content [item-field-oid="${condition.elementPath.itemOID}"]`);
+            break;
+    }
     conditionalElement.hide();
 
     // If the expression evaluates to true, show condition element

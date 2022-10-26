@@ -341,6 +341,20 @@ export function getItemOIDsWithDataType(dataType) {
     return Array.from($$(`ItemDef[DataType="${dataType}"]`)).map(item => item.getOID());
 }
 
+export function getElementsWithExpressionIncludeForms(studyEventOID, formOID) {
+    if(!studyEventOID) return [];
+    let elementsWithExpression = [];
+    for (const formRef of $$(`StudyEventDef[OID="${studyEventOID}"] FormRef`)) {
+        const formRefOID = formRef.getAttribute("FormOID");
+        if(!formOID  || formOID === formRefOID) {
+            const conditionOID = formRef.getAttribute("CollectionExceptionConditionOID");
+            if (conditionOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, ODMPath.elements.FORM, new ODMPath(studyEventOID, formRefOID), conditionOID, expressionTypes.CONDITION);
+            elementsWithExpression = elementsWithExpression.concat(getElementsWithExpression(studyEventOID, formRefOID));
+        }
+    }
+    return elementsWithExpression;
+
+}
 export function getElementsWithExpression(studyEventOID, formOID) {
     let elementsWithExpression = [];
     for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
@@ -418,6 +432,9 @@ export function getMeasurementUnits() {
 export function getElementCondition(elementType, path) {
     let conditionRef;
     switch (elementType) {
+        case ODMPath.elements.FORM: 
+            if(path.studyEventOID) conditionRef = $(`StudyEventDef[OID="${path.studyEventOID}"] FormRef[FormOID="${path.formOID}"][CollectionExceptionConditionOID]`);
+            break;
         case ODMPath.elements.ITEMGROUP:
             conditionRef = $(`FormDef[OID="${path.formOID}"] ItemGroupRef[ItemGroupOID="${path.itemGroupOID}"][CollectionExceptionConditionOID]`);
             break;

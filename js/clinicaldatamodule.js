@@ -424,7 +424,7 @@ async function loadFormsByStudyEvent() {
 
     // Automatically start the survey view when activated in project options and the current device is a smartphone or tablet
     if (ioHelper.getSetting("autoSurveyView") && ioHelper.isMobile() && currentSubjectKey && formDefs.length && !currentPath.formOID) {
-        currentPath.formOID = formDefs[0].getOID();
+        currentPath.formOID = getNextFormOID();//  formDefs[0].getOID();
         showSurveyView();
         adjustMobileUI();
     }
@@ -493,16 +493,21 @@ async function loadFormMetadata() {
 
     // Add the empty form
     let form = await metadataWrapper.getFormAsHTML(currentPath.formOID, ioHelper.getSetting("textAsTextarea"));
+    const hideForm = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', currentPath.formOID);
+    if(hideForm) $("#survey-view-button button").disabled = true;
+    else  $("#survey-view-button button").disabled = false;
+
     $("#odm-html-content")?.remove();
     $("#clinicaldata-content").appendChild(form);
 
     // Adjust the form navigation buttons
     $("#clinicaldata-previous-button").disabled = getPreviousFormOID(currentPath.formOID) ? false : true;
-    if (!getNextFormOID(currentPath.formOID)) {
+    /* if (!getNextFormOID(currentPath.formOID)) {
         $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("finish");
     } else {
         $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("continue");
-    }
+    } */
+    updateFormButtons();
 }
 
 // Must be in place before clinical data is added to the form's input elements
@@ -514,7 +519,9 @@ function addDynamicFormLogicPre() {
         variables[cachedFormDataPath.toString()] = entry.value;
     });
     expressionHelper.setVariables(variables);
-    expressionHelper.process(metadataWrapper.getElementsWithExpression(currentPath.studyEventOID, currentPath.formOID));
+    const expressions = metadataWrapper.getElementsWithExpressionIncludeForms(currentPath.studyEventOID, currentPath.formOID);
+    console.log(expressions);
+    expressionHelper.process(expressions);
 }
 
 // Added after the form has been rendered for performance purposes
@@ -703,15 +710,50 @@ window.loadPreviousFormData = async function() {
 
 function getNextFormOID(previousFormOID) {
     let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
-    for (let i = 0; i < formDefs.length-1; i++) {
-        if (formDefs[i].getOID() == previousFormOID) return formDefs[i+1].getOID();
+    if(formDefs.length && !previousFormOID) {
+        previousFormOID = formDefs[0].getOID();
+        const hideForm = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', previousFormOID);
+        if(!hideForm || !surveyViewIsActive()) return previousFormOID;
+    }
+    let keepSearching = true;
+    let nextFormOID;
+    while(keepSearching) {
+        for (let i = 0; i < formDefs.length-1; i++) {
+            if (formDefs[i].getOID() == previousFormOID) nextFormOID = formDefs[i+1].getOID();
+        }
+        if(!nextFormOID) {
+            return nextFormOID;
+        }
+        const hideForm = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', nextFormOID);
+        if(!hideForm || !surveyViewIsActive()) {
+           return nextFormOID;
+        }
+        previousFormOID = nextFormOID;
+        nextFormOID = null;
     }
 }
 
 function getPreviousFormOID(nextFormOID) {
-    let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
-    for (let i = 1; i < formDefs.length; i++) {
+     let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
+    /* for (let i = 1; i < formDefs.length; i++) {
         if (formDefs[i].getOID() == nextFormOID) return formDefs[i-1].getOID();
+    }  */
+
+    let keepSearching = true;
+    let previousFormOID;
+    while(keepSearching) {
+        for (let i = 1; i < formDefs.length; i++) {
+            if (formDefs[i].getOID() == nextFormOID) previousFormOID = formDefs[i-1].getOID();
+        }
+        if(!previousFormOID) {
+            return previousFormOID;
+        }
+        const hideForm = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', previousFormOID);
+        if(!hideForm || !surveyViewIsActive()) {
+           return previousFormOID;
+        }
+        nextFormOID = previousFormOID;
+        previousFormOID = null;
     }
 }
 
@@ -845,6 +887,7 @@ window.showSurveyView = function() {
     $("#clinicaldata-section").classList.add("p-3");
     $("#clinicaldata-form-title").classList.add("is-centered");
     scrollToFormStart();
+    updateFormButtons();
 }
 
 function hideSurveyView() {
@@ -858,6 +901,16 @@ function hideSurveyView() {
     $("#clinicaldata-column .tree-panel-blocks").classList.remove("is-survey-view");
     $("#clinicaldata-section").classList.remove("p-3");
     $("#clinicaldata-form-title").classList.remove("is-centered");
+    updateFormButtons();
+}
+
+function updateFormButtons() {
+    if (!getNextFormOID(currentPath.formOID)) {
+        $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("finish");
+    } else {
+        $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("continue");
+    }
+    $("#clinicaldata-previous-button").disabled = getPreviousFormOID(currentPath.formOID) ? false : true;
 }
 
 export function safeCloseClinicaldata(callback) {
