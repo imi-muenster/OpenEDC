@@ -53,8 +53,9 @@ class Subject {
 }
 
 export class FormItemData {
-    constructor(itemGroupOID, itemOID, value) {
+    constructor(itemGroupOID, itemOID, value, itemGroupRepeatKey) {
         this.itemGroupOID = itemGroupOID;
+        this.itemGroupRepeatKey = itemGroupRepeatKey;
         this.itemOID = itemOID;
         this.value = value;
     }
@@ -427,6 +428,7 @@ export function getSubjectFormData(studyEventOID, formOID, studyEventRepeatKey) 
     return !subject ? [] : getFormItemDataList(getFormDataElements({studyEventOID, formOID, studyEventRepeatKey}));
 }
 
+//TODO NEXT
 function getFormItemDataList(formDataElements) {
     const formItemDataList = [];
     for (const formDataElement of formDataElements) {
@@ -453,15 +455,15 @@ export function getFormDataDifference(formItemDataList, studyEventOID, formOID, 
     const formDataDifference = [];
     const currentItemDataList = getSubjectFormData(studyEventOID, formOID, studyEventRepeatKey);
     for (const formItemData of formItemDataList) {
-        const currentItemData = currentItemDataList.find(entry => entry.itemGroupOID == formItemData.itemGroupOID && entry.itemOID == formItemData.itemOID);
+        const currentItemData = currentItemDataList.find(entry => entry.itemGroupOID == formItemData.itemGroupOID && entry.itemOID == formItemData.itemOID && entry.itemGroupRepeatKey == formItemData.itemGroupRepeatKey);
         if (!currentItemData || currentItemData.value != formItemData.value) formDataDifference.push(formItemData);
     }
 
     // Second, remove item data that was removed
     for (const currentItemData of currentItemDataList) {
         if (!currentItemData.value) continue;
-        const formItemData = formItemDataList.find(entry => entry.itemGroupOID == currentItemData.itemGroupOID && entry.itemOID == currentItemData.itemOID);
-        if (!formItemData) formDataDifference.push(new FormItemData(currentItemData.itemGroupOID, currentItemData.itemOID, ""));
+        const formItemData = formItemDataList.find(entry => entry.itemGroupOID == currentItemData.itemGroupOID && entry.itemOID == currentItemData.itemOID && entry.itemGroupRepeatKey == formItemData.itemGroupRepeatKey);
+        if (!formItemData) formDataDifference.push(new FormItemData(currentItemData.itemGroupOID, currentItemData.itemOID, "", currentItemData.itemGroupRepeatKey));
     }
     
     return formDataDifference;
@@ -621,6 +623,19 @@ export async function getStudyEventRepeatKeys(studyEventOID, subjectKey, subject
     }
     if(subject && !subjectDataToCheck && subjectKey !== subject.uniqueKey)  data = await loadStoredSubjectData(getSubject(subjectKey).fileName);
     return Array.from(data?.querySelectorAll(`StudyEventData[StudyEventOID="${studyEventOID}"]`) ?? []).map(event => parseInt(event.getAttribute("StudyEventRepeatKey"))).sort((a,b) => a-b);
+}
+
+export async function getItemGroupRepeatKeys(path, subjectKey, subjectDataToCheck) {
+    console.log(path);
+    if(!subjectKey) return [];
+    let data = subjectDataToCheck;
+    if(!data) data = subjectData;
+    if(!data && subjectKey) {
+        data = await loadStoredSubjectData(getSubject(subjectKey).fileName);
+        subjectData = data;
+    }
+    if(subject && !subjectDataToCheck && subjectKey !== subject.uniqueKey)  data = await loadStoredSubjectData(getSubject(subjectKey).fileName);
+    return Array.from(data?.querySelectorAll(`StudyEventData[StudyEventOID="${path.studyEventOID}"] FormData[FormOID="${path.formOID}"] ItemGroupData[ItemGroupOID="${path.itemGroupOID}"]`) ?? []).map(event => parseInt(event.getAttribute("ItemGroupRepeatKey"))).sort((a,b) => a-b);
 }
 
 export function getDataStatusForStudyEvent({studyEventOID, studyEventRepeatKey, subjectDataToCheck}) {

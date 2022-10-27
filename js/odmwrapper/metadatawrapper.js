@@ -144,8 +144,8 @@ export function removeMetadata() {
     metadata = null;
 }
 
-export async function getFormAsHTML(formOID, textAsTextarea = false, useNames = false) {
-    return htmlConverter.getFormAsHTML(formOID, {
+export async function getFormAsHTML(currentPath, currentSubjectKey, textAsTextarea = false, useNames = false) {
+    return await htmlConverter.getFormAsHTML(currentPath, currentSubjectKey, {
         locale: languageHelper.getCurrentLocale(),
         missingTranslation: languageHelper.getTranslation("missing-translation"),
         yes: languageHelper.getTranslation("yes"),
@@ -467,6 +467,19 @@ export function setStudyEventRepeating(studyEventOID, repeating) {
 
 export function isStudyEventRepeating(studyEventOID) {
     return $(`StudyEventDef[OID="${studyEventOID}"]`).getAttribute('Repeating') && $(`StudyEventDef[OID="${studyEventOID}"]`).getAttribute('Repeating') == "Yes";
+}
+
+export function getItemGroupRepeating(itemGroupOID) {
+    // Ad hoc implementation, improve for OpenEDC 2.0
+    return $(`ItemGroupDef[OID="${itemGroupOID}"]`)?.getAttribute("Repeating") ?? repeatingTypes.NO;
+}
+
+export function setItemGroupRepeating(itemGroupOID, repeating) {
+    $(`ItemGroupDef[OID="${itemGroupOID}"]`).setAttribute("Repeating", repeating);
+}
+
+export function isItemGroupRepeating(itemGroupOID) {
+    return $(`ItemGroupDef[OID="${itemGroupOID}"]`).getAttribute('Repeating') && $(`ItemGroupDef[OID="${itemGroupOID}"]`).getAttribute('Repeating') == "Yes";
 }
 
 export function getItemMeasurementUnit(itemOID) {

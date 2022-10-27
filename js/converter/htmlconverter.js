@@ -1,9 +1,11 @@
 import * as metadataWrapper from "../odmwrapper/metadatawrapper.js";
+import * as clinicalDataWrapper from "../odmwrapper/clinicaldatawrapper.js"
 
 const $ = query => metadataWrapper.getMetadata().querySelector(query);
 const $$ = query => metadataWrapper.getMetadata().querySelectorAll(query);
 
-export function getFormAsHTML(formOID, options) {
+export async function getFormAsHTML(currentPath, currentSubjectKey, options) {
+    const formOID = currentPath.formOID;
     const formAsHTML = document.createElement("div");
     formAsHTML.id = "odm-html-content";
     const hideForm = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', formOID);
@@ -13,7 +15,7 @@ export function getFormAsHTML(formOID, options) {
         const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
         let itemGroupContent;
         if(options.showAsLikert && isLikertPossible(itemGroupOID)) itemGroupContent = getItemGroupAsLikertScale(itemGroupOID, options);
-        else itemGroupContent = getItemGroupDefault(itemGroupOID, options);
+        else itemGroupContent = await getItemGroupDefault(itemGroupOID, currentPath, currentSubjectKey, options);
         formAsHTML.appendChild(itemGroupContent);
     }
 
@@ -36,7 +38,8 @@ function isLikertPossible(itemGroupOID){
     return true;
 }
 
-function getItemGroupDefault(itemGroupOID, options) {
+async function getItemGroupDefault(itemGroupOID, currentPath, currentSubjectKey, options) {
+
     const itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`);
     const showItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemGroupOID);
 
@@ -49,6 +52,50 @@ function getItemGroupDefault(itemGroupOID, options) {
     itemGroupDescr.innerHTML = processMarkdown(itemGroupDef.getTranslatedDescription(options.useNames ? null : options.locale, options.useNames));
     itemGroupContent.appendChild(itemGroupDescr);
 
+    if(metadataWrapper.isItemGroupRepeating(itemGroupOID)) {
+        let repeatKeysFound = false;
+        let addButton = document.createElement("button");
+        addButton.classList = "button is-small is-link mb-5";
+        addButton.innerText = "Hinzufügen";
+        addButton.onclick = () => {
+            let itemGroupRepeats = [...itemGroupContent.querySelectorAll('[item-group-repeat-key]')];
+            let nextKey = "1";
+            if(itemGroupRepeats.length > 0) nextKey = +itemGroupRepeats[itemGroupRepeats.length -1].getAttribute("item-group-repeat-key") + 1;
+            addItemGroupRepeatingBox(itemGroupContent, itemGroupOID, options, nextKey)
+        }
+        itemGroupContent.appendChild(addButton)
+
+        if(currentSubjectKey) {
+            const repeatKeys = await clinicalDataWrapper.getItemGroupRepeatKeys(currentPath, currentSubjectKey);
+            repeatKeysFound = repeatKeys.length > 0;
+            console.log(repeatKeys);
+            [...repeatKeys].forEach(key =>addItemGroupRepeatingBox(itemGroupContent, itemGroupOID, options, key));
+        }
+
+        if(!repeatKeysFound) {
+           addItemGroupRepeatingBox(itemGroupContent, itemGroupOID, options, "1");
+        }
+
+        
+    }
+    else addItemGroupElements(itemGroupContent, itemGroupOID, options);
+    const divider = document.createElement("hr");
+    itemGroupContent.appendChild(divider);
+    return itemGroupContent;
+}
+
+function addItemGroupRepeatingBox(parent, itemGroupOID, options, repeatKey) {
+    let repeatBox = document.createElement('div');
+    repeatBox.setAttribute("item-group-repeat-key", repeatKey);
+    repeatBox.classList = 'box has-background-light mb-3 item-group-repetition'
+    let h3 = document.createElement('h3');
+    h3.innerText = `#${repeatKey}`;
+    repeatBox.appendChild(h3);
+    addItemGroupElements(repeatBox, itemGroupOID, options);
+    parent.insertBefore(repeatBox, parent.querySelector('button'));
+}
+
+function addItemGroupElements(parent, itemGroupOID, options) {
     for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
         const itemOID = itemRef.getAttribute("ItemOID");
         const itemDef = $(`ItemDef[OID="${itemOID}"]`);
@@ -67,11 +114,8 @@ function getItemGroupDefault(itemGroupOID, options) {
 
         const itemInput = getItemInput(itemDef, itemGroupOID, options);
         itemField.appendChild(itemInput);
-        itemGroupContent.appendChild(itemField);
+        parent.appendChild(itemField);
     }
-    const divider = document.createElement("hr");
-    itemGroupContent.appendChild(divider);
-    return itemGroupContent;
 }
 
 function getItemGroupAsLikertScale(itemGroupOID, options) {

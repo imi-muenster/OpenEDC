@@ -374,9 +374,14 @@ function fillDetailsPanelExtended() {
             $("#repeating-select-inner").disabled = false;
             break;
         case ODMPath.elements.FORM:
+            $("#collection-condition").value = condition ? condition.getFormalExpression() : "";
+            $("#collection-condition").disabled = false;
+            break;
         case ODMPath.elements.ITEMGROUP:
             $("#collection-condition").value = condition ? condition.getFormalExpression() : "";
             $("#collection-condition").disabled = false;
+            $("#repeating-select-inner").value = metadataWrapper.getItemGroupRepeating(currentPath.last.value);
+            $("#repeating-select-inner").disabled = false;
             break;
         case ODMPath.elements.ITEM:
             fillItemRangeChecks();
@@ -582,10 +587,13 @@ async function setCodeListItemCodedValue(codedValue) {
 export async function saveDetailsExtended() {
     switch (currentPath.last.element) {
         case ODMPath.elements.STUDYEVENT:
-            await saveRepeating();
+            await saveStudyEventRepeating();
             break;
         case ODMPath.elements.FORM:
+            if (saveConditionPreCheck()) return;
+            break;
         case ODMPath.elements.ITEMGROUP:
+            await saveItemGroupRepeating();
             if (saveConditionPreCheck()) return;
             break;
         case ODMPath.elements.ITEM:
@@ -599,7 +607,7 @@ export async function saveDetailsExtended() {
     reloadAndStoreMetadata();
 }
 
-async function saveRepeating() {
+async function saveStudyEventRepeating() {
     if(admindataWrapper.getCurrentUserSiteOID()) return;
     // Ad hoc implementation, improve for OpenEDC 2.0
     let resolved;
@@ -616,9 +624,19 @@ async function saveRepeating() {
         }
     }
         
-    console.log(resolved);
-    console.log(currentPath.last.value, $("#repeating-select-inner").value)
     if(resolved) metadataWrapper.setStudyEventRepeating(currentPath.last.value, $("#repeating-select-inner").value);
+    else {
+        const subjectKeys = await clinicaldataWrapper.getSubjectsHavingDataForElement(currentPath.last.element, currentPath);
+        ioHelper.showMessage(languageHelper.getTranslation('cannot-be-changed-repeating'), languageHelper.getTranslation('cannot-be-changed-repeating-text') + subjectKeys.join(", ") + "</strong>")
+    }
+}
+
+async function saveItemGroupRepeating() {
+    if(admindataWrapper.getCurrentUserSiteOID()) return;
+
+    //TODO implement logic
+    const resolved = true;
+    if(resolved) metadataWrapper.setItemGroupRepeating(currentPath.last.value, $("#repeating-select-inner").value);
     else {
         const subjectKeys = await clinicaldataWrapper.getSubjectsHavingDataForElement(currentPath.last.element, currentPath);
         ioHelper.showMessage(languageHelper.getTranslation('cannot-be-changed-repeating'), languageHelper.getTranslation('cannot-be-changed-repeating-text') + subjectKeys.join(", ") + "</strong>")

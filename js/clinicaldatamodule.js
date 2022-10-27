@@ -492,7 +492,7 @@ async function loadFormMetadata() {
     $("#clinicaldata-form-title .subtitle").textContent = formDef.getTranslatedDescription(languageHelper.getCurrentLocale(), true);
 
     // Add the empty form
-    let form = await metadataWrapper.getFormAsHTML(currentPath.formOID, ioHelper.getSetting("textAsTextarea"));
+    let form = await metadataWrapper.getFormAsHTML(currentPath, currentSubjectKey, ioHelper.getSetting("textAsTextarea"));
     const hideForm = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', currentPath.formOID);
     if(hideForm) $("#survey-view-button button").disabled = true;
     else  $("#survey-view-button button").disabled = false;
@@ -799,32 +799,47 @@ async function saveFormData() {
     }
 }
 
+function addFormDataElementsForItemGroup(itemGroupContent, itemGroupOID, repeatKey) {
+    let formItemDataList = [];
+    for (const inputElement of itemGroupContent.querySelectorAll("[item-oid]")) {
+        const value = inputElement.value;
+        const itemOID = inputElement.getAttribute("item-oid");
+        switch (inputElement.getAttribute("type")) {
+            case "text":
+            case "date":
+            case "time":
+            case "datetime-local":
+            case "select":
+                if (value) formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value, repeatKey));
+                break;
+            case "textarea":
+                if (value) formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value.replace(/\n/g, "\\n"), repeatKey));
+                break;
+            case "radio":
+                if (inputElement.checked) formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value, repeatKey));
+        }
+    }
+    return formItemDataList;
+}
+
 function getFormData() {
     let formItemDataList = [];
     for (const itemGroupContent of $$("#clinicaldata-content .item-group-content")) {
         const itemGroupOID = itemGroupContent.getAttribute("item-group-content-oid");
-        for (const inputElement of itemGroupContent.querySelectorAll("[item-oid]")) {
-            const value = inputElement.value;
-            const itemOID = inputElement.getAttribute("item-oid");
-            switch (inputElement.getAttribute("type")) {
-                case "text":
-                case "date":
-                case "time":
-                case "datetime-local":
-                case "select":
-                    if (value) formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value));
-                    break;
-                case "textarea":
-                    if (value) formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value.replace(/\n/g, "\\n")));
-                    break;
-                case "radio":
-                    if (inputElement.checked) formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value));
+        if(currentSubjectKey && metadataWrapper.isItemGroupRepeating(itemGroupOID)) {
+            for(const itemGroupContentRepetition of itemGroupContent.querySelectorAll('.item-group-repetition')) {
+                formItemDataList = [...formItemDataList, ...addFormDataElementsForItemGroup(itemGroupContentRepetition, itemGroupOID, itemGroupContentRepetition.getAttribute('item-group-repeat-key'))];
             }
         }
+        else formItemDataList = [...formItemDataList, ...addFormDataElementsForItemGroup(itemGroupContent, itemGroupOID)];
+        
     }
 
+    console.log(formItemDataList);
     return formItemDataList;
 }
+
+
 
 function checkMandatoryFields(formItemDataList) {
     if (isFormValidated()) return true;
