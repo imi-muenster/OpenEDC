@@ -156,6 +156,19 @@ export async function getFormAsHTML(currentPath, currentSubjectKey, textAsTextar
     });
 }
 
+export function addItemGroupRepetition(itemGroupOID, itemGroupRepeatKey) {
+    htmlConverter.addItemGroupRepetition(itemGroupOID, itemGroupRepeatKey,
+        {
+            locale: languageHelper.getCurrentLocale(),
+            missingTranslation: languageHelper.getTranslation("missing-translation"),
+            yes: languageHelper.getTranslation("yes"),
+            no: languageHelper.getTranslation("no"),
+            textAsTextarea: ioHelper.getSetting("textAsTextarea"),
+            useNames: false,
+            showAsLikert: ioHelper.getSetting("showLikertScale")
+        })
+}
+
 export function prepareDownload(dataStatusTypes) {
     removeEmptyAliasses();
     let odmCopy = new DOMParser().parseFromString(getSerializedMetadata(), "text/xml");

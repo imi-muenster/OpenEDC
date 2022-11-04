@@ -88,9 +88,17 @@ function addItemGroupRepeatingBox(parent, itemGroupOID, options, repeatKey) {
     let repeatBox = document.createElement('div');
     repeatBox.setAttribute("item-group-repeat-key", repeatKey);
     repeatBox.classList = 'box has-background-light mb-3 item-group-repetition'
+    let divheader = document.createElement('div');
+    divheader.classList = 'is-flex is-align-items-center'
     let h3 = document.createElement('h3');
+    h3.classList = 'is-flex-grow-1'
     h3.innerText = `#${repeatKey}`;
-    repeatBox.appendChild(h3);
+    divheader.appendChild(h3);
+    let closeIcon = document.createElement('i');
+    closeIcon.classList = 'fa-solid fa-close mr-0 is-flex-grow-0';
+    closeIcon.onclick = () => console.log("close this event");
+    divheader.appendChild(closeIcon)
+    repeatBox.appendChild(divheader);
     addItemGroupElements(repeatBox, itemGroupOID, options);
     parent.insertBefore(repeatBox, parent.querySelector('button'));
 }
@@ -116,6 +124,15 @@ function addItemGroupElements(parent, itemGroupOID, options) {
         itemField.appendChild(itemInput);
         parent.appendChild(itemField);
     }
+}
+
+export function addItemGroupRepetition(itemGroupOID, itemGroupRepeatKey, options) {
+    console.log(itemGroupOID, itemGroupRepeatKey);
+    let parent = document.querySelector(`#clinicaldata-content .item-group-content[item-group-content-oid="${itemGroupOID}"]`);
+    console.log(parent);
+    if(!parent) return;
+    console.log("adding repeat box")
+    addItemGroupRepeatingBox(parent, itemGroupOID, options, itemGroupRepeatKey);
 }
 
 function getItemGroupAsLikertScale(itemGroupOID, options) {

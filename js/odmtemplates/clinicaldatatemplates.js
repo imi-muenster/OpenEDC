@@ -20,8 +20,8 @@ export const getFormData = formOID => template(`
     </FormData>
 `);
 
-export const getItemGroupData = itemGroupOID => template(`
-    <ItemGroupData ItemGroupOID="${itemGroupOID}">
+export const getItemGroupData = (itemGroupOID, itemGroupRepeatKey) => template(`
+    <ItemGroupData ItemGroupOID="${itemGroupOID}" ${itemGroupRepeatKey ? `ItemGroupRepeatKey="${itemGroupRepeatKey}"` : ""}>
     </ItemGroupData>
 `);
 

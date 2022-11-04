@@ -392,9 +392,13 @@ export async function storeSubjectFormData(studyEventOID, formOID, formItemDataL
 
     let itemGroupData = null;
     for (let formItemData of formDataDifference) {
-        if (itemGroupData == null || itemGroupData.getAttribute("ItemGroupOID") != formItemData.itemGroupOID) {
+        if (itemGroupData == null || itemGroupData.getAttribute("ItemGroupOID") != formItemData.itemGroupOID || itemGroupData.getAttribute('ItemGroupRepeatKey') != formItemData.itemGroupRepeatKey) {
             if (itemGroupData) formData.appendChild(itemGroupData);
-            itemGroupData = clinicaldataTemplates.getItemGroupData(formItemData.itemGroupOID);
+            if (formItemData.itemGroupRepeatKey) {
+                itemGroupData = clinicaldataTemplates.getItemGroupData(formItemData.itemGroupOID, formItemData.itemGroupRepeatKey);
+            } else {
+                itemGroupData = clinicaldataTemplates.getItemGroupData(formItemData.itemGroupOID);
+            }
         };
         itemGroupData.appendChild(clinicaldataTemplates.getItemData(formItemData.itemOID, formItemData.value));
     }
@@ -434,16 +438,18 @@ function getFormItemDataList(formDataElements) {
     for (const formDataElement of formDataElements) {
         for (const itemGroupData of formDataElement.querySelectorAll("ItemGroupData")) {
             const itemGroupOID = itemGroupData.getAttribute("ItemGroupOID");
+            const itemGroupRepeatKey = itemGroupData.getAttribute("ItemGroupRepeatKey");
             for (const itemData of itemGroupData.querySelectorAll("ItemData")) {
                 const itemOID = itemData.getAttribute("ItemOID");
                 const value = itemData.getAttribute("Value");
-                const existingItemData = formItemDataList.find(entry => entry.itemGroupOID == itemGroupOID && entry.itemOID == itemOID);
+                const existingItemData = formItemDataList.find(entry => entry.itemGroupOID == itemGroupOID && entry.itemOID == itemOID && entry.itemGroupRepeatKey == itemGroupRepeatKey);
                 if (existingItemData) existingItemData.value = value;
-                else formItemDataList.push(new FormItemData(itemGroupOID, itemOID, value));
+                else formItemDataList.push(new FormItemData(itemGroupOID, itemOID, value, itemGroupRepeatKey));
             }
         }
     }
 
+    console.log(formItemDataList);
     return formItemDataList;
 }
 
@@ -462,7 +468,7 @@ export function getFormDataDifference(formItemDataList, studyEventOID, formOID, 
     // Second, remove item data that was removed
     for (const currentItemData of currentItemDataList) {
         if (!currentItemData.value) continue;
-        const formItemData = formItemDataList.find(entry => entry.itemGroupOID == currentItemData.itemGroupOID && entry.itemOID == currentItemData.itemOID && entry.itemGroupRepeatKey == formItemData.itemGroupRepeatKey);
+        const formItemData = formItemDataList.find(entry => entry.itemGroupOID == currentItemData.itemGroupOID && entry.itemOID == currentItemData.itemOID && entry.itemGroupRepeatKey == currentItemData.itemGroupRepeatKey);
         if (!formItemData) formDataDifference.push(new FormItemData(currentItemData.itemGroupOID, currentItemData.itemOID, "", currentItemData.itemGroupRepeatKey));
     }
     

@@ -616,7 +616,15 @@ function loadFormClinicaldata() {
     for (let formItemData of formItemDataList) {
         if (!formItemData.value) continue;
 
-        let inputElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [item-oid="${formItemData.itemOID}"]`);
+        let inputElement = null;
+        if(formItemData.itemGroupRepeatKey) {
+            inputElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [item-group-repeat-key="${formItemData.itemGroupRepeatKey}"] [item-oid="${formItemData.itemOID}"]`);
+            if(!inputElement) {
+                metadataWrapper.addItemGroupRepetition(formItemData.itemGroupOID, formItemData.itemGroupRepeatKey);
+                inputElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [item-group-repeat-key="${formItemData.itemGroupRepeatKey}"] [item-oid="${formItemData.itemOID}"]`);
+            }
+        }
+        else inputElement = $(`#clinicaldata-content [item-group-content-oid="${formItemData.itemGroupOID}"] [item-oid="${formItemData.itemOID}"]`);
         if (!inputElement) {
             metadataNotFoundErrors.push({type: ODMPath.elements.ITEM, oid: formItemData.itemOID});
             continue;
