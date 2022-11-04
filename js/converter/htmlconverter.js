@@ -141,7 +141,7 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
             itemOptions.classList = "field column is-7 grid-even-columns has-text-align-center is-align-content-center";
 
             for (let codeListItem of codeListItems) {
-                const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
+                const translatedText  = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
                 const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), translatedText, itemDef.getAttribute("OID"), itemGroupOID, false);
                 const span = document.createElement('span');
                 span.classList = "mobile-span";
@@ -179,7 +179,7 @@ function getItemInput(itemDef, itemGroupOID, options) {
                 const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
                 const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), translatedText, itemDef.getAttribute("OID"), itemGroupOID);
                 inputContainer.appendChild(radioInput);
-                inputContainer.appendChild(document.createElement("br"));
+                //inputContainer.appendChild(document.createElement("br"));
             }
         }
     } else if (itemDef.getAttribute("DataType") == "boolean") {
@@ -233,8 +233,11 @@ const getSelectInput = (codeListItems, itemOID, options) => {
 }
 
 const getRadioInput = (value, translatedText, itemOID, itemGroupOID, showtext = true) => {
+    
+
     const radioContainer = document.createElement("label");
-    radioContainer.className = "radio";
+    radioContainer.className = "radio ml-0 is-flex is-align-items-center ";
+    radioContainer.style = "gap: 5px";
     const radio = document.createElement("input");
     radio.type = "radio";
     radio.name = itemGroupOID + "-" + itemOID;
@@ -242,9 +245,18 @@ const getRadioInput = (value, translatedText, itemOID, itemGroupOID, showtext = 
     radio.setAttribute("item-oid", itemOID);
     radioContainer.codedValue = value;
     radioContainer.textValue = translatedText;
-
+    
     radioContainer.appendChild(radio);
-    if(showtext) radioContainer.appendChild(document.createTextNode(" " + translatedText));
+    if(translatedText.startsWith("base64;")) {
+        const splits = translatedText.split(";")
+        let img = document.createElement('img');
+        img.style = "height: 50px;"
+        img.setAttribute("src", `data:image/${splits[1]};base64,${splits[2]}`);
+        radioContainer.appendChild(img);
+    }
+    else {
+        if(showtext) radioContainer.appendChild(document.createTextNode(" " + translatedText));
+    }
     return radioContainer;
 }
 
