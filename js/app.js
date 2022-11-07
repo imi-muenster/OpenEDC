@@ -55,14 +55,15 @@ ioHelper.addGlobalEventListener("DOMContentLoaded", async () => {
 
     // Initialize the application
     await metadataWrapper.loadStoredMetadata()
-        .catch(error => {
-            if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND && !ioHelper.hasServerURL()) showStartModal();
-            else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionKeyModal();
-        });
-    await startApp();
+    .then(async () => {
+        await startApp();
+        handleURLSearchParameters();
+    })
+    .catch(error => {
+        if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND && !ioHelper.hasServerURL()) showStartModal();
+        else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionKeyModal();
+    });
 
-    // Handle URL search / query parameters (e.g., for metadata repository integration)
-    handleURLSearchParameters();
 
     // Register service worker for offline capabilities
     const developmentOrigins = ["localhost", "127.0.0.1", "dev.openedc.org"];
@@ -87,6 +88,7 @@ ioHelper.addGlobalEventListener("CurrentUserEdited", () => {
 
 const startApp = async () => {
     await ioHelper.loadSettings();
+    console.log("start app")
     languageHelper.populatePresentLanguages(metadataWrapper.getMetadata());
     await languageHelper.setInitialLocale();
     
@@ -284,6 +286,7 @@ window.openODM = async function() {
     const file = $("#open-odm-button .file-input");
     const content = await ioHelper.getFileContent(file.files[0]);
     const odmXMLString = validateODM(content);
+    console.log(odmXMLString);
     if (odmXMLString) {
         metadataWrapper.importMetadata(odmXMLString);
         admindataWrapper.importAdmindata(odmXMLString);
