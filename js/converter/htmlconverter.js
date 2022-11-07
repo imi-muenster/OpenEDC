@@ -3,6 +3,8 @@ import * as metadataWrapper from "../odmwrapper/metadatawrapper.js";
 const $ = query => metadataWrapper.getMetadata().querySelector(query);
 const $$ = query => metadataWrapper.getMetadata().querySelectorAll(query);
 
+const defaultImageHeight = 40;
+
 export function getFormAsHTML(formOID, options) {
     const formAsHTML = document.createElement("div");
     formAsHTML.id = "odm-html-content";
@@ -12,7 +14,7 @@ export function getFormAsHTML(formOID, options) {
     for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
         const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
         let itemGroupContent;
-        if(options.showAsLikert && isLikertPossible(itemGroupOID)) itemGroupContent = getItemGroupAsLikertScale(itemGroupOID, options);
+        if(options.showAsLikert && isLikertPossible(itemGroupOID, options)) itemGroupContent = getItemGroupAsLikertScale(itemGroupOID, options);
         else itemGroupContent = getItemGroupDefault(itemGroupOID, options);
         formAsHTML.appendChild(itemGroupContent);
     }
@@ -20,16 +22,18 @@ export function getFormAsHTML(formOID, options) {
     return formAsHTML;
 }
 
-function isLikertPossible(itemGroupOID){
+function isLikertPossible(itemGroupOID, options){
     let compareCodelistOID = null;
     if(metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-likert', itemGroupOID)) return false;
 
     for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
         const itemOID = itemRef.getAttribute("ItemOID");
         const itemDef = $(`ItemDef[OID="${itemOID}"]`);
-        const codeListRef = itemDef.querySelector("CodeListRef");
+        const codeListRef = itemDef.querySelector("CodeListRef"); 
         if(!codeListRef) return false;
         const codeListOID = codeListRef.getAttribute("CodeListOID");
+        const codeListItems = $$(`CodeList[OID="${codeListOID}"] CodeListItem`);
+        if(codeListItems.length > options.likertScaleLimit) return false;
         if(compareCodelistOID != null && codeListOID != compareCodelistOID) return false;
         compareCodelistOID = codeListOID;
     }
@@ -38,10 +42,11 @@ function isLikertPossible(itemGroupOID){
 
 function getItemGroupDefault(itemGroupOID, options) {
     const itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`);
-    const showItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemGroupOID);
+    const hideItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemGroupOID);
+    options["maxImageHeight"] = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'codelistitem-image-height', itemGroupOID);
 
     const itemGroupContent = document.createElement("div");
-    itemGroupContent.className = `item-group-content ${showItemGroup ? 'is-hidden-survey-view' : ''}`;
+    itemGroupContent.className = `item-group-content ${hideItemGroup ? 'is-hidden-survey-view' : ''}`;
     itemGroupContent.setAttribute("item-group-content-oid", itemGroupOID);
 
     const itemGroupDescr = document.createElement("h2");
@@ -52,10 +57,10 @@ function getItemGroupDefault(itemGroupOID, options) {
     for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
         const itemOID = itemRef.getAttribute("ItemOID");
         const itemDef = $(`ItemDef[OID="${itemOID}"]`);
-        const showItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemOID);
+        const hideItem = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemOID);
 
         const itemField = document.createElement("div");
-        itemField.className = `item-field ${showItemGroup ? 'is-hidden-survey-view' : ''}`;
+        itemField.className = `item-field ${hideItem ? 'is-hidden-survey-view' : ''}`;
         itemField.setAttribute("item-field-oid", itemOID);
         itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
 
@@ -76,10 +81,12 @@ function getItemGroupDefault(itemGroupOID, options) {
 
 function getItemGroupAsLikertScale(itemGroupOID, options) {
     const itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`);
-    const showItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemGroupOID);
+    const hideItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemGroupOID);
+    const maxImageHeight = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'codelistitem-image-height', itemGroupOID);
+    console.log("maxImageHeight", maxImageHeight)
 
     const itemGroupContent = document.createElement("div");
-    itemGroupContent.className = `item-group-content ${showItemGroup ? 'is-hidden-survey-view' : ''}`;
+    itemGroupContent.className = `item-group-content ${hideItemGroup ? 'is-hidden-survey-view' : ''}`;
     itemGroupContent.setAttribute("item-group-content-oid", itemGroupOID);
 
     const itemGroupDescr = document.createElement("h2");
@@ -103,46 +110,58 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
         likertOptionsDiv.classList = "column is-12 columns is-mobile-hidden";
 
         let likertOptionsPlaceholder = document.createElement('div');
-        likertOptionsPlaceholder.classList = "column is-5";
+        likertOptionsPlaceholder.classList = "column is-4";
         let likertOptionsHeader = document.createElement('div');
-        likertOptionsHeader.classList = 'column is-7 grid-even-columns has-text-weight-bold';
+        likertOptionsHeader.classList = 'column is-8 grid-even-columns has-text-weight-bold';
         likertOptionsDiv.appendChild(likertOptionsPlaceholder)
         likertOptionsDiv.appendChild(likertOptionsHeader);
         likertContent.appendChild(likertOptionsDiv);
 
         for (let codeListItem of codeListItems) {
-            const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
             let questionDiv = document.createElement('div');
             questionDiv.classList = "has-overvlow-wrap has-text-align-center";
-            questionDiv.innerText = translatedText;
+            const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
+
+            if(translatedText.startsWith("base64;")) {
+                const splits = translatedText.split(";")
+                let img = document.createElement('img');
+                img.style = `height: ${maxImageHeight ? maxImageHeight : defaultImageHeight}px;`
+                img.setAttribute("src", `data:image/${splits[1] == 'svg' ? 'svg+xml' : splits[1]};base64,${splits[2]}`);
+                questionDiv.appendChild(img);
+            }
+            else {
+                questionDiv.innerText = translatedText;
+                //if(showtext) radioContainer.appendChild(document.createTextNode(" " + translatedText));
+            }
+           
             likertOptionsHeader.appendChild(questionDiv);
         }
 
         for (const itemRef of itemRefs) {
             const itemOID = itemRef.getAttribute("ItemOID");
             const itemDef = $(`ItemDef[OID="${itemOID}"]`);
-            const showItem = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemOID);
+            const hideItem = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemOID);
 
             //const itemRow = document.createElement('div');
             //itemRow.classList = "column is-5";
 
             const itemField = document.createElement("div");
-            itemField.className = `item-field column is-12 columns ${showItemGroup ? 'is-hidden-survey-view' : ''}`;
+            itemField.className = `item-field column is-12 columns ${hideItemGroup || hideItem ? 'is-hidden-survey-view' : ''}`;
             itemField.setAttribute("item-field-oid", itemOID);
             itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
 
             const itemQuestion = document.createElement("label");
-            itemField.className = `item-field column is-12 columns ${showItem ? 'is-hidden-survey-view' : ''}`;
+            itemQuestion.className = "label column is-4";
             itemQuestion.innerHTML = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
             itemQuestion.innerHTML += itemRef.getAttribute("Mandatory") == "Yes" ? " (*)" : "";
             //itemRow.appendChild(itemQuestion);
 
             const itemOptions = document.createElement('div');
-            itemOptions.classList = "field column is-7 grid-even-columns has-text-align-center is-align-content-center";
+            itemOptions.classList = "field column is-8 grid-even-columns has-text-align-center is-align-content-center";
 
             for (let codeListItem of codeListItems) {
-                const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
-                const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), translatedText, itemDef.getAttribute("OID"), itemGroupOID, false);
+                const translatedText  = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
+                const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), translatedText, itemDef.getAttribute("OID"), itemGroupOID, options, false);
                 const span = document.createElement('span');
                 span.classList = "mobile-span";
                 span.innerText = translatedText;
@@ -163,6 +182,7 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
 }
 
 function getItemInput(itemDef, itemGroupOID, options) {
+    const itemOID = itemDef.getAttribute('OID');
     const inputContainer = document.createElement("div");
     inputContainer.className = "field";
 
@@ -171,20 +191,21 @@ function getItemInput(itemDef, itemGroupOID, options) {
     if (codeListRef) {
         const codeListOID = codeListRef.getAttribute("CodeListOID");
         const codeListItems = $$(`CodeList[OID="${codeListOID}"] CodeListItem`);
+        options["maxImageHeight"] = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'codelistitem-image-height', itemOID) || options["maxImageHeight"];
         if (codeListItems.length >= 10) {
-            const selectInput = getSelectInput(codeListItems, itemDef.getAttribute("OID"), options);
+            const selectInput = getSelectInput(codeListItems, itemOID, options);
             inputContainer.appendChild(selectInput);
         } else {
             for (let codeListItem of codeListItems) {
                 const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
-                const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), translatedText, itemDef.getAttribute("OID"), itemGroupOID);
+                const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), translatedText, itemOID, itemGroupOID, options);
                 inputContainer.appendChild(radioInput);
-                inputContainer.appendChild(document.createElement("br"));
+                //inputContainer.appendChild(document.createElement("br"));
             }
         }
     } else if (itemDef.getAttribute("DataType") == "boolean") {
-        const radioInputYes = getRadioInput("1", options.yes, itemDef.getAttribute("OID"), itemGroupOID);
-        const radioInputNo = getRadioInput("0", options.no, itemDef.getAttribute("OID"), itemGroupOID);
+        const radioInputYes = getRadioInput("1", options.yes, itemOID, itemGroupOID, options);
+        const radioInputNo = getRadioInput("0", options.no, itemOID, itemGroupOID, options);
         inputContainer.appendChild(radioInputYes);
         inputContainer.appendChild(document.createElement("br"));
         inputContainer.appendChild(radioInputNo);
@@ -232,9 +253,12 @@ const getSelectInput = (codeListItems, itemOID, options) => {
     return selectContainer;
 }
 
-const getRadioInput = (value, translatedText, itemOID, itemGroupOID, showtext = true) => {
+const getRadioInput = (value, translatedText, itemOID, itemGroupOID, options, noLikert = true) => {
+    
+
     const radioContainer = document.createElement("label");
-    radioContainer.className = "radio";
+    radioContainer.className = `radio ${noLikert ? 'ml-0 is-flex is-align-items-center' : ''}`;
+    radioContainer.style = "gap: 5px";
     const radio = document.createElement("input");
     radio.type = "radio";
     radio.name = itemGroupOID + "-" + itemOID;
@@ -242,9 +266,20 @@ const getRadioInput = (value, translatedText, itemOID, itemGroupOID, showtext = 
     radio.setAttribute("item-oid", itemOID);
     radioContainer.codedValue = value;
     radioContainer.textValue = translatedText;
-
+    
     radioContainer.appendChild(radio);
-    if(showtext) radioContainer.appendChild(document.createTextNode(" " + translatedText));
+    if(noLikert){
+        if(translatedText.startsWith("base64;")) {
+            const splits = translatedText.split(";")
+            let img = document.createElement('img');
+            img.style = `height: ${options.maxImageHeight ? options.maxImageHeight : defaultImageHeight}px;`
+            img.setAttribute("src", `data:image/${splits[1] == 'svg' ? 'svg+xml' : splits[1]};base64,${splits[2]}`);
+            radioContainer.appendChild(img);
+        }
+        else {
+            radioContainer.appendChild(document.createTextNode(" " + translatedText));
+        }
+    }
     return radioContainer;
 }
 
