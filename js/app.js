@@ -385,6 +385,7 @@ window.showProjectModal = function() {
 
     $("#survey-code-input").value = ioHelper.getSetting("surveyCode");
     $("#show-as-likert").checked = ioHelper.getSetting("showLikertScale");
+    $("#likert-scale-limit-input").value = ioHelper.getSetting("likertScaleLimit")??'';
     $("#show-element-name").checked = ioHelper.getSetting("showElementName");
     $("#text-as-textarea-checkbox").checked = ioHelper.getSetting("textAsTextarea");
     $("#auto-survey-view-checkbox").checked = ioHelper.getSetting("autoSurveyView");
@@ -512,6 +513,17 @@ window.setSurveyCode = function() {
         hideProjectModal();
     } else {
         ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("survey-code-error"));
+    }
+}
+
+window.setLikertScaleLimit = function() {
+    const limit = $("#likert-scale-limit-input").value;
+    if (limit.length == 0 || parseInt(limit) == limit) {
+        ioHelper.setSetting("likertScaleLimit", limit);
+        ioHelper.showToast(languageHelper.getTranslation('forms-saved-hint'), 4000, ioHelper.interactionTypes.SUCCESS);
+        reloadApp();
+    } else {
+        ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("likert-limit-error"));
     }
 }
 
