@@ -3,7 +3,7 @@ import * as metadataWrapper from "../odmwrapper/metadatawrapper.js";
 const $ = query => metadataWrapper.getMetadata().querySelector(query);
 const $$ = query => metadataWrapper.getMetadata().querySelectorAll(query);
 
-const defaultImageHeight = 40;
+const defaultImageWidth = 40;
 
 export function getFormAsHTML(formOID, options) {
     const formAsHTML = document.createElement("div");
@@ -43,7 +43,7 @@ function isLikertPossible(itemGroupOID, options){
 function getItemGroupDefault(itemGroupOID, options) {
     const itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`);
     const hideItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemGroupOID);
-    options["maxImageHeight"] = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'codelistitem-image-height', itemGroupOID);
+    options["maxImageWidth"] = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'codelistitem-image-width', itemGroupOID);
 
     const itemGroupContent = document.createElement("div");
     itemGroupContent.className = `item-group-content ${hideItemGroup ? 'is-hidden-survey-view' : ''}`;
@@ -82,8 +82,7 @@ function getItemGroupDefault(itemGroupOID, options) {
 function getItemGroupAsLikertScale(itemGroupOID, options) {
     const itemGroupDef = $(`ItemGroupDef[OID="${itemGroupOID}"]`);
     const hideItemGroup = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemGroupOID);
-    const maxImageHeight = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'codelistitem-image-height', itemGroupOID);
-    console.log("maxImageHeight", maxImageHeight)
+    const maxImageWidth = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'codelistitem-image-width', itemGroupOID);
 
     const itemGroupContent = document.createElement("div");
     itemGroupContent.className = `item-group-content ${hideItemGroup ? 'is-hidden-survey-view' : ''}`;
@@ -125,7 +124,7 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
             if(translatedText.startsWith("base64;")) {
                 const splits = translatedText.split(";")
                 let img = document.createElement('img');
-                img.style = `height: ${maxImageHeight ? maxImageHeight : defaultImageHeight}px;`
+                img.style = `width: ${maxImageWidth ? maxImageWidth : defaultImageWidth}px;`
                 img.setAttribute("src", `data:image/${splits[1] == 'svg' ? 'svg+xml' : splits[1]};base64,${splits[2]}`);
                 questionDiv.appendChild(img);
             }
@@ -191,8 +190,9 @@ function getItemInput(itemDef, itemGroupOID, options) {
     if (codeListRef) {
         const codeListOID = codeListRef.getAttribute("CodeListOID");
         const codeListItems = $$(`CodeList[OID="${codeListOID}"] CodeListItem`);
-        options["maxImageHeight"] = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'codelistitem-image-height', itemOID) || options["maxImageHeight"];
-        if (codeListItems.length >= 10) {
+        options["maxImageWidth"] = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'codelistitem-image-width', itemOID) || options["maxImageWidth"];
+        const forceCheckboxes = containsImages(codeListItems, options);
+        if (!forceCheckboxes && codeListItems.length >= 5) {
             const selectInput = getSelectInput(codeListItems, itemOID, options);
             inputContainer.appendChild(selectInput);
         } else {
@@ -230,6 +230,14 @@ function getItemInput(itemDef, itemGroupOID, options) {
     }
 
     return inputContainer;
+}
+
+const containsImages = (codeListItems, options) => {
+    for (let codeListItem of codeListItems) {
+        if(codeListItem.getTranslatedDecode(options.locale, options.useNames).startsWith("base64"))
+            return true;
+    }
+    return false;
 }
 
 const getSelectInput = (codeListItems, itemOID, options) => {
@@ -272,7 +280,7 @@ const getRadioInput = (value, translatedText, itemOID, itemGroupOID, options, no
         if(translatedText.startsWith("base64;")) {
             const splits = translatedText.split(";")
             let img = document.createElement('img');
-            img.style = `height: ${options.maxImageHeight ? options.maxImageHeight : defaultImageHeight}px;`
+            img.style = `width: ${options.maxImageHeight ? options.maxImageHeight : defaultImageWidth}px;`
             img.setAttribute("src", `data:image/${splits[1] == 'svg' ? 'svg+xml' : splits[1]};base64,${splits[2]}`);
             radioContainer.appendChild(img);
         }
