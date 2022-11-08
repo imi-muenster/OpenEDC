@@ -221,7 +221,7 @@
     "show-as-likert-hint": "Stelle Itemgruppen als Likertskala dar, wenn möglich. Itemgruppen mit einem Alias-Tag 'no-likert' und dem Wert 'yes' werden ignoriert.",
     "no-likert": "Keine Likert Skala",
     "no-likert-description": "Falls sie diese Checkbox anwählen, wird die Itemgruppe nicht in Likertform gezeigt selbst wenn diese in den Projektoptionen akiviert ist.",
-    "textarea-hint": "Zeige Fragen mit dem Datentyp String als mehrzeilige statt einzeilige Textboxen.",
+    "textarea-hint": "Zeige Fragen mit dem Datentyp Text als mehrzeilige statt einzeilige Textboxen.",
     "survey-view-hint": "Öffne die Umfrageansicht auf mobilen Geräten beim Klicken auf ein Ereignis automatisch.",
     "export-data": "Datenexport",
     "export-data-hint": "Mit diesen Optionen können Sie das Projekt im CDISC ODM-XML oder CSV-Format herunterladen. Sie können entweder alle Daten herunterladen (einschließlich der Metadaten und Daten aller Probanden inklusive des gesamten Audit Trails) oder nur die Metadaten oder klinischen Daten. Bitte beachten Sie, dass nur die erste Option ein Backup Ihres Projekts erstellt.",

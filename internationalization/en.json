@@ -221,7 +221,7 @@
     "show-as-likert-hint": "Show itemgroups as likert scale if possible. Itemgroups with an alias tag 'no-likert' and the value 'yes' are ignored.",
     "no-likert": "No likert scale",
     "no-likert-description": "If you check this checkbox, the itemgroup is not shown in likert form even with the project options set to likert scale.",
-    "textarea-hint": "Render items with the datatype String as multi-line textareas instead of one-line inputs.",
+    "textarea-hint": "Render items with the datatype Text as multi-line textareas instead of one-line inputs.",
     "survey-view-hint": "Automatically open the survey view on mobile devices when clicking on a study event.",
     "export-data": "Export Data",
     "export-data-hint": "These options let you download the project in CDISC ODM-XML or CSV format. You can either download all data (including the metadata and data from all subjects including the entire audit trail), or only the metadata or clinicaldata. Please note that only the first option creates a backup of your project.",

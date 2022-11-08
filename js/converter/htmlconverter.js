@@ -265,7 +265,7 @@ const getTextInput = (itemDef, options) => {
         input.type = "time";
     } else if (dataType == "datetime") {
         input.type = "datetime-local";
-    } else if (dataType == "string" && options.textAsTextarea) {
+    } else if (dataType == "text" && options.textAsTextarea) {
         input = document.createElement("textarea");
         input.className = "textarea";
         input.setAttribute("type", "textarea");
