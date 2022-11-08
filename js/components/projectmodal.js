@@ -105,6 +105,14 @@ class ProjectModal extends HTMLElement {
                                         <input type="checkbox" id="show-as-likert" oninput="miscOptionClicked(event)">
                                         <span i18n="show-as-likert-hint"></span>
                                     </label>
+                                    <div class="field has-addons">
+                                        <div class="control is-expanded">
+                                            <input class="input is-small" id="likert-scale-limit-input" type="text" i18n-ph="likert-scale-limit">
+                                        </div>
+                                        <div class="control">
+                                            <a class="button is-link is-small" onclick="setLikertScaleLimit()" i18n="confirm"></a>
+                                        </div>
+                                    </div>
                                     <label class="checkbox is-block">
                                         <input type="checkbox" id="text-as-textarea-checkbox" oninput="miscOptionClicked(event)">
                                         <span i18n="textarea-hint"></span>

@@ -327,7 +327,7 @@ class SettingsModal extends HTMLElement {
                             input.type = 'checkbox';
                             input.classList = 'mr-2'
                             if(currentValue) input.checked = true;
-                            input.onchange = () => {this.currentSettings[name][setting.key] = input.checked; console.log(this.currentSettings)}
+                            input.onchange = () => {this.currentSettings[name][setting.key] = input.checked}
                             let span = document.createElement('span');
                             span.setAttribute('i18n', typeof setting.description != 'undefined' ? setting.description : 'no-description')
                             checkBoxLabel.appendChild(input);
@@ -335,17 +335,23 @@ class SettingsModal extends HTMLElement {
                             settingDiv.appendChild(checkBoxLabel);
                             break;
                         }
-                        case 'string': {
+                        case 'string': 
+                        case 'number': {
                             let fieldDiv = document.createElement('div');
                             fieldDiv.classList = 'field has-addons';
                             let div = document.createElement('div');
                             div.classList = 'control is-expanded';
                             fieldDiv.appendChild(div);
+                            if(typeof setting.description != 'undefined') {
+                                let span = document.createElement('span');
+                                span.setAttribute('i18n', setting.description)
+                                div.appendChild(span)
+                            }
                             let input = document.createElement('input');
                             input.type = 'text';
                             input.classList = 'input is-small'
                             if(currentValue) input.value = currentValue;
-                            input.oninput = () => {this.currentSettings[name][setting.key] = input.value; console.log(this.currentSettings)}
+                            input.oninput = () => {this.currentSettings[name][setting.key] = input.value}
                             input.setAttribute('i18n-ph', typeof setting.i18n != 'undefined' ? setting.i18n : 'no-name')
                             div.appendChild(input);
                             settingDiv.appendChild(fieldDiv);
