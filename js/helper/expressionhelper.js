@@ -197,7 +197,7 @@ function normalizeTokens(expression) {
 
 // TODO: Does currently not work with decimal numbers (point will be replaced with underscores, previous regexp: ([a-zA-Z][a-zA-Z0-9]*)\.([a-zA-Z0-9\.]+))
 export function escapePaths(expression) {
-    return expression.replace(/(\S)-(\S)/g, "$1____$2").replace(/([a-zA-Z]\w*)\.(?=\w)/g, "$1__");
+    return expression.replace(/([a-zA-Z0-9_.-])-([a-zA-Z0-9_.-])/g, "$1____$2").replace(/([a-zA-Z]\w*)\.(?=\w)/g, "$1__");
 }
 
 export function unescapePaths(expression) {
