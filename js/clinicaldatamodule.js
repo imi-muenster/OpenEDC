@@ -492,6 +492,8 @@ async function loadFormMetadata() {
     $("#clinicaldata-form-title .subtitle").textContent = formDef.getTranslatedDescription(languageHelper.getCurrentLocale(), true);
 
     // Add the empty form
+    //load formDataElements to check how often a group must be added
+    //let formItemDataList = cachedFormData || clinicaldataWrapper.getSubjectFormData(currentPath.studyEventOID, currentPath.formOID, currentPath.studyEventRepeatKey);
     let form = await metadataWrapper.getFormAsHTML(currentPath, currentSubjectKey, ioHelper.getSetting("textAsTextarea"));
     const hideForm = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', currentPath.formOID);
     if(hideForm) $("#survey-view-button button").disabled = true;
@@ -518,6 +520,7 @@ function addDynamicFormLogicPre() {
         const cachedFormDataPath = new ODMPath(currentPath.studyEventOID, currentPath.formOID, entry.itemGroupOID, entry.itemOID);
         variables[cachedFormDataPath.toString()] = entry.value;
     });
+    console.log(variables);
     expressionHelper.setVariables(variables);
     const expressions = metadataWrapper.getElementsWithExpressionIncludeForms(currentPath.studyEventOID, currentPath.formOID);
     console.log(expressions);

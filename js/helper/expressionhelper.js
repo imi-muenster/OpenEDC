@@ -28,6 +28,7 @@ export function setVariable(path, value) {
 export function process(elements) {
     for (let element of elements) {
         const expression = parse(element.formalExpression, element.elementPath);
+        console.log(expression);
         if (expression) {
             element.expression = expression;
             if (element.expressionType == "condition") processCondition(element);
@@ -73,7 +74,7 @@ function processCondition(condition) {
         case ODMPath.elements.FORM:
             conditionalElement = $(`#odm-html-content`);
             break;
-        case ODMPath.elements.ITEMGROUP: 
+        case ODMPath.elements.ITEMGROUP:
             conditionalElement = $(`#clinicaldata-content [item-group-content-oid="${condition.elementPath.itemGroupOID}"]`);
             break;
         case ODMPath.elements.ITEM:
@@ -87,8 +88,19 @@ function processCondition(condition) {
     
     // Add event listeners to respond to inputs to the determinant items
     for (const variable of condition.expression.variables()) {
+        console.log(condition);
+        console.log(variable);
         const itemPath = ODMPath.parseAbsolute(unescapePaths(variable));
+        console.log(itemPath)
         const inputElement = $(`#clinicaldata-content [item-oid="${itemPath.itemOID}"]`);
+        if(condition.isItemGroupRepeatable) {
+            const conditionFormOID = condition.path.formOID;
+            const conditionGroupOID = condition.path.itemGroupOID;
+            if(itemPath.formOID == conditionFormOID && itemPath.itemGroupOID == conditionGroupOID) {
+                const inputElement = $(`#clinicaldata-content [item-group-repeat-key=""] [item-oid="${itemPath.itemOID}"]`);
+            }
+        }
+        
         if (!inputElement) continue;
         if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "select") {
             inputElement.addEventListener("input", event => respondToInputChangeCondition(event.target, itemPath, condition, conditionalElement));
@@ -197,7 +209,7 @@ function normalizeTokens(expression) {
 
 // TODO: Does currently not work with decimal numbers (point will be replaced with underscores, previous regexp: ([a-zA-Z][a-zA-Z0-9]*)\.([a-zA-Z0-9\.]+))
 export function escapePaths(expression) {
-    return expression.replace(/-/g, "____").replace(/([a-zA-Z]\w*)\.(?=\w)/g, "$1__");
+    return expression.replace(/([a-zA-Z0-9_.-])-([a-zA-Z0-9_.-])/g, "$1____$2").replace(/([a-zA-Z]\w*)\.(?=\w)/g, "$1__");
 }
 
 export function unescapePaths(expression) {
