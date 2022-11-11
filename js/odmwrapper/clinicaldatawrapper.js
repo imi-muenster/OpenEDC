@@ -711,7 +711,8 @@ export function getCurrentData(options) {
 }
 
 function formatSubjectData(subjectODMData, options) {
-    const subjectData = {};
+    console.log(options)
+    const subjectData = [];
     let subjectItemData = subjectODMData.querySelectorAll("ItemData");
 
     //filter for the correct studyEventRepeatKey
@@ -721,26 +722,47 @@ function formatSubjectData(subjectODMData, options) {
             itemData.closest('StudyEventData').getAttribute("StudyEventRepeatKey") == options.studyEventRepeatKey;
         });
     }
-        
+    console.log(subjectItemData);
     for (const itemData of subjectItemData) {   
         const studyEventOID = itemData.closest('StudyEventData').getAttribute("StudyEventOID");
         const formOID = itemData.closest('FormData').getAttribute("FormOID");
         const itemGroupOID = itemData.closest('ItemGroupData').getAttribute("ItemGroupOID");
+        const itemGroupRepeatKey = itemData.closest('ItemGroupData').getAttribute("ItemGroupRepeatKey");
         const itemOID = itemData.getAttribute("ItemOID");
         const path = new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID);
         const repeatKey = itemData.closest('StudyEventData').getAttribute('StudyEventRepeatKey');
 
         const value = itemData.getAttribute("Value");
-        if (value && value != "") subjectData[path.toString() + (!options.studyEventRepeatKey && repeatKey ? `-${repeatKey}` : '')] = value;
-        else delete subjectData[path.toString()];
+        const stringPath = path.toString() + (!options.studyEventRepeatKey && repeatKey ? `-${repeatKey}` : '');
+        const index = subjectData.findIndex(data => data.path == stringPath && data.itemGroupRepeatKey == itemGroupRepeatKey);
+        if (value && value != "") {
+            if(index >= 0) {
+                subjectData[index] = {...subjectData[index], ["value"]: value}
+            }
+            else {
+                subjectData.push({path: stringPath, itemGroupRepeatKey: itemGroupRepeatKey??1, value})
+            }
+            //subjectData[path.toString() + (!options.studyEventRepeatKey && repeatKey ? `-${repeatKey}` : '')] = value;
+        }
+        else {
+            if(index >= 0) subjectData.splice(index, 1);
+            //delete subjectData[path.toString()];
+        }
     }
     if (options && options.includeInfo) {
         const createdDate = subjectODMData.querySelector("AuditRecord DateTimeStamp") ? new Date(subjectODMData.querySelector("AuditRecord DateTimeStamp").textContent) : null;
-        subjectData["createdDate"] = createdDate ? createdDate.toLocaleDateString() : null;
+        /* subjectData["createdDate"] = createdDate ? createdDate.toLocaleDateString() : null;
         subjectData["createdTime"] = createdDate ? createdDate.toLocaleTimeString() : null;
         subjectData["createdYear"] = createdDate ? createdDate.getFullYear() : null;
         subjectData["createdMonth"] = createdDate ? createdDate.getMonth() + 1 : null;
-        subjectData["siteOID"] = subjectODMData.querySelector("SiteRef") ? subjectODMData.querySelector("SiteRef").getAttribute("LocationOID") : "no-site";
+        subjectData["siteOID"] = subjectODMData.querySelector("SiteRef") ? subjectODMData.querySelector("SiteRef").getAttribute("LocationOID") : "no-site"; */
+
+        subjectData.push({path:"createdDate", value:  createdDate ? createdDate.toLocaleDateString() : null});
+        subjectData.push({path:"createdTime", value:  createdDate ? createdDate.toLocaleTimeString() : null});
+        subjectData.push({path:"createdYear", value:  createdDate ? createdDate.getFullYear() : null});
+        subjectData.push({path:"createdMonth", value:  createdDate ? createdDate.getMonth() : null});
+        subjectData.push({path:"createdsiteOIDDate", value:  subjectODMData.querySelector("SiteRef") ? subjectODMData.querySelector("SiteRef").getAttribute("LocationOID") : "no-site"});
+
     }
 
     return subjectData;
