@@ -51,7 +51,7 @@ export function validateImport(odmXMLString) {
         odm.querySelectorAll("FormalExpression").forEach(expression => {
             let expressionValue = expression.textContent;
             if (expressionValue.match(/^\d/)) expressionValue = "E" + expressionValue;
-            expression.textContent = expressionValue.replace(new RegExp(oldOID, "g"), oidList[oldOID]);
+            expression.textContent = expressionValue.replace(new RegExp(`${oldOID}([\\s*\\/+^=?:<>()-]|$)`, "g"), `${oidList[oldOID]}$1`);
         });
     });
     // Add an audit record if no one is present

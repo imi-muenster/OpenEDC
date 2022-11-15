@@ -1119,8 +1119,9 @@ function copyConditionDef(conditionDefOID, replacedOIDs) {
     let conditionDefClone = conditionDef.cloneNode(true);
     conditionDefClone.setAttribute("OID", newConditionDefOID);
     if(replacedOIDs){
+        console.log(conditionDefClone.querySelector("FormalExpression").textContent)
         Object.keys(replacedOIDs).forEach(oldOID => {
-            conditionDefClone.querySelector("FormalExpression").textContent = conditionDefClone.querySelector("FormalExpression").textContent.replace(new RegExp(oldOID, "g"), replacedOIDs[oldOID]);
+            conditionDefClone.querySelector("FormalExpression").textContent = conditionDefClone.querySelector("FormalExpression").textContent.replace(new RegExp(`${oldOID}([\\s*\\/+<>^=?:()-]|$)`, "g"), `${replacedOIDs[oldOID]}$1`);
         });
     }
     conditionDef.insertAdjacentElement("afterend", conditionDefClone);
@@ -1134,7 +1135,7 @@ function copyMethodDef(methodOID, replacedOIDs) {
     methodDefClone.setAttribute("OID", newMethodOID);
     if(replacedOIDs){
         Object.keys(replacedOIDs).forEach(oldOID => {
-            methodDefClone.querySelector("FormalExpression").textContent = methodDefClone.querySelector("FormalExpression").textContent.replace(new RegExp(oldOID, "g"), replacedOIDs[oldOID]);
+            methodDefClone.querySelector("FormalExpression").textContent = methodDefClone.querySelector("FormalExpression").textContent.replace(new RegExp(`${oldOID}([\\s*\\/+<>^=?:()-]|$)`, "g"), `${replacedOIDs[oldOID]}$1`);
         });
     }
     methodDef.insertAdjacentElement("afterend", methodDefClone);
