@@ -227,7 +227,7 @@ window.createRandomSubjects = async function() {
 
 async function createExampleData(subjectKey) {
 
-    expressionHelper.setVariables({});
+    expressionHelper.setVariables([]);
 
     let minInt = 0;
     let maxInt = 100;
@@ -305,7 +305,7 @@ async function createExampleData(subjectKey) {
                     }
                     if(value) {
                         formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value));
-                        expressionHelper.setVariable(path.toString(), value);
+                        expressionHelper.setVariable({path: path.toString(), value});
                     }
                 }
             }
@@ -492,6 +492,8 @@ async function loadFormMetadata() {
     $("#clinicaldata-form-title .subtitle").textContent = formDef.getTranslatedDescription(languageHelper.getCurrentLocale(), true);
 
     // Add the empty form
+    //load formDataElements to check how often a group must be added
+    //let formItemDataList = cachedFormData || clinicaldataWrapper.getSubjectFormData(currentPath.studyEventOID, currentPath.formOID, currentPath.studyEventRepeatKey);
     let form = await metadataWrapper.getFormAsHTML(currentPath, currentSubjectKey, ioHelper.getSetting("textAsTextarea"));
     const hideForm = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', currentPath.formOID);
     if(hideForm) $("#survey-view-button button").disabled = true;
@@ -514,13 +516,22 @@ async function loadFormMetadata() {
 function addDynamicFormLogicPre() {
     // Add real-time logic to process items with conditions and methods
     const variables = clinicaldataWrapper.getCurrentData({studyEventRepeatKey: currentPath.studyEventRepeatKey});
-    if (cachedFormData) cachedFormData.forEach(entry => {
+     if (cachedFormData) cachedFormData.forEach(entry => {
         const cachedFormDataPath = new ODMPath(currentPath.studyEventOID, currentPath.formOID, entry.itemGroupOID, entry.itemOID);
-        variables[cachedFormDataPath.toString()] = entry.value;
-    });
+        const index = variables.find(variable => variable.path == cachedFormDataPath.toString() && variable.itemGroupRepeatKey == entry.itemGroupRepeatKey);
+        if(index >= 0) variables[index] = {...variables[index], ["value"] : entry.value};
+        //variables[cachedFormDataPath.toString()] = entry.value;
+    }); 
+    console.log(variables);
     expressionHelper.setVariables(variables);
     const expressions = metadataWrapper.getElementsWithExpressionIncludeForms(currentPath.studyEventOID, currentPath.formOID);
     console.log(expressions);
+    expressionHelper.process(expressions);
+}
+
+function toBeNamed(itemGroupOID, itemGroupRepeatKey, variables) {
+    const expressions = metadataWrapper.getElementsWithExpressionIncludeForms(currentPath.studyEventOID, currentPath.formOID, itemGroupOID)
+    .map(expression => {return {...expression, ["itemGroupRepeatKey"]: itemGroupRepeatKey}});
     expressionHelper.process(expressions);
 }
 
@@ -807,7 +818,7 @@ async function saveFormData() {
     }
 }
 
-function addFormDataElementsForItemGroup(itemGroupContent, itemGroupOID, repeatKey) {
+function addFormDataElementsForItemGroup(itemGroupContent, itemGroupOID, itemGroupRepeatKey) {
     let formItemDataList = [];
     for (const inputElement of itemGroupContent.querySelectorAll("[item-oid]")) {
         const value = inputElement.value;
@@ -818,13 +829,13 @@ function addFormDataElementsForItemGroup(itemGroupContent, itemGroupOID, repeatK
             case "time":
             case "datetime-local":
             case "select":
-                if (value) formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value, repeatKey));
+                if (value) formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value, itemGroupRepeatKey));
                 break;
             case "textarea":
-                if (value) formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value.replace(/\n/g, "\\n"), repeatKey));
+                if (value) formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value.replace(/\n/g, "\\n"), itemGroupRepeatKey));
                 break;
             case "radio":
-                if (inputElement.checked) formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value, repeatKey));
+                if (inputElement.checked) formItemDataList.push(new clinicaldataWrapper.FormItemData(itemGroupOID, itemOID, value, itemGroupRepeatKey));
         }
     }
     return formItemDataList;

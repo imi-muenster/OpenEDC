@@ -19,7 +19,6 @@ export async function getFormAsHTML(currentPath, currentSubjectKey, options) {
 
         if(options.showAsLikert && isLikertPossible(itemGroupOID, options)) itemGroupContent = getItemGroupAsLikertScale(itemGroupOID, options);
         else itemGroupContent = await getItemGroupDefault(itemGroupOID, currentPath, currentSubjectKey,options);
-        console.log(itemGroupContent)
         formAsHTML.appendChild(itemGroupContent);
     }
 
@@ -82,8 +81,6 @@ async function getItemGroupDefault(itemGroupOID, currentPath, currentSubjectKey,
         if(!repeatKeysFound) {
            addItemGroupRepeatingBox(itemGroupContent, itemGroupOID, options, "1");
         }
-
-        
     }
     else addItemGroupElements(itemGroupContent, itemGroupOID, options);
     const divider = document.createElement("hr");
@@ -94,7 +91,7 @@ async function getItemGroupDefault(itemGroupOID, currentPath, currentSubjectKey,
 function addItemGroupRepeatingBox(parent, itemGroupOID, options, repeatKey) {
     let repeatBox = document.createElement('div');
     repeatBox.setAttribute("item-group-repeat-key", repeatKey);
-    repeatBox.classList = 'box has-background-light mb-3 item-group-repetition'
+    repeatBox.classList = 'box has-background-light mb-3 item-group-repetition p-2'
     let divheader = document.createElement('div');
     divheader.classList = 'is-flex is-align-items-center'
     let h3 = document.createElement('h3');

@@ -3,7 +3,9 @@ import * as clinicaldataWrapper from "../odmwrapper/clinicaldatawrapper.js";
 
 export const getCSVString = async () => {
     const itemPaths = metadataWrapper.getItemPaths();
+    console.log(itemPaths);
     const subjectData = await clinicaldataWrapper.getAllData({ includeInfo: true });
+    console.log(subjectData)
 
     // Start with an empty CSV string only and add the item OIDs as headers
     let csvString = ",,,,";

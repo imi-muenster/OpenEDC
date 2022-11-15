@@ -6,19 +6,23 @@ const $ = query => document.querySelector(query);
 const $$ = query => document.querySelectorAll(query);
 
 let parser = null;
-let conditionVariables = {};
+let conditionVariables = [];
 let methodVariables = {};
 
 export function setVariables(variables) {
-    conditionVariables = {};
+    console.log(variables);
     methodVariables = {};
     
-    Object.entries(variables).forEach(([path, value]) => setVariable(path, value));
+    variables.forEach(variable => setVariable(variable));
 }
 
-export function setVariable(path, value) {
+export function setVariable({path, value, itemGroupRepeatKey}) {
+    console.log(path, value);
     const escapedPaths = escapePaths(path);
-    conditionVariables[escapedPaths] = value ?? "";
+    const index = conditionVariables.find(variable => variable.path == path && variable.itemGroupRepeatKey == itemGroupRepeatKey);
+    if(index >= 0) conditionVariables[index] = {...conditionVariables[index], ["value"]: value};
+    else conditionVariables.push({path, value, itemGroupRepeatKey});
+    //conditionVariables[escapedPaths] = value ?? "";
 
     // Only evaluate method expressions where all variables have a value != ""
     if (value && value != "") methodVariables[escapedPaths] = value;
@@ -28,6 +32,7 @@ export function setVariable(path, value) {
 export function process(elements) {
     for (let element of elements) {
         const expression = parse(element.formalExpression, element.elementPath);
+        console.log(expression);
         if (expression) {
             element.expression = expression;
             if (element.expressionType == "condition") processCondition(element);
@@ -38,6 +43,7 @@ export function process(elements) {
 
 export function parse(formalExpression, referencePath) {
     try {
+        console.log(formalExpression);
         // Expr-eval does not support dots in variables names which are therefore replaced with underscores
         let expression = getParser().parse(escapePaths(normalizeTokens(formalExpression)));
         if (referencePath) expression.variables().forEach(variable => {
@@ -73,7 +79,7 @@ function processCondition(condition) {
         case ODMPath.elements.FORM:
             conditionalElement = $(`#odm-html-content`);
             break;
-        case ODMPath.elements.ITEMGROUP: 
+        case ODMPath.elements.ITEMGROUP:
             conditionalElement = $(`#clinicaldata-content [item-group-content-oid="${condition.elementPath.itemGroupOID}"]`);
             break;
         case ODMPath.elements.ITEM:
@@ -87,8 +93,19 @@ function processCondition(condition) {
     
     // Add event listeners to respond to inputs to the determinant items
     for (const variable of condition.expression.variables()) {
+        console.log(condition);
+        console.log(variable);
         const itemPath = ODMPath.parseAbsolute(unescapePaths(variable));
+        console.log(itemPath)
         const inputElement = $(`#clinicaldata-content [item-oid="${itemPath.itemOID}"]`);
+        if(condition.isItemGroupRepeatable) {
+            const conditionFormOID = condition.path.formOID;
+            const conditionGroupOID = condition.path.itemGroupOID;
+            if(itemPath.formOID == conditionFormOID && itemPath.itemGroupOID == conditionGroupOID) {
+                const inputElement = $(`#clinicaldata-content [item-group-repeat-key=""] [item-oid="${itemPath.itemOID}"]`);
+            }
+        }
+        
         if (!inputElement) continue;
         if (inputElement.getAttribute("type") == "text" || inputElement.getAttribute("type") == "select") {
             inputElement.addEventListener("input", event => respondToInputChangeCondition(event.target, itemPath, condition, conditionalElement));
@@ -102,7 +119,7 @@ function processCondition(condition) {
 }
 
 function respondToInputChangeCondition(input, itemPath, condition, conditionalElement) {
-    setVariable(itemPath.toString(), input.value);
+    setVariable({path: itemPath.toString(), value: input.value});
     showOrHideConditionalElement(conditionalElement, evaluate(condition.expression, condition.expressionType));
 }
 
@@ -165,7 +182,7 @@ function processMethod(method) {
 }
 
 function respondToInputChangeMethod(input, itemPath, method, computedElement) {
-    setVariable(itemPath.toString(), input.value ? input.value.replace(",", ".") : null);
+    setVariable({path: itemPath.toString(), value: input.value ? input.value.replace(",", ".") : null});
 
     computedElement.value = computeMethod(method, computedElement.getAttribute('item-oid'));
     computedElement.dispatchEvent(new Event("input"));

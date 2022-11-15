@@ -369,19 +369,20 @@ export function getElementsWithExpressionIncludeForms(studyEventOID, formOID) {
     return elementsWithExpression;
 
 }
-export function getElementsWithExpression(studyEventOID, formOID) {
+export function getElementsWithExpression(studyEventOID, formOID, itemGroupOIDToSelect) {
     let elementsWithExpression = [];
     for (const itemGroupRef of $$(`FormDef[OID="${formOID}"] ItemGroupRef`)) {
         const itemGroupOID = itemGroupRef.getAttribute("ItemGroupOID");
+        const repeating = isItemGroupRepeating(itemGroupOID);
         const conditionOID = itemGroupRef.getAttribute("CollectionExceptionConditionOID");
-        if (conditionOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, ODMPath.elements.ITEMGROUP, new ODMPath(studyEventOID, formOID, itemGroupOID), conditionOID, expressionTypes.CONDITION);
+        if (conditionOID && (!itemGroupOIDToSelect || itemGroupOID == itemGroupOIDToSelect)) elementsWithExpression = addElementWithExpression(elementsWithExpression, ODMPath.elements.ITEMGROUP, new ODMPath(studyEventOID, formOID, itemGroupOID), conditionOID, expressionTypes.CONDITION, repeating);
 
         for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[CollectionExceptionConditionOID], ItemGroupDef[OID="${itemGroupOID}"] ItemRef[MethodOID]`)) {
             const itemOID = itemRef.getAttribute("ItemOID");
             const conditionOID = itemRef.getAttribute("CollectionExceptionConditionOID");
             const methodOID = itemRef.getAttribute("MethodOID");
-            if (conditionOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, ODMPath.elements.ITEM, new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID), conditionOID, expressionTypes.CONDITION);
-            if (methodOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, ODMPath.elements.ITEM, new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID), methodOID, expressionTypes.METHOD);
+            if (conditionOID  && (!itemGroupOIDToSelect || itemGroupOID == itemGroupOIDToSelect)) elementsWithExpression = addElementWithExpression(elementsWithExpression, ODMPath.elements.ITEM, new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID), conditionOID, expressionTypes.CONDITION, repeating);
+            if (methodOID) elementsWithExpression = addElementWithExpression(elementsWithExpression, ODMPath.elements.ITEM, new ODMPath(studyEventOID, formOID, itemGroupOID, itemOID), methodOID, expressionTypes.METHOD, repeating);
         }
     }
 
@@ -391,10 +392,10 @@ export function getItemDefsForMethodOID(methodOID) {
     return [...$$('ItemRef')].filter(itemDef => itemDef.getAttribute('MethodOID') == methodOID).map(itemRef => getElementDefByOID(itemRef.getAttribute('ItemOID')));
 }
 
-function addElementWithExpression(elementList, elementType, elementPath, expressionOID, expressionType) {
+function addElementWithExpression(elementList, elementType, elementPath, expressionOID, expressionType, isItemGroupRepeating = false) {
     const expressionElement = expressionType == expressionTypes.CONDITION ? $(`ConditionDef[OID="${expressionOID}"]`) : $(`MethodDef[OID="${expressionOID}"]`);
     const formalExpression = expressionElement?.getFormalExpression();
-    if (formalExpression) elementList.push({ elementType, elementPath, expressionType, formalExpression });
+    if (formalExpression) elementList.push({ elementType, elementPath, expressionType, formalExpression, isItemGroupRepeating });
 
     return elementList;
 }
