@@ -280,7 +280,7 @@ const getRadioInput = (value, translatedText, itemOID, itemGroupOID, options, no
         if(translatedText.startsWith("base64;")) {
             const splits = translatedText.split(";")
             let img = document.createElement('img');
-            img.style = `width: ${options.maxImageHeight ? options.maxImageHeight : defaultImageWidth}px;`
+            img.style = `width: ${options.maxImageWidth ? options.maxImageWidth : defaultImageWidth}px;`
             img.setAttribute("src", `data:image/${splits[1] == 'svg' ? 'svg+xml' : splits[1]};base64,${splits[2]}`);
             radioContainer.appendChild(img);
         }
