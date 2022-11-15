@@ -168,7 +168,7 @@ class MetadataSection extends HTMLElement {
                             </div>
                         </nav>
                     </div>
-                    <div class="column">
+                    <div class="column is-clipped">
                         <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" i18n="choices"></p>
                             <div class="tree-panel-blocks" id="code-list-item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>

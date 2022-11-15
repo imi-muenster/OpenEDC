@@ -55,14 +55,15 @@ ioHelper.addGlobalEventListener("DOMContentLoaded", async () => {
 
     // Initialize the application
     await metadataWrapper.loadStoredMetadata()
-        .catch(error => {
-            if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND && !ioHelper.hasServerURL()) showStartModal();
-            else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionKeyModal();
-        });
-    await startApp();
+    .then(async () => {
+        await startApp();
+        handleURLSearchParameters();
+    })
+    .catch(error => {
+        if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND && !ioHelper.hasServerURL()) showStartModal();
+        else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionKeyModal();
+    });
 
-    // Handle URL search / query parameters (e.g., for metadata repository integration)
-    handleURLSearchParameters();
 
     // Register service worker for offline capabilities
     const developmentOrigins = ["localhost", "127.0.0.1", "dev.openedc.org"];
@@ -87,6 +88,7 @@ ioHelper.addGlobalEventListener("CurrentUserEdited", () => {
 
 const startApp = async () => {
     await ioHelper.loadSettings();
+    console.log("start app")
     languageHelper.populatePresentLanguages(metadataWrapper.getMetadata());
     await languageHelper.setInitialLocale();
     
@@ -284,6 +286,7 @@ window.openODM = async function() {
     const file = $("#open-odm-button .file-input");
     const content = await ioHelper.getFileContent(file.files[0]);
     const odmXMLString = validateODM(content);
+    console.log(odmXMLString);
     if (odmXMLString) {
         metadataWrapper.importMetadata(odmXMLString);
         admindataWrapper.importAdmindata(odmXMLString);
@@ -385,6 +388,7 @@ window.showProjectModal = function() {
 
     $("#survey-code-input").value = ioHelper.getSetting("surveyCode");
     $("#show-as-likert").checked = ioHelper.getSetting("showLikertScale");
+    $("#likert-scale-limit-input").value = ioHelper.getSetting("likertScaleLimit")??'';
     $("#show-element-name").checked = ioHelper.getSetting("showElementName");
     $("#text-as-textarea-checkbox").checked = ioHelper.getSetting("textAsTextarea");
     $("#auto-survey-view-checkbox").checked = ioHelper.getSetting("autoSurveyView");
@@ -512,6 +516,17 @@ window.setSurveyCode = function() {
         hideProjectModal();
     } else {
         ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("survey-code-error"));
+    }
+}
+
+window.setLikertScaleLimit = function() {
+    const limit = $("#likert-scale-limit-input").value;
+    if (limit.length == 0 || parseInt(limit) == limit) {
+        ioHelper.setSetting("likertScaleLimit", limit);
+        ioHelper.showToast(languageHelper.getTranslation('forms-saved-hint'), 4000, ioHelper.interactionTypes.SUCCESS);
+        reloadApp();
+    } else {
+        ioHelper.showMessage(languageHelper.getTranslation("error"), languageHelper.getTranslation("likert-limit-error"));
     }
 }
 

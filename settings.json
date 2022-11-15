@@ -16,5 +16,14 @@
         "scope": [
             "form", "itemgroup", "item"
         ]
+    },
+    {
+        "key": "codelistitem-image-height",
+        "i18n": "codelistitem-image-height",
+        "description": "codelistitem-image-height-description",
+        "type": "number",
+        "scope": [
+            "itemgroup", "item"
+        ]
     }
 ]   

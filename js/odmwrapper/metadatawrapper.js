@@ -152,7 +152,8 @@ export async function getFormAsHTML(currentPath, currentSubjectKey, textAsTextar
         no: languageHelper.getTranslation("no"),
         textAsTextarea: textAsTextarea,
         useNames: useNames,
-        showAsLikert: ioHelper.getSetting("showLikertScale")
+        showAsLikert: ioHelper.getSetting("showLikertScale"),
+        likertScaleLimit: ioHelper.getSetting("likertScaleLimit")
     });
 }
 
@@ -1251,7 +1252,6 @@ export function loadPossibleOpenEDCSettings() {
 export function loadSettings(context, data) {
     loadedSettings.set(context, []);
     data.forEach(d => loadedSettings.get(context).push(new OpenEDCSetting(context, d)))
-    console.log(loadedSettings)
 }
 
 export function getCurrentElementSettings(path) {

@@ -156,7 +156,7 @@ export async function importClinicaldata(odmXMLString) {
     for (subjectData of odm.querySelectorAll("ClinicalData SubjectData")) {
         const siteOID = $("SiteRef")?.getAttribute("LocationOID");
         const creationDate = $("AuditRecord DateTimeStamp") ? new Date($("AuditRecord DateTimeStamp").textContent) : new Date();
-        const subject = new Subject(subjectData.getAttribute("SubjectKey"), siteOID, creationDate, null, getDataStatus());
+        const subject = new Subject(subjectData.getAttribute("SubjectKey"), siteOID, creationDate, null, await getDataStatus(subjectData.getAttribute("SubjectKey"), subjectData));
         subjectFileNameList.push(subject.fileName);
         subjectDataList.push(xmlSerializer.serializeToString(subjectData));
     }
