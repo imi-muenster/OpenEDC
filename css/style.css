@@ -543,7 +543,9 @@ a.panel-block:hover {
 }
 
 .has-overvlow-wrap  {
-    overflow-wrap: anywhere;
+    /*overflow-wrap: anywhere;*/
+    overflow-wrap: break-word;
+    -webkit-line-break: after-white-space;
 }
 
 .has-text-align-center {

@@ -40,6 +40,18 @@ class OpenEDCSetting {
     }
 
 }
+
+export class FormImage{
+    constructor(type, format, base64Data, width) {
+        this.type = type;
+        this.format = format;
+        this.base64Data = base64Data;
+        this.width = width;
+    }
+}
+
+let formImageDataMap = {}
+
 export let loadedSettings = new Map();
 export const OPENEDC_SETTINGS_ALIAS_CONTEXT = 'openedc-settings';
 export const SETTINGS_CONTEXT = "OpenEDC";
@@ -1218,6 +1230,34 @@ export async function mergeMetadata(odmXMLString) {
     await storeMetadata();
 }
 
+export function extractImageInfo(imageString, identifier) {
+    if(!imageString.startsWith("<img;")) return {data: null, identifier: null};
+        const innerSplits = imageString.split(";")
+
+        let typeSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "type");
+        if(typeSplit) typeSplit = typeSplit.split(":");
+        const type = typeSplit && typeSplit.length == 2 ? typeSplit[1] : undefined;
+
+        let formatSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "format");
+        if(formatSplit) formatSplit = formatSplit.split(":");
+        const format = formatSplit && formatSplit.length == 2 ? formatSplit[1] : undefined;
+
+        let widthSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "width");
+        if(widthSplit) widthSplit = widthSplit.split(":");
+        const width = widthSplit && widthSplit.length == 2 ? widthSplit[1] : undefined;
+
+        const base64Data = innerSplits[innerSplits.length - 1].replace(">", "").trim();
+
+        identifier = identifier || makeid(20);;
+        formImageDataMap[identifier] = new FormImage(type, format, base64Data, width);
+        return {data: formImageDataMap[identifier], identifier}
+    
+}
+
+export function getImageInfo(identifier) {
+    return {data: formImageDataMap[identifier], identifier};
+}
+
 export function loadPossibleOpenEDCSettings() {
     fetch('./settings.json')
     .then(response => response.json())
@@ -1268,4 +1308,14 @@ export function setCurrentElementSettingsByOID(oid, settings) {
     const alias = [...aliasses].find(a => a.getAttribute('Context') == OPENEDC_SETTINGS_ALIAS_CONTEXT);
     if(alias) alias.setAttribute('Name', JSON.stringify(settings));
     else setElementAlias(path, OPENEDC_SETTINGS_ALIAS_CONTEXT, JSON.stringify(settings));
+}
+
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
 }

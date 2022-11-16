@@ -341,7 +341,7 @@ function fillDetailsPanelFoundational() {
         case ODMPath.elements.ITEMGROUP:
             $("#id-input").value = currentPath.last.value;
             $("#name-input").value = element.getName();
-            $("#translation-textarea").value = element.getTranslatedDescription(languageHelper.getCurrentLocale());
+            $("#translation-textarea").innerHTML = formatTranslationImages(element.getTranslatedDescription(languageHelper.getCurrentLocale()));
             break;
         case ODMPath.elements.ITEM:
             [$("#datatype-select-inner"), $("#mandatory-select-inner")].enableElements();
@@ -349,7 +349,7 @@ function fillDetailsPanelFoundational() {
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             $("#id-input").value = currentPath.last.value;
             $("#name-input").value = element.getName();
-            $("#translation-textarea").value = element.getTranslatedQuestion(languageHelper.getCurrentLocale());
+            $("#translation-textarea").innerHTML = formatTranslationImages(element.getTranslatedQuestion(languageHelper.getCurrentLocale()));
             $("#datatype-select-inner").value = element.getDataType();
             break;
         case ODMPath.elements.CODELISTITEM:
@@ -358,9 +358,42 @@ function fillDetailsPanelFoundational() {
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-choice");
             element = metadataWrapper.getCodeListItem(metadataWrapper.getCodeListOIDByItem(currentPath.itemOID), currentPath.codeListItem);
             $("#id-input").value = element.getCodedValue();
-            $("#translation-textarea").value = element.getTranslatedDecode(languageHelper.getCurrentLocale());
+            $("#translation-textarea").innerHTML = formatTranslationImages(element.getTranslatedDecode(languageHelper.getCurrentLocale()));
     }
 }
+
+function formatTranslationImages(translationText) {
+    if(!translationText) return translationText;
+    console.log(translationText);
+    let splits = translationText.split(/(<img;type:[a-zA-Z0-9]+;format:[a-zA-Z0-9]*;(?:[a-zA-Z0-9]*;)*[^>]*>)/g);
+    splits = splits.map(split => {
+        if(!split.startsWith("<img")) return split;
+        const imageInfo = metadataWrapper.extractImageInfo(split);
+        return `<div data-image-id="${imageInfo.identifier}"
+            onclick="editFormImage(this)" onmouseover="showFormImagePreview">
+            Click me
+        </div>`
+    });
+    return splits.join("");
+}
+
+window.editFormImage = (image) =>{
+    const formImageData = metadataWrapper.getImageInfo(image.getAttribute('data-image-id'));
+    let modal = document.createElement("form-image-modal");
+    modal.setFormImageData(formImageData.data)
+    if (!$("#form-image-modal")) document.body.appendChild(modal);
+    languageHelper.localize(modal);
+}
+
+window.showFormImagePreview = (evt) => {
+    let elPopup = document.querySelector('#image-popup');
+    Object.assign(elPopup.style, {
+        left: `${evt.clientX + window.scrollX}px`,
+        top: `${evt.clientY + window.scrollY}px`,
+        display: `block`,
+    });
+};
+
 
 function fillDetailsPanelExtended() {
     fillElementAliases();
@@ -616,8 +649,6 @@ async function saveRepeating() {
         }
     }
         
-    console.log(resolved);
-    console.log(currentPath.last.value, $("#repeating-select-inner").value)
     if(resolved) metadataWrapper.setStudyEventRepeating(currentPath.last.value, $("#repeating-select-inner").value);
     else {
         const subjectKeys = await clinicaldataWrapper.getSubjectsHavingDataForElement(currentPath.last.element, currentPath);

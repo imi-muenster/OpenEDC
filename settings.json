@@ -18,9 +18,9 @@
         ]
     },
     {
-        "key": "codelistitem-image-height",
-        "i18n": "codelistitem-image-height",
-        "description": "codelistitem-image-height-description",
+        "key": "codelistitem-image-width",
+        "i18n": "codelistitem-image-width",
+        "description": "codelistitem-image-width-description",
         "type": "number",
         "scope": [
             "itemgroup", "item"

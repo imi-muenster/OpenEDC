@@ -54,7 +54,7 @@ class MetadataSection extends HTMLElement {
                                         </div>
                                         <div class="field is-flex is-flex-direction-column is-flex-grow-1">
                                             <label class="label" id="element-long-label"></label>
-                                            <textarea class="textarea is-flex-grow-1" id="translation-textarea"></textarea>
+                                            <div class="textarea is-flex-grow-1" id="translation-textarea" contenteditable="true"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -150,7 +150,7 @@ class MetadataSection extends HTMLElement {
                             </div>
                         </nav>
                     </div>
-                    <div class="column">
+                    <div class="column is-clipped">
                         <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" i18n="groups"></p>
                             <div class="tree-panel-blocks" id="item-group-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
@@ -159,7 +159,7 @@ class MetadataSection extends HTMLElement {
                             </div>
                         </nav>
                     </div>
-                    <div class="column">
+                    <div class="column is-clipped">
                         <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" i18n="items"></p>
                             <div class="tree-panel-blocks" id="item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>

@@ -63,7 +63,9 @@ class CodelistModal extends HTMLElement {
 
     fillValues() {
         // Add the item question and use the name as fallback
-        this.querySelector("h2").textContent = metadataWrapper.getElementDefByOID(this.path.itemOID).getTranslatedQuestion(languageHelper.getCurrentLocale(), true);
+        let translatedText = metadataWrapper.getElementDefByOID(this.path.itemOID).getTranslatedQuestion(languageHelper.getCurrentLocale(), true);
+        translatedText = translatedText.replace(/(<img;type:[a-zA-Z0-9]+;format:[a-zA-Z0-9]*;(?:[a-zA-Z0-9]*;)*[^>]*>)/g, "<Image>");
+        this.querySelector("h2").textContent = translatedText;
 
         // Render the notification when the codelist is used for more than one item
         const codeListReferences = metadataWrapper.getElementRefs(metadataWrapper.getCodeListOIDByItem(this.path.itemOID), ODMPath.elements.CODELISTITEM);

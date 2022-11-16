@@ -3,7 +3,8 @@ import * as metadataWrapper from "../odmwrapper/metadatawrapper.js";
 const $ = query => metadataWrapper.getMetadata().querySelector(query);
 const $$ = query => metadataWrapper.getMetadata().querySelectorAll(query);
 
-const defaultImageWidth = 40;
+const defaultCodeListItemImageWidth = 40;
+const defaultItemImageWidth = '100%'
 
 export function getFormAsHTML(formOID, options) {
     const formAsHTML = document.createElement("div");
@@ -64,18 +65,48 @@ function getItemGroupDefault(itemGroupOID, options) {
         itemField.setAttribute("item-field-oid", itemOID);
         itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
 
-        const itemQuestion = document.createElement("label");
+        const translatedQuestion = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
+        const splits = translatedQuestion.split(/(<img;type:[a-zA-Z0-9]+;format:[a-zA-Z0-9]*;(?:[a-zA-Z0-9]*;)*[^>]*>)/g);
+        splits.forEach(split => {
+            if(split.startsWith("<img;type:base64")) {
+                const imageInfo = metadataWrapper.extractImageInfo(split).data;
+                if(!imageInfo) return;
+                let img = document.createElement('img');
+                const width = imageInfo.width?? defaultItemImageWidth;
+                img.style = `width: ${width};`;
+
+                const format = imageInfo.format?? 'png';
+
+                img.setAttribute("src", `data:image/${format == 'svg' ? 'svg+xml' : format};base64,${imageInfo.base64Data}`);
+                itemField.appendChild(img);
+            }
+            else if(split != "") {
+                const itemQuestion = document.createElement("label");
+                itemQuestion.className = "label";
+                itemQuestion.innerHTML = split;
+                //itemQuestion.innerHTML += ;
+                itemField.appendChild(itemQuestion);
+            }
+        });
+        if(itemRef.getAttribute("Mandatory") == "Yes") {
+            console.log([...itemField.children])
+            let revereChildren = [...itemField.children].slice().reverse();
+            let lastLabelChildIndex = revereChildren.findIndex(x => x.tagName == 'LABEL');
+            console.log(lastLabelChildIndex);
+            revereChildren[lastLabelChildIndex].innerHTML += " (*)";
+        }
+        /* const itemQuestion = document.createElement("label");
         itemQuestion.className = "label";
         itemQuestion.innerHTML = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
         itemQuestion.innerHTML += itemRef.getAttribute("Mandatory") == "Yes" ? " (*)" : "";
-        itemField.appendChild(itemQuestion);
+        itemField.appendChild(itemQuestion); */
 
         const itemInput = getItemInput(itemDef, itemGroupOID, options);
         itemField.appendChild(itemInput);
         itemGroupContent.appendChild(itemField);
+        const divider = document.createElement("hr");
+        itemGroupContent.appendChild(divider);
     }
-    const divider = document.createElement("hr");
-    itemGroupContent.appendChild(divider);
     return itemGroupContent;
 }
 
@@ -118,13 +149,13 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
 
         for (let codeListItem of codeListItems) {
             let questionDiv = document.createElement('div');
-            questionDiv.classList = "has-overvlow-wrap has-text-align-center";
+            questionDiv.classList = "has-overflow-wrap has-text-align-center";
             const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
 
             if(translatedText.startsWith("base64;")) {
                 const splits = translatedText.split(";")
                 let img = document.createElement('img');
-                img.style = `width: ${maxImageWidth ? maxImageWidth : defaultImageWidth}px;`
+                img.style = `width: ${maxImageWidth ? maxImageWidth : defaultCodeListItemImageWidth}px;`
                 img.setAttribute("src", `data:image/${splits[1] == 'svg' ? 'svg+xml' : splits[1]};base64,${splits[2]}`);
                 questionDiv.appendChild(img);
             }
@@ -207,7 +238,6 @@ function getItemInput(itemDef, itemGroupOID, options) {
         const radioInputYes = getRadioInput("1", options.yes, itemOID, itemGroupOID, options);
         const radioInputNo = getRadioInput("0", options.no, itemOID, itemGroupOID, options);
         inputContainer.appendChild(radioInputYes);
-        inputContainer.appendChild(document.createElement("br"));
         inputContainer.appendChild(radioInputNo);
     } else if (measurementUnitRef) {
         inputContainer.classList.add("has-addons");
@@ -280,7 +310,7 @@ const getRadioInput = (value, translatedText, itemOID, itemGroupOID, options, no
         if(translatedText.startsWith("base64;")) {
             const splits = translatedText.split(";")
             let img = document.createElement('img');
-            img.style = `width: ${options.maxImageWidth ? options.maxImageWidth : defaultImageWidth}px;`
+            img.style = `width: ${options.maxImageWidth ? options.maxImageWidth : defaultCodeListItemImageWidth}px;`
             img.setAttribute("src", `data:image/${splits[1] == 'svg' ? 'svg+xml' : splits[1]};base64,${splits[2]}`);
             radioContainer.appendChild(img);
         }
