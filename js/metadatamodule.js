@@ -365,22 +365,47 @@ function fillDetailsPanelFoundational() {
 function formatTranslationImages(translationText) {
     if(!translationText) return translationText;
     console.log(translationText);
-    let splits = translationText.split(/(<img;type:[a-zA-Z0-9]+;format:[a-zA-Z0-9]*;(?:[a-zA-Z0-9]*;)*[^>]*>)/g);
+    let splits = translationText.split(/(\|img;?(?:type:[a-zA-Z0-9]+;)?(?:format:[a-zA-Z0-9]+;)?(?:[a-z]+:[a-zA-Z0-9%\s]+;)*[a-zA-Z0-9\/+=]*\|)/g);
     splits = splits.map(split => {
-        if(!split.startsWith("<img")) return split;
+        if(!split.startsWith("|img")) return split;
         const imageInfo = metadataWrapper.extractImageInfo(split);
-        return `<div data-image-id="${imageInfo.identifier}"
+        console.log(imageInfo);
+        return `<div class="has-text-link" data-image-id="${imageInfo.identifier}"
             onclick="editFormImage(this)" onmouseover="showFormImagePreview">
-            Click me
-        </div>`
+            ${imageInfo.data?.name??'Image'}</div> `
     });
-    return splits.join("");
+    let finalString = splits.join("");
+    finalString += '\r\n';
+    console.log(finalString)
+    return finalString;
+}
+
+function reverseFormatTranslationImages(innerHTML) {
+    const splits = innerHTML.split(/(<div[^>]*>[^>]*<\/div>)/g);
+    let finalString = splits.map(split => {
+        if(!split.startsWith('<div')) return split;
+        let result = split.match(/(?:data-image-id=\")([a-zA-Z0-9]+)(?:")/);
+        if(result.length > 1) {
+            const imageData = metadataWrapper.getFormImageData(result[1]).data;
+            let imageString =  `|img;${Object.entries(imageData).map(([key, value]) => {
+                if(key != 'base64Data' && value) return `${key}:${value};`
+            }).join('')}`
+            imageString += `${imageData.base64Data}|`;
+            return imageString;
+        }
+    }).join('');
+    console.log(finalString);
+    return finalString;
 }
 
 window.editFormImage = (image) =>{
-    const formImageData = metadataWrapper.getImageInfo(image.getAttribute('data-image-id'));
+    const formImageData = metadataWrapper.getFormImageData(image.getAttribute('data-image-id'));
     let modal = document.createElement("form-image-modal");
     modal.setFormImageData(formImageData.data)
+    modal.setSaveCallback((formImageDataNew) => {
+        metadataWrapper.updateFormImageData(formImageData.identifier, formImageDataNew);
+        highlightSaveButton();
+    });
     if (!$("#form-image-modal")) document.body.appendChild(modal);
     languageHelper.localize(modal);
 }
@@ -561,7 +586,7 @@ export async function saveDetailsFoundational() {
         case ODMPath.elements.ITEM:
             await setElementOID($("#id-input").value).then(() => {
                 metadataWrapper.setElementName(currentPath.last.value, ioHelper.getSetting("showElementName") ? $("#name-input").value : $("#id-input").value);
-                metadataWrapper.setItemQuestion(currentPath.last.value, $("#translation-textarea").value);
+                metadataWrapper.setItemQuestion(currentPath.last.value, reverseFormatTranslationImages($("#translation-textarea").innerHTML));
             });
             metadataWrapper.setElementMandatory(currentPath.last.element, currentPath, $("#mandatory-select-inner").value);
             handleItemDataType(currentPath.last.value, $("#datatype-select-inner").value);
@@ -880,7 +905,7 @@ function handleItemDataType(itemOID, dataType) {
 }
 
 function setIOListeners() {
-    let inputElements = $$("#details-panel input, #details-panel textarea, #details-panel select");
+    let inputElements = $$("#details-panel input, #details-panel textarea, #details-panel select, #details-panel #translation-textarea");
     for (const inputElement of inputElements) {
         inputElement.oninput = () => highlightSaveButton();
         inputElement.onkeydown = event => {
@@ -895,6 +920,11 @@ function setIOListeners() {
             }
         };
     }
+    $("#translation-textarea").onblur = () => {
+        console.log('change')
+        $("#translation-textarea").innerHTML = formatTranslationImages($("#translation-textarea").innerHTML)
+    };
+
     $("#id-input").addEventListener("keydown", event => {
         // Replace the following characters with an underscore required for evaluating formal expressions
         if (["-", "_", "(", ")", "/", "#", " "].includes(event.key)) {

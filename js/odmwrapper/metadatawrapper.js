@@ -42,11 +42,12 @@ class OpenEDCSetting {
 }
 
 export class FormImage{
-    constructor(type, format, base64Data, width) {
+    constructor(type, format, base64Data, width, name) {
         this.type = type;
         this.format = format;
         this.base64Data = base64Data;
         this.width = width;
+        this.name = name;
     }
 }
 
@@ -1231,7 +1232,7 @@ export async function mergeMetadata(odmXMLString) {
 }
 
 export function extractImageInfo(imageString, identifier) {
-    if(!imageString.startsWith("<img;")) return {data: null, identifier: null};
+    if(!imageString.startsWith("|img")) return {data: null, identifier: null};
         const innerSplits = imageString.split(";")
 
         let typeSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "type");
@@ -1246,16 +1247,25 @@ export function extractImageInfo(imageString, identifier) {
         if(widthSplit) widthSplit = widthSplit.split(":");
         const width = widthSplit && widthSplit.length == 2 ? widthSplit[1] : undefined;
 
-        const base64Data = innerSplits[innerSplits.length - 1].replace(">", "").trim();
+        let nameSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "name");
+        if(nameSplit) nameSplit = nameSplit.split(":");
+        const name = nameSplit && nameSplit.length == 2 ? nameSplit[1] : undefined;
+
+        const base64Data = innerSplits[innerSplits.length - 1].replace("|img", "").replace("|", "").trim();
 
         identifier = identifier || makeid(20);;
-        formImageDataMap[identifier] = new FormImage(type, format, base64Data, width);
+        formImageDataMap[identifier] = new FormImage(type, format, base64Data, width, name);
         return {data: formImageDataMap[identifier], identifier}
     
 }
 
-export function getImageInfo(identifier) {
+export function getFormImageData(identifier) {
     return {data: formImageDataMap[identifier], identifier};
+}
+
+export function updateFormImageData(identifier, formImageData) {
+    if(!identifier) return;
+    formImageDataMap[identifier] = formImageData;
 }
 
 export function loadPossibleOpenEDCSettings() {

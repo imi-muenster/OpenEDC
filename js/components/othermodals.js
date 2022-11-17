@@ -442,6 +442,7 @@ class MDMModal extends HTMLElement {
 
 class FormImageModal extends HTMLElement {
     setFormImageData(formImageData) { this.formImageData = formImageData; }
+    setSaveCallback(callback) {this.callback = callback; }
     connectedCallback() {
         this.innerHTML = `
             <div class="modal is-active" id="form-image-modal">
@@ -454,6 +455,7 @@ class FormImageModal extends HTMLElement {
             </div>
         `;
         this.querySelector(".modal-background").onclick = () => {
+            this.callback(this.formImageData);
             this.remove();
         };
         
@@ -465,14 +467,21 @@ class FormImageModal extends HTMLElement {
             let label = document.createElement("label");
             label.classList = "label";
             label.setAttribute("i18n", key);
-            let input = document.createElement('input')
-            input.classList = "input";
-            input.type = "text";
-            input.placeholder = "key"
-            input.value = value;
-            input.onblur = () => {this.formImageData[key] = input.value; this.setFormImageDataToImage(img)};
+            let inputElement;
+            if(key == 'base64Data'){
+                inputElement = document.createElement('textarea')
+                inputElement.classList = 'textarea';
+            }
+            else {
+                inputElement = document.createElement('input')
+                inputElement.classList = "input";
+                inputElement.type = "text";  
+            }
+            inputElement.placeholder = key;
+            inputElement.value = value??'';
+            inputElement.onblur = () => {this.formImageData[key] = inputElement.value; this.setFormImageDataToImage(img)};
             field.appendChild(label);
-            field.appendChild(input)
+            field.appendChild(inputElement)
             elementsDiv.appendChild(field);
         })
         this.setFormImageDataToImage(img);
@@ -480,8 +489,6 @@ class FormImageModal extends HTMLElement {
     }  
 
     setFormImageDataToImage(img) {
-        console.log(img)
-        console.log(this.formImageData);
         img.src = `data:image/${this.formImageData.format};${this.formImageData.type},${this.formImageData.base64Data}`;
         img.style = `width: ${this.formImageData.width}`
     }

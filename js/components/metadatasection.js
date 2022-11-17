@@ -53,7 +53,10 @@ class MetadataSection extends HTMLElement {
                                             <input class="input" type="text" id="name-input" autocomplete="off">
                                         </div>
                                         <div class="field is-flex is-flex-direction-column is-flex-grow-1">
-                                            <label class="label" id="element-long-label"></label>
+                                            <label class="label" id="element-long-label"></label><div class="tab">
+                                                <button class="tablinks" onclick="openCity(event, 'London')">London</button>
+                                                <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
+                                            </div>
                                             <div class="textarea is-flex-grow-1" id="translation-textarea" contenteditable="true"></div>
                                         </div>
                                     </div>
