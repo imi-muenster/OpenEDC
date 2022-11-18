@@ -295,7 +295,9 @@
     "open": "Open",
     "example": "Example",
     "exemplary-project": "Exemplary Project",
-
+    "formatted": "Formatted",
+    "raw": "Source",
+    
     "address_1": "Institute for Medical Informatics",
     "address_2": "Director: Prof. Dr. Martin Dugas",
     "address_3": "Im Neuenheimer Feld 130.3",

@@ -369,17 +369,15 @@ function formatTranslationImages(translationText) {
     splits = splits.map(split => {
         if(!split.startsWith("|img")) return split;
         const imageInfo = metadataWrapper.extractImageInfo(split);
-        console.log(imageInfo);
         return `<div class="has-text-link" data-image-id="${imageInfo.identifier}"
-            onclick="editFormImage(this)" onmouseover="showFormImagePreview">
-            ${imageInfo.data?.name??'Image'}</div>`
+            onclick="editFormImage(this)" onmouseover="showFormImagePreview">${imageInfo.data?.name??'Image'}</div>`
     });
     let finalString = splits.join("");
     return finalString;
 }
 
 function reverseFormatTranslationImages(innerHTML) {
-    const splits = innerHTML.split(/(<div[^>]*>[^>]*<\/div>)/g);
+    const splits = innerHTML.split(/(<div[^>]*>[^/]*<\/div>)/g);
     let finalString = splits.map(split => {
         if(!split.startsWith('<div')) return split;
         let result = split.match(/(?:data-image-id=\")([a-zA-Z0-9]+)(?:")/);
@@ -392,7 +390,7 @@ function reverseFormatTranslationImages(innerHTML) {
             return imageString;
         }
     }).join('');
-    console.log(finalString);
+    if(finalString == "<br>") return "";
     return finalString;
 }
 
@@ -416,6 +414,16 @@ window.showFormImagePreview = (evt) => {
         display: `block`,
     });
 };
+
+window.activateTab = (event, id) => {
+    console.log(event, id);
+    [...event.target.closest('ul').querySelectorAll('li')].forEach(li => li.classList.remove('is-active'))
+    event.target.parentNode.classList.add('is-active');
+    let element = document.querySelector(`#${id}`);
+    [...element.parentNode.querySelectorAll('section')].forEach(section => section.classList.add('is-hidden'));
+    element.classList.remove('is-hidden');
+
+}
 
 
 function fillDetailsPanelExtended() {

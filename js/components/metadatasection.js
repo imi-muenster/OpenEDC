@@ -56,15 +56,17 @@ class MetadataSection extends HTMLElement {
                                             <label class="label" id="element-long-label"></label>
                                             <div class="tabs is-small mb-0">
                                                 <ul>
-                                                    <li class="is-active"><a>Formatted</a></li>
-                                                    <li><a>Raw</a></li>
+                                                    <li class="is-active"><a onclick="activateTab(event, 'translation-textarea-container')" i18n="formatted"></a></li>
+                                                    <li><a onclick="activateTab(event, 'translation-textarea-raw-container')" i18n="raw"></a></li>
                                                 </ul>
                                             </div>
                                             <div class="is-flex-grow-1 is-flex">
-                                                <section class="tab-content is-flex-grow-1 is-flex is-flex-direction-column">
+                                                <section class="tab-content is-flex-grow-1 is-flex is-flex-direction-column" id="translation-textarea-container">
                                                     <div class="textarea is-flex-grow-1" id="translation-textarea" contenteditable="true"></div>
                                                 </section>
-                                                <section class="tab-content is-hidden"></section>
+                                                <section class="tab-content is-flex-grow-1 is-flex is-flex-direction-column is-hidden" id="translation-textarea-raw-container">
+                                                    <textarea class="textarea is-flex-grow-1" id="translation-textarea-raw"></textarea>
+                                                </section>
                                             </div>
                                             
                                         </div>
