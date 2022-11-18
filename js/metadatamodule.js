@@ -372,11 +372,9 @@ function formatTranslationImages(translationText) {
         console.log(imageInfo);
         return `<div class="has-text-link" data-image-id="${imageInfo.identifier}"
             onclick="editFormImage(this)" onmouseover="showFormImagePreview">
-            ${imageInfo.data?.name??'Image'}</div> `
+            ${imageInfo.data?.name??'Image'}</div>`
     });
     let finalString = splits.join("");
-    finalString += '\r\n';
-    console.log(finalString)
     return finalString;
 }
 

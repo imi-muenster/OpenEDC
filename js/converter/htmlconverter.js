@@ -67,6 +67,7 @@ function getItemGroupDefault(itemGroupOID, options) {
 
         const translatedQuestion = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
         const splits = translatedQuestion.split(/(\|img;type:[a-zA-Z0-9]+;format:[a-zA-Z0-9]*;(?:[a-zA-Z0-9%]*;)*[^>]*\|)/g);
+        console.log(splits);
         splits.forEach(split => {
             if(split.startsWith("|img;type:base64")) {
                 const imageInfo = metadataWrapper.extractImageInfo(split).data;
@@ -80,10 +81,10 @@ function getItemGroupDefault(itemGroupOID, options) {
                 img.setAttribute("src", `data:image/${format == 'svg' ? 'svg+xml' : format};base64,${imageInfo.base64Data}`);
                 itemField.appendChild(img);
             }
-            else if(split != "") {
+            else if(split.trim() != "") {
                 const itemQuestion = document.createElement("label");
                 itemQuestion.className = "label";
-                itemQuestion.innerHTML = split;
+                itemQuestion.innerHTML = split.trim();
                 //itemQuestion.innerHTML += ;
                 itemField.appendChild(itemQuestion);
             }
@@ -92,7 +93,6 @@ function getItemGroupDefault(itemGroupOID, options) {
             console.log([...itemField.children])
             let revereChildren = [...itemField.children].slice().reverse();
             let lastLabelChildIndex = revereChildren.findIndex(x => x.tagName == 'LABEL');
-            console.log(lastLabelChildIndex);
             revereChildren[lastLabelChildIndex].innerHTML += " (*)";
         }
         /* const itemQuestion = document.createElement("label");

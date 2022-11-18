@@ -53,11 +53,20 @@ class MetadataSection extends HTMLElement {
                                             <input class="input" type="text" id="name-input" autocomplete="off">
                                         </div>
                                         <div class="field is-flex is-flex-direction-column is-flex-grow-1">
-                                            <label class="label" id="element-long-label"></label><div class="tab">
-                                                <button class="tablinks" onclick="openCity(event, 'London')">London</button>
-                                                <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
+                                            <label class="label" id="element-long-label"></label>
+                                            <div class="tabs is-small mb-0">
+                                                <ul>
+                                                    <li class="is-active"><a>Formatted</a></li>
+                                                    <li><a>Raw</a></li>
+                                                </ul>
                                             </div>
-                                            <div class="textarea is-flex-grow-1" id="translation-textarea" contenteditable="true"></div>
+                                            <div class="is-flex-grow-1 is-flex">
+                                                <section class="tab-content is-flex-grow-1 is-flex is-flex-direction-column">
+                                                    <div class="textarea is-flex-grow-1" id="translation-textarea" contenteditable="true"></div>
+                                                </section>
+                                                <section class="tab-content is-hidden"></section>
+                                            </div>
+                                            
                                         </div>
                                     </div>
                                 </div>
