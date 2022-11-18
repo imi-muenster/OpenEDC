@@ -89,12 +89,12 @@ function getItemGroupDefault(itemGroupOID, options) {
                 itemField.appendChild(itemQuestion);
             }
         });
-        if(itemRef.getAttribute("Mandatory") == "Yes") {
+        /* if(itemRef.getAttribute("Mandatory") == "Yes") {
             console.log([...itemField.children])
             let revereChildren = [...itemField.children].slice().reverse();
             let lastLabelChildIndex = revereChildren.findIndex(x => x.tagName == 'LABEL');
             revereChildren[lastLabelChildIndex].innerHTML += " (*)";
-        }
+        } */
         /* const itemQuestion = document.createElement("label");
         itemQuestion.className = "label";
         itemQuestion.innerHTML = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;

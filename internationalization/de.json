@@ -290,6 +290,7 @@
     "load-from-mdm-exceeded": "Sie haben die maximale Anzahl an Downloads aus dem MDM-Portal für diese Stunde erreicht. Bitte wählen Sie eine andere Methode.",
     "load-from-mdm-error": "Das MDM-Portal ist augenblicklich nicht erreichbar. Bitte versuchen Sie es später erneut oder wählen Sie eine andere Methode.",
     "edit-image-heading": "Bilddaten bearbeiten",
+    "edit-image-text": "Bildtyp: Zur Zeit nur base64\r\nBildformat: PNG oder JPEG\r\nName: Nur wichtig für die Bearbeitungsansicht",
     "open": "Öffnen",
     "example": "Beispiel",
     "exemplary-project": "Beispielprojekt",

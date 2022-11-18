@@ -291,6 +291,7 @@
     "load-from-mdm-exceeded": "You reached the maximum of available download from the MDM-Portal for this hour. Please chose another method.",
     "load-from-mdm-error": "The MDM-Portal is currently unavailable. Please try again later or chose another method.",
     "edit-image-heading": "Edit image attributes",
+    "edit-image-text": "Image type: only base64 at the time<br>Image format: PNG or JPEG<br>Name: Only important for edit view.",
     "open": "Open",
     "example": "Example",
     "exemplary-project": "Exemplary Project",
