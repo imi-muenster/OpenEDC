@@ -1083,6 +1083,11 @@ export function copyItem(itemOID, deepCopy, itemGroupOID, replacedOIDs = {}) {
             let newMethodOID = copyMethodDef(methodOID, replacedOIDs);
             $(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[ItemOID="${newItemOID}"]`).setAttribute('MethodOID', newMethodOID)
         }
+
+        let mandatory = itemRef.getAttribute('Mandatory');
+        if(mandatory) {
+            $(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef[ItemOID="${newItemOID}"]`).setAttribute('Mandatory', mandatory);
+        }
     }
 
     let itemDef = $(`ItemDef[OID="${itemOID}"]`);
