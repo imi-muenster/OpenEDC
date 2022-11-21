@@ -175,6 +175,8 @@ a.panel-block {
 
 #translation-textarea {
     min-height: 5rem;
+    max-width: 200px;
+    overflow-y: auto;
 }
 
 #extended-options-button {

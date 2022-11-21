@@ -66,10 +66,10 @@ function getItemGroupDefault(itemGroupOID, options) {
         itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
 
         const translatedQuestion = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
-        const splits = translatedQuestion.split(/(\|img;type:[a-zA-Z0-9]+;format:[a-zA-Z0-9]*;(?:[a-zA-Z0-9%]*;)*[^>]*\|)/g);
+        const splits = translatedQuestion.split(/(!\[.*?\](?:\(data:image\/[a-z]+;base64,[a-zA-Z0-9\/+=]+\))?(?:\[(?:[a-z]+:[a-zA-Z0-9%]+?)+;\])?)/g);
         console.log(splits);
         splits.forEach(split => {
-            if(split.startsWith("|img;type:base64")) {
+            if(split.startsWith("![")) {
                 const imageInfo = metadataWrapper.extractImageInfo(split).data;
                 if(!imageInfo) return;
                 let img = document.createElement('img');

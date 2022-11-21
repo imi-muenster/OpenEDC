@@ -363,11 +363,14 @@ function fillDetailsPanelFoundational() {
 }
 
 function formatTranslationImages(translationText) {
+    console.log(translationText);
     if(!translationText) return translationText;
     console.log(translationText);
-    let splits = translationText.split(/(\|img;?(?:type:[a-zA-Z0-9]+;)?(?:format:[a-zA-Z0-9]+;)?(?:[a-z]+:[a-zA-Z0-9%\s]+;)*[a-zA-Z0-9\/+=]*\|)/g);
+    //let splits = translationText.split(/(\|img;?(?:type:[a-zA-Z0-9]+;)?(?:format:[a-zA-Z0-9]+;)?(?:[a-z]+:[a-zA-Z0-9%\s]+;)*[a-zA-Z0-9\/+=]*\|)/g);
+    let splits = translationText.split(/(!\[.*?\](?:\(data:image\/[a-z]+;base64,[a-zA-Z0-9\/+=]+\))?(?:\[(?:[a-z]+:[a-zA-Z0-9%]+?)+;\])?)/g);
+    console.log(splits);
     splits = splits.map(split => {
-        if(!split.startsWith("|img")) return split;
+        if(!split.startsWith("![")) return split;
         const imageInfo = metadataWrapper.extractImageInfo(split);
         return `<div class="has-text-link" data-image-id="${imageInfo.identifier}"
             onclick="editFormImage(this)" onmouseover="showFormImagePreview">${imageInfo.data?.name??'Image'}</div>`
@@ -377,19 +380,20 @@ function formatTranslationImages(translationText) {
 }
 
 function reverseFormatTranslationImages(innerHTML) {
-    const splits = innerHTML.split(/(<div[^>]*>[^/]*<\/div>)/g);
+    console.log(innerHTML);
+    const splits = innerHTML.split(/(<div[^>]*>[^/]+?<\/div>)/g);
+    console.log(splits);
     let finalString = splits.map(split => {
         if(!split.startsWith('<div')) return split;
+        if(!split.match(/(<div[^>]*>[^/<>]+?<\/div>)/)) return '';
         let result = split.match(/(?:data-image-id=\")([a-zA-Z0-9]+)(?:")/);
         if(result.length > 1) {
             const imageData = metadataWrapper.getFormImageData(result[1]).data;
-            let imageString =  `|img;${Object.entries(imageData).map(([key, value]) => {
-                if(key != 'base64Data' && value) return `${key}:${value};`
-            }).join('')}`
-            imageString += `${imageData.base64Data}|`;
+            let imageString =  `![${imageData.name??''}](data:image/${imageData.format??'png'};${imageData.type},${imageData.base64Data})`
+            if(imageData.width) imageString += `[width:${imageData.width};]`;  
             return imageString;
         }
-    }).join('');
+    }).join('').trim();
     if(finalString == "<br>") return "";
     return finalString;
 }

@@ -42,8 +42,8 @@ class OpenEDCSetting {
 }
 
 export class FormImage{
-    constructor(type, format, base64Data, width, name) {
-        this.type = type;
+    constructor( format, base64Data, width, name) {
+        this.type = 'base64';
         this.format = format;
         this.base64Data = base64Data;
         this.width = width;
@@ -1237,30 +1237,68 @@ export async function mergeMetadata(odmXMLString) {
 }
 
 export function extractImageInfo(imageString, identifier) {
-    if(!imageString.startsWith("|img")) return {data: null, identifier: null};
-        const innerSplits = imageString.split(";")
+    if(!imageString.startsWith("![")) return {data: null, identifier: null};
 
-        let typeSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "type");
-        if(typeSplit) typeSplit = typeSplit.split(":");
-        const type = typeSplit && typeSplit.length == 2 ? typeSplit[1] : undefined;
+    let name;
+    let nameArray = imageString.match(/!\[.+?\]/);
+    console.log(nameArray)
+    if(nameArray && nameArray.length > 0) {
+        name = nameArray[0].replace('!', '').replace('[','').replace(']','');
+    }
+    console.log(name);
 
-        let formatSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "format");
+    let format = undefined;
+    let width = undefined;
+    let base64Data = undefined;
+
+    let dataArray = imageString.match(/\(data.*?\)/);
+    console.log(dataArray);
+    if(dataArray && dataArray.length > 0) {
+        let data = dataArray[0];
+        console.log(data);
+
+        let formatArray = data.match(/image\/[a-z]+?;/);
+        console.log(formatArray);
+        if(formatArray && formatArray.length > 0){
+            format = formatArray[0].substring(formatArray[0].indexOf('/') + 1, formatArray[0].indexOf(';'));
+            console.log(format);
+        }
+
+        const base64DataArray = data.split(',');
+        if(base64DataArray.length > 1) base64Data = base64DataArray[1].replace(')','');
+        /* let formatSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "format");
         if(formatSplit) formatSplit = formatSplit.split(":");
-        const format = formatSplit && formatSplit.length == 2 ? formatSplit[1] : undefined;
+        const format = formatSplit && formatSplit.length == 2 ? formatSplit[1] : undefined; */
 
-        let widthSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "width");
+        /* let widthSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "width");
         if(widthSplit) widthSplit = widthSplit.split(":");
-        const width = widthSplit && widthSplit.length == 2 ? widthSplit[1] : undefined;
+        const width = widthSplit && widthSplit.length == 2 ? widthSplit[1] : undefined; */
 
-        let nameSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "name");
-        if(nameSplit) nameSplit = nameSplit.split(":");
-        const name = nameSplit && nameSplit.length == 2 ? nameSplit[1] : undefined;
+        //const base64Data = innerSplits[innerSplits.length - 1].replace("|img", "").replace("|", "").trim();
+    }
 
-        const base64Data = innerSplits[innerSplits.length - 1].replace("|img", "").replace("|", "").trim();
+    let settingsArray = imageString.match(/\[(?:[a-z]+:.*?;?)*\]/);
+    console.log(settingsArray);
+    if(settingsArray && settingsArray.length > 0) {
+        let innerSplits = settingsArray[0].split(';');
+        let widthSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0].includes("width"));
+        console.log(widthSplit);
+        if(widthSplit) widthSplit = widthSplit.split(":");
+        width = widthSplit && widthSplit.length == 2 ? widthSplit[1] : undefined;
+    }
 
-        identifier = identifier || makeid(20);;
-        formImageDataMap[identifier] = new FormImage(type, format, base64Data, width, name);
-        return {data: formImageDataMap[identifier], identifier}
+    
+
+    /*  let nameSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "name");
+    if(nameSplit) nameSplit = nameSplit.split(":");
+    const name = nameSplit && nameSplit.length == 2 ? nameSplit[1] : undefined; */
+
+   
+
+    identifier = identifier || makeid(20);;
+    formImageDataMap[identifier] = new FormImage(format, base64Data, width, name);
+    console.log(formImageDataMap[identifier]);
+    return {data: formImageDataMap[identifier], identifier}
     
 }
 
