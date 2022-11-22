@@ -64,8 +64,16 @@ class CodelistModal extends HTMLElement {
     fillValues() {
         // Add the item question and use the name as fallback
         let translatedText = metadataWrapper.getElementDefByOID(this.path.itemOID).getTranslatedQuestion(languageHelper.getCurrentLocale(), true);
-        translatedText = translatedText.replace(/(<img;type:[a-zA-Z0-9]+;format:[a-zA-Z0-9]*;(?:[a-zA-Z0-9]*;)*[^>]*>)/g, "<Image>");
-        this.querySelector("h2").textContent = translatedText;
+        if(translatedText) {
+            const splits = translatedText.split(/(!\[.*?\](?:\(data:image\/[a-z]+;base64,[a-zA-Z0-9\/+=]+\))?(?:\[(?:[a-z]+:[a-zA-Z0-9%]+?)+;\])?)/g);
+            splits.forEach(split => {
+                if(!split.startsWith('![')) return;
+                const formImageData = metadataWrapper.extractImageInfo(split);
+                translatedText = translatedText.replace(split, `<span class="has-text-link" style="pointer-events: auto;" data-image-id="${formImageData.identifier}" onmouseover="showFormImagePreview(event)" onmouseleave="hideFormImagePreview()">${formImageData.data.name??languageHelper.getTranslation("image")}</span>`);
+            })
+        }
+        //translatedText = translatedText.replace(/(<img;type:[a-zA-Z0-9]+;format:[a-zA-Z0-9]*;(?:[a-zA-Z0-9]*;)*[^>]*>)/g, "<Image>");
+        this.querySelector("h2").innerHTML = translatedText;
 
         // Render the notification when the codelist is used for more than one item
         const codeListReferences = metadataWrapper.getElementRefs(metadataWrapper.getCodeListOIDByItem(this.path.itemOID), ODMPath.elements.CODELISTITEM);

@@ -28,6 +28,7 @@ export let currentPath = new ODMPath();
 let viewOnlyMode = false;
 let asyncEditMode = false;
 let elementTypeOnDrag = null;
+let currentEditTextarea = null;
 
 export async function init() {
     await import("./components/codelistmodal.js");
@@ -68,8 +69,8 @@ function createPanelBlock(elementOID, elementType, displayText, fallbackText, su
     const draggable = viewOnlyMode ? false : true;
     let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, draggable, hasCondition, conditionIsFalse);
 
-    panelBlock.ondragstart = dragStart;
-    panelBlock.ondragenter = dragEnter;
+    //panelBlock.ondragstart = dragStart;
+    //panelBlock.ondragenter = dragEnter;
 
     return panelBlock;
 }
@@ -227,6 +228,7 @@ function loadItemsByItemGroup(hideTree) {
         let condition = metadataWrapper.getElementCondition(ODMPath.elements.ITEM, path);
         let conditionIsFalse = condition ? condition.getFormalExpression() == "false" : false;
         let translatedQuestion = itemDef.getTranslatedQuestion(languageHelper.getCurrentLocale());
+        translatedQuestion = formatImagesInTranslatedText(translatedQuestion);
         let panelBlock = createPanelBlock(itemDef.getOID(), ODMPath.elements.ITEM, translatedQuestion, itemDef.getName(), languageHelper.getTranslation(itemDef.getDataType()), condition, conditionIsFalse);
         panelBlock.onclick = itemClicked;
         $("#item-panel-blocks").appendChild(panelBlock);
@@ -252,6 +254,7 @@ function loadCodeListItemsByItem(hideTree) {
     let codeListItems = metadataWrapper.getCodeListItemsByItem(currentPath.itemOID);
     for (let codeListItem of codeListItems) {
         let translatedDecode = codeListItem.getTranslatedDecode(languageHelper.getCurrentLocale());
+        translatedDecode = formatImagesInTranslatedText(translatedDecode);
         let panelBlock = createPanelBlock(codeListItem.getCodedValue(), ODMPath.elements.CODELISTITEM, translatedDecode, codeListItem.getCodedValue(), codeListItem.getCodedValue());
         panelBlock.onclick = codeListItemClicked;
         $("#code-list-item-panel-blocks").appendChild(panelBlock);
@@ -275,6 +278,18 @@ function codeListItemClicked(event) {
     reloadDetailsPanel();
 }
 
+function formatImagesInTranslatedText(translatedText) {
+    if(translatedText) {
+        const splits = translatedText.split(/(!\[.*?\](?:\(data:image\/[a-z]+;base64,[a-zA-Z0-9\/+=]+\))?(?:\[(?:[a-z]+:[a-zA-Z0-9%]+?)+;\])?)/g);
+        splits.forEach(split => {
+            if(!split.startsWith('![')) return;
+            const formImageData = metadataWrapper.extractImageInfo(split);
+            translatedText = translatedText.replace(split, `<span class="has-text-link" style="pointer-events: auto;" data-image-id="${formImageData.identifier}" onmouseover="showFormImagePreview(event)" onmouseleave="hideFormImagePreview()">${formImageData.data.name??languageHelper.getTranslation("image")}</span>`);
+        })
+    }
+    return translatedText;
+}
+
 export function reloadTree() {
     loadStudyEvents();
     if (currentPath.studyEventOID) loadFormsByStudyEvent();
@@ -289,8 +304,10 @@ function resetDetailsPanel() {
     $("#save-button").unhighlight();
 
     // Foundational
-    [$("#id-input"), $("#name-input"), $("#translation-textarea"), $("#datatype-select-inner"), $("#mandatory-select-inner")].disableElements();
-    [$("#id-input"), $("#name-input"), $("#translation-textarea"), $("#datatype-select-inner"), $("#mandatory-select-inner")].emptyInputs();
+    [$("#id-input"), $("#name-input"), $("#translation-textarea"), $("#translation-textarea-formatted"), $("#datatype-select-inner"), $("#mandatory-select-inner")].disableElements();
+    [$("#id-input"), $("#name-input"), $("#translation-textarea"), $("#translation-textarea-formatted"), $("#datatype-select-inner"), $("#mandatory-select-inner")].emptyInputs();
+    $("#translation-textarea-formatted").contentEditable = false;
+    activateTranslationAreaTab('translation-textarea');
     $("#element-oid-label").textContent = languageHelper.getTranslation("unique-id");
     $("#element-long-label").textContent = languageHelper.getTranslation("translated-description");
     ioHelper.getSetting("showElementName") ? $("#name-input").parentNode.show() : $("#name-input").parentNode.hide();
@@ -341,7 +358,7 @@ function fillDetailsPanelFoundational() {
         case ODMPath.elements.ITEMGROUP:
             $("#id-input").value = currentPath.last.value;
             $("#name-input").value = element.getName();
-            $("#translation-textarea").innerHTML = formatTranslationImages(element.getTranslatedDescription(languageHelper.getCurrentLocale()));
+            $("#translation-textarea").value = element.getTranslatedDescription(languageHelper.getCurrentLocale());
             break;
         case ODMPath.elements.ITEM:
             [$("#datatype-select-inner"), $("#mandatory-select-inner")].enableElements();
@@ -349,7 +366,9 @@ function fillDetailsPanelFoundational() {
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             $("#id-input").value = currentPath.last.value;
             $("#name-input").value = element.getName();
-            $("#translation-textarea").innerHTML = formatTranslationImages(element.getTranslatedQuestion(languageHelper.getCurrentLocale()));
+            [$("#translation-textarea-formatted")].enableElements();
+            $("#translation-textarea-formatted").contentEditable = true;
+            $("#translation-textarea").value = element.getTranslatedQuestion(languageHelper.getCurrentLocale());
             $("#datatype-select-inner").value = element.getDataType();
             break;
         case ODMPath.elements.CODELISTITEM:
@@ -358,22 +377,25 @@ function fillDetailsPanelFoundational() {
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-choice");
             element = metadataWrapper.getCodeListItem(metadataWrapper.getCodeListOIDByItem(currentPath.itemOID), currentPath.codeListItem);
             $("#id-input").value = element.getCodedValue();
-            $("#translation-textarea").innerHTML = formatTranslationImages(element.getTranslatedDecode(languageHelper.getCurrentLocale()));
+            [$("#translation-textarea-formatted")].enableElements();
+            $("#translation-textarea-formatted").contentEditable = true;
+            $("#translation-textarea").value = element.getTranslatedDecode(languageHelper.getCurrentLocale());
     }
 }
 
 function formatTranslationImages(translationText) {
-    console.log(translationText);
+    //console.log(translationText);
     if(!translationText) return translationText;
-    console.log(translationText);
+    //console.log(translationText);
     //let splits = translationText.split(/(\|img;?(?:type:[a-zA-Z0-9]+;)?(?:format:[a-zA-Z0-9]+;)?(?:[a-z]+:[a-zA-Z0-9%\s]+;)*[a-zA-Z0-9\/+=]*\|)/g);
     let splits = translationText.split(/(!\[.*?\](?:\(data:image\/[a-z]+;base64,[a-zA-Z0-9\/+=]+\))?(?:\[(?:[a-z]+:[a-zA-Z0-9%]+?)+;\])?)/g);
     console.log(splits);
     splits = splits.map(split => {
-        if(!split.startsWith("![")) return split;
+        if(!split.startsWith("![")) return split.replace('\n', '<br>');
         const imageInfo = metadataWrapper.extractImageInfo(split);
+        console.log(imageInfo);
         return `<div class="has-text-link" data-image-id="${imageInfo.identifier}"
-            onclick="editFormImage(this)" onmouseover="showFormImagePreview">${imageInfo.data?.name??'Image'}</div>`
+            onclick="editFormImage(this)" onmouseenter="showFormImagePreview(event)" onmouseleave="hideFormImagePreview()">${imageInfo.data?.name??languageHelper.getTranslation("image")}</div>`
     });
     let finalString = splits.join("");
     return finalString;
@@ -384,7 +406,7 @@ function reverseFormatTranslationImages(innerHTML) {
     const splits = innerHTML.split(/(<div[^>]*>[^/]+?<\/div>)/g);
     console.log(splits);
     let finalString = splits.map(split => {
-        if(!split.startsWith('<div')) return split;
+        if(!split.startsWith('<div')) return split.replace('<br>', '\n');
         if(!split.match(/(<div[^>]*>[^/<>]+?<\/div>)/)) return '';
         let result = split.match(/(?:data-image-id=\")([a-zA-Z0-9]+)(?:")/);
         if(result.length > 1) {
@@ -411,7 +433,11 @@ window.editFormImage = (image) =>{
 }
 
 window.showFormImagePreview = (evt) => {
-    let elPopup = document.querySelector('#image-popup');
+    console.log('mouseover')
+    const formImageData = metadataWrapper.getFormImageData(evt.target.getAttribute('data-image-id')).data;
+    let elPopup = document.querySelector('#image-preview-container');
+    elPopup.querySelector('img').setAttribute('src', `data:image/${formImageData.format};base64,${formImageData.base64Data}`);
+    elPopup.classList.remove('is-hidden');
     Object.assign(elPopup.style, {
         left: `${evt.clientX + window.scrollX}px`,
         top: `${evt.clientY + window.scrollY}px`,
@@ -419,14 +445,43 @@ window.showFormImagePreview = (evt) => {
     });
 };
 
-window.activateTab = (event, id) => {
-    console.log(event, id);
+window.hideFormImagePreview = () => {
+    let elPopup = document.querySelector('#image-preview-container');
+    elPopup.classList.add('is-hidden');
+}
+
+window.switchTab = (event, oldContainerId, newContainerId, formatted) => {
+    console.log(event, oldContainerId, newContainerId, formatted);
+    let oldElement = document.querySelector(`#${oldContainerId}`);
+    let newElement = document.querySelector(`#${newContainerId}`);
+    if(oldElement.classList.contains('is-hidden')) return;
+    console.log("continue");
+
+    if(formatted) {
+        let oldContent = oldElement.querySelector('.textarea').value;
+        let newContent = formatTranslationImages(oldContent);
+        newElement.querySelector('.textarea').innerHTML = newContent;
+        currentEditTextarea = 'translation-textarea-formatted'
+    } else{
+        let oldContent = oldElement.querySelector('.textarea').innerHTML;
+        let newContent = reverseFormatTranslationImages(oldContent);
+        newElement.querySelector('.textarea').value = newContent;
+        currentEditTextarea = 'translation-textarea'
+    } 
+
     [...event.target.closest('ul').querySelectorAll('li')].forEach(li => li.classList.remove('is-active'))
     event.target.parentNode.classList.add('is-active');
-    let element = document.querySelector(`#${id}`);
-    [...element.parentNode.querySelectorAll('section')].forEach(section => section.classList.add('is-hidden'));
-    element.classList.remove('is-hidden');
+    oldElement.classList.add('is-hidden');
+    newElement.classList.remove('is-hidden');
+    
+}
 
+function activateTranslationAreaTab(name) {
+    [...$(`#${name}-link`).closest('ul').querySelectorAll('li')].forEach(li => li.classList.remove('is-active'))
+    $(`#${name}-link`).classList.add('is-active');
+    [...$('#translation-text-sections-container').querySelectorAll('section')].forEach(section => section.classList.add('is-hidden'));
+    $(`#${name}-container`).classList.remove('is-hidden');
+    currentEditTextarea = name;
 }
 
 
@@ -590,20 +645,23 @@ export async function saveDetailsFoundational() {
         case ODMPath.elements.ITEMGROUP:
             await setElementOID($("#id-input").value).then(() => {
                 metadataWrapper.setElementName(currentPath.last.value, ioHelper.getSetting("showElementName") ? $("#name-input").value : $("#id-input").value);
-                metadataWrapper.setElementDescription(currentPath.last.value, $("#translation-textarea").value);
+                const translationValue = currentEditTextarea === 'translation-textarea' ? $("#translation-textarea").value : reverseFormatTranslationImages($("#translation-textarea-formatted").innerHTML);
+                metadataWrapper.setElementDescription(currentPath.last.value, translationValue);
             });
             break;
         case ODMPath.elements.ITEM:
             await setElementOID($("#id-input").value).then(() => {
                 metadataWrapper.setElementName(currentPath.last.value, ioHelper.getSetting("showElementName") ? $("#name-input").value : $("#id-input").value);
-                metadataWrapper.setItemQuestion(currentPath.last.value, reverseFormatTranslationImages($("#translation-textarea").innerHTML));
+                const translationValue = currentEditTextarea === 'translation-textarea' ? $("#translation-textarea").value : reverseFormatTranslationImages($("#translation-textarea-formatted").innerHTML);
+                metadataWrapper.setItemQuestion(currentPath.last.value, translationValue);
             });
             metadataWrapper.setElementMandatory(currentPath.last.element, currentPath, $("#mandatory-select-inner").value);
             handleItemDataType(currentPath.last.value, $("#datatype-select-inner").value);
             break;
         case ODMPath.elements.CODELISTITEM:
             await setCodeListItemCodedValue($("#id-input").value);
-            metadataWrapper.setCodeListItemDecodedText(metadataWrapper.getCodeListOIDByItem(currentPath.itemOID), currentPath.codeListItem, $("#translation-textarea").value);
+            const translationValue = currentEditTextarea === 'translation-textarea' ? $("#translation-textarea").value : reverseFormatTranslationImages($("#translation-textarea-formatted").innerHTML);
+            metadataWrapper.setCodeListItemDecodedText(metadataWrapper.getCodeListOIDByItem(currentPath.itemOID), currentPath.codeListItem, translationValue);
     }
 
     if (!languageHelper.getPresentLanguages().includes(languageHelper.getCurrentLocale())) {
@@ -915,7 +973,7 @@ function handleItemDataType(itemOID, dataType) {
 }
 
 function setIOListeners() {
-    let inputElements = $$("#details-panel input, #details-panel textarea, #details-panel select, #details-panel #translation-textarea");
+    let inputElements = $$("#details-panel input, #details-panel textarea, #details-panel select, #details-panel #translation-textarea-formatted");
     for (const inputElement of inputElements) {
         inputElement.oninput = () => highlightSaveButton();
         inputElement.onkeydown = event => {
@@ -930,9 +988,8 @@ function setIOListeners() {
             }
         };
     }
-    $("#translation-textarea").onblur = () => {
-        console.log('change')
-        $("#translation-textarea").innerHTML = formatTranslationImages($("#translation-textarea").innerHTML)
+    $("#translation-textarea-formatted").onblur = () => {
+        $("#translation-textarea-formatted").innerHTML = formatTranslationImages($("#translation-textarea-formatted").innerHTML)
     };
 
     $("#id-input").addEventListener("keydown", event => {

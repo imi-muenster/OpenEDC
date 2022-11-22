@@ -1240,25 +1240,25 @@ export function extractImageInfo(imageString, identifier) {
     if(!imageString.startsWith("![")) return {data: null, identifier: null};
 
     let name;
-    let nameArray = imageString.match(/!\[.+?\]/);
-    console.log(nameArray)
+    let nameArray = imageString.match(/!\[[^\]]+?\]/);
+    console.log("nameArray", nameArray)
     if(nameArray && nameArray.length > 0) {
         name = nameArray[0].replace('!', '').replace('[','').replace(']','');
     }
-    console.log(name);
+    //console.log(name);
 
     let format = undefined;
     let width = undefined;
     let base64Data = undefined;
 
     let dataArray = imageString.match(/\(data.*?\)/);
-    console.log(dataArray);
+    //console.log(dataArray);
     if(dataArray && dataArray.length > 0) {
         let data = dataArray[0];
-        console.log(data);
+        //console.log(data);
 
         let formatArray = data.match(/image\/[a-z]+?;/);
-        console.log(formatArray);
+       // console.log(formatArray);
         if(formatArray && formatArray.length > 0){
             format = formatArray[0].substring(formatArray[0].indexOf('/') + 1, formatArray[0].indexOf(';'));
             console.log(format);

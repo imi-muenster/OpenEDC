@@ -264,8 +264,14 @@ function getItemInput(itemDef, itemGroupOID, options) {
 
 const containsImages = (codeListItems, options) => {
     for (let codeListItem of codeListItems) {
-        if(codeListItem.getTranslatedDecode(options.locale, options.useNames).startsWith("base64"))
+        const translatedDecode = codeListItem.getTranslatedDecode(options.locale, options.useNames);
+        if(!translatedDecode) continue;
+        const splits = translatedDecode.split(/(!\[.*?\](?:\(data:image\/[a-z]+;base64,[a-zA-Z0-9\/+=]+\))?(?:\[(?:[a-z]+:[a-zA-Z0-9%]+?)+;\])?)/g);
+        if(translatedDecode && translatedDecode.startsWith("base64"))
             return true;
+        for(let split of splits) {
+            if(split && split.startsWith("![")) return true;
+        }
     }
     return false;
 }
@@ -307,7 +313,22 @@ const getRadioInput = (value, translatedText, itemOID, itemGroupOID, options, no
     
     radioContainer.appendChild(radio);
     if(noLikert){
-        if(translatedText.startsWith("base64;")) {
+        const splits = translatedText.split(/(!\[.*?\](?:\(data:image\/[a-z]+;base64,[a-zA-Z0-9\/+=]+\))?(?:\[(?:[a-z]+:[a-zA-Z0-9%]+?)+;\])?)/g);
+        splits.forEach(split => {
+            if(split.startsWith("![")) {
+                const imageInfo = metadataWrapper.extractImageInfo(split).data;
+                if(!imageInfo) return;
+                let img = document.createElement('img');
+                img.style = `width: ${options.maxImageWidth ? options.maxImageWidth : defaultCodeListItemImageWidth}px;`
+                const format = imageInfo.format?? 'png';
+                img.setAttribute("src", `data:image/${format == 'svg' ? 'svg+xml' : format};base64,${imageInfo.base64Data}`);
+                radioContainer.appendChild(img);
+            }
+            else if(split.trim() != "") {
+                radioContainer.appendChild(document.createTextNode(" " + split.trim()));
+            }
+        });
+        /* if(translatedText.startsWith("base64;")) {
             const splits = translatedText.split(";")
             let img = document.createElement('img');
             img.style = `width: ${options.maxImageWidth ? options.maxImageWidth : defaultCodeListItemImageWidth}px;`
@@ -316,7 +337,7 @@ const getRadioInput = (value, translatedText, itemOID, itemGroupOID, options, no
         }
         else {
             radioContainer.appendChild(document.createTextNode(" " + translatedText));
-        }
+        } */
     }
     return radioContainer;
 }

@@ -436,5 +436,6 @@
     "update": "Update",
     "export-not-allowed": "Sie sind nicht berechtigt, Daten zu exportieren.",
     "save-and-close": "Speichern und schließen",
-    "no-permission": "Nicht erlaubt"
+    "no-permission": "Nicht erlaubt",
+    "image": "Bild"
 }

@@ -173,7 +173,7 @@ a.panel-block {
     overflow-y: auto;
 }
 
-#translation-textarea {
+#translation-textarea, #translation-textarea-formatted {
     min-height: 5rem;
     max-width: 200px;
     overflow-y: auto;
