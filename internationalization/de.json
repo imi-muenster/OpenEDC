@@ -224,7 +224,7 @@
     "element-name-hint": "Erlaube die Bearbeitung des Namens von Elementen, entsprechend des CDISC ODM Standards. Wenn ausgeschaltet, wird der Name automatisch auf den Wert der ID gesetzt.",
     "show-as-likert-hint": "Stelle Itemgruppen als Likertskala dar, wenn möglich. Itemgruppen mit einem Alias-Tag 'no-likert' und dem Wert 'yes' werden ignoriert. Die nachfolgende Option legt die maximale Anzahl an Items fest.",
     "no-likert": "Keine Likert Skala",
-    "no-likert-description": "Falls sie diese Checkbox anwählen, wird die Itemgruppe nicht in Likertform gezeigt selbst wenn diese in den Projektoptionen akiviert ist.",
+    "no-likert-description": "Falls sie diese Checkbox anwählen, wird die Itemgruppe nicht in Likertform gezeigt selbst wenn diese in den Projektoptionen aktiviert ist.",
     "textarea-hint": "Zeige Fragen mit dem Datentyp Text als mehrzeilige statt einzeilige Textboxen.",
     "likert-scale-limit": "Max. Anzahl Items",
     "survey-view-hint": "Öffne die Umfrageansicht auf mobilen Geräten beim Klicken auf ein Ereignis automatisch.",
