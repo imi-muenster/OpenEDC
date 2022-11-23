@@ -21,7 +21,7 @@ export function getMetadataPanelBlock(elementOID, elementType, titleText, fallba
     let title = document.createElement("div");
     title.className = "panel-block-title";
 
-    if (titleText) title.textContent = titleText;
+    if (titleText) title.innerHTML = titleText;
     if (!titleText || hasCondition) {
         let dot = document.createElement("span");
         dot.className = "panel-icon has-text-link";

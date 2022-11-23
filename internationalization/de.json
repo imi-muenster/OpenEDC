@@ -36,6 +36,10 @@
     "form-design": "Formularentwurf",
     "data-collection": "Datenerhebung",
 
+    "type": "Bildtyp",
+    "format": "Bildformat (png oder jpeg)",
+    "width": "Bildbreite (in % oder px)",
+    "base64Data": "Base64 String",
     "foundational": "Grundlegend",
     "extended": "Erweitert",
     "unique-id": "Eindeutige ID",
@@ -220,7 +224,7 @@
     "element-name-hint": "Erlaube die Bearbeitung des Namens von Elementen, entsprechend des CDISC ODM Standards. Wenn ausgeschaltet, wird der Name automatisch auf den Wert der ID gesetzt.",
     "show-as-likert-hint": "Stelle Itemgruppen als Likertskala dar, wenn möglich. Itemgruppen mit einem Alias-Tag 'no-likert' und dem Wert 'yes' werden ignoriert. Die nachfolgende Option legt die maximale Anzahl an Items fest.",
     "no-likert": "Keine Likert Skala",
-    "no-likert-description": "Falls sie diese Checkbox anwählen, wird die Itemgruppe nicht in Likertform gezeigt selbst wenn diese in den Projektoptionen akiviert ist.",
+    "no-likert-description": "Falls sie diese Checkbox anwählen, wird die Itemgruppe nicht in Likertform gezeigt selbst wenn diese in den Projektoptionen aktiviert ist.",
     "textarea-hint": "Zeige Fragen mit dem Datentyp Text als mehrzeilige statt einzeilige Textboxen.",
     "likert-scale-limit": "Max. Anzahl Items",
     "survey-view-hint": "Öffne die Umfrageansicht auf mobilen Geräten beim Klicken auf ein Ereignis automatisch.",
@@ -285,10 +289,13 @@
     "load-from-mdm-label": "MDM-Portal ID",
     "load-from-mdm-exceeded": "Sie haben die maximale Anzahl an Downloads aus dem MDM-Portal für diese Stunde erreicht. Bitte wählen Sie eine andere Methode.",
     "load-from-mdm-error": "Das MDM-Portal ist augenblicklich nicht erreichbar. Bitte versuchen Sie es später erneut oder wählen Sie eine andere Methode.",
+    "edit-image-heading": "Bilddaten bearbeiten",
+    "edit-image-text": "Bildtyp: Zur Zeit nur base64\r\nBildformat: PNG oder JPEG\r\nName: Nur wichtig für die Bearbeitungsansicht",
     "open": "Öffnen",
     "example": "Beispiel",
     "exemplary-project": "Beispielprojekt",
-
+    "formatted": "Formatiert",
+    "raw": "Source",
     "address_1": "Institut für Medizinische Informatik",
     "address_2": "Direktor: Prof. Dr. Martin Dugas",
     "address_3": "Im Neuenheimer Feld 130.3",
@@ -419,8 +426,8 @@
     "assign-value": "Wert zuweisen",
     "no-survey": "In Umfrageansicht ausblenden",
     "no-survey-description": "Falls sie diese Checkbox anwählen, wird das Element in der Umfrageansicht ausgeblendet.",
-    "codelistitem-image-height": "Bildhöhe von CodelistItems",
-    "codelistitem-image-height-description": "Gibt die Höhe von Bildern in CodelistItems in Pixeln an. Der Standardwert beträgt 40.",
+    "codelistitem-image-width": "Bildbreite von CodelistItems",
+    "codelistitem-image-width-description": "Gibt die Breite von Bildern in CodelistItems in Pixeln an. Der Standardwert beträgt 40.",
     "new-version": "Neue Version",
     "new-version-hint": "Überprüft, ob eine neue Version verfügbar ist.",
     "new-version-notification": "Es ist eine neue Version verfügbar. Ein Update wird empfohlen.",
@@ -429,5 +436,6 @@
     "update": "Update",
     "export-not-allowed": "Sie sind nicht berechtigt, Daten zu exportieren.",
     "save-and-close": "Speichern und schließen",
-    "no-permission": "Nicht erlaubt"
+    "no-permission": "Nicht erlaubt",
+    "image": "Bild"
 }

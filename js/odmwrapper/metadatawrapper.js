@@ -40,6 +40,19 @@ class OpenEDCSetting {
     }
 
 }
+
+export class FormImage{
+    constructor( format, base64Data, width, name) {
+        this.type = 'base64';
+        this.format = format;
+        this.base64Data = base64Data;
+        this.width = width;
+        this.name = name;
+    }
+}
+
+let formImageDataMap = {}
+
 export let loadedSettings = new Map();
 export const OPENEDC_SETTINGS_ALIAS_CONTEXT = 'openedc-settings';
 export const SETTINGS_CONTEXT = "OpenEDC";
@@ -1223,6 +1236,65 @@ export async function mergeMetadata(odmXMLString) {
     await storeMetadata();
 }
 
+export function extractImageInfo(imageString, identifier) {
+    if(!imageString.startsWith("![")) return {data: null, identifier: null};
+
+    let name;
+    let nameArray = imageString.match(/!\[[^\]]+?\]/);
+    console.log("nameArray", nameArray)
+    if(nameArray && nameArray.length > 0) {
+        name = nameArray[0].replace('!', '').replace('[','').replace(']','');
+    }
+
+    let format = undefined;
+    let width = undefined;
+    let base64Data = undefined;
+
+    let dataArray = imageString.match(/\(data.*?\)/);
+    if(dataArray && dataArray.length > 0) {
+        let data = dataArray[0];
+
+        let formatArray = data.match(/image\/[a-z]+?;/);
+        if(formatArray && formatArray.length > 0){
+            format = formatArray[0].substring(formatArray[0].indexOf('/') + 1, formatArray[0].indexOf(';'));
+            console.log(format);
+        }
+
+        const base64DataArray = data.split(',');
+        if(base64DataArray.length > 1) base64Data = base64DataArray[1].replace(')','');
+    }
+
+    let settingsArray = imageString.match(/\[(?:[a-z]+:.*?;?)*\]/);
+    console.log(settingsArray);
+    if(settingsArray && settingsArray.length > 0) {
+        let innerSplits = settingsArray[0].split(';');
+        let widthSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0].includes("width"));
+        console.log(widthSplit);
+        if(widthSplit) widthSplit = widthSplit.split(":");
+        width = widthSplit && widthSplit.length == 2 ? widthSplit[1] : undefined;
+    }
+
+    identifier = identifier || makeid(20);;
+    formImageDataMap[identifier] = new FormImage(format, base64Data, width, name);
+    console.log(formImageDataMap[identifier]);
+    return {data: formImageDataMap[identifier], identifier}
+    
+}
+
+export function getFormImageData(identifier) {
+    return {data: formImageDataMap[identifier], identifier};
+}
+
+export function updateFormImageData(identifier, formImageData) {
+    if(!identifier) return;
+    formImageDataMap[identifier] = formImageData;
+}
+
+export function getImageSplitsForString(string) {
+    if(!string) return [];
+    return string.split(/(!\[.*?\](?:\(data:image\/[a-z]+;base64,[a-zA-Z0-9\/+=]+\))?(?:\[(?:[a-z]+:[a-zA-Z0-9%]+?)+;\])?)/g);
+}
+
 export function loadPossibleOpenEDCSettings() {
     fetch('./settings.json')
     .then(response => response.json())
@@ -1273,4 +1345,14 @@ export function setCurrentElementSettingsByOID(oid, settings) {
     const alias = [...aliasses].find(a => a.getAttribute('Context') == OPENEDC_SETTINGS_ALIAS_CONTEXT);
     if(alias) alias.setAttribute('Name', JSON.stringify(settings));
     else setElementAlias(path, OPENEDC_SETTINGS_ALIAS_CONTEXT, JSON.stringify(settings));
+}
+
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
 }

@@ -54,7 +54,20 @@ class MetadataSection extends HTMLElement {
                                         </div>
                                         <div class="field is-flex is-flex-direction-column is-flex-grow-1">
                                             <label class="label" id="element-long-label"></label>
-                                            <textarea class="textarea is-flex-grow-1" id="translation-textarea"></textarea>
+                                            <div class="tabs is-small mb-0" id="translation-area-tabs">
+                                                <ul>
+                                                    <li id="translation-textarea-link" class="is-active"><a onclick="switchTab(event, 'translation-textarea-formatted-container', 'translation-textarea-container', false)" i18n="raw"></a></li>
+                                                    <li id="translation-textarea-formatted-link"><a onclick="switchTab(event, 'translation-textarea-container', 'translation-textarea-formatted-container', true)" i18n="formatted"></a></li>
+                                                </ul>
+                                            </div>
+                                            <div id='translation-text-sections-container' class="is-flex-grow-1 is-flex">
+                                                <section class="tab-content is-flex-grow-1 is-flex is-flex-direction-column is-hidden" id="translation-textarea-container">
+                                                    <textarea class="textarea is-flex-grow-1" id="translation-textarea" contenteditable="true"></textarea>
+                                                </section>
+                                                <section class="tab-content is-flex-grow-1 is-flex is-flex-direction-column" id="translation-textarea-formatted-container">
+                                                    <div class="textarea is-flex-grow-1" id="translation-textarea-formatted" contenteditable="true"></div>
+                                                </section>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -150,7 +163,7 @@ class MetadataSection extends HTMLElement {
                             </div>
                         </nav>
                     </div>
-                    <div class="column">
+                    <div class="column is-clipped">
                         <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" i18n="groups"></p>
                             <div class="tree-panel-blocks" id="item-group-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
@@ -159,7 +172,7 @@ class MetadataSection extends HTMLElement {
                             </div>
                         </nav>
                     </div>
-                    <div class="column">
+                    <div class="column is-clipped">
                         <nav class="panel is-link">
                             <p class="panel-heading has-text-centered" i18n="items"></p>
                             <div class="tree-panel-blocks" id="item-panel-blocks" ondragenter="allowDrop(event)" ondragover="allowDrop(event)" ondrop="elementDrop(event)"></div>
@@ -188,6 +201,9 @@ class MetadataSection extends HTMLElement {
                             </div>
                         </nav>
                     </div>
+                </div>
+                <div class="is-hidden" id="image-preview-container" style="position: absolute; z-index:41;">
+                    <img src="" style="max-width:300px; max-height: 300px;"/>
                 </div>
             </section>
         `;

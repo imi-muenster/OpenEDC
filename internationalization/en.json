@@ -36,6 +36,11 @@
     "form-design": "Form Design",
     "data-collection": "Data Collection",
 
+    "type": "Image type",
+    "format": "Image format (png or jpeg)",
+    "width": "Image width (in % or px)",
+    "base64Data": "Base64 string",
+
     "foundational": "Foundational",
     "extended": "Extended",
     "unique-id": "Unique ID",
@@ -285,10 +290,14 @@
     "load-from-mdm-label": "ID from MDM-Portal",
     "load-from-mdm-exceeded": "You reached the maximum of available download from the MDM-Portal for this hour. Please chose another method.",
     "load-from-mdm-error": "The MDM-Portal is currently unavailable. Please try again later or chose another method.",
+    "edit-image-heading": "Edit image attributes",
+    "edit-image-text": "Image type: only base64 at the time<br>Image format: PNG or JPEG<br>Name: Only important for edit view.",
     "open": "Open",
     "example": "Example",
     "exemplary-project": "Exemplary Project",
-
+    "formatted": "Formatted",
+    "raw": "Source",
+    
     "address_1": "Institute for Medical Informatics",
     "address_2": "Director: Prof. Dr. Martin Dugas",
     "address_3": "Im Neuenheimer Feld 130.3",
@@ -419,8 +428,8 @@
     "assign-value": "Assign value",
     "no-survey": "Hide in survey view",
     "no-survey-description": "If you check this checkbox, the element will not be shown in the survey view.",
-    "codelistitem-image-height": "Image height of CodelistItems",
-    "codelistitem-image-height-description": "Sets the height of CodelistItem images in pixels. The default value is 40.",
+    "codelistitem-image-width": "Image width of CodelistItems",
+    "codelistitem-image-width-description": "Sets the width of CodelistItem images in pixels. The default value is 40.",
     "new-version": "New Version",
     "new-version-hint": "Checks whether a new version is available.",
     "new-version-notification": "A new version is available. An update is recommended.",
@@ -429,6 +438,7 @@
     "update": "Update",
     "export-not-allowed": "You are not allowed to export data.",
     "save-and-close": "save and close",
-    "no-permission": "No Permission"
+    "no-permission": "No Permission",
+    "image": "image"
 }
 

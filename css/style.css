@@ -173,8 +173,10 @@ a.panel-block {
     overflow-y: auto;
 }
 
-#translation-textarea {
+#translation-textarea, #translation-textarea-formatted {
     min-height: 5rem;
+    max-width: 200px;
+    overflow-y: auto;
 }
 
 #extended-options-button {
@@ -543,7 +545,9 @@ a.panel-block:hover {
 }
 
 .has-overvlow-wrap  {
-    overflow-wrap: anywhere;
+    /*overflow-wrap: anywhere;*/
+    overflow-wrap: break-word;
+    -webkit-line-break: after-white-space;
 }
 
 .has-text-align-center {
