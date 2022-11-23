@@ -37,8 +37,8 @@
     "data-collection": "Data Collection",
 
     "type": "Image type",
-    "format": "Image format",
-    "width": "Image width",
+    "format": "Image format (png or jpeg)",
+    "width": "Image width (in % or px)",
     "base64Data": "Base64 string",
 
     "foundational": "Foundational",

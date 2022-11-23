@@ -1245,20 +1245,16 @@ export function extractImageInfo(imageString, identifier) {
     if(nameArray && nameArray.length > 0) {
         name = nameArray[0].replace('!', '').replace('[','').replace(']','');
     }
-    //console.log(name);
 
     let format = undefined;
     let width = undefined;
     let base64Data = undefined;
 
     let dataArray = imageString.match(/\(data.*?\)/);
-    //console.log(dataArray);
     if(dataArray && dataArray.length > 0) {
         let data = dataArray[0];
-        //console.log(data);
 
         let formatArray = data.match(/image\/[a-z]+?;/);
-       // console.log(formatArray);
         if(formatArray && formatArray.length > 0){
             format = formatArray[0].substring(formatArray[0].indexOf('/') + 1, formatArray[0].indexOf(';'));
             console.log(format);
@@ -1266,15 +1262,6 @@ export function extractImageInfo(imageString, identifier) {
 
         const base64DataArray = data.split(',');
         if(base64DataArray.length > 1) base64Data = base64DataArray[1].replace(')','');
-        /* let formatSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "format");
-        if(formatSplit) formatSplit = formatSplit.split(":");
-        const format = formatSplit && formatSplit.length == 2 ? formatSplit[1] : undefined; */
-
-        /* let widthSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "width");
-        if(widthSplit) widthSplit = widthSplit.split(":");
-        const width = widthSplit && widthSplit.length == 2 ? widthSplit[1] : undefined; */
-
-        //const base64Data = innerSplits[innerSplits.length - 1].replace("|img", "").replace("|", "").trim();
     }
 
     let settingsArray = imageString.match(/\[(?:[a-z]+:.*?;?)*\]/);
@@ -1286,14 +1273,6 @@ export function extractImageInfo(imageString, identifier) {
         if(widthSplit) widthSplit = widthSplit.split(":");
         width = widthSplit && widthSplit.length == 2 ? widthSplit[1] : undefined;
     }
-
-    
-
-    /*  let nameSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0] == "name");
-    if(nameSplit) nameSplit = nameSplit.split(":");
-    const name = nameSplit && nameSplit.length == 2 ? nameSplit[1] : undefined; */
-
-   
 
     identifier = identifier || makeid(20);;
     formImageDataMap[identifier] = new FormImage(format, base64Data, width, name);
@@ -1309,6 +1288,11 @@ export function getFormImageData(identifier) {
 export function updateFormImageData(identifier, formImageData) {
     if(!identifier) return;
     formImageDataMap[identifier] = formImageData;
+}
+
+export function getImageSplitsForString(string) {
+    if(!string) return [];
+    return string.split(/(!\[.*?\](?:\(data:image\/[a-z]+;base64,[a-zA-Z0-9\/+=]+\))?(?:\[(?:[a-z]+:[a-zA-Z0-9%]+?)+;\])?)/g);
 }
 
 export function loadPossibleOpenEDCSettings() {

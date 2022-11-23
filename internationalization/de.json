@@ -37,8 +37,8 @@
     "data-collection": "Datenerhebung",
 
     "type": "Bildtyp",
-    "format": "Bildformat",
-    "width": "Bildbreite",
+    "format": "Bildformat (png oder jpeg)",
+    "width": "Bildbreite (in % oder px)",
     "base64Data": "Base64 String",
     "foundational": "Grundlegend",
     "extended": "Erweitert",

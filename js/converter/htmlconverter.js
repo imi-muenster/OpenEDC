@@ -52,7 +52,18 @@ function getItemGroupDefault(itemGroupOID, options) {
 
     const itemGroupDescr = document.createElement("h2");
     itemGroupDescr.className = "subtitle";
-    itemGroupDescr.innerHTML = processMarkdown(itemGroupDef.getTranslatedDescription(options.useNames ? null : options.locale, options.useNames));
+    const translatedDescription = processMarkdown(itemGroupDef.getTranslatedDescription(options.useNames ? null : options.locale, options.useNames));
+    const splits = transformImagesInTranslation(translatedDescription)
+    splits.forEach(split => {
+        if(split.type === 'image') itemGroupDescr.appendChild(split.value)
+        else {
+            const itemDescriptionPart = document.createElement("span");
+            itemDescriptionPart.className = "span";
+            itemDescriptionPart.innerHTML = split.value;
+            //itemQuestion.innerHTML += ;
+            itemGroupDescr.appendChild(itemDescriptionPart);
+        }
+    })
     itemGroupContent.appendChild(itemGroupDescr);
 
     for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
@@ -66,40 +77,23 @@ function getItemGroupDefault(itemGroupOID, options) {
         itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
 
         const translatedQuestion = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
-        const splits = translatedQuestion.split(/(!\[.*?\](?:\(data:image\/[a-z]+;base64,[a-zA-Z0-9\/+=]+\))?(?:\[(?:[a-z]+:[a-zA-Z0-9%]+?)+;\])?)/g);
-        console.log(splits);
+        const splits = transformImagesInTranslation(translatedQuestion)
         splits.forEach(split => {
-            if(split.startsWith("![")) {
-                const imageInfo = metadataWrapper.extractImageInfo(split).data;
-                if(!imageInfo) return;
-                let img = document.createElement('img');
-                const width = imageInfo.width?? defaultItemImageWidth;
-                img.style = `width: ${width};`;
-
-                const format = imageInfo.format?? 'png';
-
-                img.setAttribute("src", `data:image/${format == 'svg' ? 'svg+xml' : format};base64,${imageInfo.base64Data}`);
-                itemField.appendChild(img);
-            }
-            else if(split.trim() != "") {
+            if(split.type === 'image') itemField.appendChild(split.value)
+            else {
                 const itemQuestion = document.createElement("label");
                 itemQuestion.className = "label";
-                itemQuestion.innerHTML = split.trim();
+                itemQuestion.innerHTML = split.value;
                 //itemQuestion.innerHTML += ;
                 itemField.appendChild(itemQuestion);
             }
-        });
-        /* if(itemRef.getAttribute("Mandatory") == "Yes") {
-            console.log([...itemField.children])
-            let revereChildren = [...itemField.children].slice().reverse();
-            let lastLabelChildIndex = revereChildren.findIndex(x => x.tagName == 'LABEL');
-            revereChildren[lastLabelChildIndex].innerHTML += " (*)";
-        } */
-        /* const itemQuestion = document.createElement("label");
-        itemQuestion.className = "label";
-        itemQuestion.innerHTML = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
-        itemQuestion.innerHTML += itemRef.getAttribute("Mandatory") == "Yes" ? " (*)" : "";
-        itemField.appendChild(itemQuestion); */
+        })
+
+         if(itemRef.getAttribute("Mandatory") == "Yes") {
+            let reverseChildren = [...itemField.children].slice().reverse();
+            let lastLabelChildIndex = reverseChildren.findIndex(x => x.tagName == 'LABEL');
+            if(lastLabelChildIndex >= 0) reverseChildren[lastLabelChildIndex].innerHTML += " (*)";
+        }
 
         const itemInput = getItemInput(itemDef, itemGroupOID, options);
         itemField.appendChild(itemInput);
@@ -152,18 +146,19 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
             questionDiv.classList = "has-overflow-wrap has-text-align-center";
             const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
 
-            if(translatedText.startsWith("base64;")) {
-                const splits = translatedText.split(";")
-                let img = document.createElement('img');
-                img.style = `width: ${maxImageWidth ? maxImageWidth : defaultCodeListItemImageWidth}px;`
-                img.setAttribute("src", `data:image/${splits[1] == 'svg' ? 'svg+xml' : splits[1]};base64,${splits[2]}`);
-                questionDiv.appendChild(img);
-            }
-            else {
-                questionDiv.innerText = translatedText;
-                //if(showtext) radioContainer.appendChild(document.createTextNode(" " + translatedText));
-            }
-           
+            const splits = transformImagesInTranslation(translatedText)
+            splits.forEach(split => {
+                if(split.type === 'image') {
+                    split.value.style = `width: ${maxImageWidth ? maxImageWidth : defaultCodeListItemImageWidth}px;`
+                    questionDiv.appendChild(split.value);
+                }
+                else {
+                    const codeListItemPart = document.createElement("span");
+                    codeListItemPart.className = "span";
+                    codeListItemPart.innerHTML = split.value;
+                    questionDiv.appendChild(codeListItemPart);
+                }
+            })
             likertOptionsHeader.appendChild(questionDiv);
         }
 
@@ -180,11 +175,28 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
             itemField.setAttribute("item-field-oid", itemOID);
             itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
 
-            const itemQuestion = document.createElement("label");
-            itemQuestion.className = "label column is-4";
-            itemQuestion.innerHTML = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
-            itemQuestion.innerHTML += itemRef.getAttribute("Mandatory") == "Yes" ? " (*)" : "";
+            const itemQuestion = document.createElement("div");
+            itemQuestion.className = "column is-4";
+            const translatedQuestion = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
+            //itemQuestion.innerHTML += itemRef.getAttribute("Mandatory") == "Yes" ? " (*)" : "";
             //itemRow.appendChild(itemQuestion);
+
+            const splits = transformImagesInTranslation(translatedQuestion)
+            splits.forEach(split => {
+                if(split.type === 'image') itemQuestion.appendChild(split.value)
+                else {
+                    const itemQuestionPart = document.createElement("label");
+                    itemQuestionPart.className = "label";
+                    itemQuestionPart.innerHTML = split.value;
+                    //itemQuestion.innerHTML += ;
+                    itemQuestion.appendChild(itemQuestionPart);
+                }
+            })
+            if(itemRef.getAttribute("Mandatory") == "Yes") {
+                let reverseChildren = [...itemQuestion.children].slice().reverse();
+                let lastLabelChildIndex = reverseChildren.findIndex(x => x.tagName == 'LABEL');
+                if(lastLabelChildIndex >= 0) reverseChildren[lastLabelChildIndex].innerHTML += " (*)";
+            }
 
             const itemOptions = document.createElement('div');
             itemOptions.classList = "field column is-8 grid-even-columns has-text-align-center is-align-content-center";
@@ -209,6 +221,30 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
     const divider = document.createElement("hr");
     itemGroupContent.appendChild(divider);
     return itemGroupContent;
+}
+
+function transformImagesInTranslation(translatedString) {
+    let transformedParts = [];
+    const splits = metadataWrapper.getImageSplitsForString(translatedString);
+    splits.forEach(split => {
+        if(split.startsWith("![")) {
+            const imageInfo = metadataWrapper.extractImageInfo(split).data;
+            if(!imageInfo) return;
+            let img = document.createElement('img');
+            const width = imageInfo.width?? defaultItemImageWidth;
+            img.style = `width: ${width};`;
+
+            const format = imageInfo.format?? 'png';
+
+            img.setAttribute("src", `data:image/${format == 'svg' ? 'svg+xml' : format};base64,${imageInfo.base64Data}`);
+            transformedParts.push({type: 'image', value: img});
+        }
+        else if(split.trim() != "") {
+            const text = split.trim();
+            transformedParts.push({type: 'text', value: text});
+        }
+    });
+    return transformedParts;
 }
 
 function getItemInput(itemDef, itemGroupOID, options) {

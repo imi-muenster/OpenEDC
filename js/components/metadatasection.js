@@ -54,7 +54,7 @@ class MetadataSection extends HTMLElement {
                                         </div>
                                         <div class="field is-flex is-flex-direction-column is-flex-grow-1">
                                             <label class="label" id="element-long-label"></label>
-                                            <div class="tabs is-small mb-0">
+                                            <div class="tabs is-small mb-0" id="translation-area-tabs">
                                                 <ul>
                                                     <li id="translation-textarea-link" class="is-active"><a onclick="switchTab(event, 'translation-textarea-formatted-container', 'translation-textarea-container', false)" i18n="raw"></a></li>
                                                     <li id="translation-textarea-formatted-link"><a onclick="switchTab(event, 'translation-textarea-container', 'translation-textarea-formatted-container', true)" i18n="formatted"></a></li>
@@ -203,7 +203,7 @@ class MetadataSection extends HTMLElement {
                     </div>
                 </div>
                 <div class="is-hidden" id="image-preview-container" style="position: absolute; z-index:41;">
-                    <img src="" style="max-width:200px; max-height: 200px;"/>
+                    <img src="" style="max-width:300px; max-height: 300px;"/>
                 </div>
             </section>
         `;

@@ -200,6 +200,7 @@ function loadItemGroupsByForm(hideTree) {
     let itemGroupDefs = metadataWrapper.getItemGroupsByForm(currentPath.formOID);
     for (let itemGroupDef of itemGroupDefs) {
         let translatedDescription = itemGroupDef.getTranslatedDescription(languageHelper.getCurrentLocale());
+        translatedDescription = formatImagesInTranslatedText(translatedDescription);
         let panelBlock = createPanelBlock(itemGroupDef.getOID(), ODMPath.elements.ITEMGROUP, translatedDescription, itemGroupDef.getName());
         panelBlock.onclick = itemGroupClicked;
         $("#item-group-panel-blocks").appendChild(panelBlock);
@@ -306,6 +307,7 @@ function resetDetailsPanel() {
     // Foundational
     [$("#id-input"), $("#name-input"), $("#translation-textarea"), $("#translation-textarea-formatted"), $("#datatype-select-inner"), $("#mandatory-select-inner")].disableElements();
     [$("#id-input"), $("#name-input"), $("#translation-textarea"), $("#translation-textarea-formatted"), $("#datatype-select-inner"), $("#mandatory-select-inner")].emptyInputs();
+    $("#translation-area-tabs").hide();
     $("#translation-textarea-formatted").contentEditable = false;
     activateTranslationAreaTab('translation-textarea');
     $("#element-oid-label").textContent = languageHelper.getTranslation("unique-id");
@@ -353,9 +355,12 @@ function fillDetailsPanelFoundational() {
     let element = metadataWrapper.getElementDefByOID(currentPath.last.value);
     const elementRef = metadataWrapper.getElementRefByOID(currentPath.last.element, currentPath);
     switch (currentPath.last.element) {
+        case ODMPath.elements.ITEMGROUP:
+            [$("#translation-textarea-formatted")].enableElements();
+            $("#translation-textarea-formatted").contentEditable = true;
+            $("#translation-area-tabs").show();
         case ODMPath.elements.STUDYEVENT:
         case ODMPath.elements.FORM:
-        case ODMPath.elements.ITEMGROUP:
             $("#id-input").value = currentPath.last.value;
             $("#name-input").value = element.getName();
             $("#translation-textarea").value = element.getTranslatedDescription(languageHelper.getCurrentLocale());
@@ -366,6 +371,7 @@ function fillDetailsPanelFoundational() {
             $("#mandatory-select-inner").value = elementRef.getAttribute("Mandatory");
             $("#id-input").value = currentPath.last.value;
             $("#name-input").value = element.getName();
+            $("#translation-area-tabs").show();
             [$("#translation-textarea-formatted")].enableElements();
             $("#translation-textarea-formatted").contentEditable = true;
             $("#translation-textarea").value = element.getTranslatedQuestion(languageHelper.getCurrentLocale());
@@ -377,6 +383,7 @@ function fillDetailsPanelFoundational() {
             $("#element-long-label").textContent = languageHelper.getTranslation("translated-choice");
             element = metadataWrapper.getCodeListItem(metadataWrapper.getCodeListOIDByItem(currentPath.itemOID), currentPath.codeListItem);
             $("#id-input").value = element.getCodedValue();
+            $("#translation-area-tabs").show();
             [$("#translation-textarea-formatted")].enableElements();
             $("#translation-textarea-formatted").contentEditable = true;
             $("#translation-textarea").value = element.getTranslatedDecode(languageHelper.getCurrentLocale());
@@ -425,6 +432,7 @@ window.editFormImage = (image) =>{
     let modal = document.createElement("form-image-modal");
     modal.setFormImageData(formImageData.data)
     modal.setSaveCallback((formImageDataNew) => {
+        if(!formImageDataNew.format) formImageDataNew.format = 'png';
         metadataWrapper.updateFormImageData(formImageData.identifier, formImageDataNew);
         highlightSaveButton();
     });

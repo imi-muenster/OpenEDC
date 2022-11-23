@@ -459,6 +459,8 @@ class FormImageModal extends HTMLElement {
             this.remove();
         };
         
+        if(!this.formImageData.format) this.formImageData.format = 'png';
+
         let elementsDiv = this.querySelector('#form-image-modal-elements');
         let img = document.createElement('img');
         Object.entries(this.formImageData).forEach(([key, value]) => {
