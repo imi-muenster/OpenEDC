@@ -1264,14 +1264,15 @@ export function extractImageInfo(imageString, identifier) {
         if(base64DataArray.length > 1) base64Data = base64DataArray[1].replace(')','');
     }
 
-    let settingsArray = imageString.match(/\[(?:[a-z]+:.*?;?)*\]/);
+    console.log(imageString);
+    let settingsArray = imageString.match(/\[(?:[a-z]+:.*?;?)+\]/);
     console.log(settingsArray);
     if(settingsArray && settingsArray.length > 0) {
         let innerSplits = settingsArray[0].split(';');
         let widthSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0].includes("width"));
         console.log(widthSplit);
         if(widthSplit) widthSplit = widthSplit.split(":");
-        width = widthSplit && widthSplit.length == 2 ? widthSplit[1] : undefined;
+        width = widthSplit && widthSplit.length == 2 ? widthSplit[1].replace(";","") : undefined;
     }
 
     identifier = identifier || makeid(20);;
