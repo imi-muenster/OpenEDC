@@ -3,8 +3,8 @@ import * as metadataWrapper from "../odmwrapper/metadatawrapper.js";
 const $ = query => metadataWrapper.getMetadata().querySelector(query);
 const $$ = query => metadataWrapper.getMetadata().querySelectorAll(query);
 
-const defaultCodeListItemImageWidth = 40;
-const defaultItemImageWidth = '100%'
+export const defaultCodeListItemImageWidth = 40;
+export const defaultItemImageWidth = '100%'
 
 export function getFormAsHTML(formOID, options) {
     const formAsHTML = document.createElement("div");
