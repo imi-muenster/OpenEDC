@@ -99,7 +99,7 @@ function getItemGroupDefault(itemGroupOID, options) {
         itemField.appendChild(itemInput);
         itemGroupContent.appendChild(itemField);
         const divider = document.createElement("hr");
-        itemGroupContent.appendChild(divider);
+        itemField.appendChild(divider);
     }
     return itemGroupContent;
 }
