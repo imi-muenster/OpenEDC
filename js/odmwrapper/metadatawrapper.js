@@ -52,6 +52,8 @@ export class FormImage{
 }
 
 let formImageDataMap = {}
+export const defaultCodeListItemImageWidth = 40;
+export const defaultItemImageWidth = '100%'
 
 export let loadedSettings = new Map();
 export const OPENEDC_SETTINGS_ALIAS_CONTEXT = 'openedc-settings';
@@ -159,6 +161,8 @@ export function removeMetadata() {
 
 export async function getFormAsHTML(formOID, textAsTextarea = false, useItemNames = false, useItemGroupNames = false) {
     return htmlConverter.getFormAsHTML(formOID, {
+        defaultCodeListItemImageWidth,
+        defaultItemImageWidth,
         locale: languageHelper.getCurrentLocale(),
         missingTranslation: languageHelper.getTranslation("missing-translation"),
         yes: languageHelper.getTranslation("yes"),

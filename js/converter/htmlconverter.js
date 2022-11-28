@@ -3,10 +3,12 @@ import * as metadataWrapper from "../odmwrapper/metadatawrapper.js";
 const $ = query => metadataWrapper.getMetadata().querySelector(query);
 const $$ = query => metadataWrapper.getMetadata().querySelectorAll(query);
 
-export const defaultCodeListItemImageWidth = 40;
-export const defaultItemImageWidth = '100%'
+let defaultCodeListItemImageWidth;
+let defaultItemImageWidth;
 
 export function getFormAsHTML(formOID, options) {
+    defaultCodeListItemImageWidth = options['defaultCodeListItemImageWidth'];
+    defaultItemImageWidth = options['defaultItemImageWidth']
     const formAsHTML = document.createElement("div");
     formAsHTML.id = "odm-html-content";
     const hideForm = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', formOID);
