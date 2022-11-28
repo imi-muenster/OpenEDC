@@ -53,12 +53,14 @@ class MetadataSection extends HTMLElement {
                                             <input class="input" type="text" id="name-input" autocomplete="off">
                                         </div>
                                         <div class="field is-flex is-flex-direction-column is-flex-grow-1">
-                                            <label class="label" id="element-long-label"></label>
-                                            <div class="tabs is-small mb-0" id="translation-area-tabs">
-                                                <ul>
-                                                    <li id="translation-textarea-link" class="is-active"><a onclick="switchTab(event, 'translation-textarea-formatted-container', 'translation-textarea-container', false)" i18n="raw"></a></li>
-                                                    <li id="translation-textarea-formatted-link"><a onclick="switchTab(event, 'translation-textarea-container', 'translation-textarea-formatted-container', true)" i18n="formatted"></a></li>
-                                                </ul>
+                                            <div class="is-flex is-justify-content-space-between">
+                                                <label class="label" id="element-long-label"></label>
+                                                <div class="tabs is-small mb-0" id="translation-area-tabs">
+                                                    <ul>
+                                                        <li id="translation-textarea-link" class="is-active"><a onclick="switchTab(event, 'translation-textarea-formatted-container', 'translation-textarea-container', false)" i18n="raw"></a></li>
+                                                        <li id="translation-textarea-formatted-link"><a onclick="switchTab(event, 'translation-textarea-container', 'translation-textarea-formatted-container', true)" i18n="formatted"></a></li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                             <div id='translation-text-sections-container' class="is-flex-grow-1 is-flex">
                                                 <section class="tab-content is-flex-grow-1 is-flex is-flex-direction-column is-hidden" id="translation-textarea-container">
