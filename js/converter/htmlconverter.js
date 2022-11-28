@@ -156,7 +156,6 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
             const itemOID = itemRef.getAttribute("ItemOID");
             const itemDef = $(`ItemDef[OID="${itemOID}"]`);
             const hideItem = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', itemOID);
-
             //const itemRow = document.createElement('div');
             //itemRow.classList = "column is-5";
 
@@ -264,7 +263,7 @@ function getItemInput(itemDef, itemGroupOID, options) {
     if (codeListRef) {
         const codeListOID = codeListRef.getAttribute("CodeListOID");
         const codeListItems = $$(`CodeList[OID="${codeListOID}"] CodeListItem`);
-        options["maxImageWidth"] = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'codelistitem-image-width', itemOID) || options["maxImageWidth"];
+        options['maxCodelistItemImageWidthForItem'] = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'codelistitem-image-width', itemOID) || options["maxImageWidth"];
         const forceCheckboxes = containsImages(codeListItems, options);
         if (!forceCheckboxes && codeListItems.length >= 5) {
             const selectInput = getSelectInput(codeListItems, itemOID, options);
@@ -362,7 +361,7 @@ const getRadioInput = (value, translatedText, itemOID, itemGroupOID, options, no
                 const imageInfo = metadataWrapper.extractImageInfo(split).data;
                 if(!imageInfo) return;
                 let img = document.createElement('img');
-                img.style = `width: ${options.maxImageWidth ? options.maxImageWidth : defaultCodeListItemImageWidth}px;`
+                img.style = `width: ${options.maxCodelistItemImageWidthForItem ? options.maxCodelistItemImageWidthForItem : defaultCodeListItemImageWidth}px;`
                 const format = imageInfo.format?? 'png';
                 img.setAttribute("src", `data:image/${format == 'svg' ? 'svg+xml' : format};base64,${imageInfo.base64Data}`);
                 radioContainer.appendChild(img);
