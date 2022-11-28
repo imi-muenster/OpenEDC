@@ -166,7 +166,7 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
             itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
 
             const itemQuestion = document.createElement("div");
-            itemQuestion.className = "column is-4";
+            itemQuestion.className = "column is-4 item-question";
             const translatedQuestion = processMarkdown(itemDef.getTranslatedQuestion(options.useItemNames ? null : options.locale, options.useItemNames)) || options.missingTranslation;
             //itemQuestion.innerHTML += itemRef.getAttribute("Mandatory") == "Yes" ? " (*)" : "";
             //itemRow.appendChild(itemQuestion);
