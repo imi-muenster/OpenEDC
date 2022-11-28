@@ -50,20 +50,8 @@ function getItemGroupDefault(itemGroupOID, options) {
     itemGroupContent.className = `item-group-content ${hideItemGroup ? 'is-hidden-survey-view' : ''}`;
     itemGroupContent.setAttribute("item-group-content-oid", itemGroupOID);
 
-    const itemGroupDescr = document.createElement("h2");
-    itemGroupDescr.className = "subtitle";
     const translatedDescription = processMarkdown(itemGroupDef.getTranslatedDescription(options.useItemGroupNames ? null : options.locale, options.useItemGroupNames));
-    const splits = transformImagesInTranslation(translatedDescription)
-    splits.forEach(split => {
-        if(split.type === 'image') itemGroupDescr.appendChild(split.value)
-        else {
-            const itemDescriptionPart = document.createElement("span");
-            itemDescriptionPart.className = "span";
-            itemDescriptionPart.innerHTML = split.value;
-            //itemQuestion.innerHTML += ;
-            itemGroupDescr.appendChild(itemDescriptionPart);
-        }
-    })
+    const itemGroupDescr = getItemGroupHeading(translatedDescription);
     itemGroupContent.appendChild(itemGroupDescr);
 
     for (const itemRef of $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`)) {
@@ -116,9 +104,8 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
     itemGroupContent.className = `item-group-content ${hideItemGroup ? 'is-hidden-survey-view' : ''}`;
     itemGroupContent.setAttribute("item-group-content-oid", itemGroupOID);
 
-    const itemGroupDescr = document.createElement("h2");
-    itemGroupDescr.className = "subtitle";
-    itemGroupDescr.innerHTML = processMarkdown(itemGroupDef.getTranslatedDescription(options.useItemGroupNames ? null : options.locale, options.useItemGroupNames));
+    const translatedDescription = processMarkdown(itemGroupDef.getTranslatedDescription(options.useItemGroupNames ? null : options.locale, options.useItemGroupNames));
+    const itemGroupDescr = getItemGroupHeading(translatedDescription);
     itemGroupContent.appendChild(itemGroupDescr);
 
     let itemRefs = $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`);
@@ -146,7 +133,7 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
 
         for (let codeListItem of codeListItems) {
             let questionDiv = document.createElement('div');
-            questionDiv.classList = "has-overflow-wrap has-text-align-center";
+            questionDiv.classList = "has-overflow-wrap has-text-align-center item-question";
             const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
 
             const splits = transformImagesInTranslation(translatedText)
@@ -224,6 +211,23 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
     const divider = document.createElement("hr");
     itemGroupContent.appendChild(divider);
     return itemGroupContent;
+}
+
+function getItemGroupHeading(translatedDescription) {
+    const itemGroupDescr = document.createElement("h2");
+    itemGroupDescr.className = "subtitle";
+    const splits = transformImagesInTranslation(translatedDescription)
+    splits.forEach(split => {
+        if(split.type === 'image') itemGroupDescr.appendChild(split.value)
+        else {
+            const itemDescriptionPart = document.createElement("span");
+            itemDescriptionPart.className = "span";
+            itemDescriptionPart.innerHTML = split.value;
+            //itemQuestion.innerHTML += ;
+            itemGroupDescr.appendChild(itemDescriptionPart);
+        }
+    })
+    return itemGroupDescr;
 }
 
 function transformImagesInTranslation(translatedString) {
