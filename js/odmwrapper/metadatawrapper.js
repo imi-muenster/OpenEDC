@@ -157,14 +157,15 @@ export function removeMetadata() {
     metadata = null;
 }
 
-export async function getFormAsHTML(formOID, textAsTextarea = false, useNames = false) {
+export async function getFormAsHTML(formOID, textAsTextarea = false, useItemNames = false, useItemGroupNames = false) {
     return htmlConverter.getFormAsHTML(formOID, {
         locale: languageHelper.getCurrentLocale(),
         missingTranslation: languageHelper.getTranslation("missing-translation"),
         yes: languageHelper.getTranslation("yes"),
         no: languageHelper.getTranslation("no"),
         textAsTextarea: textAsTextarea,
-        useNames: useNames,
+        useItemNames,
+        useItemGroupNames,
         showAsLikert: ioHelper.getSetting("showLikertScale"),
         likertScaleLimit: ioHelper.getSetting("likertScaleLimit")
     });

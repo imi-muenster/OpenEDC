@@ -52,7 +52,7 @@ function getItemGroupDefault(itemGroupOID, options) {
 
     const itemGroupDescr = document.createElement("h2");
     itemGroupDescr.className = "subtitle";
-    const translatedDescription = processMarkdown(itemGroupDef.getTranslatedDescription(options.useNames ? null : options.locale, options.useNames));
+    const translatedDescription = processMarkdown(itemGroupDef.getTranslatedDescription(options.useItemGroupNames ? null : options.locale, options.useItemGroupNames));
     const splits = transformImagesInTranslation(translatedDescription)
     splits.forEach(split => {
         if(split.type === 'image') itemGroupDescr.appendChild(split.value)
@@ -76,7 +76,7 @@ function getItemGroupDefault(itemGroupOID, options) {
         itemField.setAttribute("item-field-oid", itemOID);
         itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
 
-        const translatedQuestion = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
+        const translatedQuestion = processMarkdown(itemDef.getTranslatedQuestion(options.useItemNames ? null : options.locale, options.useItemNames)) || options.missingTranslation;
         const splits = transformImagesInTranslation(translatedQuestion)
         splits.forEach(split => {
             if(split.type === 'image') itemField.appendChild(split.value)
@@ -115,7 +115,7 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
 
     const itemGroupDescr = document.createElement("h2");
     itemGroupDescr.className = "subtitle";
-    itemGroupDescr.innerHTML = processMarkdown(itemGroupDef.getTranslatedDescription(options.useNames ? null : options.locale, options.useNames));
+    itemGroupDescr.innerHTML = processMarkdown(itemGroupDef.getTranslatedDescription(options.useItemGroupNames ? null : options.locale, options.useItemGroupNames));
     itemGroupContent.appendChild(itemGroupDescr);
 
     let itemRefs = $$(`ItemGroupDef[OID="${itemGroupOID}"] ItemRef`);
@@ -177,7 +177,7 @@ function getItemGroupAsLikertScale(itemGroupOID, options) {
 
             const itemQuestion = document.createElement("div");
             itemQuestion.className = "column is-4";
-            const translatedQuestion = processMarkdown(itemDef.getTranslatedQuestion(options.useNames ? null : options.locale, options.useNames)) || options.missingTranslation;
+            const translatedQuestion = processMarkdown(itemDef.getTranslatedQuestion(options.useItemNames ? null : options.locale, options.useItemNames)) || options.missingTranslation;
             //itemQuestion.innerHTML += itemRef.getAttribute("Mandatory") == "Yes" ? " (*)" : "";
             //itemRow.appendChild(itemQuestion);
 
@@ -287,7 +287,7 @@ function getItemInput(itemDef, itemGroupOID, options) {
         const unit = document.createElement("a");
         unit.className = "button is-static";
         const measurementUnitDef = $(`MeasurementUnit[OID="${measurementUnitRef.getAttribute("MeasurementUnitOID")}"]`);
-        unit.textContent = measurementUnitDef.getTranslatedSymbol(options.useNames ? null : options.locale, options.useNames) || options.missingTranslation;
+        unit.textContent = measurementUnitDef.getTranslatedSymbol(options.useItemNames ? null : options.locale, options.useItemNames) || options.missingTranslation;
         addonUnit.appendChild(unit);
         inputContainer.appendChild(addonUnit);
     } else {
@@ -300,7 +300,7 @@ function getItemInput(itemDef, itemGroupOID, options) {
 
 const containsImages = (codeListItems, options) => {
     for (let codeListItem of codeListItems) {
-        const translatedDecode = codeListItem.getTranslatedDecode(options.locale, options.useNames);
+        const translatedDecode = codeListItem.getTranslatedDecode(options.locale, options.useItemNames);
         if(!translatedDecode) continue;
         const splits = translatedDecode.split(/(!\[.*?\](?:\(data:image\/[a-z]+;base64,[a-zA-Z0-9\/+=]+\))?(?:\[(?:[a-z]+:[a-zA-Z0-9%]+?)+;\])?)/g);
         if(translatedDecode && translatedDecode.startsWith("base64"))
@@ -325,7 +325,7 @@ const getSelectInput = (codeListItems, itemOID, options) => {
     for (let codeListItem of codeListItems) {
         const option = document.createElement("option");
         option.value = codeListItem.getAttribute("CodedValue");
-        option.textContent = codeListItem.getTranslatedDecode(options.useNames ? null : options.locale, options.useNames) || options.missingTranslation;
+        option.textContent = codeListItem.getTranslatedDecode(options.useItemNames ? null : options.locale, options.useItemNames) || options.missingTranslation;
         select.appendChild(option);
     }
 
