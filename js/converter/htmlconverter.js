@@ -75,17 +75,18 @@ function getItemGroupDefault(itemGroupOID, options) {
         itemField.className = `item-field ${hideItem ? 'is-hidden-survey-view' : ''}`;
         itemField.setAttribute("item-field-oid", itemOID);
         itemField.setAttribute("mandatory", itemRef.getAttribute("Mandatory"));
-
+        let itemQuestion = document.createElement('div');
+        itemQuestion.classList = 'item-question'
         const translatedQuestion = processMarkdown(itemDef.getTranslatedQuestion(options.useItemNames ? null : options.locale, options.useItemNames)) || options.missingTranslation;
         const splits = transformImagesInTranslation(translatedQuestion)
         splits.forEach(split => {
             if(split.type === 'image') itemField.appendChild(split.value)
             else {
-                const itemQuestion = document.createElement("label");
-                itemQuestion.className = "label";
-                itemQuestion.innerHTML = split.value;
+                const itemQuestionPart = document.createElement("label");
+                itemQuestionPart.className = "label";
+                itemQuestionPart.innerHTML = split.value;
                 //itemQuestion.innerHTML += ;
-                itemField.appendChild(itemQuestion);
+                itemQuestion.appendChild(itemQuestionPart);
             }
         })
 
@@ -94,6 +95,8 @@ function getItemGroupDefault(itemGroupOID, options) {
             let lastLabelChildIndex = reverseChildren.findIndex(x => x.tagName == 'LABEL');
             if(lastLabelChildIndex >= 0) reverseChildren[lastLabelChildIndex].innerHTML += " (*)";
         }
+
+        itemField.appendChild(itemQuestion)
 
         const itemInput = getItemInput(itemDef, itemGroupOID, options);
         itemField.appendChild(itemInput);
