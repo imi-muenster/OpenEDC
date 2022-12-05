@@ -51,8 +51,8 @@ export function parse(formalExpression, referencePath) {
 }
 
 export function evaluate(expression, expressionType) {
-    console.log(expression, expressionType);
-    console.log(conditionVariables);
+    //console.log(expression, expressionType);
+    //console.log(conditionVariables);
     try {
         if (expressionType == "condition") return expression.evaluate(conditionVariables);
         else if (expressionType == "method") return expression.evaluate(methodVariables);
@@ -147,6 +147,7 @@ function processMethod(method) {
 
     // If a value can already be calculated, assign it
     computedElement.value = computeMethod(method, method.elementPath.itemOID);
+    if(computedElement.value) setVariable(method.elementPath.toString(), computedElement.value);
 
     // Add event listeners to respond to inputs to the determinant items
     for (const variable of method.expression.variables()) {
@@ -166,15 +167,16 @@ function processMethod(method) {
 
 function respondToInputChangeMethod(input, itemPath, method, computedElement) {
     setVariable(itemPath.toString(), input.value ? input.value.replace(",", ".") : null);
-
     computedElement.value = computeMethod(method, computedElement.getAttribute('item-oid'));
+    if(computedElement.value) setVariable(method.elementPath.toString(), computedElement.value);
+    //if(computedElement.value) setVariable(method.elementPath, computedElement.value);
     computedElement.dispatchEvent(new Event("input"));
 }
 
 function computeMethod(method, elementOID) {
     const computedValue = evaluate(method.expression, method.expressionType);
     
-    console.log(computedValue)
+    //console.log(computedValue)
     const element = metadataWrapper.getElementDefByOID(elementOID)
     if(element.getAttribute('DataType') == 'text' || element.getAttribute('DataType') == 'string') {
         return computedValue;
