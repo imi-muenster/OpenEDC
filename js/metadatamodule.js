@@ -629,6 +629,8 @@ window.showSettingsEditor = function() {
     settingsModal.setCloseCallback(async (settings) => { 
         metadataWrapper.setCurrentElementSettings(currentPath, settings); 
         if(!asyncEditMode) await metadataWrapper.storeMetadata();
+        if (ioHelper.hasServerURL() && asyncEditMode && (admindataWrapper.getUsers().length > 1 || clinicaldataWrapper.getSubjects().length > 1) && $("#store-metadata-async-button")) 
+        $("#store-metadata-async-button").disabled = false;
         reloadDetailsPanel();
     });
     settingsModal.setSize("is-wide");
