@@ -106,7 +106,7 @@ class ClinicaldataSection extends HTMLElement {
                                                 <h1 class="subtitle is-3"></h1>
                                             </div>
                                         </div>
-                                        <div class="level-right ml-5 is-hidden-survey-view is-flex is-justify-content-space-end is-fullwidth" id="survey-view-button">
+                                        <div class="level-right mt-2 ml-5 is-hidden-survey-view is-flex is-justify-content-space-end is-fullwidth" id="survey-view-button">
                                             <div class="level-item">
                                                 <button class="button is-link is-light is-small" onclick="showSurveyView()" id="survey-button">
                                                     <span class="icon">
