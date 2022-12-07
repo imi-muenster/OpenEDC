@@ -495,7 +495,7 @@ async function loadFormMetadata() {
     let form = await metadataWrapper.getFormAsHTML(currentPath.formOID, ioHelper.getSetting("textAsTextarea"));
     const hideForm = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', currentPath.formOID);
     if(hideForm) $("#survey-view-button #survey-button").disabled = true;
-    else  $("#survey-view-button button").disabled = false;
+    else  $("#survey-view-button #survey-button").disabled = false;
 
     $("#odm-html-content")?.remove();
     $("#clinicaldata-content").appendChild(form);
