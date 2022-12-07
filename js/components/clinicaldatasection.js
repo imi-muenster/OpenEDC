@@ -100,13 +100,13 @@ class ClinicaldataSection extends HTMLElement {
                                     <article class="message is-hidden" id="form-hint">
                                         <div class="message-body"></div>
                                     </article>
-                                    <nav class="level">
+                                    <nav class="level is-flex is-flex-direction-column">
                                         <div class="level-left" id="clinicaldata-form-title">
                                             <div class="level-item">
                                                 <h1 class="subtitle is-3"></h1>
                                             </div>
                                         </div>
-                                        <div class="level-right ml-5 is-hidden-survey-view" id="survey-view-button">
+                                        <div class="level-right ml-5 is-hidden-survey-view is-flex is-justify-content-space-end is-fullwidth" id="survey-view-button">
                                             <div class="level-item">
                                                 <button class="button is-link is-light is-small" onclick="showSurveyView()" id="survey-button">
                                                     <span class="icon">
