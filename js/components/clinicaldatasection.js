@@ -5,7 +5,14 @@ class ClinicaldataSection extends HTMLElement {
                 <div class="columns is-desktop">
                     <div class="column is-one-fifth-desktop" id="subjects-column">
                         <nav class="panel is-link">
-                            <p class="panel-heading has-text-centered" i18n="subjects"></p>
+                            <div class="panel-heading has-text-centered is-flex is-justify-content-center">
+                                <p i18n="subjects"></p>
+                                <button style="height: 25px" class="button is-link is-rounded is-small" onclick="reloadSubjectKeys()">
+                                    <span class="icon">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </span>
+                                </button>
+                            </div>
                             <div class="panel-block has-no-padding-bottom has-no-border-bottom subject-key-mode-element">
                                 <div class="field is-grouped is-fullwidth" id="subject-key-mode-manual-element">
                                     <div class="control is-expanded has-icons-left">

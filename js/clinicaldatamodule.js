@@ -144,6 +144,7 @@ function addSubject(subjectKey, siteOID) {
 }
 
 export function loadSubjectKeys() {
+    console.log("load keys");
     $$("#subject-panel-blocks a").removeElements();
 
     const selectedSite = admindataWrapper.getSiteOIDByName($("#filter-site-select-inner").value);
@@ -161,6 +162,10 @@ export function loadSubjectKeys() {
 
     if (currentSubjectKey) $(`#subject-panel-blocks [oid="${currentSubjectKey}"]`).activate();
     ioHelper.dispatchGlobalEvent("SubjectKeysLoaded");
+}
+
+window.reloadSubjectKeys = () => {
+    loadSubjectKeys();
 }
 
 function subjectClicked(subjectKey) {
