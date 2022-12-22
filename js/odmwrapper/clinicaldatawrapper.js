@@ -604,6 +604,7 @@ export async function getDataStatus(subjectKey, subjectDataToCheck) {
         else
             dataStates.push(getDataStatusForStudyEvent({studyEventOID, subjectDataToCheck}));
     }
+    if(dataStates.length == 0) return dataStatusTypes.EMPTY;
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED)) return dataStatusTypes.VALIDATED;
     if (dataStates.every(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE)) return dataStatusTypes.COMPLETE;
     if (dataStates.some(item => item == dataStatusTypes.VALIDATED || item == dataStatusTypes.COMPLETE || item == dataStatusTypes.INCOMPLETE)) return dataStatusTypes.INCOMPLETE;
