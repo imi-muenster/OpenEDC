@@ -567,6 +567,10 @@ a.panel-block:hover {
     width: 100%;
 }
 
+.has-focus-none:focus {
+    box-shadow: none !important;
+}
+
 @media only screen and (max-width: 1024px) {
     #app-mode-button .dropdown-menu {
         top: auto;
