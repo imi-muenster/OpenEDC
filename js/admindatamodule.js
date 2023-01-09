@@ -11,6 +11,10 @@ export async function init() {
     await admindataWrapper.loadStoredAdmindata().catch(() => admindataWrapper.loadEmptyProject());
 }
 
+window.reloadUsers = () => {
+    loadUsers();
+}
+
 export async function loadUsers() {
     $$("#users-options .panel a").removeElements();
     $$("#user-rights .checkbox").removeElements();

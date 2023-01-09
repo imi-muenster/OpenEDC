@@ -179,10 +179,17 @@ class ProjectModal extends HTMLElement {
                             </div>
                         </div>
                         <div class="width-is-three-quarters is-hidden" id="users-options">
-                            <div class="notification is-link is-light">
-                                <h1 class="title is-4" i18n="users"></h1>
-                                <p i18n="users-hint"></p>
+                        <div class="notification is-link is-light">
+                            <div class="is-flex">
+                            <h1 class="title is-4" i18n="users"></h1>
+                            <button style="height: 25px" class="button is-link is-rounded is-small has-background-link-light has-text-link has-focus-none" onclick="reloadUsers()">
+                                <span class="icon">
+                                    <i class="fas fa-sync-alt"></i>
+                                </span>
+                            </button>
                             </div>
+                            <p i18n="users-hint"></p>
+                        </div>
                             <div class="columns">
                                 <div class="column">
                                     <nav class="panel">
