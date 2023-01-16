@@ -69,8 +69,8 @@ function createPanelBlock(elementOID, elementType, displayText, fallbackText, su
     const draggable = viewOnlyMode ? false : true;
     let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, draggable, hasCondition, conditionIsFalse);
 
-    //panelBlock.ondragstart = dragStart;
-    //panelBlock.ondragenter = dragEnter;
+    panelBlock.ondragstart = dragStart;
+    panelBlock.ondragenter = dragEnter;
 
     return panelBlock;
 }
