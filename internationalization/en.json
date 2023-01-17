@@ -208,7 +208,8 @@
     "password-confirm": "Password (confirm)",
     "create-user": "Create User",
     "encrypt-data": "Encrypt Data",
-    "enrypted-hint": "Data is encrypted.",
+    "encrypted-hint": "Data is encrypted.",
+    "not-encrypted-hint": "No end to end encryption",
     "encryption-hint": "With this option you can fully encrypt all locally stored data. All currently stored and future data will then be encrypted. When you open the app again, you need to enter the password to decrypt the data.",
     "encryption-warning": "Warning: If you forget the password, all data will be permanently lost.",
     "encrypt": "Encrypt",
@@ -439,6 +440,10 @@
     "export-not-allowed": "You are not allowed to export data.",
     "save-and-close": "save and close",
     "no-permission": "No Permission",
-    "image": "image"
+    "image": "image",
+    "deactivate-encryption": "Deactivate Encryption",
+    "deactivate-encryption-hint": "Deactivates the end to end encryption. Especially when hosting the system inside a secure environment, you probably do not need it. Deactivation offers the possibility to connect external account management.",
+    "deactivate": "Deactivate",
+    "deactivate-encryption-successful": "Deactivation of encryption successful."
 }
 

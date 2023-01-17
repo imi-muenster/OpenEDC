@@ -207,7 +207,8 @@
     "password-confirm": "Passwort (bestätigen)",
     "create-user": "Benutzer erstellen",
     "encrypt-data": "Datenverschlüsselung",
-    "enrypted-hint": "Daten sind verschlüsselt.",
+    "encrypted-hint": "Daten sind verschlüsselt.",
+    "not-encrypted-hint": "Keine Ende-zu-Ende-Verschlüsselung",
     "encryption-hint": "Mit dieser Option können Sie alle lokal gespeicherten Daten verschlüsseln. Aktuelle und zukünftigen Daten werden dann verschlüsselt. Wenn Sie die App erneut öffnen, müssen Sie das Passwort eingeben, um die Daten zu entschlüsseln.",
     "encryption-warning": "Warnung: Wenn Sie das Passwort vergessen, gehen alle Daten dauerhaft verloren.",
     "encrypt": "Verschlüsseln",
@@ -437,5 +438,9 @@
     "export-not-allowed": "Sie sind nicht berechtigt, Daten zu exportieren.",
     "save-and-close": "Speichern und schließen",
     "no-permission": "Nicht erlaubt",
-    "image": "Bild"
+    "image": "Bild",
+    "deactivate-encryption": "Verschlüsselung deaktivieren",
+    "deactivate-encryption-hint": "Deaktiviert die Ende-zu-Ende-Verschlüsselung. Innerhalb einer sicheren Umgebung, z.B. einem abgeschottetem Netzwerk, ist diese vermutlich nicht notwendig. Durch die Deaktivierung kann eine externe Accountverwaltung angeschlossen werden.",
+    "deactivate": "Deaktivieren",
+    "deactivate-encryption-successful": "Deaktivierung der Verschlüsselung erfolgreich."
 }

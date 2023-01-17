@@ -325,7 +325,7 @@ async function loadSubjectData(subjectKey) {
     if (subject) return await loadStoredSubjectData(subject.fileName);
 }
 
-export async function storeSubject(subjectToStore, subjectDataToStore) {
+export async function storeSubject(subjectToStore, subjectDataToStore, disabledEncryption = false) {
     if(!subjectToStore || !subjectDataToStore) {
         subjectToStore = subject;
         subjectDataToStore = subjectData;
@@ -339,7 +339,7 @@ export async function storeSubject(subjectToStore, subjectDataToStore) {
     subjectToStore.status = await getDataStatus(subjectToStore.uniqueKey, subjectDataToStore);
     subjectToStore.modifiedDate = modifiedDate;
     clinicaldataFile = new ClinicaldataFile(modifiedDate);
-    await ioHelper.setODM(subjectToStore.fileName, subjectDataToStore);
+    await ioHelper.setODM(subjectToStore.fileName, subjectDataToStore, disabledEncryption);
 
     // This mechanism helps to prevent possible data loss when multiple users edit the same subject data at the same time (especially important for the offline mode)
     // If the previousFileName cannot be removed, the system keeps multiple current versions of the subject data and the user is notified that conflicting data exists
@@ -362,6 +362,24 @@ export async function removeClinicaldata() {
     for (let subject of subjects) {
         await ioHelper.removeODM(subject.fileName);
     }
+}
+
+export async function deactivateEncryptionForSubjects() {
+    console.log(subjects);
+    let subjectsToLoad = subjects.map(async subject => {
+        return new Promise(async resolve => {
+            resolve({
+                subject,
+                subjectData: await loadSubjectData(subject.key)
+            });
+        });
+    });
+    return await Promise.all(subjectsToLoad).then(async loadedSubjects => {
+        for await (let loadedSubject of loadedSubjects) {
+            await storeSubject(loadedSubject.subject, loadedSubject.subjectData, true);
+        };
+        return true;
+    });
 }
 
 export async function storeSubjectFormData(studyEventOID, formOID, formItemDataList, dataStatus, studyEventRepeatKey) {
