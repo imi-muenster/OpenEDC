@@ -22,7 +22,11 @@ class ProjectModal extends HTMLElement {
                                 <h1 class="title is-4" i18n="connect-to-server"></h1>
                                 <p class="has-text-weight-bold mb-5 is-hidden" id="server-connected-hint" i18n="connected-hint"></p>
                                 <p i18n="connection-hint"></p>
-                                <div class="field has-addons mt-5 mb-0">
+                                <label class="checkbox is-block mt-5">
+                                        <input type="checkbox" id="server-connect-no-encryption">
+                                        <span i18n="deactivate-encryption"></span>
+                                </label>
+                                <div class="field has-addons mt-2 mb-0">
                                     <div class="control is-expanded">
                                         <input class="input is-small" id="server-url-input" type="text" i18n-ph="server-url">
                                     </div>
@@ -40,9 +44,10 @@ class ProjectModal extends HTMLElement {
                             </div>
                             <div class="notification is-link is-light">
                                 <h1 class="title is-4" i18n="encrypt-data"></h1>
-                                <p class="has-text-weight-bold mb-5 is-hidden" id="data-encrypted-hint" i18n="enrypted-hint"></p>
-                                <p i18n="encryption-hint"></p>
-                                <p class="has-text-weight-bold mt-5" id="data-encryption-warning" i18n="encryption-warning"></p>
+                                <p class="has-text-weight-bold mb-5 is-hidden" id="data-encrypted-hint" i18n="encrypted-hint"></p>
+                                <p class="has-text-weight-bold mb-5 is-hidden" id="data-not-encrypted-hint" i18n="not-encrypted-hint"></p>
+                                <p class="mb-5" i18n="encryption-hint"></p>
+                                <p class="has-text-weight-bold mb-5" id="data-encryption-warning" i18n="encryption-warning"></p>
                                 <form>
                                     <input class="is-hidden" autocomplete="username">
                                     <div class="field has-addons mt-5 mb-0">
@@ -62,6 +67,9 @@ class ProjectModal extends HTMLElement {
                                         </div>
                                     </div>
                                 </form>
+                                <div class="columns">
+                                    <button class="button is-link column p-1 is-small" onclick="showDeactivateEncryptionDialog()" i18n="deactivate-encryption"  id="deactivate-encryption-button"></button>
+                                </div>
                             </div>
                             <div class="notification is-link is-light">
                                 <h1 class="title is-4" i18n="subject-key"></h1>
