@@ -678,17 +678,23 @@ function showErrors(metadataNotFoundErrors, hiddenFieldWithValueErrors) {
 }
 
 window.loadNextFormData = async function() {
-    // This checks whether the saving process could found unanswered mandatory fields. The form data is stored either way
+    // This checks whether the saving process could find unanswered mandatory fields. The form data is stored either way
     if (!await saveFormData()) return;
 
     let nextFormOID = getNextFormOID(currentPath.formOID);
+
     skipDataHasChangedCheck = true;
     if (nextFormOID) {
-        loadTree(currentPath.studyEventOID, nextFormOID, currentPath.studyEventRepeatKey);
+        await loadTree(currentPath.studyEventOID, nextFormOID, currentPath.studyEventRepeatKey);
+        const hideForm = surveyViewIsActive() && metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', nextFormOID);
+        if(hideForm) {
+            loadNextFormData(nextFormOID);
+            return;
+        }
     } else {
         closeFormData();
+        ioHelper.dispatchGlobalEvent("FormData finished");
     }
-
     loadSubjectKeys();
 }
 
@@ -699,13 +705,18 @@ window.loadPreviousFormData = async function() {
     let previousFormOID = getPreviousFormOID(currentPath.formOID);
     if (previousFormOID) {
         skipDataHasChangedCheck = true;
-        loadTree(currentPath.studyEventOID, previousFormOID, currentPath.studyEventRepeatKey);
+        await loadTree(currentPath.studyEventOID, previousFormOID, currentPath.studyEventRepeatKey);
+        const hideForm = surveyViewIsActive() && metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', previousFormOID);
+        if(hideForm) {
+            loadPreviousFormData(previousFormOID);
+            return;
+        }
     }
 
     loadSubjectKeys();
 }
 
-function getNextFormOID(previousFormOID) {
+function checkNextFormOIDIsLast(previousFormOID) {
     let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
     if(formDefs.length && !previousFormOID) {
         previousFormOID = formDefs[0].getOID();
@@ -730,11 +741,16 @@ function getNextFormOID(previousFormOID) {
     }
 }
 
-function getPreviousFormOID(nextFormOID) {
-     let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
-    /* for (let i = 1; i < formDefs.length; i++) {
-        if (formDefs[i].getOID() == nextFormOID) return formDefs[i-1].getOID();
-    }  */
+function getNextFormOID(previousFormOID) {
+    let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
+    if(formDefs.length && !previousFormOID) return formDefs[0].getOID();
+    for (let i = 0; i < formDefs.length-1; i++) {
+        if (formDefs[i].getOID() == previousFormOID) return formDefs[i+1].getOID();
+    }
+}
+
+function checkPreviousFormOIDIsFirst(nextFormOID) {
+    let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
 
     let keepSearching = true;
     let previousFormOID;
@@ -752,6 +768,13 @@ function getPreviousFormOID(nextFormOID) {
         nextFormOID = previousFormOID;
         previousFormOID = null;
     }
+}
+
+function getPreviousFormOID(nextFormOID) {
+    let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
+     for (let i = 1; i < formDefs.length; i++) {
+        if (formDefs[i].getOID() == nextFormOID) return formDefs[i-1].getOID();
+    }  
 }
 
 window.validateForm = function() {
@@ -902,12 +925,12 @@ function hideSurveyView() {
 }
 
 function updateFormButtons() {
-    if (!getNextFormOID(currentPath.formOID)) {
+    if (!checkNextFormOIDIsLast(currentPath.formOID)) {
         $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("finish");
     } else {
         $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("continue");
     }
-    $("#clinicaldata-previous-button").disabled = getPreviousFormOID(currentPath.formOID) ? false : true;
+    $("#clinicaldata-previous-button").disabled = checkPreviousFormOIDIsFirst(currentPath.formOID) ? false : true;
 }
 
 export function safeCloseClinicaldata(callback) {
