@@ -138,7 +138,6 @@ window.saveUser = async function() {
 
 window.showRemoveUserModal = function() {
     const userOID = $("#users-options .panel a.is-active").getOID();
-    console.log(userOID);
     if(ioHelper.getLoggedInUser().oid === userOID) {
         ioHelper.showMessage(languageHelper.getTranslation("no-self-delete"), languageHelper.getTranslation("no-self-delete-text"));
         return;

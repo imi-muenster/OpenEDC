@@ -190,7 +190,6 @@ const closeLists = (event, keepElements) => {
 const setElements = () => {
     if (elements) return;
 
-    console.log("Load autocomplete elements");
     switch (currentPart) {
         case enabledParts.ITEM:
             elements = getItemElements();

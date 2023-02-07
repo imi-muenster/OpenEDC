@@ -336,7 +336,6 @@ export async function getServerStatus(url, storeServerURL) {
 }
 
 export async function initializeServer(url, userOID, credentials, disableEncryption = false) {
-    console.log(disableEncryption);
     if (!url.includes("http") && !url.includes("https")) url = "https://" + url;
     
     // Create a random key that is used for data encryption and encrypt it with the password of the user
@@ -404,7 +403,6 @@ export async function initializeServer(url, userOID, credentials, disableEncrypt
         if (!jsonResponse.ok) return Promise.reject(await jsonResponse.text());
     }
 
-    console.log(disableEncryption);
     serverURL = url;
     await setSetting('disableEncryption', disableEncryption);
 
@@ -421,16 +419,13 @@ export async function loginToServer(credentials) {
     });
     if (!userResponse.ok) return Promise.reject(loginStatus.WRONGCREDENTIALS);
     user = await userResponse.json();
-    console.log(user);
     await loadSettings();
     // Get the encryptedDecryptionKey of the user, decrypt it and store it in the decryptionKey variable
     let encryptionDisabled = await getSetting("disableEncryption");
-    console.log("key", encryptionDisabled);
     if(typeof encryptionDisabled == 'undefined' || encryptionDisabled === '') {
         encryptionDisabled = false;
         await setSetting('disableEncryption', encryptionDisabled);
     }
-    console.log(encryptionDisabled);
     if(!encryptionDisabled) {
         try {
             decryptionKey = await cryptoHelper.AES.decrypt.withPassword(user.encryptedDecryptionKey, credentials.password);

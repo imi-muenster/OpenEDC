@@ -442,5 +442,8 @@
     "deactivate-encryption": "Verschlüsselung deaktivieren",
     "deactivate-encryption-hint": "Deaktiviert die Ende-zu-Ende-Verschlüsselung. Innerhalb einer sicheren Umgebung, z.B. einem abgeschottetem Netzwerk, ist diese vermutlich nicht notwendig. Durch die Deaktivierung kann eine externe Accountverwaltung angeschlossen werden.",
     "deactivate": "Deaktivieren",
-    "deactivate-encryption-successful": "Deaktivierung der Verschlüsselung erfolgreich."
+    "deactivate-encryption-successful": "Deaktivierung der Verschlüsselung erfolgreich.",
+    "presentation-type": "Darstellungsform",
+    "presentation-type-description": "Gibt an, wie ein Item im Formular dargestellt wird.",
+    "next-to-each-other": "Optionen nebeneinander"
 }

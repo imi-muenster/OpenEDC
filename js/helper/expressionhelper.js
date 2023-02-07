@@ -51,8 +51,6 @@ export function parse(formalExpression, referencePath) {
 }
 
 export function evaluate(expression, expressionType) {
-    //console.log(expression, expressionType);
-    //console.log(conditionVariables);
     try {
         if (expressionType == "condition") return expression.evaluate(conditionVariables);
         else if (expressionType == "method") return expression.evaluate(methodVariables);
@@ -176,7 +174,6 @@ function respondToInputChangeMethod(input, itemPath, method, computedElement) {
 function computeMethod(method, elementOID) {
     const computedValue = evaluate(method.expression, method.expressionType);
     
-    //console.log(computedValue)
     const element = metadataWrapper.getElementDefByOID(elementOID)
     if(element.getAttribute('DataType') == 'text' || element.getAttribute('DataType') == 'string') {
         return computedValue;

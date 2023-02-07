@@ -216,7 +216,6 @@ window.createRandomSubjects = async function() {
         try{
             const subjectKey = `Random User ${i + 1}`;
             await clinicaldataWrapper.addSubject(subjectKey);
-            console.log("after store")
             loadSubjectKeys();
             skipDataHasChangedCheck = true;
             await loadSubjectData(subjectKey)
@@ -254,7 +253,6 @@ async function createExampleData(subjectKey) {
                         let formalExpression = condition.getFormalExpression();
                         let expression = expressionHelper.parse(formalExpression, path);
                         const included = expressionHelper.evaluate(expression, "condition");
-                        console.log("included", included)
                         if(!included) continue;
                     }
                    
@@ -265,16 +263,13 @@ async function createExampleData(subjectKey) {
                     const rangechecks = [...metadataWrapper.getRangeChecksByItem(itemOID)].map(rc => { 
                         return {comparator: rc.getAttribute('Comparator'), value: rc.querySelector('CheckValue').textContent}
                     }).map(rc => {
-                        console.log(rc)
                         if (rc.comparator == "GT") return {comparator: "GE", value: dataType == 'integer' ? (parseInt(rc.value) + 1) : (parseFloat(rc.value) + 0.0001)}
                         if (rc.comparator == "LT") return {comparator: "LE", value: dataType == 'integer' ? (parseInt(rc.value) - 1) : (parseFloat(rc.value) - 0.0001)}
                         return rc;
                     });
                     if(rangechecks.length > 0) {
-                        console.log(rangechecks)
                         minInt = Math.max([...rangechecks.filter(rc => rc.comparator == 'GE').map(rc => rc.value)]);
                         maxInt = Math.min([...rangechecks.filter(rc => rc.comparator == 'LE').map(rc => rc.value)]);
-                        console.log("rangechecks", minInt, maxInt);
                     }
                     let value;
                     switch (dataType) {
@@ -303,7 +298,6 @@ async function createExampleData(subjectKey) {
                         case "float":
                             if(codelistItems.length > 0) value = `${codelistItems[getRandomNumber(0, codelistItems.length - 1, 'integer')].getAttribute('CodedValue')}`;
                             else value = `${Math.floor(getRandomNumber(minInt, maxInt, 'float')*100)/100}`;
-                            console.log(value);
                             break;
                         default:
                             break;
@@ -377,7 +371,6 @@ async function loadTree(studyEventOID, formOID, studyEventRepeatKey) {
             let repeatKeys = await clinicaldataWrapper.getStudyEventRepeatKeys(studyEventOID, currentSubjectKey);
             repeatKeys = repeatKeys.sort((a, b) => a - b);
             for (const repeatKey of repeatKeys) {
-                console.log("load tree ", repeatKey)
                 const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent({studyEventOID, repeatKey}) : clinicaldataWrapper.dataStatusTypes.EMPTY;
                 renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, repeatKey);
             }
@@ -525,7 +518,6 @@ function addDynamicFormLogicPre() {
     });
     expressionHelper.setVariables(variables);
     const expressions = metadataWrapper.getElementsWithExpressionIncludeForms(currentPath.studyEventOID, currentPath.formOID);
-    console.log(expressions);
     expressionHelper.process(expressions);
 }
 

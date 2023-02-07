@@ -296,7 +296,6 @@ class SettingsModal extends HTMLElement {
                 </div>
             </div>
         `;
-        console.log(this.currentSettings);
         const elementSettings = this.querySelector('#element-settings');
         this.settings.forEach((settingsArray, name) => {
             const settingsToBeShown = settingsArray.filter(setting => setting.isInScope(this.elementType));
@@ -357,6 +356,34 @@ class SettingsModal extends HTMLElement {
                             settingDiv.appendChild(fieldDiv);
                             break;
                         } 
+                        case 'options': {
+                            (async () => {
+                               const htmlElements = await import("../helper/htmlelements.js");
+                               const languageHelper = await import("../helper/languagehelper.js");
+
+                            let fieldDiv = document.createElement('div');
+                            fieldDiv.classList = 'field has-addons';
+                            let div = document.createElement('div');
+                            div.classList = 'control is-expanded';
+                            fieldDiv.appendChild(div);
+                            if(typeof setting.description != 'undefined') {
+                                let span = document.createElement('span');
+                                span.setAttribute('i18n', setting.description)
+                                div.appendChild(span)
+                            }
+                            let selectDiv = document.createElement('div');
+                            selectDiv.classList = 'select is-fullwidth'
+                            let select = htmlElements.getSelect(`${setting.key}-select`, true, true, setting.options, currentValue, setting.options.map(option => languageHelper.getTranslation(option)), true);
+                            selectDiv.appendChild(select)
+
+                            select.querySelector(`#${setting.key}-select-inner`).oninput = (event) => {this.currentSettings[name][setting.key] = event.target.value}
+                            //input.setAttribute('i18n-ph', typeof setting.i18n != 'undefined' ? setting.i18n : 'no-name')
+                            div.appendChild(selectDiv);
+                            settingDiv.appendChild(fieldDiv);
+                            })();
+                            
+                            break;
+                        } 
                         case 'callback': {
                             let fieldDiv = document.createElement('div');
                             fieldDiv.classList = 'field has-addons';
@@ -379,9 +406,8 @@ class SettingsModal extends HTMLElement {
                             a.onclick = () => window[setting.callback].apply(window, [this.currentOID, (newValue) => { 
                                 input.value = newValue; 
                                 this.currentSettings[name][setting.key] = newValue; 
-                                console.log(newValue) 
                             }]);
-                            input.onchange = () => { this.currentSettings[name][setting.key] = input.value; console.log(input.value) }
+                            input.onchange = () => this.currentSettings[name][setting.key] = input.value;
                             controlDiv.appendChild(a);
                             settingDiv.appendChild(fieldDiv);
                             break;

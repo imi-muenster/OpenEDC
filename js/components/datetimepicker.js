@@ -354,7 +354,6 @@ class DateTimePicker extends HTMLElement {
 
     saveValue() {
         if (this.options.enableDate && this.options.enableTime) {
-            console.log(this.selectedDay.localDateTimeISOString);
             this.input.value = this.selectedDay.localDateTimeISOString;
         } else if (this.options.enableDate) {
             this.input.value = this.selectedDay.localDateISOString;

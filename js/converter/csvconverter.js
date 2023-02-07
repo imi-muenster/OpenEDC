@@ -28,7 +28,6 @@ export const getCSVString = async () => {
             csvString += "1,";
             csvString += value["createdDate"] + ",";
             csvString += value["createdTime"] + ",";
-            console.log("append items")
             csvString += itemPaths.map(path => formatValue(value[path.toString()])).join(",") + "\n";
         }
         else {
@@ -84,7 +83,5 @@ export const getSeparatedCSVFiles = async () => {
 
 const formatValue = value => {
     value = value ? value.replace(/'/g, '"').replace(/"/g, '""'): "";
-    console.log(value);
-    console.log(value.includes(","));
     return value.includes(",") ? '"' + value + '"' : value
 }

@@ -365,7 +365,6 @@ export async function removeClinicaldata() {
 }
 
 export async function deactivateEncryptionForSubjects() {
-    console.log(subjects);
     let subjectsToLoad = subjects.map(async subject => {
         return new Promise(async resolve => {
             resolve({
@@ -465,7 +464,6 @@ function getFormItemDataList(formDataElements) {
 
 // TODO: Can this be performance improved?
 export function getFormDataDifference(formItemDataList, studyEventOID, formOID, studyEventRepeatKey) {
-    console.log("Check which data items have changed ...");
 
     // First, add or edit item data that was entered
     const formDataDifference = [];
@@ -803,7 +801,6 @@ export function clearPendingStudyEventRepeatChanges() {
 }
 
 export async function resolvePendingChanges() {
-    console.log("resolve pending changes");
     for await (let change of pendingStudyEventsOIDsRepeating) {
         if(!await setStudyEventDataRepeating(change, true)) return false;
     }

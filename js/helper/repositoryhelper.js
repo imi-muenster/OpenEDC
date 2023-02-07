@@ -87,13 +87,11 @@ const prepareODM = (repository, modelParameter, odmXMLString) => {
 
 export function preloadPage(urlParams){
     for (const [parameterName, parameterValue] of urlParams) {
-        console.log(parameterName, parameterValue)
         if(parameterName === "page") {
             switch(parameterValue) {
                 case "data":
                     return;
                 case "edit":
-                    console.log("in edit")
                     app.enableMode(app.appModes.METADATA);
                     break;
             }

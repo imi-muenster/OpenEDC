@@ -88,8 +88,6 @@ ioHelper.addGlobalEventListener("CurrentUserEdited", () => {
 });
 
 const startApp = async () => {
-    console.log('hä')
-    console.log("start app")
     await ioHelper.loadSettings();
     languageHelper.populatePresentLanguages(metadataWrapper.getMetadata());
     await languageHelper.setInitialLocale();
@@ -287,7 +285,6 @@ window.openODM = async function() {
     const file = $("#open-odm-button .file-input");
     const content = await ioHelper.getFileContent(file.files[0]);
     const odmXMLString = validateODM(content);
-    console.log(odmXMLString);
     if (odmXMLString) {
         metadataWrapper.importMetadata(odmXMLString);
         admindataWrapper.importAdmindata(odmXMLString);
@@ -525,7 +522,6 @@ window.showDeactivateEncryptionDialog = () => {
 }
 
 const deactivateEncryption = async () => {
-    console.log("deactivate")
     
     await clinicaldataWrapper.deactivateEncryptionForSubjects();
     console.log("clinicaldata stored");

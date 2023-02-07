@@ -444,6 +444,9 @@
     "deactivate-encryption": "Deactivate Encryption",
     "deactivate-encryption-hint": "Deactivates the end to end encryption. Especially when hosting the system inside a secure environment, you probably do not need it. Deactivation offers the possibility to connect external account management.",
     "deactivate": "Deactivate",
-    "deactivate-encryption-successful": "Deactivation of encryption successful."
+    "deactivate-encryption-successful": "Deactivation of encryption successful.",
+    "presentation-type": "Presentation type",
+    "presentation-type-description": "Defines how the item is rendered in a form.",
+    "next-to-each-other": "Options side by side"
 }
 
