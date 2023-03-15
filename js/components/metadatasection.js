@@ -105,7 +105,7 @@ class MetadataSection extends HTMLElement {
                                                     </button>
                                                 </div>
                                                 <div class="dropdown-menu" id="alias-dropdown-menu" role="menu">
-                                                    <div class="dropdown-content">
+                                                    <div class="dropdown-content" id="alias-dropdown-menu-content">
                                                     <a class="dropdown-item" i18n="edit-settings" onclick="showSettingsEditor()">
                                                     </a>
                                                 </div>
