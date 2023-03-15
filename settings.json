@@ -25,5 +25,15 @@
         "scope": [
             "itemgroup", "item"
         ]
+    },
+    {
+        "key": "presentation-type",
+        "i18n": "presentation-type",
+        "description": "presentation-type-description",
+        "type": "options",
+        "options": ["default", "next-to-each-other"],
+        "scope": [
+            "item"
+        ]
     }
 ]   

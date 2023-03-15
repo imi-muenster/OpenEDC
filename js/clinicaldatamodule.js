@@ -216,7 +216,6 @@ window.createRandomSubjects = async function() {
         try{
             const subjectKey = `Random User ${i + 1}`;
             await clinicaldataWrapper.addSubject(subjectKey);
-            console.log("after store")
             loadSubjectKeys();
             skipDataHasChangedCheck = true;
             await loadSubjectData(subjectKey)
@@ -254,7 +253,6 @@ async function createExampleData(subjectKey) {
                         let formalExpression = condition.getFormalExpression();
                         let expression = expressionHelper.parse(formalExpression, path);
                         const included = expressionHelper.evaluate(expression, "condition");
-                        console.log("included", included)
                         if(!included) continue;
                     }
                    
@@ -265,16 +263,13 @@ async function createExampleData(subjectKey) {
                     const rangechecks = [...metadataWrapper.getRangeChecksByItem(itemOID)].map(rc => { 
                         return {comparator: rc.getAttribute('Comparator'), value: rc.querySelector('CheckValue').textContent}
                     }).map(rc => {
-                        console.log(rc)
                         if (rc.comparator == "GT") return {comparator: "GE", value: dataType == 'integer' ? (parseInt(rc.value) + 1) : (parseFloat(rc.value) + 0.0001)}
                         if (rc.comparator == "LT") return {comparator: "LE", value: dataType == 'integer' ? (parseInt(rc.value) - 1) : (parseFloat(rc.value) - 0.0001)}
                         return rc;
                     });
                     if(rangechecks.length > 0) {
-                        console.log(rangechecks)
                         minInt = Math.max([...rangechecks.filter(rc => rc.comparator == 'GE').map(rc => rc.value)]);
                         maxInt = Math.min([...rangechecks.filter(rc => rc.comparator == 'LE').map(rc => rc.value)]);
-                        console.log("rangechecks", minInt, maxInt);
                     }
                     let value;
                     switch (dataType) {
@@ -303,7 +298,6 @@ async function createExampleData(subjectKey) {
                         case "float":
                             if(codelistItems.length > 0) value = `${codelistItems[getRandomNumber(0, codelistItems.length - 1, 'integer')].getAttribute('CodedValue')}`;
                             else value = `${Math.floor(getRandomNumber(minInt, maxInt, 'float')*100)/100}`;
-                            console.log(value);
                             break;
                         default:
                             break;
@@ -377,7 +371,6 @@ async function loadTree(studyEventOID, formOID, studyEventRepeatKey) {
             let repeatKeys = await clinicaldataWrapper.getStudyEventRepeatKeys(studyEventOID, currentSubjectKey);
             repeatKeys = repeatKeys.sort((a, b) => a - b);
             for (const repeatKey of repeatKeys) {
-                console.log("load tree ", repeatKey)
                 const dataStatus = currentSubjectKey ? clinicaldataWrapper.getDataStatusForStudyEvent({studyEventOID, repeatKey}) : clinicaldataWrapper.dataStatusTypes.EMPTY;
                 renderStudyEvent(studyEventOID, translatedDescription, name, dataStatus, repeatKey);
             }
@@ -507,11 +500,6 @@ async function loadFormMetadata() {
 
     // Adjust the form navigation buttons
     $("#clinicaldata-previous-button").disabled = getPreviousFormOID(currentPath.formOID) ? false : true;
-    /* if (!getNextFormOID(currentPath.formOID)) {
-        $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("finish");
-    } else {
-        $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("continue");
-    } */
     updateFormButtons();
 }
 
@@ -525,7 +513,6 @@ function addDynamicFormLogicPre() {
     });
     expressionHelper.setVariables(variables);
     const expressions = metadataWrapper.getElementsWithExpressionIncludeForms(currentPath.studyEventOID, currentPath.formOID);
-    console.log(expressions);
     expressionHelper.process(expressions);
 }
 
@@ -686,19 +673,26 @@ function showErrors(metadataNotFoundErrors, hiddenFieldWithValueErrors) {
 }
 
 window.loadNextFormData = async function() {
-    // This checks whether the saving process could found unanswered mandatory fields. The form data is stored either way
+    // This checks whether the saving process could find unanswered mandatory fields. The form data is stored either way
     if (!await saveFormData()) return;
 
     let nextFormOID = getNextFormOID(currentPath.formOID);
+
     skipDataHasChangedCheck = true;
     if (nextFormOID) {
-        loadTree(currentPath.studyEventOID, nextFormOID, currentPath.studyEventRepeatKey);
+        await loadTree(currentPath.studyEventOID, nextFormOID, currentPath.studyEventRepeatKey);
+        const hideForm = surveyViewIsActive() && metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', nextFormOID);
+        if(hideForm || fastSkip) {
+            loadNextFormData();
+            return;
+        }
     } else {
-        closeFormData();
+        await closeFormData(false, true);
+        ioHelper.dispatchGlobalEvent("FormData finished");
     }
-
     loadSubjectKeys();
 }
+
 
 window.loadPreviousFormData = async function() {
     skipMandatoryCheck = true;
@@ -707,13 +701,18 @@ window.loadPreviousFormData = async function() {
     let previousFormOID = getPreviousFormOID(currentPath.formOID);
     if (previousFormOID) {
         skipDataHasChangedCheck = true;
-        loadTree(currentPath.studyEventOID, previousFormOID, currentPath.studyEventRepeatKey);
+        await loadTree(currentPath.studyEventOID, previousFormOID, currentPath.studyEventRepeatKey);
+        const hideForm = surveyViewIsActive() && metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'no-survey', previousFormOID);
+        if(hideForm) {
+            loadPreviousFormData(previousFormOID);
+            return;
+        }
     }
 
     loadSubjectKeys();
 }
 
-function getNextFormOID(previousFormOID) {
+function checkNextFormOIDIsLast(previousFormOID) {
     let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
     if(formDefs.length && !previousFormOID) {
         previousFormOID = formDefs[0].getOID();
@@ -738,11 +737,16 @@ function getNextFormOID(previousFormOID) {
     }
 }
 
-function getPreviousFormOID(nextFormOID) {
-     let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
-    /* for (let i = 1; i < formDefs.length; i++) {
-        if (formDefs[i].getOID() == nextFormOID) return formDefs[i-1].getOID();
-    }  */
+function getNextFormOID(previousFormOID) {
+    let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
+    if(formDefs.length && !previousFormOID) return formDefs[0].getOID();
+    for (let i = 0; i < formDefs.length-1; i++) {
+        if (formDefs[i].getOID() == previousFormOID) return formDefs[i+1].getOID();
+    }
+}
+
+function checkPreviousFormOIDIsFirst(nextFormOID) {
+    let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
 
     let keepSearching = true;
     let previousFormOID;
@@ -760,6 +764,13 @@ function getPreviousFormOID(nextFormOID) {
         nextFormOID = previousFormOID;
         previousFormOID = null;
     }
+}
+
+function getPreviousFormOID(nextFormOID) {
+    let formDefs = metadataWrapper.getFormsByStudyEvent(currentPath.studyEventOID);
+     for (let i = 1; i < formDefs.length; i++) {
+        if (formDefs[i].getOID() == nextFormOID) return formDefs[i-1].getOID();
+    }  
 }
 
 window.validateForm = function() {
@@ -855,15 +866,37 @@ export function cacheFormData() {
 }
 
 // TODO: closeFormData and cancelFormOrSurveyEntry could be further refactored
-window.closeFormData = async function(saveData) {
+window.closeFormData = async function(saveData, recheckAllForms = false) {
     if (saveData) {
         skipMandatoryCheck = true;
         await saveFormData();
         loadSubjectKeys();
     }
 
+    if(recheckAllForms) {
+        currentPath.formOID = null;
+        await saveOnClose();
+    }
+
     if (deferredFunction) await deferredFunction();
     else cancelFormOrSurveyEntry(true);
+}
+
+const saveOnClose = async() => {
+        skipMandatoryCheck = true;
+        if (!await saveFormData()) return;
+
+        console.log(currentPath.formOID);
+        let nextFormOID = getNextFormOID(currentPath.formOID);
+        console.log(nextFormOID);
+        skipDataHasChangedCheck = true;
+        if (nextFormOID) {
+            await loadTree(currentPath.studyEventOID, nextFormOID, currentPath.studyEventRepeatKey);
+            await saveOnClose();
+            return;
+        }
+        
+        //loadSubjectKeys();
 }
 
 window.cancelFormOrSurveyEntry = function(closeSurvey) {
@@ -910,12 +943,12 @@ function hideSurveyView() {
 }
 
 function updateFormButtons() {
-    if (!getNextFormOID(currentPath.formOID)) {
+    if (!checkNextFormOIDIsLast(currentPath.formOID)) {
         $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("finish");
     } else {
         $("#clinicaldata-next-button").textContent = languageHelper.getTranslation("continue");
     }
-    $("#clinicaldata-previous-button").disabled = getPreviousFormOID(currentPath.formOID) ? false : true;
+    $("#clinicaldata-previous-button").disabled = checkPreviousFormOIDIsFirst(currentPath.formOID) ? false : true;
 }
 
 export function safeCloseClinicaldata(callback) {

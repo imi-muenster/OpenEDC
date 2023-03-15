@@ -107,7 +107,6 @@ export async function init() {
 export async function getODM(fileName) {
     let xmlString = await getData(fileName, fileTypes.XML);
     if (!xmlString) throw new LoadXMLException(loadXMLExceptionCodes.NODATAFOUND)
-    
     if (decryptionKey) {
         try {
             xmlString = await cryptoHelper.AES.decrypt.withKey(xmlString, decryptionKey);
@@ -125,9 +124,9 @@ export async function getODM(fileName) {
     }
 }
 
-export async function setODM(fileName, xmlDocument) {
+export async function setODM(fileName, xmlDocument, disableEncryption) {
     let xmlString = new XMLSerializer().serializeToString(xmlDocument);
-    if (decryptionKey) xmlString = await cryptoHelper.AES.encrypt.withKey(xmlString, decryptionKey);
+    if (decryptionKey && !disableEncryption) xmlString = await cryptoHelper.AES.encrypt.withKey(xmlString, decryptionKey);
 
     await setData(fileName, xmlString, fileTypes.XML);
 }
@@ -273,6 +272,11 @@ export async function setDecryptionKey(password) {
     }
 }
 
+export const deactivateServerEncryption = async () => {
+    decryptionKey = null;
+    await setSetting('disableEncryption', true);
+}
+
 export async function removeAllLocalData() {
     await indexedDBHelper.clear(fileTypes.XML);
     await indexedDBHelper.clear(fileTypes.JSON);
@@ -331,7 +335,7 @@ export async function getServerStatus(url, storeServerURL) {
     }
 }
 
-export async function initializeServer(url, userOID, credentials) {
+export async function initializeServer(url, userOID, credentials, disableEncryption = false) {
     if (!url.includes("http") && !url.includes("https")) url = "https://" + url;
     
     // Create a random key that is used for data encryption and encrypt it with the password of the user
@@ -354,7 +358,7 @@ export async function initializeServer(url, userOID, credentials) {
     const metadataFileName = await getODMFileName(odmFileNames.metadata);
     const metadataXMLData = await getODM(metadataFileName);
     let metadataString = new XMLSerializer().serializeToString(metadataXMLData);
-    metadataString = await cryptoHelper.AES.encrypt.withKey(metadataString, decryptionKey);
+    if(!disableEncryption) metadataString = await cryptoHelper.AES.encrypt.withKey(metadataString, decryptionKey);
     const metadataResponse = await fetch(url + "/api/metadata/" + metadataFileName, {
         method: "PUT",
         headers: getHeaders(true),
@@ -366,7 +370,7 @@ export async function initializeServer(url, userOID, credentials) {
     const admindataFileName = await getODMFileName(odmFileNames.admindata);
     const admindataXMLData = await getODM(admindataFileName);
     let admindataString = new XMLSerializer().serializeToString(admindataXMLData.documentElement);
-    admindataString = await cryptoHelper.AES.encrypt.withKey(admindataString, decryptionKey);
+    if(disableEncryption) admindataString = await cryptoHelper.AES.encrypt.withKey(admindataString, decryptionKey);
     const admindataResponse = await fetch(url + "/api/admindata/" + admindataFileName, {
         method: "PUT",
         headers: getHeaders(true),
@@ -379,7 +383,7 @@ export async function initializeServer(url, userOID, credentials) {
     for (const subjectFileName of subjectFileNames) {
         const subjectDataXMLData = await getODM(subjectFileName);
         let subjectDataString = new XMLSerializer().serializeToString(subjectDataXMLData.documentElement);
-        subjectDataString = await cryptoHelper.AES.encrypt.withKey(subjectDataString, decryptionKey);
+        if(disableEncryption) subjectDataString = await cryptoHelper.AES.encrypt.withKey(subjectDataString, decryptionKey);
         const clinicaldataResponse = await fetch(url + "/api/clinicaldata/" + subjectFileName, {
             method: "PUT",
             headers: getHeaders(true),
@@ -399,26 +403,36 @@ export async function initializeServer(url, userOID, credentials) {
         if (!jsonResponse.ok) return Promise.reject(await jsonResponse.text());
     }
 
+    serverURL = url;
+    await setSetting('disableEncryption', disableEncryption);
+
     await removeAllLocalData();
     
     return Promise.resolve(url);
 }
 
 export async function loginToServer(credentials) {
+    console.log("Login");
     const authenticationKey = await cryptoHelper.PBKDF2.generateAuthenticationKey(credentials.username, credentials.password);
     const userResponse = await fetch(serverURL + "/api/users/me", {
         headers: { "Authorization" : `Basic ${btoa(credentials.username + ":" + authenticationKey)}` }
     });
     if (!userResponse.ok) return Promise.reject(loginStatus.WRONGCREDENTIALS);
     user = await userResponse.json();
-
+    await loadSettings();
     // Get the encryptedDecryptionKey of the user, decrypt it and store it in the decryptionKey variable
-    try {
-        decryptionKey = await cryptoHelper.AES.decrypt.withPassword(user.encryptedDecryptionKey, credentials.password);
-    } catch (error) {
-        return Promise.reject(loginStatus.WRONGCREDENTIALS);
+    let encryptionDisabled = await getSetting("disableEncryption");
+    if(typeof encryptionDisabled == 'undefined' || encryptionDisabled === '') {
+        encryptionDisabled = false;
+        await setSetting('disableEncryption', encryptionDisabled);
     }
-
+    if(!encryptionDisabled) {
+        try {
+            decryptionKey = await cryptoHelper.AES.decrypt.withPassword(user.encryptedDecryptionKey, credentials.password);
+        } catch (error) {
+            return Promise.reject(loginStatus.WRONGCREDENTIALS);
+        }
+    }
     // Test if the user has an initial password
     if (user.hasInitialPassword) return Promise.reject(loginStatus.USERHASINITIALPASSWORD);
 

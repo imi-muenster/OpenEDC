@@ -271,6 +271,12 @@ function getItemInput(itemDef, itemGroupOID, options) {
             const selectInput = getSelectInput(codeListItems, itemOID, options);
             inputContainer.appendChild(selectInput);
         } else {
+            let presentationType = metadataWrapper.getSettingStatusByOID(metadataWrapper.SETTINGS_CONTEXT, 'presentation-type', itemOID);
+            options.noMargin = false;
+            if(presentationType == 'next-to-each-other') {
+                inputContainer.classList.add('is-flex', "is-justify-content-space-between");
+                options.noMargin = true;
+            }
             for (let codeListItem of codeListItems) {
                 const translatedText = codeListItem.getTranslatedDecode(options.locale, false) || options.missingTranslation;
                 const radioInput = getRadioInput(codeListItem.getAttribute("CodedValue"), translatedText, itemOID, itemGroupOID, options);
@@ -345,7 +351,7 @@ const getRadioInput = (value, translatedText, itemOID, itemGroupOID, options, no
     
 
     const radioContainer = document.createElement("label");
-    radioContainer.className = `radio ${noLikert ? 'ml-0 is-flex is-align-items-center' : ''}`;
+    radioContainer.className = `radio ${noLikert ? 'ml-0 is-flex is-align-items-center' : ''} ${options.noMargin ? 'm-0' : ''}`;
     radioContainer.style = "gap: 5px";
     const radio = document.createElement("input");
     radio.type = "radio";

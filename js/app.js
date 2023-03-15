@@ -60,6 +60,7 @@ ioHelper.addGlobalEventListener("DOMContentLoaded", async () => {
         handleURLSearchParameters();
     })
     .catch(error => {
+        console.log(error);
         if (error.code == ioHelper.loadXMLExceptionCodes.NODATAFOUND && !ioHelper.hasServerURL()) showStartModal();
         else if (error.code == ioHelper.loadXMLExceptionCodes.DATAENCRYPTED) showDecryptionKeyModal();
     });
@@ -88,14 +89,12 @@ ioHelper.addGlobalEventListener("CurrentUserEdited", () => {
 
 const startApp = async () => {
     await ioHelper.loadSettings();
-    console.log("start app")
     languageHelper.populatePresentLanguages(metadataWrapper.getMetadata());
     await languageHelper.setInitialLocale();
     
     await metadataModule.init();
     await admindataModule.init();
     await clinicaldataModule.init();
-
     // Last UI adjustments
     setTitles();
     hideStartModal();
@@ -286,7 +285,6 @@ window.openODM = async function() {
     const file = $("#open-odm-button .file-input");
     const content = await ioHelper.getFileContent(file.files[0]);
     const odmXMLString = validateODM(content);
-    console.log(odmXMLString);
     if (odmXMLString) {
         metadataWrapper.importMetadata(odmXMLString);
         admindataWrapper.importAdmindata(odmXMLString);
@@ -373,14 +371,20 @@ window.hideExportModal = function() {
 }
 
 window.showProjectModal = function() {
-    if (ioHelper.hasDecryptionKey()) {
+    const disabledEncryption = ioHelper.getSetting("disableEncryption");
+    if (ioHelper.hasDecryptionKey() || ioHelper.hasServerURL()) {
         $("#project-modal #encryption-password-input").parentNode.parentNode.hide();
         $("#project-modal #data-encryption-warning").hide();
-        $("#project-modal #data-encrypted-hint").show();
+        $(`#project-modal #data-${disabledEncryption ? 'not-' : ''}encrypted-hint`).show();
     }
     if (ioHelper.hasServerURL()) {
         $("#project-modal #server-url-input").parentNode.parentNode.hide();
+        $("#project-modal #server-connect-no-encryption").parentNode.hide();
         $("#project-modal #server-connected-hint").show();
+    }
+
+    if(disabledEncryption || !ioHelper.hasServerURL()) {
+        $('#deactivate-encryption-button').parentNode.hide(); 
     }
 
     const subjectKeyModeRadio = $(`#${ioHelper.getSetting("subjectKeyMode")}`);
@@ -470,6 +474,7 @@ window.initializeServer = function(event) {
     const username = $("#owner-username-input").value;
     const password = $("#owner-password-input").value;
     const confirmPassword = $("#owner-confirm-password-input").value;
+    const disableEncryption = $("#server-connect-no-encryption").checked;
     const credentials = new ioHelper.Credentials(username, password, confirmPassword);
     if (credentials.error) {
         // TODO: This could be improved in the future -- passing the error to the languageHelper is not very nice
@@ -482,7 +487,7 @@ window.initializeServer = function(event) {
     const serverURL = $("#server-url-input").value;
     const userOID = admindataWrapper.getCurrentUserOID();
     event.target.showLoading();
-    ioHelper.initializeServer(serverURL, userOID, credentials)
+    ioHelper.initializeServer(serverURL, userOID, credentials, disableEncryption)
         .then(serverURL => window.location.replace(serverURL))
         .catch(() => event.target.hideLoading());
 }
@@ -507,6 +512,29 @@ window.encryptData = function(event) {
     ioHelper.encryptXMLData(credentials.password)
         .then(() => window.location.reload())
         .catch(() => event.target.hideLoading());
+}
+
+window.showDeactivateEncryptionDialog = () => {
+    ioHelper.showMessage(languageHelper.getTranslation('deactivate-encryption'), languageHelper.getTranslation('deactivate-encryption-hint'), 
+    {
+        [languageHelper.getTranslation('deactivate')] : () => deactivateEncryption()
+    })
+}
+
+const deactivateEncryption = async () => {
+    
+    await clinicaldataWrapper.deactivateEncryptionForSubjects();
+    console.log("clinicaldata stored");
+    await ioHelper.deactivateServerEncryption();
+    await metadataWrapper.storeMetadata();
+    console.log("metadata stored");
+    await admindataWrapper.storeAdmindata();
+    console.log("admindata stored");
+    ioHelper.showToast(languageHelper.getTranslation('deactivate-encryption-successful'))
+    $('#deactivate-encryption-button').parentNode.hide(); 
+    $(`#project-modal #data-encrypted-hint`).hide();
+    $(`#project-modal #data-not-encrypted-hint`).show();
+
 }
 
 window.setSurveyCode = function() {

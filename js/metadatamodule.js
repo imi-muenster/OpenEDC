@@ -69,8 +69,8 @@ function createPanelBlock(elementOID, elementType, displayText, fallbackText, su
     const draggable = viewOnlyMode ? false : true;
     let panelBlock = htmlElements.getMetadataPanelBlock(elementOID, elementType, displayText, fallbackText, subtitleText, draggable, hasCondition, conditionIsFalse);
 
-    //panelBlock.ondragstart = dragStart;
-    //panelBlock.ondragenter = dragEnter;
+    panelBlock.ondragstart = dragStart;
+    panelBlock.ondragenter = dragEnter;
 
     return panelBlock;
 }
@@ -391,16 +391,11 @@ function fillDetailsPanelFoundational() {
 }
 
 function formatTranslationImages(translationText) {
-    //console.log(translationText);
     if(!translationText) return translationText;
-    //console.log(translationText);
-    //let splits = translationText.split(/(\|img;?(?:type:[a-zA-Z0-9]+;)?(?:format:[a-zA-Z0-9]+;)?(?:[a-z]+:[a-zA-Z0-9%\s]+;)*[a-zA-Z0-9\/+=]*\|)/g);
     let splits = translationText.split(/(!\[.*?\](?:\(data:image\/[a-z]+;base64,[a-zA-Z0-9\/+=]+\))?(?:\[(?:[a-z]+:[a-zA-Z0-9%]+?)+;\])?)/g);
-    console.log(splits);
     splits = splits.map(split => {
         if(!split.startsWith("![")) return split.replace('\n', '<br>');
         const imageInfo = metadataWrapper.extractImageInfo(split);
-        console.log(imageInfo);
         return `<div class="has-text-link" data-image-id="${imageInfo.identifier}"
             onclick="editFormImage(this)" onmouseenter="showFormImagePreview(event)" onmouseleave="hideFormImagePreview()">${imageInfo.data?.name??languageHelper.getTranslation("image")}</div>`
     });
@@ -409,9 +404,7 @@ function formatTranslationImages(translationText) {
 }
 
 function reverseFormatTranslationImages(innerHTML) {
-    console.log(innerHTML);
     const splits = innerHTML.split(/(<div[^>]*>[^/]+?<\/div>)/g);
-    console.log(splits);
     let finalString = splits.map(split => {
         if(!split.startsWith('<div')) return split.replace('<br>', '\n');
         if(!split.match(/(<div[^>]*>[^/<>]+?<\/div>)/)) return '';
@@ -441,7 +434,6 @@ window.editFormImage = (image) =>{
 }
 
 window.showFormImagePreview = (evt) => {
-    console.log('mouseover')
     const formImageData = metadataWrapper.getFormImageData(evt.target.getAttribute('data-image-id')).data;
     let elPopup = document.querySelector('#image-preview-container');
     elPopup.querySelector('img').setAttribute('src', `data:image/${formImageData.format};base64,${formImageData.base64Data}`);
@@ -459,11 +451,9 @@ window.hideFormImagePreview = () => {
 }
 
 window.switchTab = (event, oldContainerId, newContainerId, formatted) => {
-    console.log(event, oldContainerId, newContainerId, formatted);
     let oldElement = document.querySelector(`#${oldContainerId}`);
     let newElement = document.querySelector(`#${newContainerId}`);
     if(oldElement.classList.contains('is-hidden')) return;
-    console.log("continue");
 
     if(formatted) {
         let oldContent = oldElement.querySelector('.textarea').value;
@@ -498,7 +488,6 @@ function fillDetailsPanelExtended() {
     [$("#alias-inputs .alias-context"), $("#alias-inputs .alias-name"), $("#add-alias-button")].enableElements();
 
     const condition = metadataWrapper.getElementCondition(currentPath.last.element, currentPath);
-    console.log(condition)
     switch (currentPath.last.element) {
         case ODMPath.elements.STUDYEVENT:
             $("#repeating-select-inner").value = metadataWrapper.getStudyEventRepeating(currentPath.last.value);

@@ -20,19 +20,20 @@ class MetadataFile {
 }
 
 class OpenEDCSetting {
-    constructor(context, {key, i18n, description, type, callback, scope}){
+    constructor(context, {key, i18n, description, type, options, callback, scope}){
         this.context = context;
         this.key = key;
         this.i18n = i18n;
         this.description = description;
         this.type = type;
+        this.options = options;
         this.callback = callback;
         this.scope = scope;
     }
 
     static parse(context, jsonString) {
         const data = JSON.parse(jsonString);
-        return new OpenEDCSetting(context, data.key, data.i18n, data.description, data.type, data.callback, data.scope)
+        return new OpenEDCSetting(context, data.key, data.i18n, data.description, data.type, data.options, data.callback, data.scope)
     }
 
     isInScope(scope){
@@ -141,7 +142,6 @@ export async function storeMetadata() {
     if (previousFileName && previousFileName != metadataFile.fileName) ioHelper.removeODM(previousFileName);
     ioHelper.dispatchGlobalEvent('MetadataStored');
 }
-
 
 export function getSerializedMetadata() {
     return new XMLSerializer().serializeToString(metadata);
@@ -1018,7 +1018,6 @@ export function copyStudyEvent(studyEventOID, deepCopy) {
             formRef.setAttribute("FormOID", newFormOID);
             replacedOIDs = info.replacedOIDs;
         }
-        console.log(replacedOIDs);
     }
     
     return {newStudyEventOID};
@@ -1142,7 +1141,6 @@ function copyConditionDef(conditionDefOID, replacedOIDs) {
     let conditionDefClone = conditionDef.cloneNode(true);
     conditionDefClone.setAttribute("OID", newConditionDefOID);
     if(replacedOIDs){
-        console.log(conditionDefClone.querySelector("FormalExpression").textContent)
         Object.keys(replacedOIDs).forEach(oldOID => {
             conditionDefClone.querySelector("FormalExpression").textContent = conditionDefClone.querySelector("FormalExpression").textContent.replace(new RegExp(`${oldOID}([\\s*\\/+<>^=?:()-]|$)`, "g"), `${replacedOIDs[oldOID]}$1`);
         });
@@ -1211,8 +1209,6 @@ export async function mergeMetadata(odmXMLString) {
         const odm = new DOMParser().parseFromString(odmXMLString, "text/xml");
         let conditionDefs = odm.querySelectorAll("ConditionDef");
         let methodDefs = odm.querySelectorAll("MethodDef");
-        console.log(replaceOIDs);
-        console.log(Object.keys(replaceOIDs));
         Object.keys(replaceOIDs).forEach(oldOID => {
             conditionDefs.forEach(c => {
                 c.querySelector("FormalExpression").textContent = c.querySelector("FormalExpression").textContent.replace(new RegExp(oldOID, "g"), replaceOIDs[oldOID]);
@@ -1246,7 +1242,6 @@ export function extractImageInfo(imageString, identifier) {
 
     let name;
     let nameArray = imageString.match(/!\[[^\]]+?\]/);
-    console.log("nameArray", nameArray)
     if(nameArray && nameArray.length > 0) {
         name = nameArray[0].replace('!', '').replace('[','').replace(']','');
     }
@@ -1262,27 +1257,22 @@ export function extractImageInfo(imageString, identifier) {
         let formatArray = data.match(/image\/[a-z]+?;/);
         if(formatArray && formatArray.length > 0){
             format = formatArray[0].substring(formatArray[0].indexOf('/') + 1, formatArray[0].indexOf(';'));
-            console.log(format);
         }
 
         const base64DataArray = data.split(',');
         if(base64DataArray.length > 1) base64Data = base64DataArray[1].replace(')','');
     }
 
-    console.log(imageString);
     let settingsArray = imageString.match(/\[(?:[a-z]+:.*?;?)+\]/);
-    console.log(settingsArray);
     if(settingsArray && settingsArray.length > 0) {
         let innerSplits = settingsArray[0].split(';');
         let widthSplit = innerSplits.find(innerSplit => innerSplit.split(":")[0].includes("width"));
-        console.log(widthSplit);
         if(widthSplit) widthSplit = widthSplit.split(":");
         width = widthSplit && widthSplit.length == 2 ? widthSplit[1].replace(";","") : undefined;
     }
 
     identifier = identifier || makeid(20);;
     formImageDataMap[identifier] = new FormImage(format, base64Data, width, name);
-    console.log(formImageDataMap[identifier]);
     return {data: formImageDataMap[identifier], identifier}
     
 }
