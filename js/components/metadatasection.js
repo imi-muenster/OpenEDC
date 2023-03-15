@@ -95,7 +95,22 @@ class MetadataSection extends HTMLElement {
                                         </div>
                                         <div class="field">
                                             <label class="label is-inline-block" i18n="alias-names"></label>
-                                            <a class="button is-small is-link is-pulled-right" i18n="edit-settings" onclick="showSettingsEditor()"></a>
+                                            <div class="dropdown is-hoverable is-pulled-right">
+                                                <div class="dropdown-trigger">
+                                                    <button class="button is-small is-link" aria-haspopup="true" aria-controls="alias-dropdown-menu">
+                                                    <span i18n="options"></span>
+                                                    <span class="icon is-small">
+                                                        <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                                    </span>
+                                                    </button>
+                                                </div>
+                                                <div class="dropdown-menu" id="alias-dropdown-menu" role="menu">
+                                                    <div class="dropdown-content">
+                                                    <a class="dropdown-item" i18n="edit-settings" onclick="showSettingsEditor()">
+                                                    </a>
+                                                </div>
+                                                </div>
+                                            </div>
                                             <div id="alias-inputs"></div>
                                             <button class="button is-small is-pulled-right mt-2" id="add-alias-button" onclick="addEmptyAliasInput()" i18n="add"></button>
                                         </div>
