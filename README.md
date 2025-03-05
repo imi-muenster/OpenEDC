@@ -1,7 +1,7 @@
 # OpenEDC
 
 > [!CAUTION]  
-> Unmaintained prototype for JMIR publication. Please see [openedc.health](https://openedc.health/) for an entirely re-written, GCP-compliant, and validated version.
+> Unmaintained prototype for JMIR publication. Please visit [openedc.health](https://openedc.health/) for an entirely re-written, GCP-compliant, and validated version.
 
 OpenEDC is an electronic data capture (EDC) system for designing and conducting secure medical research studies based on the [CDISC ODM-XML](https://www.cdisc.org/standards/data-exchange/odm) standard. The standard is adopted without modifications to foster data exchange, metadata reuse, and open science.
 
